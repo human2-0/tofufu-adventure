@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://bvx8m1n5qlsfp"]
+
+[ext_resource type="Script" path="res://game/player/player.gd" id="1_player"]
+[ext_resource type="Texture2D" path="res://assets/characters/fufu/soybean_fufu.png" id="2_fufu"]
+
+[ext_resource type="Script" path="res://game/player/local_player_input.gd" id="3_input"]
+[ext_resource type="Script" path="res://game/player/fufu_visuals.gd" id="4_visuals"]
+
+[ext_resource type="Script" path="res://game/player/ground_shadow.gd" id="5_shadow"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_p7701"]
+radius = 0.4
+height = 1.1
+
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("command_source")]
+collision_layer = 2
+collision_mask = 3
+platform_floor_layers = 1
+script = ExtResource("1_player")
+command_source = NodePath("LocalInput")
+
+[node name="LocalInput" type="Node" parent="."]
+script = ExtResource("3_input")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 0)
+shape = SubResource("CapsuleShape3D_p7701")
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+script = ExtResource("4_visuals")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58, 0)
+cast_shadow = 1
+billboard = 1
+alpha_cut = 1
+alpha_scissor_threshold = 0.5
+texture_filter = 2
+texture = ExtResource("2_fufu")
+pixel_size = 0.003125
+
+[node name="GroundShadow" type="Node3D" parent="."]
+script = ExtResource("5_shadow")

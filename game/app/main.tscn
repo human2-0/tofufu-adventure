@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://b6y2r7w9m4v1p"]
+
+[ext_resource type="PackedScene" path="res://game/player/player.tscn" id="1_player"]
+[ext_resource type="Script" path="res://game/camera/camera_follow.gd" id="2_camera"]
+[ext_resource type="PackedScene" path="res://game/world/meadow.tscn" id="3_world"]
+[ext_resource type="PackedScene" path="res://game/ui/hud.tscn" id="6_hud"]
+[ext_resource type="Script" path="res://game/app/main.gd" id="7_main"]
+
+[ext_resource type="Script" path="res://game/ui/touch_controls.gd" id="8_touch"]
+
+[node name="Main" type="Node3D"]
+script = ExtResource("7_main")
+
+[node name="World" parent="." instance=ExtResource("3_world")]
+
+[node name="Player" parent="." instance=ExtResource("1_player")]
+
+[node name="Camera3D" type="Camera3D" parent="." node_paths=PackedStringArray("target")]
+fov = 48.0
+script = ExtResource("2_camera")
+target = NodePath("../Player")
+
+[node name="HUD" parent="." instance=ExtResource("6_hud")]
+
+[node name="TouchControls" type="CanvasLayer" parent="."]
+script = ExtResource("8_touch")

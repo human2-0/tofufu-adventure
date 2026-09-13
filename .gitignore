@@ -1,0 +1,23 @@
+# Godot 4+ specific ignores
+.godot/
+/android/
+
+# Local builds and signing material
+/builds/
+/export_credentials.cfg
+*.keystore
+*.jks
+*.p12
+*.mobileprovision
+
+# Holepunch local dependencies
+networking/sidecar/node_modules/
+
+# Local machine files, Python caches, and runtime secrets
+.DS_Store
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+peer-identity.key
