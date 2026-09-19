@@ -26,8 +26,7 @@ static func box(parent: Node3D, at: Vector3, size: Vector3, color: Color, solid:
 		var body := StaticBody3D.new()
 		body.collision_layer = 1
 		body.collision_mask = 0
-		parent.add_child(body)
-		body.position = at
+		instance.add_child(body)
 		var shape := CollisionShape3D.new()
 		var bounds := BoxShape3D.new()
 		bounds.size = size
@@ -51,8 +50,8 @@ static func rock(parent: Node3D, at: Vector3, size: Vector3, color: Color, solid
 		instance.create_convex_collision()
 
 static func signpost(parent: Node3D, at: Vector3, title: String) -> void:
-	box(parent, at + Vector3.UP * 0.65, Vector3(0.12, 1.3, 0.12), Color("675442"))
-	box(parent, at + Vector3.UP * 1.3, Vector3(2.6, 0.65, 0.15), Color("403f36"))
+	box(parent, at + Vector3.UP * 0.65, Vector3(0.12, 1.3, 0.12), Color("675442"), true)
+	box(parent, at + Vector3.UP * 1.3, Vector3(2.6, 0.65, 0.15), Color("403f36"), true)
 	var label := Label3D.new()
 	label.text = title
 	label.font_size = 30

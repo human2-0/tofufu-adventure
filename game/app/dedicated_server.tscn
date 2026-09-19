@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/app/dedicated_server.gd" id="1"]
+[ext_resource type="Script" path="res://networking/oracle/oracle_transport.gd" id="2"]
+
+[node name="DedicatedServer" type="Node" node_paths=PackedStringArray("transport")]
+script = ExtResource("1")
+transport = NodePath("Transport")
+
+[node name="Transport" type="Node" parent="."]
+script = ExtResource("2")
+server_mode = true
+credential_file = "/etc/tofufu/server.json"

@@ -30,7 +30,7 @@ func restore_places(places: Array) -> void:
 		discovered.emit(_found.back(), _found.size())
 
 func _near(at: Vector3) -> bool:
-	if explorer.global_position.distance_to(at) < 3.0: return true
+	if is_instance_valid(explorer) and explorer.global_position.distance_to(at) < 3.0: return true
 	for companion in companions:
 		if is_instance_valid(companion) and companion.global_position.distance_to(at) < 3.0: return true
 	return false

@@ -5,9 +5,9 @@ extends RefCounted
 signal changed
 const CAP: int = 99
 const TUNING: ProgressionTuning = preload("res://game/progression/default_progression.tres")
-const SKILLS: Array[String] = ["fist", "sword", "magic", "attack_speed", "defence"]
+const SKILLS: Array[String] = ["fist", "sword", "shooting", "magic", "attack_speed", "defence"]
 var experience: int = 0
-var practice: Dictionary = {"fist": 0, "sword": 0, "magic": 0, "attack_speed": 0, "defence": 0}
+var practice: Dictionary = {"fist": 0, "sword": 0, "shooting": 0, "magic": 0, "attack_speed": 0, "defence": 0}
 
 static func requirement(level: int, character: bool = false) -> int:
 	if character:
@@ -31,10 +31,10 @@ func level() -> int:
 	return rank(experience, true)
 
 func skill(name: String) -> int:
-	return rank(int(practice.get(name, 0)))
+	return rank(int(int(practice.get(name, 0)) / practice_cost_multiplier(name)))
 
 func weapon_hit(weapon: String) -> void:
-	if weapon in ["fist", "sword"]: _practice(weapon, 1)
+	if weapon in ["fist", "sword", "shooting"]: _practice(weapon, 1)
 
 func defended() -> void:
 	_practice("defence", 1)
@@ -54,8 +54,14 @@ func award_experience(amount: int) -> void:
 
 func _practice(name: String, amount: int) -> void:
 	if amount <= 0: return
-	practice[name] = mini(threshold(CAP), int(practice[name]) + mini(amount, 100000000))
+	practice[name] = mini(threshold(CAP) * practice_cost_multiplier(name), int(practice[name]) + mini(amount, 100000000))
 	changed.emit()
+
+static func practice_cost_multiplier(name: String) -> int:
+	return TUNING.shooting_practice_multiplier if name == "shooting" else 1
+
+func shooting_spread_multiplier() -> float:
+	return 1.0 - TUNING.shooting_accuracy * (skill("shooting") - 1)
 
 func damage_multiplier(weapon: String) -> float:
 	return 1.0 + TUNING.character_damage * (level() - 1) + TUNING.weapon_damage * (skill(weapon) - 1)
@@ -78,19 +84,19 @@ func capture() -> Dictionary:
 func restore(data: Dictionary, legacy_experience: int = 0) -> void:
 	experience = clampi(int(data.get("experience", legacy_experience)), 0, threshold(CAP, true))
 	var saved: Dictionary = data.get("practice", {})
-	for name in SKILLS: practice[name] = clampi(int(saved.get(name, 0)), 0, threshold(CAP))
+	for name in SKILLS: practice[name] = clampi(int(saved.get(name, 0)), 0, threshold(CAP) * practice_cost_multiplier(name))
 	changed.emit()
 
 func display() -> Dictionary:
 	var req := requirement(level(), true)
 	var earned_exp := req - (threshold(mini(CAP, level() + 1), true) - experience)
 	var pct := 100 if level() == CAP else clampi(int(100.0 * earned_exp / maxf(1.0, req)), 0, 100)
-	var rate: float = snappedf(attack_multiplier() / 0.35, 0.1)
+	var rate: float = snappedf(attack_multiplier() / 0.38, 0.1)
 	var dmg: int = int(12.0 * damage_multiplier("fist"))
 	var result := {"level": level(), "experience": experience, "skills": {}, "defence": effective_defence(), "level_percent": pct, "fist_hit_rate": rate, "fist_damage": dmg}
 	result.remaining = threshold(mini(CAP, level() + 1), true) - experience
 	for name in SKILLS:
 		var current := skill(name)
-		var earned := int(practice[name]) - threshold(current)
-		result.skills[name] = {"level": current, "percent": 100 if current == CAP else int(100.0 * earned / requirement(current))}
+		var earned := int(practice[name]) - threshold(current) * practice_cost_multiplier(name)
+		result.skills[name] = {"level": current, "percent": 100 if current == CAP else int(100.0 * earned / (requirement(current) * practice_cost_multiplier(name)))}
 	return result

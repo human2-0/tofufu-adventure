@@ -19,9 +19,9 @@ static func capture(game: Node3D) -> Dictionary:
 static func apply(game: Node3D, data: Dictionary, replica: bool) -> void:
 	var encounters: SandboxEncounters = game.encounters
 	game.weather.set_phase(float(data.get("weather_phase", 0.0)))
-	for i in data.mobs.size(): EncounterState.apply_mob(encounters.mob_nodes[i], data.mobs[i])
-	for i in encounters.prop_nodes.size(): EncounterState.apply_prop(encounters.prop_nodes[i], data.props[i])
-	for i in encounters.dummy_nodes.size(): EncounterState.apply_dummy(encounters.dummy_nodes[i], data.dummies[i])
+	for i in data.mobs.size(): EncounterState.apply_mob(encounters.mob_nodes[i], data.mobs[i], replica)
+	for i in encounters.prop_nodes.size(): EncounterState.apply_prop(encounters.prop_nodes[i], data.props[i], replica)
+	for i in encounters.dummy_nodes.size(): EncounterState.apply_dummy(encounters.dummy_nodes[i], data.dummies[i], replica)
 	if not replica:
 		# Older checkpoints may place restored mobs on top of party members.
 		for body in game.player.placement_peers:

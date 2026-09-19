@@ -17,12 +17,13 @@ var host_key: String = ""
 var epoch: String = ""
 var hosting: bool = false
 var playing: bool = false
+var dedicated: bool = false # Authority has no player actor in this explicitly selected mode.
 var status: String = "Choose a name, then discover other testers."
 var _pending: String = ""
 var _timeout: float = 0
 var _retry_clock: float = 0
 var _presence_clock: float = 0
-const GAME_VERSION: int = 5
+const GAME_VERSION: int = 7
 
 func receive(event: Dictionary) -> void:
 	var key := str(event.get("key", ""))
@@ -62,7 +63,7 @@ func create_room() -> void:
 	hosting = true
 	host_key = local_key
 	epoch = Crypto.new().generate_random_bytes(16).hex_encode()
-	members = [local_key]
+	members = [] if dedicated else [local_key]
 	names = {local_key: local_name}
 	status = "Your meadow is open · up to 4 testers. Start exploring now; friends can join later."
 	_presence()
@@ -81,7 +82,7 @@ func pending_host() -> String:
 	return _pending
 
 func begin() -> void:
-	if not hosting or members.is_empty() or playing: return
+	if not hosting or (members.is_empty() and not dedicated) or playing: return
 	playing = true
 	for key: String in members:
 		if key != local_key: send_packet.call(key, {"type": "begin", "epoch": epoch})
@@ -89,11 +90,13 @@ func begin() -> void:
 	started.emit(true, members.duplicate(), local_key)
 
 func send_game(key: String, data: Dictionary) -> void:
-	if not playing or key not in members: return
+	if not playing or (key not in members and key != host_key): return
 	data["epoch"] = epoch
 	send_packet.call(key, data)
 
 func leave(reason: String = "You left the meadow.") -> void:
+	if dedicated and not hosting and not host_key.is_empty():
+		send_packet.call(host_key, {"type": "leave", "epoch": epoch})
 	for key: String in members:
 		if key != local_key: send_packet.call(key, {"type": "leave", "epoch": epoch})
 	_reset_session(reason)
@@ -115,13 +118,16 @@ func _packet(key: String, data: Dictionary) -> void:
 		"welcome":
 			if key != _pending and key != host_key: return
 			if not data.get("members") is Array or data.members.size() > 4 or data.members.size() < 1: return
-			if key not in data.members or local_key not in data.members: return
+			if not data.get("dedicated", false) is bool: return
+			if (key not in data.members and not data.get("dedicated", false)) or local_key not in data.members: return
+			if data.get("dedicated", false) and key in data.members: return
 			for member: Variant in data.members:
 				if not ExplorationProtocol.key(member) or data.members.count(member) != 1: return
 			if not data.get("epoch") is String or data.epoch.length() != 32: return
 			if not data.get("names") is Dictionary or data.names.size() > 4 or not data.get("playing") is bool: return
 			for member: Variant in data.names:
 				if member not in data.members or not data.names[member] is String or data.names[member].length() > 24: return
+			dedicated = data.get("dedicated", false)
 			names = data.names
 			host_key = key
 			epoch = data.epoch
@@ -151,7 +157,7 @@ func _packet(key: String, data: Dictionary) -> void:
 				_reset_session(str(data.get("reason", "The host ended this connection.")).left(160))
 				_presence()
 		"input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice":
-			if playing and key in members and data.get("epoch") == epoch:
+			if playing and (key in members or key == host_key) and data.get("epoch") == epoch:
 				gameplay_packet.emit(key, data)
 
 func _broadcast_roster() -> void:
@@ -159,7 +165,7 @@ func _broadcast_roster() -> void:
 	names.clear()
 	for key: String in members: names[key] = local_name if key == local_key else str(peers.get(key, {}).get("name", "Fufu"))
 	for key: String in members:
-		if key != local_key: send_packet.call(key, {"type": "welcome", "epoch": epoch, "members": members, "names": names, "playing": playing})
+		if key != local_key: send_packet.call(key, {"type": "welcome", "epoch": epoch, "members": members, "names": names, "playing": playing, "dedicated": dedicated})
 
 func _send_presence(key: String) -> void:
 	send_packet.call(key, {"type": "presence", "hosting": hosting, "busy": playing or (not host_key.is_empty() and not hosting)})

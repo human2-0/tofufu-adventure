@@ -22,7 +22,7 @@ func _initialize() -> void:
 	check(other.heat == 0.0, "other actors do not share recoil")
 	recoil.step(false, 0.05, tuning)
 	check(recoil.heat == 1.0, "release has a short recovery delay")
-	for tick in 100: recoil.step(false, 1.0 / 60.0, tuning)
+	for tick in 45: recoil.step(false, 1.0 / 60.0, tuning)
 	check(recoil.heat == 0.0, "released trigger recovers full accuracy")
 	recoil.fired(tuning)
 	recoil.reset()

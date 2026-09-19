@@ -29,12 +29,12 @@ extends Resource
 @export var guard_half_angle: float = 55.0
 @export var punch_damage: float = 12.0
 @export var punch_reach: float = 1.35
-@export var punch_cooldown: float = 0.35
+@export var punch_cooldown: float = 0.38
 
 @export_group("Soybean gun")
 @export var bean_damage: float = 20.0
 @export var bean_head_damage: float = 40.0
-@export var bean_speed: float = 55.0
+@export var bean_speed: float = 60.0
 @export var gun_cooldown: float = 0.18
 @export var hip_spread_degrees: float = 5.0
 @export var aim_spread_degrees: float = 0.35
@@ -42,7 +42,7 @@ extends Resource
 @export var aim_recoil_spread: float = 2.6
 @export var hip_recoil_spread: float = 3.0
 @export var recoil_recovery_delay: float = 0.12
-@export var recoil_recovery_speed: float = 0.9
+@export var recoil_recovery_speed: float = 1.8
 @export var muzzle_height: float = 0.78
 @export var muzzle_side: float = 0.32
 @export var muzzle_forward: float = 0.46

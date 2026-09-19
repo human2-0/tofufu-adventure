@@ -33,6 +33,7 @@ func _sync() -> void:
 		member.actor.set_physics_process(false)
 		member.actor.collision_layer = 0
 		member.set_process(false)
+		member.set_physics_process(false)
 		member.combat.sword.hide()
 		if member.actor != game.player:
 			member.actor.hide()
@@ -54,6 +55,7 @@ func _completed() -> void:
 		member.actor.show()
 		member.actor.collision_layer = 2
 		member.set_process(true)
+		member.set_physics_process(true)
 		member.actor.set_physics_process(authority)
 		member.combat.sword.visible = member.combat.equipment.knife_selected
 		if authority and member.actor != game.player:

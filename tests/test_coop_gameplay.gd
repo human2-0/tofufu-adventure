@@ -96,8 +96,8 @@ func _run() -> void:
 	var bean: SoybeanPickup = host_game.encounters.add_pickup(host_game.encounters.next_pickup_id, remote.actor.position)
 	bean._age = 1
 	await ticks(35)
-	check(remote.health.current == 100 and host_game.encounters.beans == 1, "nearest guest collects and heals exactly once")
-	check(guest_game.encounters.beans == 1 and replica.health.current == 100, "loot outcome replicates")
+	check(host_game.encounters.beans == 1 and remote.inventory.count_item("soybean") == 1, "nearest guest collects bean into inventory exactly once")
+	check(guest_game.encounters.beans == 1 and remote.inventory.count_item("soybean") == 1, "loot outcome replicates to inventory count")
 	host_game.encounters.mob_nodes[0].target.damage(999)
 	await ticks(10)
 	check(guest_game.encounters.experience == 25 and not guest_game.encounters.mob_nodes[0].visible, "shared enemy death and EXP")

@@ -2,6 +2,7 @@ class_name LocalPlayerInput
 extends PlayerCommandSource
 ## Actions share keyboard, gamepad and touch bindings; rules see only commands.
 
+var first_person_view: bool = false
 var shoulder_view: bool = false
 var enabled: bool = true
 var chat_blocked: bool = false
@@ -56,6 +57,9 @@ func sample(world_position: Vector3) -> PlayerCommand:
 	command.pickup_pressed = Input.is_action_just_pressed("pickup_weapon")
 	command.weapon_slot = 1 if Input.is_action_just_pressed("knife_slot") else (2 if Input.is_action_just_pressed("fist_slot") else 0)
 	if Input.is_action_just_pressed("gun_slot"): command.weapon_slot = 3
+	if Input.is_action_just_pressed("sotjet_slot"): command.weapon_slot = 4
+	command.use_healing_1 = Input.is_action_just_pressed("use_healing_1")
+	command.use_healing_2 = Input.is_action_just_pressed("use_healing_2")
 	command.jump_pressed = Input.is_action_just_pressed("jump")
 	command.dash_pressed = Input.is_action_just_pressed("dash")
 	return command
@@ -94,4 +98,4 @@ func _shooting_point(world_position: Vector3) -> Vector3:
 	return origin + direction * 90
 
 func _camera_aim_active() -> bool:
-	return Input.is_action_pressed("attack") or Input.is_action_pressed("guard")
+	return first_person_view or Input.is_action_pressed("attack") or Input.is_action_pressed("guard")

@@ -11,6 +11,7 @@ var _skill_rows: Dictionary = {}
 const SKILL_CONFIG: Array = [
 	["fist", "Fist", "f6a282"],
 	["sword", "Sword", "f0c868"],
+	["shooting", "Shooting", "acd78a"],
 	["defence", "Defence", "86d2b4"],
 	["magic", "Magic", "c3a6ec"],
 	["attack_speed", "Atk Speed", "79caec"]

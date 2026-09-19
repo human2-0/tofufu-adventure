@@ -39,9 +39,9 @@ func _collect(actor: Node3D) -> void:
 	for member: CoopActor in party.values():
 		if member.actor != actor: continue
 		game.encounters.beans += 1
-		var before := member.health.current
-		member.health.heal(member.combat.tuning.soybean_healing)
-		CombatEffects.burst(self, actor.global_position, "+%d HP" % int(member.health.current - before), Color("c8efa0"))
+		if member.inventory != null:
+			member.inventory.add_item(InventoryItem.create_soybean(), 1)
+		CombatEffects.burst(self, actor.global_position, "+1 SOY", Color("c8efa0"))
 		game.encounters.progress_changed.emit(game.encounters.beans, game.encounters.mobs, game.encounters.props)
 		return
 

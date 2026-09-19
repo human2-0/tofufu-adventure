@@ -17,6 +17,7 @@ signal struck(strength: float, hits: int)
 var equipment: PlayerEquipment
 var targets: Array[Damageable] = []
 var rules: MeleeRules
+var sotjet: Sotjet
 var gun: SoyGun
 var sword: SwordVisual
 var active: bool = false
@@ -43,6 +44,9 @@ func _ready() -> void:
 	gun.actor = actor as CollisionObject3D
 	gun.tuning = tuning
 	add_child(gun)
+	sotjet = Sotjet.new()
+	sotjet.actor = actor as CollisionObject3D
+	add_child(sotjet)
 	_shape = BoxShape3D.new()
 	_shape.size = Vector3(tuning.blade_width, tuning.blade_thickness, tuning.blade_length)
 
@@ -91,6 +95,7 @@ func strike(aim: Vector2, strength: float) -> void:
 func reset() -> void:
 	equipment.reset()
 	gun.reset()
+	sotjet.reset()
 	active = false
 	rules = MeleeRules.new(tuning)
 	_hit_targets.clear()
@@ -145,3 +150,6 @@ func _damage(target: Damageable) -> void:
 			weapon_trained.emit("sword")
 		CombatEffects.burst(self, target.global_position, str(int(damage)), Color(1, 0.86, 0.4))
 		struck.emit(_strength, 1)
+
+func ranged_selected() -> bool:
+	return gun.selected or sotjet.selected

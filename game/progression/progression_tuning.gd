@@ -5,6 +5,8 @@ extends Resource
 @export_group("Practice curve")
 @export_range(1, 1000) var first_practice_cost: int = 20
 @export_range(1.01, 1.12, 0.01) var practice_growth: float = 1.1
+@export_range(1, 10) var shooting_practice_multiplier: int = 4
+@export_range(0.0, 0.009, 0.001) var shooting_accuracy: float = 0.006
 @export_group("Character EXP curve")
 @export var first_experience_cost: int = 100
 @export var experience_linear: int = 50

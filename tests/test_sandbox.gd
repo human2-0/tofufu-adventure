@@ -37,6 +37,7 @@ func _run() -> void:
 		if child is TrainingMob:
 			child.set_physics_process(false)
 	await ticks(5)
+	await _prop_boundaries()
 	await _harvest_and_heal()
 	await _magnetic_pickup()
 	await _occlusion_and_sword()
@@ -62,7 +63,22 @@ func _harvest_and_heal() -> void:
 	check(scene.encounters.props == 1, "harvest is counted once")
 	await ticks(100)
 	check(scene.encounters.beans == 2, "destroyed soy drops two collectible 2D beans")
-	check(scene.health.current == 100, "collecting soy heals the player")
+	check(scene.inventory.count_item("soybean") == 2, "collected beans are stored in inventory")
+	check(scene.health.current == 60, "collecting soy into bag does not immediately heal")
+	var stack: ItemStack = scene.inventory.get_slot(0)
+	scene.character_equipment.set_slot("healing_1", stack)
+	scene.inventory.set_slot(0, null)
+	check(scene.character_equipment.get_slot("healing_1").count == 2, "soybean stack equipped to healing slot")
+	var used: bool = scene.healing.use_slot("healing_1")
+	check(used, "eating equipped soybean succeeds")
+	check(scene.character_equipment.get_slot("healing_1").count == 1, "eating consumes 1 soybean from stack")
+	check(scene.healing.cooldown_remaining > 1.8, "eating soybean triggers 2s cooldown")
+	check(not scene.healing.use_slot("healing_1"), "cannot eat another soybean during 2s cooldown")
+	var hp_before: float = scene.health.current
+	await ticks(30)
+	check(scene.health.current > hp_before, "soybean gradually restores health over time")
+	await ticks(130)
+	check(absf(scene.health.current - 85.0) < 0.5, "soybean restores +25 HP total gradually")
 	var prop := plant.get_parent() as HarvestProp
 	prop._physics_process(30)
 	check(prop.visible and plant.current == plant.maximum, "plants regrow for repeat testing")
@@ -114,8 +130,8 @@ func _river_and_farm() -> void:
 	await ticks(40)
 	check(player.is_on_floor() and player.position.y < -0.5, "river has a shallow solid bed")
 	check(player.surface_speed < 1, "wading slows movement")
-	# The hilltop seed bank replaces the former ruin jump destination.
-	player.position = scene.world.ground_point(-19, -10, 0.1)
+	# Approach beside the now-solid storage sign, along the open farm lane.
+	player.position = scene.world.ground_point(-20.5, -10, 0.1)
 	player.velocity = Vector3.ZERO
 	await ticks(30)
 	source.command.move = Vector2.UP
@@ -205,3 +221,28 @@ func _magnetic_pickup() -> void:
 	if is_instance_valid(bean):
 		bean.queue_free()
 	collector.queue_free()
+
+func _prop_boundaries() -> void:
+	var fixture := Node3D.new()
+	scene.add_child(fixture)
+	fixture.position = Vector3(0, 30, 0)
+	FarmBuildings.cottage(fixture, Vector3.ZERO, "", Color.WHITE, Vector3(6, 3, 4))
+	var tree: Node3D = load("res://game/world/tree.tscn").instantiate()
+	fixture.add_child(tree)
+	tree.position.x = 10
+	var rail := MeadowGeometry.box(fixture, Vector3(20, 1, 0), Vector3(0.1, 0.2, 4), Color.WHITE, true)
+	rail.rotation.y = PI / 2
+	await ticks(2)
+	var space := scene.get_world_3d().direct_space_state
+	for segment in [
+		[Vector3(1.62, 34.9, -3), Vector3(1.62, 34.9, 1)],
+		[Vector3(10, 32.1, -3), Vector3(10, 32.1, 3)],
+		[Vector3(10, 32.9, -3), Vector3(10, 32.9, 3)],
+		[Vector3(21.5, 31, -1), Vector3(21.5, 31, 1)]]:
+		check(not space.intersect_ray(PhysicsRayQueryParameters3D.create(segment[0], segment[1], 1)).is_empty(), "chimney, both canopies and rotated rail block world rays")
+	var motion := PhysicsTestMotionParameters3D.new()
+	motion.from = Transform3D(Basis.IDENTITY, Vector3(10, 31.9, -3))
+	motion.motion = Vector3(0, 0, 6)
+	check(PhysicsServer3D.body_test_motion(player.get_rid(), motion), "player capsule cannot traverse elevated tree canopy")
+	fixture.queue_free()
+	await ticks(2)

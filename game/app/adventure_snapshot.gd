@@ -13,7 +13,9 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 		"weather_phase": game.weather.phase,
 		"mobs": game.encounters.mobs, "props": game.encounters.props, "experience": game.encounters.experience,
 		"progression": game.progression.progress.capture(), "discoveries": game.exploration.found_places(), "knife_owned": equipment.knife_owned,
-		"gun_selected": game.combat.gun.selected, "knife_selected": equipment.knife_selected, "dropped_position": [dropped.x, dropped.y, dropped.z]}
+		"sotjet_selected": game.combat.sotjet.selected, "soymilk": game.combat.sotjet.milk, "gun_selected": game.combat.gun.selected, "knife_selected": equipment.knife_selected, "dropped_position": [dropped.x, dropped.y, dropped.z],
+		"inventory": game.inventory.capture() if game.inventory != null else [],
+		"equipment": game.character_equipment.capture() if game.character_equipment != null else {}}
 
 static func restore(game: Node3D, data: Dictionary) -> void:
 	if data.opening_complete:
@@ -33,3 +35,7 @@ static func restore(game: Node3D, data: Dictionary) -> void:
 		Vector3(data.dropped_position[0], data.dropped_position[1], data.dropped_position[2]))
 
 	game.combat.gun.selected = data.get("gun_selected", false)
+	game.combat.sotjet.selected = data.get("sotjet_selected", false)
+	game.combat.sotjet.milk = data.get("soymilk", game.combat.sotjet.tuning.capacity)
+	if data.has("inventory") and game.inventory != null: game.inventory.restore(data.get("inventory", []))
+	if data.has("equipment") and game.character_equipment != null: game.character_equipment.restore(data.get("equipment", {}))

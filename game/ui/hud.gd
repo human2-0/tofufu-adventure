@@ -22,7 +22,9 @@ var _stats: Label
 var _notice: Label
 var _help: PanelContainer
 var _popup: KawaiiPopup
+var _soy_hit: SoyHitFlash
 var _smear: SnailSmear
+var _healing_label: Label
 
 var _notice_time: float = 0.0
 var _sites: int = 0
@@ -44,6 +46,8 @@ func _ready() -> void:
 	add_child(canvas)
 	_smear = SnailSmear.new()
 	canvas.add_child(_smear)
+	_soy_hit = SoyHitFlash.new()
+	canvas.add_child(_soy_hit)
 
 	var heading := HUDElements.make_panel(canvas, Vector2(16, 16), Vector2(210, 58), Vector2(0, 0))
 	HUDElements.make_label(heading, "TOFUFU / FUFUFARM", 13, Color("f5dfac"))
@@ -55,10 +59,12 @@ func _ready() -> void:
 	_character = CharacterStats.new()
 	ledger.add_child(_character)
 
-	var health := HUDElements.make_panel(canvas, Vector2(16, -82), Vector2(190, 66), Vector2(0, 1))
+	var health := HUDElements.make_panel(canvas, Vector2(16, -96), Vector2(210, 82), Vector2(0, 1))
 	_health_text = HUDElements.make_label(health, "FUFU / 100 HP", 12, Color("dbe8c1"))
 	_health_bar = HUDElements.make_bar(health, Color("a3cc86"), 170, 7)
 	_equipment = HUDElements.make_label(health, "[1] KNIFE   2 FISTS   3 GUN", 11, Color("aee6d0"))
+	_healing_label = HUDElements.make_label(health, "", 10, Color("c8efa0"))
+	_healing_label.visible = false
 
 	var charge := HUDElements.make_panel(canvas, Vector2(-206, -58), Vector2(190, 42), Vector2(1, 1))
 	_charge_text = HUDElements.make_label(charge, "HOLD LMB / CHARGE", 11, Color("f5dfac"))
@@ -99,7 +105,7 @@ func _setup_center(canvas: Control) -> void:
 	var help_box := HUDElements.make_panel(canvas, Vector2(-180, 110), Vector2(360, 200), Vector2(0.5, 0))
 	_help = help_box.get_parent() as PanelContainer
 	HUDElements.make_label(help_box, "FUFU ADVENTURE GUIDE", 13, Color("f5dfac"))
-	HUDElements.make_label(help_box, "WASD / arrows: Walk • Mouse: Aim • Space: Hold leap / jump\nShift: Dash • LMB / West: Attack • RMB / RB: Guard\n1 / 2 / 3: Knife / fists / soy gun • Q: Drop • E: Pick up • Tab: Toggle guide\nGun: LMB fire • RMB aim • C view • Mouse orbit\nEnter: Chat • V: Push to talk • Soybeans: Heal +20 HP", 10, Color("d1ddd0"))
+	HUDElements.make_label(help_box, "WASD: Walk • Mouse: Aim • Space: Leap • Shift: Dash • LMB: Attack • RMB: Guard\n1/2/3/4: Weapons • I / B: Inventory & EQ • 5 / 6: Healing slot (2s cd)\nQ: Drop • E: Pick up • Tab: Guide • C: Camera • Enter: Chat • V: Voice\nSoybeans: Stack in bag, drag to Healing Spot [5] (+25 HP gradual)", 10, Color("d1ddd0"))
 	_help.visible = false
 
 	_notice = Label.new()
@@ -198,8 +204,27 @@ func show_character(data: Dictionary) -> void:
 
 func show_gun(selected: bool, precise: bool) -> void:
 	if selected:
-		_equipment.text = "1 KNIFE   2 FISTS   [3 GUN]"
+		_equipment.text = "1 KNIFE  2 FISTS  [3 GUN]  4 JET"
 		_charge_bar.value = 100 if precise else 25
 		_charge_text.text = "AIM · 20 / HEAD 40" if precise else "HIP FIRE · HOLD RMB TO AIM"
 	elif "3 GUN" not in _equipment.text:
-		_equipment.text += "  3 GUN"
+		_equipment.text += "  3 GUN  4 JET"
+
+func show_damage_hit(kind: int) -> void:
+	if kind == 1: show_snail_hit()
+	elif kind == 2: _soy_hit.splash()
+
+func show_sotjet(selected: bool, reservoir: float) -> void:
+	if not selected: return
+	_equipment.text = "[4] SOTJET · SOYMILK"
+	_charge_bar.value = reservoir * 100.0
+	_charge_text.text = "MILK %d%% · RELEASE TO REFILL" % roundi(reservoir * 100.0)
+
+func show_healing_slot(item_name: String, count: int, cd: float = 0.0) -> void:
+	if _healing_label == null: return
+	if count > 0:
+		_healing_label.text = ("[5] %s x%d (%.1fs cd)" % [item_name, count, cd]) if cd > 0.05 else ("[5] %s x%d" % [item_name, count])
+		_healing_label.modulate = Color("ffb0a0") if cd > 0.05 else Color("c8efa0")
+		_healing_label.visible = true
+	else:
+		_healing_label.visible = false

@@ -33,16 +33,16 @@ static func _roof(house: Node3D, size: Vector3, color: Color) -> void:
 		var roof := MeadowGeometry.box(house, Vector3(side * width * cos(pitch) * 0.5, size.y + 0.6, 0), Vector3(width, 0.28, size.z + 1.2), color)
 		roof.rotation.z = -side * pitch
 		roof.create_convex_collision()
-	MeadowGeometry.box(house, Vector3(0, size.y + 0.6 + width * sin(pitch) * 0.5, 0), Vector3(0.3, 0.3, size.z + 1.35), color.lightened(0.15))
-	MeadowGeometry.box(house, Vector3(size.x * 0.27, size.y + 1.15, -size.z * 0.22), Vector3(0.65, 1.9, 0.7), Color("c79b7b"))
+	MeadowGeometry.box(house, Vector3(0, size.y + 0.6 + width * sin(pitch) * 0.5, 0), Vector3(0.3, 0.3, size.z + 1.35), color.lightened(0.15), true)
+	MeadowGeometry.box(house, Vector3(size.x * 0.27, size.y + 1.15, -size.z * 0.22), Vector3(0.65, 1.9, 0.7), Color("c79b7b"), true)
 
 static func resident(parent: Node3D, at: Vector3, title: String, coat: Color, mayor: bool = false) -> void:
 	var npc := Node3D.new()
 	npc.name = title.to_pascal_case()
 	npc.position = at
 	parent.add_child(npc)
-	MeadowGeometry.rock(npc, Vector3(0, 0.65, 0), Vector3(0.37, 0.55, 0.28), coat)
-	MeadowGeometry.rock(npc, Vector3(0, 1.37, 0), Vector3(0.43, 0.43, 0.36), Color("ffe2b5"))
+	MeadowGeometry.rock(npc, Vector3(0, 0.65, 0), Vector3(0.37, 0.55, 0.28), coat, true)
+	MeadowGeometry.rock(npc, Vector3(0, 1.37, 0), Vector3(0.43, 0.43, 0.36), Color("ffe2b5"), true)
 	for side in [-1.0, 1.0]:
 		MeadowGeometry.rock(npc, Vector3(side * 0.15, 0.12, 0.08), Vector3(0.16, 0.13, 0.23), Color("6d5549"))
 		MeadowGeometry.rock(npc, Vector3(side * 0.14, 1.39, 0.34), Vector3(0.045, 0.075, 0.025), Color("403e43"))
@@ -70,5 +70,5 @@ static func fence(parent: Node3D, terrain: FarmTerrain, from: Vector2, to: Vecto
 		var start := terrain.point(p.x, p.y)
 		var end := terrain.point(q.x, q.y)
 		for y in [0.32, 0.72]:
-			var rail := MeadowGeometry.box(parent, (start + end) * 0.5 + Vector3.UP * y, Vector3(0.09, 0.12, start.distance_to(end)), Color("d6b685"))
+			var rail := MeadowGeometry.box(parent, (start + end) * 0.5 + Vector3.UP * y, Vector3(0.09, 0.12, start.distance_to(end)), Color("d6b685"), true)
 			rail.look_at(end + Vector3.UP * y, Vector3.UP)

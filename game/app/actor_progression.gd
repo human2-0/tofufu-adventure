@@ -10,6 +10,8 @@ var _level: int = 1
 
 func _ready() -> void:
 	combat.weapon_trained.connect(progress.weapon_hit)
+	combat.gun.weapon_trained.connect(progress.weapon_hit)
+	combat.sotjet.weapon_trained.connect(progress.weapon_hit)
 	combat.equipment.defended.connect(progress.defended)
 	progress.changed.connect(_apply)
 	_apply()
@@ -19,6 +21,10 @@ func _apply() -> void:
 	combat.sword_damage_multiplier = progress.damage_multiplier("sword")
 	combat.fist_damage_multiplier = progress.damage_multiplier("fist")
 	combat.attack_speed_multiplier = progress.attack_multiplier()
+	combat.gun.attack_speed_multiplier = progress.attack_multiplier()
+	combat.gun.damage_multiplier = progress.damage_multiplier("shooting")
+	combat.sotjet.flow.damage_multiplier = progress.damage_multiplier("shooting")
+	combat.gun.spread_multiplier = progress.shooting_spread_multiplier()
 	combat.incoming_damage_multiplier = progress.incoming_multiplier()
 	if hud != null:
 		hud.show_character(progress.display())

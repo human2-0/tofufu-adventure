@@ -6,6 +6,7 @@ extends Camera3D
 @export var look_target_offset: Vector3 = Vector3(0.0, 0.8, 0.0)
 @export var smooth_speed: float = 7.0
 
+var first_person: bool = false
 var shoulder: bool = false
 var precise: bool = false
 var yaw: float = 0.0
@@ -17,6 +18,7 @@ func shake(amount: float) -> void:
 	_shake = maxf(_shake, amount)
 
 func _ready() -> void:
+	process_physics_priority = 100
 	# Follow only the explicitly assigned local target
 	if target:
 		global_position = target.global_position + offset
@@ -26,6 +28,9 @@ func _physics_process(delta: float) -> void:
 	if not target:
 		return
 		
+	if first_person:
+		_follow_first_person(delta)
+		return
 	if shoulder:
 		_follow_shoulder(delta)
 		return
@@ -43,7 +48,10 @@ func _update_camera_orientation() -> void:
 		look_at(look_pos, Vector3.UP)
 
 func set_shoulder(enabled: bool) -> void:
+	first_person = false
 	shoulder = enabled
+	h_offset = 0.0
+	v_offset = 0.0
 	if not shoulder:
 		fov = 48.0
 		global_position = target.global_position + offset
@@ -51,7 +59,7 @@ func set_shoulder(enabled: bool) -> void:
 
 func orbit(relative: Vector2) -> void:
 	yaw -= relative.x * 0.003
-	pitch = clampf(pitch + relative.y * 0.003, -0.4, 1.15)
+	pitch = clampf(pitch + relative.y * 0.003, -1.35 if first_person else -0.4, 1.35 if first_person else 1.15)
 
 func _follow_shoulder(delta: float) -> void:
 	var back := Vector3(sin(yaw) * cos(pitch), sin(pitch), cos(yaw) * cos(pitch))
@@ -63,3 +71,13 @@ func _follow_shoulder(delta: float) -> void:
 	global_position = hit.position + hit.normal * 0.18 if not hit.is_empty() else desired
 	look_at(global_position - back, Vector3.UP)
 	fov = lerpf(fov, 42.0 if precise else 62.0, 1.0 - exp(-10.0 * delta))
+
+func set_first_person() -> void:
+	set_shoulder(true)
+	first_person = true
+	_follow_first_person(1.0)
+
+func _follow_first_person(delta: float) -> void:
+	global_position = target.global_position + Vector3.UP * 0.95
+	rotation = Vector3(-pitch, yaw, 0.0)
+	fov = lerpf(fov, 50.0 if precise else 78.0, 1.0 - exp(-10.0 * delta))

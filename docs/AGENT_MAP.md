@@ -10,6 +10,8 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 ├── game/
 │   ├── AGENTS.md                # Godot conventions
 │   ├── app/
+│   │   ├── dedicated_server.{gd,tscn} # optional persistent server authority and saves
+│   │   ├── oracle_launch.tscn # explicit Oracle client composition
 │   │   ├── launch.{gd,tscn}    # title, pause and feature lifecycle composition
 │   │   ├── {save,settings,lobby}_flow.gd # menu action composition
 │   │   ├── actor_progression.gd # combat events -> per-character rules, modifiers and HUD
@@ -17,10 +19,12 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── proximity_chat.gd   # offline/co-op chat composition, host distance routing and input gating
 │   │   ├── session_connection.gd # injected transport -> room wiring and connection lifecycle
 │   │   ├── coop_session.gd      # full host gameplay / guest synchronization
+│   │   ├── coop_prediction.gd # bounded guest movement history and host position corrections
 │   │   ├── coop_{actor,roster}.gd # party simulation, presentation and reconnect state
 │   │   ├── coop_{world,encounters}.gd # replicated encounters, loot and progression
 │   │   ├── coop_{opening,checkpoint,values}.gd # shared quest, saves and command translation
 │   │   ├── main.tscn            # player, level, camera and HUD composition
+│   │   ├── first_person_weapon.gd # isolated first-person weapon/hand overlay
 │   │   ├── shooting_view.gd    # local view toggle, mouse orbit, aim zoom and reticle wiring
 │   │   ├── main.gd              # cross-feature wiring + respawn
 │   │   ├── pod_opening.gd       # first-quest actor/camera/world composition
@@ -33,6 +37,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── persistence/save_store.gd # versioned atomic adventure slots
 │   ├── settings/game_preferences.gd # saved display and device bindings
 │   ├── chat/                    # bounded proximity rules, composer/history, speech labels, microphone and playback
+│   ├── inventory/               # 10-slot bag, equipment, drag-drop window and gradual healing
 │   ├── session/                 # roster, actor/world schemas and bounded input window
 │   ├── ui/menu/                 # themed title, settings, saves and lobby views
 │   ├── player/
@@ -64,6 +69,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── ui/pod_focus.gdshader   # close-up background softening
 │   ├── ui/weather_view.gd    # local weather status and rain overlay
 │   ├── ui/rain.gdshader      # animated rain streaks
+│   ├── ui/soy_hit_flash.gd # brief local soybean impact feedback
 │   ├── ui/snail_smear.{gd,gdshader} # fading screen refraction on local damage
 │   ├── ui/hud.{gd,tscn}         # presentation of cooldown data
 │   ├── ui/{dash_slot,jump_meter,kawaii_popup,hud_elements}.gd # skill slot, delayed jump, celebrations and HUD styling
@@ -72,7 +78,10 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── combat_tuning.gd     # shared authored combat values
 │   │   ├── player_equipment.gd # knife/fist/gun slots, directional guard, punch and drop/recovery
 │   │   ├── gun_recoil.gd      # per-weapon spray bloom and release recovery
+│   │   ├── sotjet{,_tuning,_flow,_parcel}.gd # slot-4 reservoir, gravity-driven milk and swept hits
+│   │   ├── sotjet_{visual,stream_visual}.gd # generated weapon views and physical stream presentation
 │   │   ├── soy_gun.gd         # slot-3 cadence, spread and authority/replica bean creation
+│   │   ├── liquid_impact.gd # rounded short-lived drops at soybean collision points
 │   │   ├── soy_projectile.gd  # swept fast-bean collision, body/head damage
 │   │   ├── soy_gun_visual.gd # camera-facing directional atlas and grip attachment
 │   │   ├── melee_rules.gd       # per-instance charge/cooldown
@@ -106,12 +115,14 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── combat/*.svg            # original vector slime, fist and soybean art
 │   ├── characters/snail/       # supplied sources and extracted animation atlases
 │   ├── weapons/soy_gun/      # unchanged supplied sources and provenance
+│   ├── weapons/sotjet/       # generated ten-view milk sprayer atlas and provenance
 │   ├── weapons/sword/          # generated atlas and generation prompt
 │   └── characters/fufu/        # walk art, eight-pose idle PNG, source provenance
 ├── networking/
 │   ├── AGENTS.md                # adapter/transport rules
 │   ├── godot/session_transport.gd # abstract discovery, delivery and shutdown contract
 │   ├── godot/holepunch_transport.gd # process + authenticated loopback bridge
+│   ├── oracle/                  # TLS WebSocket adapter and bounded socket lifecycle
 │   ├── sidecar/                 # pinned Hyperswarm runtime and local tests
 │   └── README.md                # setup and current limitations
 ├── tests/
@@ -122,7 +133,10 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── test_frontend.gd         # menu startup, save/load, bindings, protocol guards
 │   ├── test_chat.gd             # distance/yell routing, identity/rate guards, PCM and input isolation
 │   ├── preview_chat.gd          # rendered chat composer, guide, speech and history
+│   ├── test_oracle.gd          # real local sockets, dedicated world, identity and reconnect
 │   ├── test_session_transport.gd # alternate transport lifecycle, room protocol and launch injection
+│   ├── preview_coop_response.gd # rendered shoulder walking and soybean hit feedback
+│   ├── test_coop_response.gd # injected latency, prediction, facing and friendly-hit feedback
 │   ├── test_coop_scene.gd       # fake transport, two worlds, roster and snapshots
 │   ├── test_coop_{protocol,gameplay,opening,launch}.gd # limits, outcomes, quest/save flow
 │   ├── test_coop_peer.gd        # real Godot + Holepunch process verification
@@ -150,12 +164,20 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── preview_gun_recoil.gd # cold/sustained/recovered aimed-fire rendering
 │   ├── test_gun_recoil.gd    # burst growth, bounds, recovery and instance isolation
 │   ├── preview_directional_jump.gd # all jump phases/directions and cosmetic muzzle origins
+│   ├── test_sotjet{,_coop}.gd # ballistics, reservoir, cover, saves and two-world friendly fire
+│   ├── preview_reflection.gd # live sword deflection returning milk to its source
+│   ├── preview_liquid_hits.gd # rendered milk damage numbers and soybean collision drops
+│   ├── preview_sotjet.gd    # rendered directional weapon art and falling milk stream
 │   ├── test_soy_gun.gd       # swept hits, headshots, occlusion, protocol, orbit and input
+│   ├── test_first_person.gd # view cycle, eye position, local visibility and camera-relative input
+│   ├── preview_first_person.gd # rendered first-person equipment slots and aim
 │   ├── preview_soy_gun.gd    # rendered overhead, shoulder, ADS and eight orbit directions
 │   ├── test_sword.gd            # eight-direction blade bounds, sweeps, sprites, tilt
 │   ├── preview_sword.gd         # rendered directions and hitbox overlays
 │   ├── preview_fufufarm.gd     # overview, farms, storage and village renders
 │   └── preview_sandbox.gd       # rendered day/river/night QA images
+├── deploy/oracle/               # setup guide, systemd, credentials, validated release switch
+├── .github/workflows/oracle-deploy.yml # opt-in main-branch deployment over SSH
 ├── tools/
 │   ├── check_architecture.py    # dependency and path checks
 │   ├── verify_coop.py           # separate Godot/sidecar lifecycle integration
@@ -177,6 +199,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 | Opening quest | `game/opening/`, `app/pod_opening.gd`, `ui/pod_quest_hud.gd` | pod escape + rendered preview |
 | Gameplay rules | `game/player/AGENTS.md`, motor, tuning, command | motor tests + scene test |
 | Combat / healing / mobs | `game/combat/`, app encounter wiring | combat + sandbox tests |
+| Inventory / Equipment | `game/inventory/`, `game/app/main.gd` | inventory + sandbox tests |
 | World / exploration | `game/world/meadow.*`, cycle, app discovery wiring | sandbox + rendered preview |
 | Controls | local input, command source, `project.godot` | scene test + manual mouse check |
 | Character art / animation | visuals, ghost, `assets/AGENTS.md` | import + manual play |

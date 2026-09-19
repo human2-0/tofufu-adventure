@@ -2,6 +2,11 @@ class_name SoyProjectile
 extends Node3D
 ## Continuous segment collision prevents fast beans tunnelling through actors/walls.
 
+signal weapon_trained(weapon: String)
+
+var owner_health: Damageable
+var reflected_by: Damageable
+var reflections: int = 0
 var velocity: Vector3
 var shooter: CollisionObject3D
 var targets: Array[Damageable] = []
@@ -28,6 +33,10 @@ func _physics_process(delta: float) -> void:
 	if _age == 0.0:
 		_visual_correction = visual_origin - global_position
 	_age += delta
+	remaining -= delta
+	if remaining <= 0.0:
+		queue_free()
+		return
 	var destination := global_position + velocity * delta
 	var exclude: Array[RID] = []
 	if is_instance_valid(shooter): exclude.append(shooter.get_rid())
@@ -41,20 +50,26 @@ func _physics_process(delta: float) -> void:
 		var ray := PhysicsRayQueryParameters3D.create(global_position, destination, 3, exclude)
 		hit = space.intersect_ray(ray)
 	if not hit.is_empty():
+		if _reflect(hit): return
+		LiquidImpact.spawn(get_parent(), hit.position, hit.normal)
 		if authoritative: _hit(hit.collider, hit.position)
 		queue_free()
 		return
 	global_position = destination
-	remaining -= delta
-	if remaining <= 0.0: queue_free()
+
 
 func _hit(body: Object, point: Vector3) -> void:
-	for target in targets:
+	var receivers: Array[Damageable] = targets.duplicate()
+	if is_instance_valid(owner_health) and owner_health not in receivers: receivers.append(owner_health)
+	for target in receivers:
 		if not is_instance_valid(target) or target.body != body: continue
 		var headshot := target.is_headshot(point)
 		var amount := head_damage if headshot else body_damage
-		if target.damage(amount, velocity.normalized() * 2.0):
-			CombatEffects.burst(get_parent(), point, "40 HEAD!" if headshot else "20", Color("ffe4a0"))
+		if target.damage(amount, velocity.normalized() * 2.0, Damageable.HitKind.SOY):
+			CombatEffects.burst(get_parent(), point, "%d HEAD!" % int(amount) if headshot else str(int(amount)), Color("ffe4a0"))
+			if target.trains_weapons:
+				if is_instance_valid(reflected_by): reflected_by.reflected_hit.emit("shooting")
+				elif reflections == 0: weapon_trained.emit("shooting")
 		return
 
 func _process(delta: float) -> void:
@@ -65,3 +80,19 @@ func place_visual(at: Vector3) -> void:
 	visual_origin = at
 	_visual_correction = at - global_position
 	_sprite.global_position = at
+
+func _reflect(hit: Dictionary) -> bool:
+	var receivers: Array[Damageable] = targets.duplicate()
+	if is_instance_valid(owner_health) and owner_health not in receivers: receivers.append(owner_health)
+	for target in receivers:
+		if not is_instance_valid(target) or target.body != hit.collider: continue
+		var normal := target.reflection_normal(velocity, hit.position, authoritative)
+		if normal.is_zero_approx() or reflections >= 4: return false
+		velocity = velocity.bounce(normal)
+		global_position = hit.position + normal * 0.04
+		shooter = target.body
+		reflected_by = target
+		reflections += 1
+		_visual_correction = Vector3.ZERO
+		return true
+	return false

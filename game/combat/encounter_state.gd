@@ -7,7 +7,9 @@ static func mob(mob: TrainingMob) -> Array:
 	var v := mob.velocity
 	return [p.x, p.y, p.z, v.x, v.y, v.z, mob.target.current, maxf(0, mob._respawn), maxf(0, mob._windup)]
 
-static func apply_mob(mob: TrainingMob, data: Array) -> void:
+static func apply_mob(mob: TrainingMob, data: Array, feedback: bool = false) -> void:
+	if feedback and data[6] < mob.target.current:
+		CombatEffects.damage_number(mob.get_parent(), mob.target, mob.target.current - data[6])
 	if data[6] < mob.target.current: mob._sprite.modulate = Color(3, 1, 0.8)
 	mob.position = Vector3(data[0], data[1], data[2])
 	mob.velocity = Vector3(data[3], data[4], data[5])
@@ -21,7 +23,9 @@ static func apply_mob(mob: TrainingMob, data: Array) -> void:
 static func prop(prop: HarvestProp) -> Array:
 	return [prop.target.current, maxf(0, prop._regrow)]
 
-static func apply_prop(prop: HarvestProp, data: Array) -> void:
+static func apply_prop(prop: HarvestProp, data: Array, feedback: bool = false) -> void:
+	if feedback and data[0] < prop.target.current:
+		CombatEffects.damage_number(prop.get_parent(), prop.target, prop.target.current - data[0])
 	prop.target.current = data[0]
 	prop._regrow = data[1]
 	prop.visible = prop._regrow <= 0
@@ -30,7 +34,9 @@ static func apply_prop(prop: HarvestProp, data: Array) -> void:
 static func dummy(dummy: PracticeDummy) -> Array:
 	return [dummy.target.current, dummy.last_damage, dummy.hit_count, maxf(0, dummy._reset_in)]
 
-static func apply_dummy(dummy: PracticeDummy, data: Array) -> void:
+static func apply_dummy(dummy: PracticeDummy, data: Array, feedback: bool = false) -> void:
+	if feedback and data[0] < dummy.target.current:
+		CombatEffects.damage_number(dummy.get_parent(), dummy.target, dummy.target.current - data[0])
 	if data[0] < dummy.target.current: dummy._figure.rotation.z = -0.22
 	dummy.target.current = data[0]
 	dummy.last_damage = data[1]

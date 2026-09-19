@@ -77,6 +77,11 @@ static func valid(data: Dictionary) -> bool:
 		var value: Variant = data.get(field)
 		if not (value is float or value is int) or not is_finite(float(value)) or value < 0 or value > 100000000:
 			return false
+	if data.has("sotjet_selected") and not data.sotjet_selected is bool: return false
+	if data.has("soymilk"):
+		var milk: Variant = data.soymilk
+		if not (milk is float or milk is int) or not is_finite(float(milk)) or milk < 0 or milk > 100: return false
+	if data.get("sotjet_selected", false) and (data.get("gun_selected", false) or data.get("knife_selected", false)): return false
 	if data.has("gun_selected") and not data.gun_selected is bool: return false
 	if data.get("gun_selected", false) and data.get("knife_selected", false): return false
 	if data.has("progression") and not progression(data.progression): return false
@@ -104,9 +109,10 @@ static func progression(value: Variant) -> bool:
 	var xp: Variant = value.get("experience")
 	if not _progress_counter(xp): return false
 	var practice: Variant = value.get("practice")
-	if not practice is Dictionary or practice.size() != 5: return false
+	if not practice is Dictionary or practice.size() not in [5, 6]: return false
 	for field in ["fist", "sword", "magic", "attack_speed", "defence"]:
 		if not _progress_counter(practice.get(field)): return false
+	if practice.size() == 6 and not _progress_counter(practice.get("shooting")): return false
 	return true
 
 static func _progress_counter(value: Variant) -> bool:

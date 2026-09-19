@@ -5,7 +5,9 @@ extends RefCounted
 static func capture(combat: PlayerCombat) -> Dictionary:
 	var equipment := combat.equipment
 	var drop := equipment.dropped.global_position if is_instance_valid(equipment.dropped) else Vector3.ZERO
-	return {"recoil": combat.gun.recoil.heat, "gun": combat.gun.selected, "ads": combat.gun.aiming, "shot": combat.gun.shot_sequence,
+	return {"jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
+		"jet_firing": combat.sotjet.firing, "jet_sequence": combat.sotjet.sequence,
+		"jet_origin": _array(combat.sotjet.origin), "jet_velocity": _array(combat.sotjet.velocity), "recoil": combat.gun.recoil.heat, "gun": combat.gun.selected, "ads": combat.gun.aiming, "shot": combat.gun.shot_sequence,
 		"shot_origin": _array(combat.gun.shot_origin), "shot_velocity": _array(combat.gun.shot_velocity), "owned": equipment.knife_owned, "selected": equipment.knife_selected, "guard": equipment.guarding,
 		"active": combat.active, "aim": [combat.attack_aim.x, combat.attack_aim.y],
 		"facing": [equipment.facing.x, equipment.facing.y], "charge": combat.rules.charge,
@@ -15,6 +17,8 @@ static func capture(combat: PlayerCombat) -> Dictionary:
 static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.reset()
 	combat.gun.selected = state.get("gun", false)
+	combat.sotjet.selected = state.get("jet", false)
+	combat.sotjet.milk = state.get("milk", combat.sotjet.tuning.capacity)
 	combat.gun.shot_sequence = int(state.get("shot", 0))
 	combat.equipment.present_dropped(state.owned, Vector3(state.drop[0], state.drop[1], state.drop[2]))
 	combat.equipment.knife_owned = state.owned
@@ -24,6 +28,7 @@ static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 
 static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector2) -> void:
 	combat.gun.selected = state.get("gun", false)
+	combat.sotjet.present(state, Vector2(state.facing[0], state.facing[1]))
 	combat.gun.recoil.heat = state.get("recoil", 0.0)
 	combat.gun.aiming = state.get("ads", false)
 	combat.gun.visual.visible = combat.gun.selected

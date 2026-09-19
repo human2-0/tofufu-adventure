@@ -31,3 +31,6 @@ func backend_name() -> String:
 
 func discovery_description() -> String:
 	return "Discover other players using the configured co-op service. Leaving co-op stops discovery."
+
+func can_host() -> bool:
+	return true

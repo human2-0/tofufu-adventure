@@ -11,8 +11,9 @@ var save_data: Dictionary = {}
 var panel: LobbyPanel
 
 func show_lobby() -> void:
-	var content := menu.clear_page("Better with a few beans", "CO-OP  /  PUBLIC PLAYTEST")
+	var content := menu.clear_page("Better with a few beans", "CO-OP  /  PUBLIC PLAYTEST" if connection.transport.can_host() else "CO-OP  /  ORACLE MEADOW")
 	panel = LobbyPanel.new()
+	panel.can_host = connection.transport.can_host()
 	panel.discovery_description = connection.transport.discovery_description()
 	content.add_child(panel)
 	panel.discover.connect(connection.discover)

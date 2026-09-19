@@ -21,6 +21,7 @@ var _ping_clock: float = 0
 var latency_ms: int = 0
 
 func _ready() -> void:
+	process_physics_priority = 10
 	authority = room.hosting
 	game.set_physics_process(false)
 	roster.game = game
@@ -64,7 +65,7 @@ func _physics_process(delta: float) -> void:
 		_snapshot_clock += delta
 		_world_clock += delta
 		if _snapshot_clock >= 0.05:
-			_snapshot_clock = 0
+			_snapshot_clock = fmod(_snapshot_clock, 0.05)
 			_publish()
 	else:
 		_silence += delta
@@ -75,7 +76,11 @@ func _physics_process(delta: float) -> void:
 			_apply(_pending)
 			_pending = {}
 		if _synchronized:
-			room.send_game(room.host_key, CoopValues.input(roster.local_input.sample(game.player.position), _sequence, _snapshot_sequence))
+			var command := roster.local_input.sample(game.player.position)
+			room.send_game(room.host_key, CoopValues.input(command, _sequence, _snapshot_sequence))
+			if not opening.active():
+				game.player.surface_speed = 0.55 if game.world.is_water(game.player.position) else 1.0
+				roster.party[room.local_key].prediction.step(command, _sequence, delta)
 		_ping_clock += delta
 		if _ping_clock >= 1:
 			_ping_clock = 0
@@ -89,7 +94,7 @@ func _packet(key: String, data: Dictionary) -> void:
 			_world_clock = 1
 		elif data.get("type") == "input" and _ready_peers.has(key) and roster.party.has(key):
 			if _window.accept(key, data, _sequence):
-				(roster.actors[key].command_source as RemotePlayerInput).accept(CoopValues.command(data))
+				(roster.actors[key].command_source as RemotePlayerInput).accept(CoopValues.command(data), int(data.sequence))
 		elif data.get("type") == "ping" and ExplorationProtocol.sequence(data.get("stamp")):
 			room.send_game(key, {"type": "pong", "stamp": data.stamp})
 	elif key == room.host_key:
@@ -136,7 +141,8 @@ func local_input_enabled(enabled: bool) -> void:
 	(roster.local_input as LocalPlayerInput).enabled = enabled
 
 func _process(delta: float) -> void:
-	var label := "Co-op · %d/4 beans · %s" % [room.members.size(), "Host saves" if authority else "%d ms" % latency_ms]
+	if authority and room.dedicated: return
+	var label := "Co-op · %d/4 beans · %s" % [room.members.size(), "Host saves" if authority else "%d ms RTT" % latency_ms]
 	game.hud.show_session(label)
 	if authority: return
 	for mob: TrainingMob in game.encounters.mob_nodes:

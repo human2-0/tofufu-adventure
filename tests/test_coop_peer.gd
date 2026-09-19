@@ -167,7 +167,7 @@ func _guest_step() -> bool:
 		if elapsed < 2: return false
 	var member := session.roster.party[room.local_key]
 	check(game.encounters.dummy_nodes[0].hit_count >= 1, "host dummy feedback replicated")
-	check(game.encounters.beans == 1 and member.health.current == 100, "replicated loot and health")
+	check(game.encounters.beans == 1 and member.inventory.count_item("soybean") >= 1, "replicated loot goes to inventory")
 	check(member.combat.equipment.knife_owned, "equipped knife survives network/reconnect")
 	print(role, " position=", member.actor.position, " target=", member.target_state.get("position", []))
 	check(member.actor.position.x > game.encounters.dummy_nodes[0].position.x + 0.5, "remote movement/reconnect position")

@@ -2,6 +2,7 @@ class_name PlayerEquipment
 extends Node
 ## Per-actor knife slot, unarmed attacks and directional defence.
 
+signal projectile_defended
 signal defended
 signal changed(knife_owned: bool, knife_selected: bool, guarding: bool)
 signal punch_cadence_updated(remaining: float, total: float, damage: int, hit_rate: float)
@@ -11,10 +12,11 @@ var knife_selected: bool = true
 var guarding: bool = false
 var facing: Vector2 = Vector2.DOWN
 var dropped: SwordVisual
+var _reflection_feedback: float = 0.0
 var _punch_time: float = 0.0
 
 func punch_hit_rate() -> float:
-	var cd: float = combat.tuning.punch_cooldown if combat != null and combat.tuning != null else 0.35
+	var cd: float = combat.tuning.punch_cooldown if combat != null and combat.tuning != null else 0.38
 	var mult: float = combat.attack_speed_multiplier if combat != null else 1.0
 	return mult / cd
 
@@ -24,18 +26,20 @@ func punch_damage() -> int:
 	return int(base * mult)
 
 func step(aim: Vector2, guard: bool, punch: bool, drop: bool, pickup: bool, slot: int, delta: float) -> void:
+	_reflection_feedback = maxf(0.0, _reflection_feedback - delta)
 	facing = aim.normalized() if not aim.is_zero_approx() else Vector2.DOWN
 	_punch_time = maxf(0.0, _punch_time - delta * combat.attack_speed_multiplier)
-	punch_cadence_updated.emit(_punch_time, combat.tuning.punch_cooldown if combat != null else 0.35, punch_damage(), punch_hit_rate())
+	punch_cadence_updated.emit(_punch_time, combat.tuning.punch_cooldown if combat != null else 0.38, punch_damage(), punch_hit_rate())
 	if slot != 0 and not combat.active:
 		knife_selected = slot == 1 and knife_owned
 		combat.gun.selected = slot == 3
+		combat.sotjet.selected = slot == 4
 	if drop and knife_owned and not combat.active:
 		_drop()
 	if pickup:
 		_pickup()
 	guarding = guard and knife_owned and knife_selected and not combat.active and _punch_time <= 0.0
-	if punch and not combat.gun.selected and not combat.active and _punch_time <= 0.0:
+	if punch and not combat.ranged_selected() and not combat.active and _punch_time <= 0.0:
 		guarding = false
 		_punch_time = combat.tuning.punch_cooldown
 		_punch()
@@ -116,6 +120,7 @@ func _pickup() -> void:
 	knife_owned = true
 	knife_selected = true
 	combat.gun.selected = false
+	combat.sotjet.selected = false
 
 func reset() -> void:
 	guarding = false
@@ -148,3 +153,14 @@ func present_dropped(owned: bool, at: Vector3) -> void:
 		label.position.y = 0.85
 	dropped.global_position = at
 	dropped.present(SwordGeometry.pose(at - Vector3.UP * 0.35, Vector2.RIGHT, -1.0, combat.tuning), Vector2.RIGHT, 0.0)
+
+func reflection_normal(incoming: Vector3, point: Vector3, confirmed: bool) -> Vector3:
+	if not knife_owned or not knife_selected or combat.active or incoming.is_zero_approx(): return Vector3.ZERO
+	if absf(point.y - combat.actor.global_position.y) > 1.5: return Vector3.ZERO
+	var source := combat.actor.global_position - incoming.normalized()
+	if not blocks(source): return Vector3.ZERO
+	if confirmed and _reflection_feedback <= 0.0:
+		_reflection_feedback = 0.35
+		defend(source)
+		projectile_defended.emit()
+	return Vector3(facing.x, 0, facing.y).normalized()

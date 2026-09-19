@@ -13,7 +13,7 @@ static func valid_input(data: Dictionary) -> bool:
 	for field in INPUT_FLAGS:
 		if not data.get(field) is bool: return false
 	if data.has("aim_point") and not vector(data.aim_point, 3, 500): return false
-	return sequence(data.get("weapon_slot")) and data.weapon_slot <= 3
+	return sequence(data.get("weapon_slot")) and data.weapon_slot <= 4
 
 static func valid_snapshot(data: Dictionary, members: Array) -> bool:
 	if not sequence(data.get("sequence")) or not data.get("actors") is Dictionary: return false
@@ -26,22 +26,33 @@ static func valid_snapshot(data: Dictionary, members: Array) -> bool:
 static func actor(state: Dictionary) -> bool:
 	if not vector(state.get("position"), 3, 500) or not vector(state.get("velocity"), 3, 200): return false
 	if not vector(state.get("aim"), 2, 1.001): return false
+	if state.has("facing_locked") and not state.facing_locked is bool: return false
 	for field in ["grounded", "dashing"]:
 		if not state.get(field) is bool: return false
 	for field in ["charge", "cooldown", "health", "invulnerability"]:
 		if not number(state.get(field), 100) or state[field] < 0: return false
 	if state.charge > 1: return false
 	if state.has("clearance") and not number(state.clearance, 100): return false
-	for field in ["respawns", "blocks"]:
+	for field in ["respawns", "blocks", "input_ack"]:
 		if state.has(field) and not sequence(state[field]): return false
+	if state.has("hits"):
+		if not state.hits is Array or state.hits.size() != 3: return false
+		for count in state.hits:
+			if not sequence(count): return false
 	if state.has("progression") and not progression(state.progression): return false
 	return state.get("combat") is Dictionary and combat(state.combat)
 
 static func combat(data: Dictionary) -> bool:
 	if data.has("recoil") and (not number(data.recoil, 1) or data.recoil < 0): return false
-	for field in ["gun", "ads"]:
+	for field in ["gun", "ads", "jet", "jet_ads", "jet_firing"]:
 		if data.has(field) and not data[field] is bool: return false
 	if data.get("gun", false) and (data.get("selected", false) or data.get("guard", false) or data.get("active", false)): return false
+	if data.get("jet", false) and (data.get("gun", false) or data.get("selected", false) or data.get("guard", false) or data.get("active", false)): return false
+	if data.get("jet_firing", false) and not data.get("jet", false): return false
+	if data.has("milk") and (not number(data.milk, 100) or data.milk < 0): return false
+	if data.has("jet_sequence") and not sequence(data.jet_sequence): return false
+	if data.has("jet_origin") and not vector(data.jet_origin, 3, 500): return false
+	if data.has("jet_velocity") and not vector(data.jet_velocity, 3, 30): return false
 	if data.has("shot") and not sequence(data.shot): return false
 	if data.has("shot_origin") and not vector(data.shot_origin, 3, 500): return false
 	if data.has("shot_velocity") and not vector(data.shot_velocity, 3, 60): return false
@@ -77,9 +88,10 @@ static func progression(value: Variant) -> bool:
 	var xp: Variant = value.get("experience")
 	if not _progress_counter(xp): return false
 	var practice: Variant = value.get("practice")
-	if not practice is Dictionary or practice.size() != 5: return false
+	if not practice is Dictionary or practice.size() not in [5, 6]: return false
 	for field in ["fist", "sword", "magic", "attack_speed", "defence"]:
 		if not _progress_counter(practice.get(field)): return false
+	if practice.size() == 6 and not _progress_counter(practice.get("shooting")): return false
 	return true
 
 static func _progress_counter(value: Variant) -> bool:

@@ -2,6 +2,12 @@ class_name SoyGun
 extends Node
 ## Per-actor firing cadence; only the authority spawns damaging projectiles.
 
+signal weapon_trained(weapon: String)
+var damage_multiplier: float = 1.0
+var attack_speed_multiplier: float = 1.0
+var spread_multiplier: float = 1.0
+
+var owner_health: Damageable
 var actor: CollisionObject3D
 var tuning: CombatTuning
 var targets: Array[Damageable] = []
@@ -23,7 +29,7 @@ func _ready() -> void:
 
 func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: float) -> void:
 	recoil.step(selected and held, delta, tuning)
-	cooldown = maxf(0.0, cooldown - delta)
+	cooldown = maxf(0.0, cooldown - delta * attack_speed_multiplier)
 	aiming = selected and precise
 	visual.visible = selected
 	visual.facing = aim
@@ -32,7 +38,7 @@ func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: fl
 	shot_origin = muzzle_position(aim)
 	var direction := (aim_point - shot_origin).normalized()
 	if direction.is_zero_approx(): direction = Vector3(aim.x, 0, aim.y)
-	direction = spread(direction, recoil.spread_degrees(aiming, tuning))
+	direction = spread(direction, recoil.spread_degrees(aiming, tuning) * spread_multiplier)
 	shot_velocity = direction * tuning.bean_speed
 	recoil.fired(tuning)
 	shot_sequence += 1
@@ -49,6 +55,7 @@ func spread(direction: Vector3, degrees: float) -> Vector3:
 func _spawn(authority: bool) -> void:
 	var bean := SoyProjectile.new()
 	bean.shooter = actor
+	bean.owner_health = owner_health
 	bean.velocity = shot_velocity
 	bean.authoritative = authority
 	bean.initial_path_start = actor.global_position + Vector3.UP * tuning.muzzle_height
@@ -56,8 +63,9 @@ func _spawn(authority: bool) -> void:
 	visual.refresh()
 	bean.visual_origin = visual.muzzle_position() if visual.visible else shot_origin
 	visual.kick = 1.0
-	bean.body_damage = tuning.bean_damage
-	bean.head_damage = tuning.bean_head_damage
+	bean.body_damage = tuning.bean_damage * damage_multiplier
+	bean.head_damage = tuning.bean_head_damage * damage_multiplier
+	bean.weapon_trained.connect(weapon_trained.emit)
 	bean.targets.assign(targets)
 	bean.targets.append_array(friends)
 	add_child(bean)

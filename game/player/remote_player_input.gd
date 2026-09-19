@@ -2,16 +2,18 @@ class_name RemotePlayerInput
 extends PlayerCommandSource
 ## Receives prevalidated intent. Edges are consumed once; stale held input stops.
 
+var consumed_sequence: int = 0
 var pending: Array[PlayerCommand] = []
 var _held := PlayerCommand.new()
 var _last_received: int = 0
 var _overflowed: bool = false
 const EDGES: Array[StringName] = [&"jump_pressed", &"dash_pressed", &"drop_pressed", &"pickup_pressed", &"camp_pressed", &"time_pressed"]
 
-func accept(command: PlayerCommand) -> bool:
+func accept(command: PlayerCommand, sequence: int = 0) -> bool:
 	if pending.size() >= 12:
 		pending.clear()
 		_overflowed = true
+	command.set_meta("sequence", sequence)
 	pending.append(command)
 	_last_received = Time.get_ticks_msec()
 	return true
@@ -48,6 +50,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 
 func _consume_pending() -> PlayerCommand:
 	var next: PlayerCommand = pending.pop_back()
+	consumed_sequence = int(next.get_meta("sequence", 0))
 	# Commands describe intent, not simulation work to replay on later ticks.
 	# Keep the newest held state and deliver queued one-shot actions once.
 	for earlier: PlayerCommand in pending:

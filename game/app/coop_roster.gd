@@ -10,13 +10,25 @@ var actors: Dictionary[String, Player] = {}
 var party: Dictionary[String, CoopActor] = {}
 var saved_states: Dictionary = {}
 var local_input: PlayerCommandSource
+var _world_targets: Array[Damageable] = []
 
 func _ready() -> void:
+	_world_targets = game.combat.targets.duplicate()
 	local_input = game.player.command_source
 	game.player.command_sampled.disconnect(game._on_command)
 	game.encounters.experience_awarded.disconnect(game.progression.progress.award_experience)
 	game.health.depleted.disconnect(game._respawn)
 	game.set_process_unhandled_input(false)
+	if authority and room.dedicated:
+		game.player.set_physics_process(false)
+		game.player.collision_layer = 0
+		game.player.hide()
+		game.player.placement_peers.erase(game.player)
+		game.exploration.explorer = null
+		game.combat.process_mode = Node.PROCESS_MODE_DISABLED
+		game.combat.sword.hide()
+		game.combat.gun.visual.hide()
+		game.combat.sotjet.visual.hide()
 	_sync()
 	room.changed.connect(_sync)
 
@@ -41,9 +53,12 @@ func _sync() -> void:
 	for actor: Player in actors.values():
 		if actor != game.player: game.exploration.companions.append(actor)
 	for member: CoopActor in party.values():
+		member.combat.targets = _world_targets.duplicate()
 		member.combat.gun.friends.clear()
 		for other: CoopActor in party.values():
-			if other != member: member.combat.gun.friends.append(other.health)
+			if other != member: member.combat.targets.append(other.health)
+		member.combat.gun.targets = member.combat.targets
+		member.combat.sotjet.flow.targets = member.combat.targets
 	changed.emit()
 
 func _add(key: String) -> void:
@@ -66,6 +81,9 @@ func _add(key: String) -> void:
 		member.health = game.health
 		member.hud = game.hud
 	member.actor = actor
+	if not authority and key == room.local_key:
+		member.prediction = CoopPrediction.new()
+		member.prediction.actor = actor
 	add_child(member)
 	member.combat.targets = game.combat.targets
 	member.time_requested.connect(func() -> void: game.cycle.phase = fposmod(game.cycle.phase + 0.25, 1.0))

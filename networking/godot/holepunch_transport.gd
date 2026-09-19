@@ -15,6 +15,9 @@ var _retiring: Array[Dictionary] = []
 var _frames: int = 0
 var _rate_window: float = 0.0
 
+func _enter_tree() -> void:
+	process_physics_priority = -100
+
 func start(display_name: String) -> void:
 	close()
 	var script := ProjectSettings.globalize_path("res://networking/sidecar/src/index.cjs")
@@ -170,3 +173,6 @@ func backend_name() -> String:
 
 func discovery_description() -> String:
 	return "Public test meadow · Discover reachable testers through Holepunch after they enable discovery. Some networks may block direct connections. Leaving co-op stops discovery. No account needed."
+
+func _physics_process(delta: float) -> void:
+	_process(delta)

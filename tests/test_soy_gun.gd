@@ -25,12 +25,17 @@ func _run() -> void:
 	var combat := PlayerCombat.new()
 	combat.actor = actor
 	stage.add_child(combat)
+	var progression := ActorProgression.new()
+	progression.actor = actor
+	progression.combat = combat
+	stage.add_child(progression)
 	gun = combat.gun
 	gun.tuning = CombatTuning.new()
 	gun.tuning.aim_spread_degrees = 0
 	dummy = PracticeDummy.new()
 	stage.add_child(dummy)
 	dummy.position = Vector3(0, 0, -5)
+	dummy.target.trains_weapons = true
 	gun.targets.append(dummy.target)
 	await ticks(3)
 	combat.equipment.step(Vector2.UP, false, false, false, false, 3, 0.016)
@@ -41,6 +46,7 @@ func _run() -> void:
 	check(from_body.x > 0.3 and from_body.z < -0.4 and from_body.y > 0.7, "authoritative beans originate at the forward outboard muzzle")
 	check(gun.shot_sequence == 1, "held trigger obeys per-instance cadence")
 	await ticks(10)
+	check(gun.get_children().any(func(child: Node) -> bool: return child is LiquidImpact), "soybean collision creates a round splash at the target")
 	check(dummy.target.current == 180, "fast swept soybean hits body for exactly 20")
 	gun.cooldown = 0
 	gun.step(true, true, Vector2.UP, Vector3(0, 1.85, -5), 0.016)
@@ -79,6 +85,17 @@ func _run() -> void:
 	gun.present_shot(1, Vector3(0, 0.65, 0), Vector3(0, 0, -55))
 	await ticks(10)
 	check(dummy.target.current == 140, "replicated projectile never decides damage")
+	check(progression.progress.practice.shooting == 2, "only two confirmed authoritative dummy hits train shooting")
+	progression.progress.practice.shooting = CharacterProgress.threshold(20) * 4
+	progression.progress.speed_gear_trained(CharacterProgress.threshold(99))
+	check(gun.damage_multiplier > 1 and gun.spread_multiplier < 1, "progression applies gun damage and accuracy")
+	gun.reset()
+	gun.step(true, true, Vector2.UP, Vector3(0, 0.65, -5), 0.016)
+	var sequence := gun.shot_sequence
+	gun.step(true, true, Vector2.UP, Vector3(0, 0.65, -5), 0.15)
+	check(gun.shot_sequence == sequence + 1, "trained attack speed fires again before base cooldown")
+	var bean := gun.get_child(gun.get_child_count() - 1) as SoyProjectile
+	check(is_equal_approx(bean.body_damage, 20 * gun.damage_multiplier) and is_equal_approx(bean.head_damage, 40 * gun.damage_multiplier), "both projectile damage regions scale with skill")
 	var hip_max := 0.0
 	var aim_max := 0.0
 	for index in 1000:

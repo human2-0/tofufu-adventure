@@ -1,0 +1,4 @@
+# Add this site to your existing proxy configuration; do not replace a blog's config.
+meadow.example.com {
+    reverse_proxy 127.0.0.1:9080
+}

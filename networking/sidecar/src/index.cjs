@@ -31,6 +31,7 @@ process.stdin.on('data', chunk => {
         !/^[0-9a-f]{64}$/.test(config.token) || typeof config.name !== 'string' ||
         config.name.length < 1 || config.name.length > 24) return close()
     bridge = net.connect(config.port, '127.0.0.1')
+    bridge.setNoDelay(true)
     const emit = attach(bridge, message => {
       if (message.type === 'close') return close()
       if (message.type === 'send' && /^[0-9a-f]{64}$/.test(message.key) && message.data && typeof message.data === 'object') {

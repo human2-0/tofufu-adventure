@@ -19,6 +19,10 @@ var encounters: SandboxEncounters
 var weather: WeatherCycle
 var weather_view: WeatherView
 var _in_water: bool = false
+var inventory: PlayerInventory
+var character_equipment: CharacterEquipment
+var healing: PlayerHealing
+var inventory_window: InventoryWindow
 
 func _ready() -> void:
 	chat = ProximityChat.new()
@@ -32,11 +36,18 @@ func _ready() -> void:
 	add_child(combat)
 	player.visuals.hand_presented.connect(combat.sword.follow_hand)
 	player.visuals.hand_presented.connect(combat.gun.visual.follow_hand)
+	player.visuals.hand_presented.connect(combat.sotjet.visual.follow_hand)
 	health = Damageable.new()
 	health.maximum = combat.tuning.maximum_health
 	health.body = player
 	health.headshot_height = 0.78
+	health.position.y = 0.55
 	player.add_child(health)
+	combat.gun.owner_health = health
+	combat.sotjet.flow.owner_health = health
+	health.projectile_guard = _reflect_projectile
+	if not health.reflected_hit.is_connected(combat.gun.weapon_trained.emit):
+		health.reflected_hit.connect(combat.gun.weapon_trained.emit)
 	health.changed.connect(hud.show_health)
 	health.depleted.connect(_respawn)
 	health.hit.connect(_on_player_hit)
@@ -51,10 +62,25 @@ func _ready() -> void:
 	progression.combat = combat
 	progression.hud = hud
 	add_child(progression)
+	inventory = PlayerInventory.new()
+	character_equipment = CharacterEquipment.new()
+	healing = PlayerHealing.new()
+	healing.equipment = character_equipment
+	healing.health = health
+	healing.eaten.connect(_on_healing_eaten)
+	healing.cooldown_updated.connect(_on_healing_cooldown_updated)
+	character_equipment.changed.connect(_update_hud_healing)
+	inventory_window = InventoryWindow.new()
+	inventory_window.inventory = inventory
+	inventory_window.equipment = character_equipment
+	add_child(inventory_window)
+	inventory_window.opened.connect(_on_inventory_opened)
+	inventory_window.closed.connect(_on_inventory_closed)
 	encounters = SandboxEncounters.new()
 	encounters.player = player
 	encounters.combat = combat
 	encounters.health = health
+	encounters.inventory = inventory
 	encounters.experience_awarded.connect(progression.progress.award_experience)
 	encounters.ground_point = world.ground_point
 	encounters.mob_centers = FarmCombatGrounds.CAMPS
@@ -106,18 +132,26 @@ func _physics_process(_delta: float) -> void:
 func _on_command(command: PlayerCommand, delta: float) -> void:
 	if command.cancel_actions: combat.reset()
 	var moving := Vector2(player.velocity.x, player.velocity.z).length_squared() > 0.01
-	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.knife_selected and not combat.gun.selected), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta)
+	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.knife_selected and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta)
 	combat.step(command.aim, command.attack_held, delta, command.move if moving else Vector2.ZERO)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
-	player.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if combat.equipment.guarding or combat.gun.selected else Vector2.ZERO)
+	combat.sotjet.flow.targets = combat.targets
+	combat.sotjet.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
+	player.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
+	if moving and not command.attack_held and not command.guard_held:
+		combat.gun.visual.facing = command.move
+		combat.sotjet.visual.facing = command.move
+	if command.use_healing_1: healing.use_slot("healing_1")
+	if command.use_healing_2: healing.use_slot("healing_2")
+	healing.step(delta)
 
 func _on_strike(strength: float, hits: int) -> void:
 	if hits > 0:
 		camera.shake(0.22 if strength >= 1.0 else 0.07)
 
 func _on_player_hit(_amount: float, _direction: Vector3) -> void:
-	hud.show_snail_hit()
+	hud.show_damage_hit(health.last_hit_kind)
 	camera.shake(0.18)
 	player.visuals.modulate = Color("ffaaa0")
 	var tween := create_tween()
@@ -138,7 +172,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_echo():
 		return
-	if event.is_action_pressed("return_to_camp"):
+	if event.is_action_pressed("toggle_inventory"):
+		inventory_window.toggle()
+	elif event.is_action_pressed("return_to_camp"):
 		_respawn()
 	elif event.is_action_pressed("skip_time"):
 		cycle.phase = fposmod(cycle.phase + 0.25, 1.0)
@@ -169,3 +205,27 @@ func _opening_completed() -> void:
 	encounters.process_mode = Node.PROCESS_MODE_INHERIT
 	exploration.process_mode = Node.PROCESS_MODE_INHERIT
 	hud.announce("Welcome to Fufufarm! / Follow the lane to the village and Mayor Mame.")
+
+func _reflect_projectile(incoming: Vector3, point: Vector3, confirmed: bool) -> Vector3:
+	if player.motor.is_dashing: return Vector3.ZERO
+	return combat.equipment.reflection_normal(incoming, point, confirmed)
+
+func _on_healing_eaten(_item_name: String, amount: float) -> void:
+	CombatEffects.burst(self, player.global_position, "+%d HP (gradual)" % int(amount), Color("c8efa0"))
+	_update_hud_healing()
+
+func _on_healing_cooldown_updated(remaining: float, _total: float) -> void:
+	var stack := character_equipment.get_slot("healing_1")
+	if stack != null and stack.item != null: hud.show_healing_slot(stack.item.name, stack.count, remaining)
+	else: hud.show_healing_slot("", 0)
+
+func _update_hud_healing() -> void:
+	var stack := character_equipment.get_slot("healing_1")
+	if stack != null and stack.item != null: hud.show_healing_slot(stack.item.name, stack.count, healing.cooldown_remaining)
+	else: hud.show_healing_slot("", 0)
+
+func _on_inventory_opened() -> void:
+	if player.command_source is LocalPlayerInput: (player.command_source as LocalPlayerInput).enabled = false
+
+func _on_inventory_closed() -> void:
+	if player.command_source is LocalPlayerInput: (player.command_source as LocalPlayerInput).enabled = true

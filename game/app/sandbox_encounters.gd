@@ -20,6 +20,7 @@ var protected_area: Rect2
 var player: Player
 var combat: PlayerCombat
 var health: Damageable
+var inventory: PlayerInventory
 var ground_point: Callable
 var beans: int = 0
 var mobs: int = 0
@@ -80,7 +81,7 @@ func _hurt_player(amount: float, source: Vector3) -> void:
 	if combat.equipment.defend(source):
 		return
 	amount *= combat.incoming_damage_multiplier
-	if health.damage(amount):
+	if health.damage(amount, Vector3.ZERO, Damageable.HitKind.SLIME):
 		health.invulnerability = maxf(health.invulnerability, 0.8)
 		CombatEffects.burst(self, player.global_position, "-" + str(int(amount)), Color("ff9b8c"))
 
@@ -124,9 +125,7 @@ func _mob_attacked(amount: float, source: Vector3, mob: TrainingMob) -> void:
 
 func _collect() -> void:
 	beans += 1
-	var before := health.current
-	health.heal(combat.tuning.soybean_healing)
-	var healed := int(health.current - before)
-	var feedback := "+%d HP" % healed if healed > 0 else "SOY +1"
-	CombatEffects.burst(self, player.global_position, feedback, Color("c8efa0"))
+	if inventory != null:
+		inventory.add_item(InventoryItem.create_soybean(), 1)
+	CombatEffects.burst(self, player.global_position, "+1 SOY", Color("c8efa0"))
 	progress_changed.emit(beans, mobs, props)

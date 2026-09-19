@@ -27,6 +27,7 @@ func _run() -> void:
 	_body_clearance()
 	_facing_and_camera()
 	_hand_attachment()
+	_reflection_direction()
 	stage.queue_free()
 	await process_frame
 	print("Sword geometry, eight-way sprites and camera: ", "PASS" if failures == 0 else "FAIL")
@@ -196,3 +197,24 @@ func ticks(count: int) -> void:
 	for tick in count:
 		await physics_frame
 		await process_frame
+
+func _reflection_direction() -> void:
+	combat.reset()
+	var gear := combat.equipment
+	gear.knife_owned = true
+	gear.knife_selected = true
+	gear.guarding = true
+	gear.facing = Vector2.DOWN
+	var point := actor.global_position + Vector3.UP * 0.8
+	check(gear.reflection_normal(Vector3.FORWARD, point, false) == Vector3.BACK, "front incoming fire reflects")
+	check(gear.reflection_normal(Vector3.BACK, point, false).is_zero_approx(), "rear fire does not reflect")
+	check(gear.reflection_normal(Vector3.LEFT, point, false).is_zero_approx(), "side fire outside guard does not reflect")
+	gear.facing = Vector2(0.5, 0.8660254).normalized()
+	var normal := gear.reflection_normal(Vector3(0, -2, -20), point, false)
+	var outgoing := Vector3(0, -2, -20).bounce(normal)
+	check(outgoing.x > 17 and outgoing.z > 9 and outgoing.y == -2, "angled sword redirects horizontally and preserves falling velocity")
+	gear.knife_selected = false
+	check(gear.reflection_normal(Vector3.FORWARD, point, false).is_zero_approx(), "unequipped sword cannot reflect")
+	gear.knife_selected = true
+	gear.knife_owned = false
+	check(gear.reflection_normal(Vector3.FORWARD, point, false).is_zero_approx(), "dropped sword cannot reflect")

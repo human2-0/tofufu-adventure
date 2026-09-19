@@ -21,4 +21,6 @@ var weapon_slot: int = 0
 
 var camp_pressed: bool = false
 var time_pressed: bool = false
+var use_healing_1: bool = false
+var use_healing_2: bool = false
 var cancel_actions: bool = false

@@ -7,6 +7,7 @@ signal join(key: String)
 signal begin
 signal leave
 signal back
+var can_host: bool = true
 var discovery_description: String = ""
 var status: Label
 var _peers: VBoxContainer
@@ -19,7 +20,7 @@ var _adventures: OptionButton
 var _signature: String = ""
 
 func _ready() -> void:
-	MenuStyle.paragraph(self, "Host a meadow, start exploring, and let up to 3 friends join whenever they’re ready.")
+	MenuStyle.paragraph(self, "Host a meadow, start exploring, and let up to 3 friends join whenever they’re ready." if can_host else "Join the always-on Oracle meadow. Up to four friends can explore together.")
 	MenuStyle.label(self, "Your playtest name", 18)
 	var row := HBoxContainer.new()
 	add_child(row)
@@ -28,21 +29,25 @@ func _ready() -> void:
 	_name.text = "Fufu %04d" % randi_range(0, 9999)
 	_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(_name)
-	_discover = MenuStyle.button(row, "Discover testers", func() -> void:
+	_discover = MenuStyle.button(row, "Discover testers" if can_host else "Connect to Oracle", func() -> void:
 		var name := _name.text.strip_edges()
 		discover.emit(name if not name.is_empty() else "Fufu"))
 	status = MenuStyle.paragraph(self, "")
-	MenuStyle.label(self, "Adventure to host", 18)
+	var adventure_label := MenuStyle.label(self, "Adventure to host", 18)
+	adventure_label.visible = can_host
 	_adventures = OptionButton.new()
 	_adventures.add_item("New shared adventure", 100)
 	add_child(_adventures)
-	MenuStyle.paragraph(self, "Choose a new or saved adventure. The host saves everyone’s progress.")
+	_adventures.visible = can_host
+	var save_note := MenuStyle.paragraph(self, "Choose a new or saved adventure. The host saves everyone’s progress.")
+	save_note.visible = can_host
 	var actions := HBoxContainer.new()
 	add_child(actions)
 	_host = MenuStyle.button(actions, "Open a meadow", func() -> void: host.emit(-1 if _adventures.get_selected_id() == 100 else _adventures.get_selected_id()))
+	_host.visible = can_host
 	_begin = MenuStyle.button(actions, "Start exploring →", begin.emit)
 	_leave = MenuStyle.button(actions, "Leave meadow", leave.emit)
-	MenuStyle.label(self, "Other beans online", 22)
+	MenuStyle.label(self, "Other beans online" if can_host else "Shared meadow", 22)
 	_peers = VBoxContainer.new()
 	add_child(_peers)
 	MenuStyle.paragraph(self, discovery_description)
@@ -50,7 +55,7 @@ func _ready() -> void:
 	MenuStyle.focus_later(_name)
 
 func update_state(peers: Dictionary, local_key: String, host_key: String, hosting: bool, count: int, message: String, pending: String = "") -> void:
-	status.text = message
+	status.text = "Choose a name, then connect to Oracle." if not can_host and message == "Choose a name, then discover other testers." else message
 	_adventures.disabled = not host_key.is_empty()
 	_host.disabled = local_key.is_empty() or not host_key.is_empty() or not pending.is_empty()
 	_begin.visible = hosting
@@ -66,7 +71,7 @@ func update_state(peers: Dictionary, local_key: String, host_key: String, hostin
 		_peers.remove_child(child)
 		child.queue_free()
 	if peers.is_empty():
-		MenuStyle.paragraph(_peers, "No other beans found yet. Ask another tester to open Co-op mode and choose Discover testers.")
+		MenuStyle.paragraph(_peers, "No other beans found yet. Ask another tester to open Co-op mode and choose Discover testers." if can_host else "Connect to Oracle to find the shared meadow.")
 	for key: String in peers:
 		var peer: Dictionary = peers[key]
 		var row := HBoxContainer.new()

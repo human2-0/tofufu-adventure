@@ -2,7 +2,7 @@ class_name GamePreferences
 extends RefCounted
 ## Local settings only. ConfigFile stores primitives, never peer-supplied objects.
 
-const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "attack", "guard", "punch", "drop_weapon", "pickup_weapon", "knife_slot", "fist_slot", "gun_slot", "camera_mode", "toggle_help", "return_to_camp", "skip_time"]
+const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "attack", "guard", "punch", "drop_weapon", "pickup_weapon", "knife_slot", "fist_slot", "gun_slot", "sotjet_slot", "camera_mode", "toggle_help", "return_to_camp", "skip_time"]
 const RESOLUTIONS: Array[Vector2i] = [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 var path: String = "user://preferences.cfg"
 var config := ConfigFile.new()
