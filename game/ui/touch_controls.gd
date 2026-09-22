@@ -44,10 +44,10 @@ func _add_button(action: String, caption: String) -> void:
 	for index in 32:
 		points.append(Vector2.from_angle(TAU * index / 32.0) * 35.0)
 	disc.polygon = points
-	disc.color = Color(0.12, 0.25, 0.25, 0.75)
+	disc.color = Color("164b43cc")
 	button.add_child(disc)
-	button.pressed.connect(func() -> void: disc.color = Color(0.5, 0.7, 0.5, 0.9))
-	button.released.connect(func() -> void: disc.color = Color(0.12, 0.25, 0.25, 0.75))
+	button.pressed.connect(func() -> void: disc.color = Color("f2c45ce6"))
+	button.released.connect(func() -> void: disc.color = Color("164b43cc"))
 	var label := Label.new()
 	label.text = caption
 	label.position = Vector2(-35, -14)

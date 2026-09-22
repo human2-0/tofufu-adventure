@@ -6,13 +6,14 @@ signal toggle_requested
 var mini := MapCanvas.new()
 var full := MapCanvas.new()
 var overlay := ColorRect.new()
-var expand_button := Button.new()
-var close_button := Button.new()
+var expand_button := MangaButton.new()
+var close_button := MangaButton.new()
 var _root := Control.new()
 
 func _ready() -> void:
 	layer = 8
 	_root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	_root.theme = MenuStyle.make_theme()
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_root)
 	_root.add_child(mini)
@@ -20,7 +21,7 @@ func _ready() -> void:
 	expand_button.text = "Map [M] · Expand"
 	expand_button.pressed.connect(toggle_requested.emit)
 	_root.add_child(expand_button)
-	overlay.color = Color("182c29f5")
+	overlay.color = Color("102a25f2")
 	overlay.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	_root.add_child(overlay)
 	overlay.add_child(full)

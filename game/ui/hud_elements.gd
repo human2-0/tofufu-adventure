@@ -16,14 +16,14 @@ static func make_panel(parent: Control, at: Vector2, dimensions: Vector2, anchor
 	panel.offset_right = at.x + dimensions.x
 	panel.offset_bottom = at.y + dimensions.y
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.14, 0.19, 0.48)
-	style.set_corner_radius_all(12)
-	style.set_content_margin_all(7)
-	style.border_color = Color(0.55, 0.8, 0.72, 0.30)
-	style.set_border_width_all(1)
-	style.shadow_color = Color(0.0, 0.0, 0.0, 0.18)
-	style.shadow_size = 3
-	style.shadow_offset = Vector2(0, 2)
+	style.bg_color = Color("143530c9")
+	style.set_corner_radius_all(14)
+	style.set_content_margin_all(9)
+	style.border_color = Color("91d59688")
+	style.set_border_width_all(2)
+	style.shadow_color = Color("07171588")
+	style.shadow_size = 6
+	style.shadow_offset = Vector2(0, 3)
 	panel.add_theme_stylebox_override("panel", style)
 	var box := VBoxContainer.new()
 	box.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -48,8 +48,10 @@ static func make_bar(parent: Control, color: Color, width: float = 160, height: 
 	var fill := StyleBoxFlat.new()
 	fill.bg_color = color
 	fill.set_corner_radius_all(3)
+	fill.border_color = Color("fff6d5aa")
+	fill.set_border_width_all(1)
 	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color(0.18, 0.25, 0.27, 0.65)
+	bg.bg_color = Color("0b211ecc")
 	bg.set_corner_radius_all(3)
 	bar.add_theme_stylebox_override("fill", fill)
 	bar.add_theme_stylebox_override("background", bg)

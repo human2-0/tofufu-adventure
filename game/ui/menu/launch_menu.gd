@@ -30,7 +30,7 @@ func _ready() -> void:
 		margin.add_theme_constant_override("margin_" + side, 40)
 	var layout := VBoxContainer.new()
 	margin.add_child(layout)
-	MenuStyle.label(layout, "F U F U F A R M     /     CHAPTER 01", 14, MenuStyle.MUTED)
+	MenuStyle.label(layout, "✦ F U F U F A R M  /  CHAPTER 01 ✦", 14, MenuStyle.MUTED)
 	var row := HBoxContainer.new()
 	row.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	layout.add_child(row)
@@ -65,8 +65,8 @@ func show_home(paused: bool = false, can_save: bool = true) -> void:
 	_page.hide()
 	_home.show()
 	_clear(_home)
-	MenuStyle.label(_home, "tofufu", 76)
-	MenuStyle.label(_home, "A D V E N T U R E", 24)
+	MenuStyle.label(_home, "tofufu!", 76, MenuStyle.INK)
+	MenuStyle.label(_home, "A D V E N T U R E  ·  BEANBOUND", 20, MenuStyle.LEAF)
 	MenuStyle.label(_home, "A bean begins.", 20, MenuStyle.MUTED)
 	var buttons := VBoxContainer.new()
 	buttons.custom_minimum_size.x = 340
@@ -81,7 +81,7 @@ func show_home(paused: bool = false, can_save: bool = true) -> void:
 		MenuStyle.button(buttons, "Save & return to title" if can_save else "Leave & return to title", return_title.emit)
 	else:
 		first = MenuStyle.button(buttons, "New game     →", new_game.emit)
-		first.add_theme_stylebox_override("normal", MenuStyle.panel(MenuStyle.MINT, 12))
+		first.add_theme_stylebox_override("normal", MenuStyle.button_box("focus"))
 		MenuStyle.button(buttons, "Continue", continue_game.emit)
 		MenuStyle.button(buttons, "Co-op mode", coop.emit)
 		MenuStyle.button(buttons, "Settings", settings.emit)

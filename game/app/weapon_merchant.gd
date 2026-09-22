@@ -44,7 +44,7 @@ func _process(_delta: float) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _prompt.visible or event.is_echo() or not event.is_action_pressed("pickup_weapon"): return
-	window.show()
+	window.open()
 	game.shooting_view.local_input.enabled = false
 	game.chat.set_menu_open(true)
 	game.combat.reset()

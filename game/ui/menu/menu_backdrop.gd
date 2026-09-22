@@ -27,6 +27,10 @@ func _draw() -> void:
 	var s := size
 	draw_rect(Rect2(Vector2.ZERO, s), Color("e5efd9"))
 	draw_circle(s * Vector2(0.81, 0.29), s.y * 0.22, Color("f9efc6"))
+	for i in 7:
+		var ray_start := s * Vector2(0.81, 0.29)
+		var ray_end := ray_start + Vector2.from_angle(-2.6 + i * 0.24) * s.y * 0.27
+		draw_line(ray_start, ray_end, Color("f4c75d55"), 2.0, true)
 	_hill(0.67, Color("bfd7b5"), 36.0, 0.0)
 	_hill(0.79, Color("a7c5a2"), 45.0, 1.5)
 	_hill(0.92, Color("88ad91"), 34.0, 3.0)
@@ -38,6 +42,10 @@ func _draw() -> void:
 		draw_line(p, p + Vector2(sway, -22), Color("658b71"), 2, true)
 		_leaf(p + Vector2(sway - 7, -15), Vector2(10, 5), Color("c8dfb1"))
 		_leaf(p + Vector2(sway + 6, -22), Vector2(9, 5), Color("dfe8b7"))
+	for i in 8:
+		var bean := s * Vector2(0.54 + fmod(i * 0.19, 0.39), 0.72 + fmod(i * 0.13, 0.18))
+		draw_circle(bean, 7, Color("f2ca6b"))
+		draw_arc(bean + Vector2(-1, 0), 4, -PI * 0.5, PI * 0.5, 12, Color("b87547"), 1.0, true)
 	for i in 9:
 		var p := s * Vector2(0.53 + fmod(i * 0.11, 0.45), 0.12 + fmod(i * 0.17, 0.55))
 		p.y += sin(_time * 0.7 + i) * 12

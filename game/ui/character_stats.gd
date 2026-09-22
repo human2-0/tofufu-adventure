@@ -110,10 +110,10 @@ func _setup_skill_bars() -> void:
 		pct_lbl.text = "0%"
 		row.add_child(pct_lbl)
 
-		var add_btn := Button.new()
+		var add_btn := MangaButton.new()
 		add_btn.text = "+"
 		add_btn.mouse_filter = Control.MOUSE_FILTER_STOP
-		add_btn.focus_mode = Control.FOCUS_NONE
+		add_btn.focus_mode = Control.FOCUS_ALL
 		add_btn.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 		add_btn.custom_minimum_size = Vector2(16, 15)
 		add_btn.add_theme_font_size_override("font_size", 10)

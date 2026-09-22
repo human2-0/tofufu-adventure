@@ -42,6 +42,8 @@ func open() -> void:
 	_selected_source = ""
 	_selected_slot = null
 	refresh()
+	if not _inv_buttons.is_empty():
+		_inv_buttons[0].call_deferred("grab_focus")
 	opened.emit()
 
 func close() -> void:
@@ -62,11 +64,14 @@ func _build_ui() -> void:
 	panel.offset_top = -265
 	panel.offset_bottom = 265
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.14, 0.18, 0.94)
-	style.set_corner_radius_all(14)
+	style.bg_color = Color("173632f5")
+	style.set_corner_radius_all(18)
 	style.set_content_margin_all(22)
-	style.border_color = Color(0.55, 0.8, 0.72, 0.45)
-	style.set_border_width_all(2)
+	style.border_color = Color("9bd58c")
+	style.set_border_width_all(3)
+	style.shadow_color = Color("07171599")
+	style.shadow_size = 14
+	style.shadow_offset = Vector2(0, 6)
 	panel.add_theme_stylebox_override("panel", style)
 	root.add_child(panel)
 

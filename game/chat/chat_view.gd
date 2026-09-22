@@ -27,14 +27,14 @@ func _ready() -> void:
 	_panel.offset_bottom = -116
 	add_child(_panel)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.06, 0.12, 0.16, 0.55)
-	style.set_corner_radius_all(12)
+	style.bg_color = Color("173632c9")
+	style.set_corner_radius_all(14)
 	style.content_margin_left = 10
 	style.content_margin_right = 10
 	style.content_margin_top = 6
 	style.content_margin_bottom = 6
-	style.border_color = Color(0.55, 0.8, 0.72, 0.28)
-	style.set_border_width_all(1)
+	style.border_color = Color("8ed39a88")
+	style.set_border_width_all(2)
 	_panel.add_theme_stylebox_override("panel", style)
 
 	var column := VBoxContainer.new()

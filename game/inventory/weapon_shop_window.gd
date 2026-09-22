@@ -8,6 +8,7 @@ var inventory: PlayerInventory
 var status: Label
 var balance: Label
 var _sales: VBoxContainer
+var _first_button: Button
 
 func _ready() -> void:
 	layer = 16
@@ -18,9 +19,11 @@ func _ready() -> void:
 	var panel := PanelContainer.new()
 	center.add_child(panel)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("172a30")
-	style.set_corner_radius_all(14)
+	style.bg_color = Color("173632f5")
+	style.set_corner_radius_all(18)
 	style.set_content_margin_all(24)
+	style.border_color = Color("9bd58c")
+	style.set_border_width_all(3)
 	panel.add_theme_stylebox_override("panel", style)
 	var column := VBoxContainer.new()
 	column.custom_minimum_size.x = 400
@@ -56,6 +59,7 @@ func _ready() -> void:
 		button.custom_minimum_size.y = 56
 		button.pressed.connect(func() -> void: purchase_requested.emit(id))
 		buy.add_child(button)
+		if _first_button == null: _first_button = button
 	status = Label.new()
 	status.text = "Buy weapons or sell items from your bag."
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -72,6 +76,11 @@ func close() -> void:
 	if not visible: return
 	visible = false
 	closed.emit()
+
+func open() -> void:
+	visible = true
+	if _first_button != null:
+		_first_button.call_deferred("grab_focus")
 
 func _input(event: InputEvent) -> void:
 	if visible and not event.is_echo() and event.is_action_pressed("ui_cancel"):

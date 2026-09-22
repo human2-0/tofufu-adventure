@@ -26,7 +26,7 @@ func _ready() -> void:
 	focus.material = _focus
 	canvas.add_child(focus)
 	var chapter := Label.new()
-	chapter.text = "TOFUFU     /     THE FIRST LITTLE ADVENTURE"
+	chapter.text = "✦ TOFUFU  /  THE FIRST LITTLE ADVENTURE ✦"
 	chapter.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	chapter.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	chapter.offset_top = 28
@@ -44,11 +44,14 @@ func _ready() -> void:
 	_panel.offset_bottom = -28
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("243c39f5")
-	style.border_color = Color("b5cb8f")
-	style.set_border_width_all(1)
-	style.set_corner_radius_all(18)
+	style.bg_color = Color("173632f5")
+	style.border_color = Color("a6db92")
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(20)
 	style.set_content_margin_all(18)
+	style.shadow_color = Color("071715aa")
+	style.shadow_size = 12
+	style.shadow_offset = Vector2(0, 5)
 	_panel.add_theme_stylebox_override("panel", style)
 	var box := VBoxContainer.new()
 	box.add_theme_constant_override("separation", 7)
@@ -61,12 +64,12 @@ func _ready() -> void:
 	_meter.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	box.add_child(_meter)
 	var background := ColorRect.new()
-	background.color = Color("49635a")
+	background.color = Color("0c2823")
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	background.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_meter.add_child(background)
 	_zone = ColorRect.new()
-	_zone.color = Color("d8bd6b")
+	_zone.color = Color("f2c45c")
 	_zone.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_meter.add_child(_zone)
 	_cursor = ColorRect.new()

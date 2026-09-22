@@ -19,9 +19,10 @@ func project_point(point: Vector2) -> Vector2:
 func _draw() -> void:
 	var rect := map_rect()
 	if terrain_texture != null: draw_texture_rect(terrain_texture, rect, false)
-	draw_rect(rect, Color("d9d6ae"), false, 2)
+	draw_rect(rect.grow(3), Color("173a35aa"), true)
+	draw_rect(rect, Color("f4c75d"), false, 3)
 	var font := ThemeDB.fallback_font
-	draw_string(font, rect.position + Vector2(8, 18), "N ↑", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("233d36"))
+	draw_string(font, rect.position + Vector2(8, 18), "N ↑", HORIZONTAL_ALIGNMENT_LEFT, -1, 14, Color("fff7dc"))
 	for marker in markers:
 		var point := project_point(marker.point)
 		var color: Color = marker.color

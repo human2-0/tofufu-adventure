@@ -18,16 +18,20 @@ func _ready() -> void:
 	visible = false
 	var center := CenterContainer.new()
 	center.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	center.theme = MenuStyle.make_theme()
 	add_child(center)
 
 	var panel := PanelContainer.new()
 	center.add_child(panel)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.09, 0.16, 0.19, 0.95)
-	style.border_color = Color(0.55, 0.8, 0.72, 0.45)
-	style.set_border_width_all(2)
-	style.set_corner_radius_all(14)
+	style.bg_color = Color("173632f7")
+	style.border_color = Color("9bd58c")
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(18)
 	style.set_content_margin_all(22)
+	style.shadow_color = Color("071715aa")
+	style.shadow_size = 16
+	style.shadow_offset = Vector2(0, 7)
 	panel.add_theme_stylebox_override("panel", style)
 
 	var column := VBoxContainer.new()
@@ -44,7 +48,7 @@ func _ready() -> void:
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
-	var close_btn := Button.new()
+	var close_btn := MangaButton.new()
 	close_btn.text = "✕"
 	close_btn.focus_mode = Control.FOCUS_NONE
 	close_btn.pressed.connect(close)
@@ -58,10 +62,10 @@ func _ready() -> void:
 
 	var quest_box := PanelContainer.new()
 	var box_style := StyleBoxFlat.new()
-	box_style.bg_color = Color(0.13, 0.22, 0.25, 0.8)
-	box_style.border_color = Color(0.35, 0.52, 0.48, 0.5)
-	box_style.set_border_width_all(1)
-	box_style.set_corner_radius_all(8)
+	box_style.bg_color = Color("245149")
+	box_style.border_color = Color("8cd49a")
+	box_style.set_border_width_all(2)
+	box_style.set_corner_radius_all(12)
 	box_style.set_content_margin_all(14)
 	quest_box.add_theme_stylebox_override("panel", box_style)
 	column.add_child(quest_box)
@@ -104,7 +108,7 @@ func _ready() -> void:
 	_rewards_label.add_theme_color_override("font_color", Color("eacb83"))
 	box_col.add_child(_rewards_label)
 
-	_action_button = Button.new()
+	_action_button = MangaButton.new()
 	_action_button.custom_minimum_size = Vector2(0, 36)
 	_action_button.focus_mode = Control.FOCUS_NONE
 	_action_button.pressed.connect(_on_action_pressed)
@@ -146,6 +150,7 @@ func _on_action_pressed() -> void:
 
 func open() -> void:
 	visible = true
+	MenuStyle.focus_later(_action_button)
 
 func close() -> void:
 	if not visible: return

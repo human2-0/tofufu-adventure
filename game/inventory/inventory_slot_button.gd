@@ -14,13 +14,17 @@ var _quantity: Label
 var _hotkey: Label
 
 func _ready() -> void:
+	focus_mode = Control.FOCUS_ALL
 	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	for state in ["normal", "hover", "pressed", "focus"]:
 		var style := StyleBoxFlat.new()
-		style.bg_color = Color("1b2b31") if state == "normal" else Color("2c4247")
-		style.border_color = Color("385051") if state == "normal" else Color("9ac8b2")
-		if state == "focus": style.bg_color = Color.TRANSPARENT
-		style.set_border_width_all(1 if state == "normal" else 2)
+		style.bg_color = Color("183934") if state == "normal" else Color("28554a")
+		style.border_color = Color("547e6e") if state == "normal" else Color("f4c75d")
+		if state == "focus":
+			style.bg_color = Color("fff0b4")
+			style.shadow_color = Color("f4c75d88")
+			style.shadow_size = 8
+		style.set_border_width_all(1 if state == "normal" else 3)
 		style.set_corner_radius_all(10)
 		add_theme_stylebox_override(state, style)
 	_image = TextureRect.new()
@@ -64,10 +68,13 @@ func present(stack: ItemStack, placeholder: Texture2D, title: String, hotkey: St
 	_quantity.text = str(stack.count) if occupied and stack.count > 1 else ""
 	_hotkey.text = hotkey
 	tooltip_text = "%s · %s ×%d" % [title, stack.item.name, stack.count] if occupied else title + " · Empty"
-	self_modulate = Color("ffe4a2") if selected else Color.WHITE
+	self_modulate = Color("ffe5a3") if selected else Color.WHITE
 	var style := get_theme_stylebox("normal").duplicate() as StyleBoxFlat
-	style.border_color = Color("e7c984") if selected else (Color("648878") if occupied else Color("385051"))
-	style.set_border_width_all(2 if selected else 1)
+	style.border_color = Color("f4c75d") if selected else (Color("8fc598") if occupied else Color("547e6e"))
+	style.set_border_width_all(3 if selected else 1)
+	if selected:
+		style.shadow_color = Color("f4c75d88")
+		style.shadow_size = 8
 	add_theme_stylebox_override("normal", style)
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
