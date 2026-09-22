@@ -57,7 +57,8 @@ func _run() -> void:
 	host_actor.actor.position = Vector3(0, 0.1, 2)
 	guest_actor.actor.position = Vector3(0, 0.1, -2)
 	await ticks(20)
-	guest_input.slot = 4
+	guest_actor.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("sotjet"), 1))
+	guest_input.slot = 2
 	guest_input.aim = Vector2.DOWN
 	guest_input.aim_point = host_actor.actor.position + Vector3.UP * 0.8
 	guest_input.attack = true
@@ -71,7 +72,8 @@ func _run() -> void:
 	guest_input.attack = false
 	await ticks(20)
 	check(not g.game.combat.sotjet.firing, "release stops replicated emission")
-	host_input.slot = 4
+	host_actor.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("sotjet"), 1))
+	host_input.slot = 2
 	host_input.aim = Vector2.UP
 	host_input.aim_point = guest_actor.actor.position + Vector3.UP * 0.8
 	host_input.attack = true
@@ -92,7 +94,8 @@ func _run() -> void:
 		guest_input.slot = 1
 		guest_input.guard = true
 		guest_input.aim = Vector2.DOWN
-		host_input.slot = slot
+		host_actor.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun" if slot == 3 else "sotjet"), 1))
+		host_input.slot = 2
 		host_input.aim = Vector2.UP
 		host_input.aim_point = Vector3(host_actor.combat.tuning.muzzle_side, 0.8, -1.4)
 		host_actor.combat.gun.spread_multiplier = 0
@@ -125,7 +128,8 @@ func _run() -> void:
 		guest_actor.health.current = 100
 		host_actor.health.invulnerability = 0
 		guest_actor.health.invulnerability = 0
-		guest_input.slot = slot
+		guest_actor.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun" if slot == 3 else "sotjet"), 1))
+		guest_input.slot = 2
 		await ticks(10)
 		guest_input.attack = true
 		await ticks(8 if slot == 3 else 30)
@@ -135,7 +139,8 @@ func _run() -> void:
 		check(guest_actor.health.current < 100, "guest receives its returned slot %d" % slot)
 		check(is_equal_approx(g.game.health.current, guest_actor.health.current), "guest reflected damage matches authority")
 	host_input.guard = false
-	guest_input.slot = 4
+	guest_actor.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("sotjet"), 1))
+	guest_input.slot = 2
 	await ticks(10)
 	var save := CoopCheckpoint.capture(h)
 	check(CoopCheckpoint.valid(save), "full party checkpoint accepts Sotjet state")

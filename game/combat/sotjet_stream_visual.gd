@@ -4,6 +4,7 @@ extends MeshInstance3D
 
 var parcels: Array[SotjetParcel] = []
 var radius: float = 0.055
+var nozzle_provider: Callable
 var nozzle := Vector3.ZERO
 var pouring: bool = false
 var _drawing: bool = false
@@ -27,19 +28,21 @@ func splash(at: Vector3, normal: Vector3) -> void:
 	_splashes.append({"at": at, "normal": normal, "age": 0.0})
 
 func _process(delta: float) -> void:
+	if nozzle_provider.is_valid(): nozzle = nozzle_provider.call()
 	_surface.clear_surfaces()
 	var camera := get_viewport().get_camera_3d()
 	if camera == null: return
 	_drawing = false
 	for index in parcels.size():
 		var parcel := parcels[index]
-		var end := parcel.previous
+		var correction := parcel.visual_offset * maxf(0.0, 1.0 - parcel.age / 0.15) if parcel.reflections == 0 else Vector3.ZERO
+		var end := parcel.previous + correction
 		if index + 1 < parcels.size():
 			var next := parcels[index + 1]
-			if next.sequence == parcel.sequence + 1 and next.burst == parcel.burst and next.reflections == parcel.reflections and next.reflected_by == parcel.reflected_by: end = next.position
+			if next.sequence == parcel.sequence + 1 and next.burst == parcel.burst and next.reflections == parcel.reflections and next.reflected_by == parcel.reflected_by: end = _position(next)
 		elif pouring and parcel.age < 0.06 and parcel.reflections == 0:
 			end = nozzle
-		_ribbon(parcel.position, end, radius, camera)
+		_ribbon(_position(parcel), end, radius, camera)
 	for splash_data in _splashes:
 		splash_data.age += delta
 		var age: float = splash_data.age
@@ -78,3 +81,7 @@ func _drop(at: Vector3, size: float, camera: Camera3D) -> void:
 		_surface.surface_set_color(Color(0.93, 0.93, 0.87))
 		_surface.surface_add_vertex(at + right * cos(a) + up * sin(a))
 		_surface.surface_add_vertex(at + right * cos(b) + up * sin(b))
+
+func _position(parcel: SotjetParcel) -> Vector3:
+	if parcel.reflections > 0: return parcel.position
+	return parcel.position + parcel.visual_offset * maxf(0.0, 1.0 - parcel.age / 0.15)

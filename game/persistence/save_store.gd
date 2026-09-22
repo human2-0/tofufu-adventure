@@ -63,6 +63,11 @@ func _path(slot: int) -> String:
 	return directory.path_join("adventure_%02d.json" % slot)
 
 static func valid(data: Dictionary) -> bool:
+	if data.has("coins") and (not _progress_counter(data.coins) or data.coins > 1000000): return false
+	if data.has("active_slot") and (not _progress_counter(data.active_slot) or data.active_slot < 1 or data.active_slot > 2): return false
+	if data.has("world_items") and not _world_items(data.world_items): return false
+	for field in ["gun_owned", "sotjet_owned"]:
+		if data.has(field) and not data[field] is bool: return false
 	if data.get("version") != 1 or not data.get("name") is String or not data.get("saved_at") is String:
 		return false
 	if data.name.length() > 48 or not data.get("opening_complete") is bool:
@@ -105,7 +110,9 @@ func record_valid(data: Dictionary) -> bool:
 	return data.coop is Dictionary and extra_validator.is_valid() and extra_validator.call(data.coop)
 
 static func progression(value: Variant) -> bool:
-	if not value is Dictionary or value.size() != 3 or value.get("version") != 1: return false
+	if not value is Dictionary: return false
+	var ver: Variant = value.get("version")
+	if not _progress_counter(ver) or ver < 1 or ver > 2: return false
 	var xp: Variant = value.get("experience")
 	if not _progress_counter(xp): return false
 	var practice: Variant = value.get("practice")
@@ -113,7 +120,30 @@ static func progression(value: Variant) -> bool:
 	for field in ["fist", "sword", "magic", "attack_speed", "defence"]:
 		if not _progress_counter(practice.get(field)): return false
 	if practice.size() == 6 and not _progress_counter(practice.get("shooting")): return false
+	if ver == 2:
+		if value.has("stat_points") and not _progress_counter(value.get("stat_points")): return false
+		if value.has("granted_level") and not _progress_counter(value.get("granted_level")): return false
+		if value.has("stats"):
+			var st: Variant = value.get("stats")
+			if not st is Dictionary: return false
+			for field: Variant in st.values():
+				if not _progress_counter(field): return false
 	return true
 
 static func _progress_counter(value: Variant) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= 100000000 and float(value) == floorf(value)
+
+static func _world_items(value: Variant) -> bool:
+	if not value is Array or value.size() > 128: return false
+	var ids: Array[int] = []
+	for row: Variant in value:
+		if not row is Array or row.size() != 7: return false
+		if not _progress_counter(row[0]) or row[0] < 1 or int(row[0]) in ids: return false
+		ids.append(int(row[0]))
+		if not row[1] is String or row[1] not in ["knife", "soy_gun", "sotjet", "soybean"]: return false
+		if not _progress_counter(row[2]) or row[2] < 1 or row[2] > (999 if row[1] == "soybean" else 1): return false
+		for index in range(3, 7):
+			var number: Variant = row[index]
+			if not (number is float or number is int) or not is_finite(float(number)) or absf(number) > (100 if index == 3 else 500): return false
+		if row[3] < 0: return false
+	return true

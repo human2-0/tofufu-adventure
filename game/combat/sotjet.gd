@@ -5,6 +5,8 @@ extends Node
 signal weapon_trained(weapon: String)
 var actor: CollisionObject3D
 var tuning := SotjetTuning.new()
+var attack_speed_multiplier: float = 1.0
+var range_multiplier: float = 1.0
 var selected: bool = false
 var aiming: bool = false
 var firing: bool = false
@@ -41,14 +43,17 @@ func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: fl
 		milk = maxf(0.0, milk - tuning.consumption * delta)
 		_refill_wait = tuning.refill_delay
 		origin = muzzle_position(aim)
-		velocity = (aim_point - origin).normalized() * tuning.speed
-		if velocity.is_zero_approx(): velocity = Vector3(aim.x, 0, aim.y) * tuning.speed
+		velocity = (aim_point - origin).normalized() * launch_speed()
+		if velocity.is_zero_approx(): velocity = Vector3(aim.x, 0, aim.y) * launch_speed()
 		sequence += 1
 		flow.emit_milk(origin, velocity, _burst, actor.global_position + Vector3.UP * 0.78)
 	else:
 		_refill_wait = maxf(0.0, _refill_wait - delta)
 		if _refill_wait <= 0.0 and not held: milk = minf(tuning.capacity, milk + tuning.refill_rate * delta)
 	_present_nozzle()
+
+func launch_speed() -> float:
+	return tuning.speed * range_multiplier * attack_speed_multiplier
 
 func muzzle_position(aim: Vector2) -> Vector3:
 	var forward := Vector3(aim.x, 0, aim.y).normalized()

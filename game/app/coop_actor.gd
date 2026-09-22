@@ -8,6 +8,7 @@ var combat: PlayerCombat
 var health: Damageable
 var hud: HUD
 var progression: ActorProgression
+var loadout: ActorLoadout
 var inventory: PlayerInventory
 var character_equipment: CharacterEquipment
 var healing: PlayerHealing
@@ -46,6 +47,14 @@ func _ready() -> void:
 		add_child(progression)
 	if inventory == null: inventory = PlayerInventory.new()
 	if character_equipment == null: character_equipment = CharacterEquipment.new()
+	if loadout == null:
+		loadout = ActorLoadout.new()
+		loadout.combat = combat
+		loadout.inventory = inventory
+		loadout.equipment = character_equipment
+		add_child(loadout)
+		loadout.seed()
+	loadout.replica = not authority
 	if healing == null:
 		healing = PlayerHealing.new()
 		healing.equipment = character_equipment
@@ -67,18 +76,20 @@ func _command(command: PlayerCommand, delta: float) -> void:
 	if command.camp_pressed: respawn()
 	if command.time_pressed: time_requested.emit()
 	var moving := Vector2(actor.velocity.x, actor.velocity.z).length_squared() > 0.01
-	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.knife_selected and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta)
-	combat.step(command.aim, command.attack_held, delta, command.move if moving else Vector2.ZERO)
+	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.knife_selected and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
+	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
 	combat.sotjet.flow.targets = combat.targets
 	combat.sotjet.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
-	actor.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
-	if moving and not command.attack_held and not command.guard_held:
+	actor.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
+	if moving and not command.face_aim and not command.attack_held and not command.guard_held:
 		combat.gun.visual.facing = command.move
 		combat.sotjet.visual.facing = command.move
-	if command.use_healing_1: healing.use_slot("healing_1")
-	if command.use_healing_2: healing.use_slot("healing_2")
+	if command.use_healing_1: healing.use_slot("support_1")
+	if command.use_healing_2: healing.use_slot("support_2")
+	if command.use_healing_3: healing.use_slot("support_3")
+	if command.use_healing_4: healing.use_slot("support_4")
 	healing.step(delta)
 
 func hurt(amount: float, source: Vector3) -> void:
@@ -103,17 +114,19 @@ func respawn() -> void:
 	if hud != null: hud.announce("Back at the nursery / Fresh health. Your friends are waiting!")
 
 func capture() -> Dictionary:
+	loadout.persist_reserve()
 	var input_ack := (actor.command_source as RemotePlayerInput).consumed_sequence if actor.command_source is RemotePlayerInput else 0
-	return {"input_ack": input_ack, "facing_locked": last_command.attack_held or last_command.guard_held, "hits": health.hit_counts.duplicate(), "clearance": minf(100, actor._ground_clearance()), "position": CoopValues.array3(actor.position), "velocity": CoopValues.array3(actor.velocity),
+	return {"input_ack": input_ack, "facing_locked": last_command.face_aim or last_command.attack_held or last_command.guard_held, "hits": health.hit_counts.duplicate(), "clearance": minf(100, actor._ground_clearance()), "position": CoopValues.array3(actor.position), "velocity": CoopValues.array3(actor.velocity),
 		"aim": [last_command.aim.x, last_command.aim.y], "grounded": actor.is_on_floor(),
 		"dashing": actor.motor.is_dashing, "charge": actor.motor.jump_charge, "cooldown": actor.motor.cooldown_remaining,
 		"progression": progression.progress.capture(), "respawns": respawn_count, "blocks": block_count, "health": health.current, "invulnerability": health.invulnerability, "combat": CombatState.capture(combat),
+		"coins": inventory.coins, "active_slot": loadout.active_slot,
+		"pending_items": inventory.pending_items.map(func(stack: ItemStack) -> Dictionary: return stack.capture()),
 		"inventory": inventory.capture(), "equipment": character_equipment.capture()}
 
 func restore(state: Dictionary, legacy_experience: int = 0) -> void:
 	progression.progress.restore(state.get("progression", {}), legacy_experience)
 	if state.has("inventory"): inventory.restore(state.get("inventory", []))
-	if state.has("equipment"): character_equipment.restore(state.get("equipment", {}))
 	respawn_count = int(state.get("respawns", 0))
 	block_count = int(state.get("blocks", 0))
 	actor.relocate(CoopValues.vector3(state.position))
@@ -123,9 +136,14 @@ func restore(state: Dictionary, legacy_experience: int = 0) -> void:
 	health.invulnerability = state.invulnerability
 	last_command.aim = Vector2(state.aim[0], state.aim[1])
 	CombatState.restore(combat, state.combat)
+	inventory.coins = int(state.get("coins", 10))
+	inventory.restore_pending(state.get("pending_items", []))
+	loadout.restore(state.get("equipment", {}), int(state.get("active_slot", 1)), state.combat)
 	_refresh_hud(state)
 
 func accept_view(state: Dictionary) -> void:
+	inventory.coins = int(state.get("coins", 10))
+	loadout.active_slot = int(state.get("active_slot", 1))
 	if prediction != null: prediction.accept(state)
 	if not target_state.is_empty() and state.health < target_state.health:
 		CombatEffects.burst(self, actor.global_position, "-%.1f" % (target_state.health - state.health), Color("ff9b8c"))
@@ -139,6 +157,8 @@ func accept_view(state: Dictionary) -> void:
 		var after: Array = state.get("hits", [0, 0, 0])
 		for kind in 3:
 			if after[kind] > before[kind]: hud.show_damage_hit(kind)
+	if state.get("inventory") is Array and state.inventory != inventory.capture(): inventory.restore(state.inventory)
+	if state.get("equipment") is Dictionary and state.equipment != character_equipment.capture(): character_equipment.restore(state.equipment)
 	progression.progress.restore(state.get("progression", {}))
 	health.current = state.health
 	target_state = state
@@ -152,13 +172,14 @@ func _process(delta: float) -> void:
 	var command := PlayerCommand.new()
 	command.aim = Vector2(state.aim[0], state.aim[1])
 	command.move = Vector2(actor.velocity.x, actor.velocity.z).limit_length()
+	command.face_aim = state.get("facing_locked", false)
 	command.attack_held = state.combat.charge > 0
 	if prediction != null: command = prediction.command
-	actor.visuals.attack_facing = Vector2(state.combat.aim[0], state.combat.aim[1]) if state.combat.active else (command.aim if state.combat.guard or ((state.combat.get("gun", false) or state.combat.get("jet", false)) and (command.attack_held or command.guard_held if prediction != null else state.get("facing_locked", false))) else Vector2.ZERO)
+	actor.visuals.attack_facing = Vector2(state.combat.aim[0], state.combat.aim[1]) if state.combat.active else (command.aim if command.face_aim or state.combat.guard else Vector2.ZERO)
 	actor.visuals.present(command, actor.velocity, actor.is_on_floor() if prediction != null else state.grounded, actor.motor.is_dashing if prediction != null else state.dashing, delta, actor.motor.jump_charge if prediction != null else state.charge, state.get("clearance", 100.0))
 	var view: Dictionary = state.combat.duplicate()
 	view.elapsed += minf(_view_age, 0.1) * combat.attack_speed_multiplier
-	CombatState.present(combat, view, command.aim if command.move.is_zero_approx() or command.attack_held else command.move)
+	CombatState.present(combat, view, command.aim if command.move.is_zero_approx() or command.face_aim or command.attack_held else command.move)
 
 	if not command.move.is_zero_approx() and actor.visuals.attack_facing.is_zero_approx() and not command.attack_held:
 		combat.gun.visual.facing = command.move

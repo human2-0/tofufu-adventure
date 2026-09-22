@@ -17,12 +17,15 @@ func _ready() -> void:
 	_apply()
 
 func _apply() -> void:
+	actor.set_collision_mask_value(JungleWorld.GATE_LAYER, progress.level() < JungleWorld.ENTRY_LEVEL)
 	actor.motor.walk_multiplier = progress.walk_multiplier()
 	combat.sword_damage_multiplier = progress.damage_multiplier("sword")
 	combat.fist_damage_multiplier = progress.damage_multiplier("fist")
 	combat.attack_speed_multiplier = progress.attack_multiplier()
 	combat.gun.attack_speed_multiplier = progress.attack_multiplier()
 	combat.gun.damage_multiplier = progress.damage_multiplier("shooting")
+	combat.sotjet.attack_speed_multiplier = progress.attack_multiplier()
+	combat.sotjet.range_multiplier = progress.shooting_range_multiplier()
 	combat.sotjet.flow.damage_multiplier = progress.damage_multiplier("shooting")
 	combat.gun.spread_multiplier = progress.shooting_spread_multiplier()
 	combat.incoming_damage_multiplier = progress.incoming_multiplier()

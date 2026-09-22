@@ -26,7 +26,7 @@ func can_use_slot(slot_name: String) -> bool:
 	if cooldown_remaining > 0.0 or equipment == null:
 		return false
 	var stack := equipment.get_slot(slot_name)
-	if stack == null or stack.count <= 0 or stack.item == null:
+	if stack == null or stack.count <= 0 or stack.item == null or stack.item.category not in ["healing", "consumable", "support"] or stack.item.healing_amount <= 0:
 		return false
 	if health != null and health.current >= health.maximum:
 		return false

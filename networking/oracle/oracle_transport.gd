@@ -14,19 +14,28 @@ var _name: String = ""
 var _active: bool = false
 
 func backend_name() -> String:
-	return "Oracle meadow"
+	return "Dedicated meadow"
 
 func discovery_description() -> String:
-	return "Connect to the Oracle meadow, then choose Join meadow. The server keeps the adventure and saves everyone’s progress."
+	return "Connect to the dedicated meadow, then choose Join meadow. The server keeps the adventure and saves everyone’s progress."
 
 func start(display_name: String) -> void:
 	close()
 	_name = display_name.left(24)
+	var config_env := "TOFUFU_SERVER_CONFIG" if server_mode else "TOFUFU_CLIENT_CONFIG"
+	if OS.has_environment(config_env) and credential_file in ["user://oracle-client.json", "/etc/tofufu/server.json"]:
+		credential_file = OS.get_environment(config_env)
+	if server_mode and OS.has_environment("TOFUFU_SERVER_PORT"):
+		var setting := OS.get_environment("TOFUFU_SERVER_PORT")
+		if not setting.is_valid_int() or int(setting) < 1 or int(setting) > 65535:
+			_fail("Server port must be between 1 and 65535.")
+			return
+		port = int(setting)
 	if credentials.is_empty():
 		var file := FileAccess.open(credential_file, FileAccess.READ)
 		if file != null and file.get_length() <= 16384:
-			var value: Variant = JSON.parse_string(file.get_as_text())
-			if value is Dictionary: credentials = value
+			var parser := JSON.new()
+			if parser.parse(file.get_as_text()) == OK and parser.data is Dictionary: credentials = parser.data
 	if server_mode:
 		if not _valid_server_config():
 			_fail("Invalid Oracle server configuration.")
@@ -40,11 +49,11 @@ func start(display_name: String) -> void:
 	else:
 		endpoint = str(credentials.get("endpoint", endpoint))
 		if not _hex_key(credentials.get("token")) or not (endpoint.begins_with("wss://") or endpoint.begins_with("ws://127.0.0.1:")):
-			_fail("Set a secure endpoint and personal token in oracle-client.json.")
+			_fail("Choose a valid player connection file, then reconnect.")
 			return
 		var link := OracleSocketLink.new()
 		if link.socket.connect_to_url(endpoint) != OK:
-			_fail("Could not connect to the Oracle meadow.")
+			_fail("Could not connect to the dedicated meadow.")
 			return
 		_links.append(link)
 		_active = true
@@ -121,7 +130,7 @@ func _drop(link: OracleSocketLink) -> void:
 	_links.erase(link)
 	link.close()
 	if not server_mode:
-		_fail("Oracle connection closed. Reconnect to the meadow; an update may be in progress.")
+		_fail("Server connection closed. Reconnect to the meadow; an update may be in progress.")
 	elif not link.key.is_empty(): event_received.emit({"type": "left", "key": link.key})
 
 func _fail(message: String) -> void:

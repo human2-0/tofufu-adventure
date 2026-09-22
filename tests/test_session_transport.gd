@@ -122,6 +122,20 @@ func check_launch_injection() -> void:
 	check(app.room.local_key.is_empty() and not alternate.active, "back to title closes injected backend")
 	await app.connection.shutdown()
 	check(alternate.is_closed(), "launch lifecycle supports asynchronous backend shutdown")
+	await app.connection.select_transport(app.server_transport)
+	check(alternate.is_closed(), "switching mode retires the old backend")
+	app.lobby.show_lobby()
+	check(not app.lobby.panel.can_host, "dedicated mode offers joining, not player hosting")
+	check(app.server_transport.is_closed(), "selecting dedicated mode does not connect automatically")
+	alternate.event_received.emit({"type": "ready", "key": alternate.key, "name": "Stale"})
+	check(app.room.local_key.is_empty(), "events from the old backend are detached")
+	app.room.dedicated = true # A previous server welcome selected dedicated membership.
+	await app.connection.select_transport(alternate)
+	app.connection.discover("Returned")
+	check(alternate.starts == 2 and app.room.local_key == alternate.key, "switching back reconnects through the selected backend")
+	app.room.create_room()
+	check(app.room.members == [alternate.key] and not app.room.dedicated, "switching back restores a participating player host")
+	await app.connection.shutdown()
 	app.free()
 
 func check_join_recovery() -> void:

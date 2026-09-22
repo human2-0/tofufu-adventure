@@ -9,6 +9,15 @@ func _ready() -> void:
 	room.send_packet = transport.send_packet
 	transport.event_received.connect(room.receive)
 
+func select_transport(next: SessionTransport) -> void:
+	if next == transport: return
+	await shutdown()
+	transport.event_received.disconnect(room.receive)
+	transport = next
+	room.send_packet = transport.send_packet
+	transport.event_received.connect(room.receive)
+	room.status = "Choose a name, then discover other testers."
+
 func discover(display_name: String) -> void:
 	disconnect_session()
 	room.status = "Starting %s…" % transport.backend_name()
@@ -18,6 +27,7 @@ func discover(display_name: String) -> void:
 func disconnect_session() -> void:
 	room.leave()
 	transport.close()
+	room.dedicated = false
 	room.clear_discovery()
 
 func shutdown() -> void:

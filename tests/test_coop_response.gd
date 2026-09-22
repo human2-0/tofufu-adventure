@@ -76,7 +76,7 @@ func _run() -> void:
 	game.camera._physics_process(0.016)
 	var command := PlayerCommand.new()
 	command.aim = Vector2.UP
-	command.weapon_slot = 3
+	command.weapon_slot = 2
 	for direction in [Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT, Vector2.UP]:
 		command.move = direction
 		game.player.velocity = Vector3(direction.x, 0, direction.y)

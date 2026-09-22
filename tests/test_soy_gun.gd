@@ -103,10 +103,10 @@ func _run() -> void:
 		aim_max = maxf(aim_max, Vector3.FORWARD.angle_to(gun.spread(Vector3.FORWARD, 0.35)))
 	check(hip_max > deg_to_rad(4) and aim_max <= deg_to_rad(0.36), "ADS is substantially tighter than hip fire")
 	var command := PlayerCommand.new()
-	command.weapon_slot = 3
+	command.weapon_slot = 2
 	command.aim_point = Vector3(0, 1.85, -5)
 	var wire := CoopValues.input(command, 1, 0)
-	check(ExplorationProtocol.valid_input(wire), "slot 3 and bounded aim point accepted")
+	check(ExplorationProtocol.valid_input(wire), "combat slot 2 and bounded aim point accepted")
 	check(CoopValues.command(wire).aim_point == command.aim_point, "wire round trip retains vertical aim")
 	wire.aim_point = [0, NAN, 0]
 	check(not ExplorationProtocol.valid_input(wire), "nonfinite gun aim rejected")

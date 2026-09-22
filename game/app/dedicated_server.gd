@@ -12,6 +12,7 @@ var _clock: float = 0
 var _seconds: float = 0
 
 func _ready() -> void:
+	get_tree().auto_accept_quit = false
 	if OS.has_environment("TOFUFU_STATE_DIR"): state_directory = OS.get_environment("TOFUFU_STATE_DIR")
 	store.directory = state_directory
 	store.extra_validator = CoopCheckpoint.valid
@@ -66,13 +67,17 @@ func _process(delta: float) -> void:
 	if _clock >= 30: save_world()
 	var stop_file := state_directory.path_join("stop-request")
 	if FileAccess.file_exists(stop_file):
-		if not save_world():
-			get_tree().quit(1)
-			return
 		DirAccess.remove_absolute(stop_file)
-		room.leave("The Oracle meadow is updating. Please reconnect shortly.")
-		transport.close()
-		get_tree().quit()
+		_stop()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST: _stop()
+
+func _stop() -> void:
+	var saved := save_world()
+	room.leave("The meadow is restarting. Please reconnect shortly.")
+	transport.close()
+	get_tree().quit(0 if saved else 1)
 
 func save_world() -> bool:
 	if session == null: return false

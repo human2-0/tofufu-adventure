@@ -7,7 +7,7 @@ var pending: Array[PlayerCommand] = []
 var _held := PlayerCommand.new()
 var _last_received: int = 0
 var _overflowed: bool = false
-const EDGES: Array[StringName] = [&"jump_pressed", &"dash_pressed", &"drop_pressed", &"pickup_pressed", &"camp_pressed", &"time_pressed"]
+const EDGES: Array[StringName] = [&"jump_pressed", &"dash_pressed", &"drop_pressed", &"pickup_pressed", &"camp_pressed", &"time_pressed", &"use_healing_1", &"use_healing_2", &"use_healing_3", &"use_healing_4"]
 
 func accept(command: PlayerCommand, sequence: int = 0) -> bool:
 	if pending.size() >= 12:
@@ -27,6 +27,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 	if not pending.is_empty():
 		var next := _consume_pending()
 		_held.move = next.move
+		_held.face_aim = next.face_aim
 		_held.aim = next.aim
 		_held.aim_point = next.aim_point
 		_held.dash_direction = next.dash_direction
@@ -38,6 +39,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 		return next
 	var command := PlayerCommand.new()
 	command.move = _held.move
+	command.face_aim = _held.face_aim
 	command.aim = _held.aim
 	command.aim_point = _held.aim_point
 	command.dash_direction = _held.dash_direction
@@ -54,6 +56,7 @@ func _consume_pending() -> PlayerCommand:
 	# Commands describe intent, not simulation work to replay on later ticks.
 	# Keep the newest held state and deliver queued one-shot actions once.
 	for earlier: PlayerCommand in pending:
+		if earlier.pickup_pressed and not next.pickup_pressed: next.pickup_id = earlier.pickup_id
 		for edge: StringName in EDGES:
 			next.set(edge, next.get(edge) or earlier.get(edge))
 		if earlier.cancel_actions: next.cancel_actions = true

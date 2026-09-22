@@ -20,6 +20,8 @@ func _ready() -> void:
 	game.hud.add_child(weapon_view)
 	game.hud.move_child(weapon_view, 0)
 	weapon_view.visible = false
+	game.combat.gun.visual_muzzle = _gun_muzzle
+	game.combat.sotjet.flow.visual.nozzle_provider = _jet_muzzle
 	_collect_geometry(game.player.visuals)
 	_collect_geometry(game.combat.sword)
 	_collect_geometry(game.combat.gun.visual)
@@ -46,6 +48,9 @@ func _process(_delta: float) -> void:
 	reticle.queue_redraw()
 	game.hud.show_gun(game.combat.gun.selected, game.combat.gun.aiming)
 	game.hud.show_sotjet(game.combat.sotjet.selected, game.combat.sotjet.milk / game.combat.sotjet.tuning.capacity)
+	var first: ItemStack = game.character_equipment.get_slot("combat_1")
+	var second: ItemStack = game.character_equipment.get_slot("combat_2")
+	game.hud.show_loadout(first.item.name if first != null else "Unarmed", second.item.name if second != null else "Unarmed", game.loadout.active_slot)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_instance_valid(local_input): return
@@ -84,3 +89,9 @@ func _collect_geometry(node: Node) -> void:
 		_local_geometry.append(node)
 		_layers.append(node.layers)
 	for child in node.get_children(): _collect_geometry(child)
+
+func _gun_muzzle() -> Vector3:
+	return weapon_view.muzzle_position(game.camera, false) if first_person else game.combat.gun.visual.muzzle_position()
+
+func _jet_muzzle() -> Vector3:
+	return weapon_view.muzzle_position(game.camera, true) if first_person else game.combat.sotjet.visual.muzzle_position()

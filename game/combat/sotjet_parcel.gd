@@ -5,6 +5,7 @@ extends RefCounted
 var excluded_body: CollisionObject3D
 var reflected_by: Damageable
 var reflections: int = 0
+var visual_offset := Vector3.ZERO
 var position: Vector3
 var velocity: Vector3
 var previous: Vector3

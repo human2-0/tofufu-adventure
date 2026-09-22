@@ -9,9 +9,12 @@ var store: SaveStore
 var save_slot: int = -1
 var save_data: Dictionary = {}
 var panel: LobbyPanel
+var peer_transport: SessionTransport
+var server_transport: OracleTransport
 
 func show_lobby() -> void:
-	var content := menu.clear_page("Better with a few beans", "CO-OP  /  PUBLIC PLAYTEST" if connection.transport.can_host() else "CO-OP  /  ORACLE MEADOW")
+	var content := menu.clear_page("Better with a few beans", "CO-OP  /  PUBLIC PLAYTEST" if connection.transport.can_host() else "CO-OP  /  DEDICATED SERVER")
+	_add_connection_choices(content)
 	panel = LobbyPanel.new()
 	panel.can_host = connection.transport.can_host()
 	panel.discovery_description = connection.transport.discovery_description()
@@ -57,3 +60,36 @@ func _can_admit(key: String) -> bool:
 	var identities: Dictionary = save_data.get("coop", {}).get("party", {}).duplicate()
 	for member: String in room.members: identities[member] = true
 	return identities.has(key) or identities.size() < 32
+
+func _add_connection_choices(content: VBoxContainer) -> void:
+	if peer_transport != null and server_transport != null:
+		var modes := OptionButton.new()
+		modes.add_item("Friends · Holepunch")
+		modes.add_item("Dedicated server · Local / Oracle")
+		modes.select(1 if connection.transport == server_transport else 0)
+		content.add_child(modes)
+		modes.item_selected.connect(func(index: int) -> void:
+			modes.disabled = true
+			panel.hide()
+			await connection.select_transport(server_transport if index == 1 else peer_transport)
+			show_lobby())
+	if connection.transport == server_transport:
+		MenuStyle.button(content, "Choose player connection file…", _choose_profile)
+		MenuStyle.paragraph(content, "Each player needs their own connection file from the server owner. Keep it to rejoin your saved character.")
+
+func _choose_profile() -> void:
+	var picker := FileDialog.new()
+	picker.access = FileDialog.ACCESS_FILESYSTEM
+	picker.show_hidden_files = true
+	picker.file_mode = FileDialog.FILE_MODE_OPEN_FILE
+	picker.filters = PackedStringArray(["*.json ; Player connection"])
+	picker.title = "Choose your player connection file"
+	menu.add_child(picker)
+	picker.file_selected.connect(func(path: String) -> void:
+		connection.disconnect_session()
+		server_transport.credential_file = path
+		server_transport.credentials.clear()
+		panel.status.text = "Connection file selected. Choose your name, then Connect to server."
+		picker.queue_free())
+	picker.canceled.connect(picker.queue_free)
+	picker.popup_centered_ratio(0.7)

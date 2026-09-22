@@ -23,7 +23,7 @@ var _pending: String = ""
 var _timeout: float = 0
 var _retry_clock: float = 0
 var _presence_clock: float = 0
-const GAME_VERSION: int = 7
+const GAME_VERSION: int = 11
 
 func receive(event: Dictionary) -> void:
 	var key := str(event.get("key", ""))
@@ -156,7 +156,7 @@ func _packet(key: String, data: Dictionary) -> void:
 			if key == host_key and not hosting and data.get("epoch") == epoch:
 				_reset_session(str(data.get("reason", "The host ended this connection.")).left(160))
 				_presence()
-		"input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice":
+		"input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice", "inventory_transfer", "shop_result", "farm_action", "farm_result":
 			if playing and (key in members or key == host_key) and data.get("epoch") == epoch:
 				gameplay_packet.emit(key, data)
 

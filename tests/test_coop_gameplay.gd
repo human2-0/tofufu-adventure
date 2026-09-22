@@ -45,6 +45,53 @@ func _run() -> void:
 	await ticks(15)
 	var remote := host_session.roster.party[GUEST]
 	var replica := guest_session.roster.party[GUEST]
+	var before_shop := remote.actor.position
+	guest_game.merchant._request("sotjet")
+	await ticks(10)
+	check(remote.inventory.coins == 10, "remote purchase rejects out-of-range buyer")
+	remote.actor.relocate(host_game.world.ground_point(29, 5.2))
+	await ticks(15)
+	guest_game.merchant._request("sotjet")
+	await ticks(15)
+	check(remote.inventory.coins == 9 and replica.inventory.coins == 9, "host charges one coin and synchronizes wallet")
+	check(replica.inventory.count_item("sotjet") == 1, "guest purchase creates a weapon in the bag")
+	guest_game.merchant._request_sale(0, "sotjet")
+	await ticks(12)
+	check(remote.inventory.coins == 10 and replica.inventory.coins == 10 and replica.inventory.get_slot(0) == null, "guest sale credits coins and removes the sold item on both peers")
+	remote.inventory.set_slot(0, ItemStack.new(InventoryItem.create_soybean(), 999))
+	await ticks(8)
+	check(replica.inventory.get_slot(0).count == 999, "999 stack replicates")
+	guest_game.merchant._request_sale(0, "soybean")
+	await ticks(12)
+	check(replica.inventory.coins == 11 and replica.inventory.get_slot(0).count == 998, "gathered stack sells one unit through host")
+	remote.inventory.set_slot(0, null) # Remove the shop fixture before stacking checks.
+	remote.actor.relocate(before_shop)
+	await ticks(10)
+	check(guest_game.inventory == replica.inventory and guest_game.character_equipment == replica.character_equipment, "window shares local co-op inventory")
+	remote.inventory.add_item(InventoryItem.create_soybean(), 3)
+	await ticks(8)
+	guest_game.inventory_window.execute_transfer("inventory", 0, "equipment", "support_2")
+	check(replica.character_equipment.get_slot("support_2") == null, "guest transfer awaits host outcome")
+	await ticks(8)
+	check(remote.character_equipment.get_slot("support_2") != null, "host applies guest transfer")
+	check(replica.character_equipment.get_slot("support_2") != null, "guest receives equipped item")
+	guest.send_game(HOST, {"type": "inventory_transfer", "sequence": 1, "src": "equipment", "src_id": "support_2", "dst": "inventory", "dst_id": 0})
+	await ticks(3)
+	check(remote.inventory.get_slot(0) == null, "replayed transfer cannot move items")
+	guest_game.inventory_window.drop_requested.emit("equipment", "support_2")
+	for retry in 24:
+		if guest_game.world_items.pool.drops.size() == 1: break
+		await ticks(1)
+	check(remote.character_equipment.get_slot("support_2") == null and guest_game.world_items.pool.drops.size() == 1, "guest equipment stack drops through authority")
+	var stack_id: int = host_game.world_items.pool.drops.keys()[0]
+	input.pickup_id = stack_id
+	input.pickup = true
+	await ticks(10)
+	check(remote.inventory.count_item("soybean") == 3 and guest_game.world_items.pool.drops.is_empty(), "guest can recover dropped stack through exact focused ID")
+	input.pickup_id = -1
+	# Clear fixture beans before existing pickup assertions.
+	remote.inventory.remove_item("soybean", 3)
+	await ticks(8)
 	# Guest intent must collide on the host, then converge to that stopped pose.
 	host_game.player.position = Vector3(0, 0.05, 2)
 	remote.actor.position = Vector3(-2, 0.05, 2)
@@ -85,10 +132,29 @@ func _run() -> void:
 	input.guard = false
 	input.drop = true
 	await ticks(10)
-	check(not remote.combat.equipment.knife_owned and is_instance_valid(replica.combat.equipment.dropped), "guest dropped knife appears on both peers")
+	check(not remote.combat.equipment.knife_owned and guest_game.world_items.pool.drops.size() == 1, "guest dropped knife appears on both peers")
 	input.pickup = true
 	await ticks(10)
 	check(remote.combat.equipment.knife_owned and replica.combat.equipment.knife_owned, "guest retrieves own knife")
+	# A host-owned world drop is collectible by a guest, with one shared outcome.
+	host_game.player.position = remote.actor.position + Vector3(0.8, 0, 0)
+	host_game.combat.equipment.step(Vector2.UP, false, false, true, false, 2, 0.016)
+	var shared_id: int = host_game.combat.equipment.dropped.drop_id
+	await ticks(8)
+	check(guest_game.world_items.pool.drops.has(shared_id), "host gun appears in guest shared drop pool")
+	input.pickup_id = shared_id
+	input.pickup = true
+	await ticks(10)
+	check(remote.inventory.count_item("soy_gun") == 1 and replica.inventory.count_item("soy_gun") == 1, "guest stores another player's gun in bag when both combat slots are occupied")
+	check(not host_game.combat.equipment.gun_owned and not guest_game.world_items.pool.drops.has(shared_id), "original owner stays unarmed and consumed drop disappears")
+	input.pickup = true
+	await ticks(8)
+	check(host_game.world_items.pool.drops.is_empty(), "repeated pickup cannot recreate consumed item")
+	# Restore fixture ownership for the independent friendly-fire checks below.
+	host_game.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun"), 1))
+	input.pickup_id = -1
+	input.slot = 1
+	await ticks(3)
 	var prop: HarvestProp = host_game.encounters.prop_nodes[0]
 	prop.target.damage(999)
 	await ticks(10)
@@ -119,7 +185,7 @@ func _run() -> void:
 	await ticks(12)
 	input.aim = Vector2.DOWN
 	input.aim_point = host_game.player.position + Vector3.UP * 0.55
-	input.slot = 3
+	input.slot = 2
 	input.guard = true
 	input.attack = true
 	await ticks(7)

@@ -32,6 +32,7 @@ func _ready() -> void:
 	_viewport.add_child(camera)
 	_rig = Node3D.new()
 	_viewport.add_child(_rig)
+	_rig.position = Vector3(0.32, -0.30, -1.0)
 	_knife = _sprite(SwordVisual.ATLAS, Rect2(Vector2(SwordVisual.ATLAS.get_width() * 0.5, 0), Vector2(SwordVisual.ATLAS.get_size()) / Vector2(4, 2)), 0.0018)
 	_gun = _sprite(SoyGunVisual.REAR, SoyGunVisual.REAR_REGIONS[0], 0.0018)
 	_jet = SotjetVisual.new()
@@ -96,3 +97,13 @@ func _process(delta: float) -> void:
 		_hands[0].position = Vector3(0.05, 0.0, 0.1)
 		_hands[1].position = Vector3(-0.65, 0.0, 0.1)
 		_hands[0].position.z -= sin(clampf(combat.equipment._punch_time / combat.tuning.punch_cooldown, 0, 1) * PI) * 0.25
+
+func muzzle_position(world_camera: Camera3D, jet: bool) -> Vector3:
+	var sprite: Sprite3D = _jet if jet else _gun
+	var cell := Vector2(SotjetVisual.ATLAS.get_size()) / Vector2(5, 2) if jet else SoyGunVisual.REAR_REGIONS[0].size
+	var landmark := SotjetVisual.MUZZLES[5] if jet else Vector2(0.5, 0.48)
+	var point := Vector3((landmark.x - 0.5) * cell.x, (0.5 - landmark.y) * cell.y, 0) * sprite.pixel_size
+	var overlay_camera := _viewport.get_camera_3d()
+	var screen := overlay_camera.unproject_position(sprite.to_global(point)) / Vector2(_viewport.size)
+	# Match the overlay's screen position even when world ADS changes its FOV.
+	return world_camera.project_position(screen * world_camera.get_viewport().get_visible_rect().size, 0.6)

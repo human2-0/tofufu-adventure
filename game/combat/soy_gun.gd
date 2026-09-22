@@ -7,6 +7,7 @@ var damage_multiplier: float = 1.0
 var attack_speed_multiplier: float = 1.0
 var spread_multiplier: float = 1.0
 
+var visual_muzzle: Callable
 var owner_health: Damageable
 var actor: CollisionObject3D
 var tuning: CombatTuning
@@ -62,6 +63,7 @@ func _spawn(authority: bool) -> void:
 	bean.check_initial_path = authority
 	visual.refresh()
 	bean.visual_origin = visual.muzzle_position() if visual.visible else shot_origin
+	if visual_muzzle.is_valid(): bean.visual_origin = visual_muzzle.call()
 	visual.kick = 1.0
 	bean.body_damage = tuning.bean_damage * damage_multiplier
 	bean.head_damage = tuning.bean_head_damage * damage_multiplier

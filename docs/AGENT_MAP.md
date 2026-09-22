@@ -26,18 +26,28 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── main.tscn            # player, level, camera and HUD composition
 │   │   ├── first_person_weapon.gd # isolated first-person weapon/hand overlay
 │   │   ├── shooting_view.gd    # local view toggle, mouse orbit, aim zoom and reticle wiring
+│   │   ├── world_items.gd # shared drops, actor grants, focused pickup and stack drops
+│   │   ├── world_item_visuals.gd # existing weapon art on centered pickup bodies
+│   │   ├── inventory_controls.gd # local bag shortcuts, modal input and cursor lifecycle
+│   │   ├── coop_inventory.gd # bounded host-authoritative bag transfer intents
 │   │   ├── main.gd              # cross-feature wiring + respawn
+│   │   ├── quest_giver.gd       # Mayor Mame quest interaction, kill counting and rewards
 │   │   ├── pod_opening.gd       # first-quest actor/camera/world composition
 │   │   ├── weather_flow.gd      # weather -> atmosphere, HUD and snail modifiers
 │   │   ├── sandbox_encounters.gd # explicit combat, prop and loot composition
 │   │   └── exploration_sites.gd  # four Fufufarm discovery landmarks
+│   ├── farming/                 # per-plot soybean lifecycle, soil and supplied atlas presentation
+│   ├── app/soybean_farming.gd  # nursery test plots, reach and inventory grants
+│   ├── app/coop_farming.gd     # host/server farming intents, revisions and reward routing
+│   ├── quest/quest_state.gd     # isolated quest rules, status and save representation
 │   ├── progression/character_progress.gd # capped skill practice, EXP curves and derived stats
 │   ├── progression/{progression_tuning.gd,default_progression.tres} # shared authored balance
-│   ├── ui/character_stats.gd   # level, skill ranks and next-rank progress view
+│   ├── ui/character_stats.gd   # level, skill ranks, stat points and interactive allocation
 │   ├── persistence/save_store.gd # versioned atomic adventure slots
 │   ├── settings/game_preferences.gd # saved display and device bindings
 │   ├── chat/                    # bounded proximity rules, composer/history, speech labels, microphone and playback
-│   ├── inventory/               # 10-slot bag, equipment, drag-drop window and gradual healing
+│   ├── inventory/equipment_layout.gd # anatomical slot placement and muted SVG placeholders
+│   ├── inventory/               # bag, equipment, transfers, healing and world_item_{drop,pool}.gd collision bodies
 │   ├── session/                 # roster, actor/world schemas and bounded input window
 │   ├── ui/menu/                 # themed title, settings, saves and lobby views
 │   ├── player/
@@ -63,9 +73,12 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── pod_escape_rules.gd  # timed pushes, stem snap, fall, split, reveal
 │   │   └── soybean_plant.gd     # 3D nursery plant, shell and occupant marker
 │   ├── camera/camera_follow.gd # follows an assigned target
+│   ├── app/map_flow.gd       # terrain atlas, NPC and replicated party marker composition
+│   ├── ui/{map_view,map_canvas}.gd # minimap and full north-up map presentation
 │   ├── ui/gun_reticle.gd     # pointer/center aim and spread cue
 │   ├── ui/touch_controls.gd      # multitouch action buttons
 │   ├── ui/pod_quest_hud.gd     # opening instructions and precision meter
+│   ├── ui/quest_window.gd      # frosted dialog for quest dialogue, progress and rewards
 │   ├── ui/pod_focus.gdshader   # close-up background softening
 │   ├── ui/weather_view.gd    # local weather status and rain overlay
 │   ├── ui/rain.gdshader      # animated rain streaks
@@ -99,6 +112,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   └── soybean_pickup.gd    # collectible 2D healing drop
 │   └── world/
 │       ├── meadow.{gd,tscn}     # Fufufarm terrain/scenery composition
+│       ├── jungle_{world,terrain,props}.gd # level-eight eastern jungle, terrain and tropical scenery
 │       ├── farm_terrain.gd     # seeded heightfield + shared collision surface
 │       ├── farm_ground.gdshader # soft lanes, soil furrows and stream banks
 │       ├── farm_buildings.gd   # cottages, storage, village NPC placeholders
@@ -124,6 +138,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── godot/holepunch_transport.gd # process + authenticated loopback bridge
 │   ├── oracle/                  # TLS WebSocket adapter and bounded socket lifecycle
 │   ├── sidecar/                 # pinned Hyperswarm runtime and local tests
+│   ├── DEDICATED.md             # local dedicated server and player setup
 │   └── README.md                # setup and current limitations
 ├── tests/
 │   ├── AGENTS.md
@@ -133,16 +148,20 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── test_frontend.gd         # menu startup, save/load, bindings, protocol guards
 │   ├── test_chat.gd             # distance/yell routing, identity/rate guards, PCM and input isolation
 │   ├── preview_chat.gd          # rendered chat composer, guide, speech and history
+│   ├── test_dedicated_peer.gd  # launcher client for verify_dedicated.py
 │   ├── test_oracle.gd          # real local sockets, dedicated world, identity and reconnect
 │   ├── test_session_transport.gd # alternate transport lifecycle, room protocol and launch injection
 │   ├── preview_coop_response.gd # rendered shoulder walking and soybean hit feedback
 │   ├── test_coop_response.gd # injected latency, prediction, facing and friendly-hit feedback
+│   ├── test_coop_farming.gd   # three-world host/dedicated farming and first-person facing
 │   ├── test_coop_scene.gd       # fake transport, two worlds, roster and snapshots
 │   ├── test_coop_{protocol,gameplay,opening,launch}.gd # limits, outcomes, quest/save flow
 │   ├── test_coop_peer.gd        # real Godot + Holepunch process verification
 │   ├── coop_test_input.gd       # injected co-op test commands
 │   ├── preview_coop.gd          # rendered host/guest views
 │   ├── preview_menu.gd          # rendered title/settings/lobby at two sizes
+│   ├── test_jungle.gd          # per-character level gate, collision ground and rendered jungle QA
+│   ├── test_map.gd             # map markers, projection, modal input and rendered atlas QA
 │   ├── test_input.gd            # gamepad actions, deadzones and touch composition
 │   ├── preview_controls.gd      # desktop/phone/tablet rendered layouts
 │   ├── test_actor_collisions.gd # player/snail sweeps, dash and occupied respawns
@@ -180,6 +199,8 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 ├── .github/workflows/oracle-deploy.yml # opt-in main-branch deployment over SSH
 ├── tools/
 │   ├── check_architecture.py    # dependency and path checks
+│   ├── local_multiplayer.py     # portable dedicated server/player/stop commands
+│   ├── verify_dedicated.py      # separate server/client processes and restart checks
 │   ├── verify_coop.py           # separate Godot/sidecar lifecycle integration
 │   ├── package_coop.py          # platform-matched desktop runtime staging
 │   └── verify.py                # headless verification entry point
@@ -199,7 +220,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 | Opening quest | `game/opening/`, `app/pod_opening.gd`, `ui/pod_quest_hud.gd` | pod escape + rendered preview |
 | Gameplay rules | `game/player/AGENTS.md`, motor, tuning, command | motor tests + scene test |
 | Combat / healing / mobs | `game/combat/`, app encounter wiring | combat + sandbox tests |
-| Inventory / Equipment | `game/inventory/`, `game/app/main.gd` | inventory + sandbox tests |
+| Inventory / Equipment | `game/inventory/`, `game/app/actor_loadout.gd`, `game/app/weapon_merchant.gd` | inventory, loadout/shop, world items + sandbox tests |
 | World / exploration | `game/world/meadow.*`, cycle, app discovery wiring | sandbox + rendered preview |
 | Controls | local input, command source, `project.godot` | scene test + manual mouse check |
 | Character art / animation | visuals, ghost, `assets/AGENTS.md` | import + manual play |

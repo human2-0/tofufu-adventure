@@ -2,7 +2,7 @@ class_name GamePreferences
 extends RefCounted
 ## Local settings only. ConfigFile stores primitives, never peer-supplied objects.
 
-const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "attack", "guard", "punch", "drop_weapon", "pickup_weapon", "knife_slot", "fist_slot", "gun_slot", "sotjet_slot", "camera_mode", "toggle_help", "return_to_camp", "skip_time"]
+const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "attack", "guard", "punch", "drop_weapon", "pickup_weapon", "combat_slot_1", "combat_slot_2", "camera_mode", "toggle_inventory", "toggle_map", "use_support_1", "use_support_2", "use_support_3", "use_support_4", "toggle_help", "return_to_camp", "skip_time"]
 const RESOLUTIONS: Array[Vector2i] = [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 var path: String = "user://preferences.cfg"
 var config := ConfigFile.new()
@@ -85,7 +85,7 @@ static func binding_text(action: String, device: String) -> String:
 	var names: PackedStringArray = []
 	for event in InputMap.action_get_events(action):
 		if same_device(event, device):
-			names.append(event.as_text().replace(" (Physical)", "").replace("Joypad", "Pad"))
+			names.append(event.as_text().replace(" (Physical)", "").replace(" - Physical", "").replace("Joypad", "Pad"))
 	return " / ".join(names) if not names.is_empty() else "Unassigned"
 
 func _replace(action: String, event: InputEvent, device: String) -> void:

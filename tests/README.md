@@ -60,3 +60,19 @@ Proximity chat: `test_chat.gd` covers authoritative distance/yell routing, authe
 For physical voice QA, run two desktop clients with headphones, grant microphone permission, enable Mic and hold V. Confirm voice stops on release, typing, pause menus, focus loss and departure; Listen should silence playback. Walk across 12 units and confirm attenuation/cutoff, then test normal text versus yelling at 12/36 units. Check denied permission and the selected OS input device. These physical and separate-network checks are not automated.
 
 `test_session_transport.gd` verifies a non-Holepunch transport against room admission, delivery, reconnect, host loss, delayed shutdown and actual launch injection. It runs in `tools/verify.py` with no sidecar or network.
+
+Inventory coverage: `test_inventory.gd` checks stacking, healing, transfers, invalid slot IDs and malformed saved stacks. `test_inventory_input.gd` exercises real viewport I/B events with the solo handler disabled, Escape, key repeat, chat and menu isolation. Run it without `--headless` and with `-- --preview` to render `/tmp/tofufu-inventory.png`. `test_coop_gameplay.gd` checks local bag identity, host-applied transfers, guest snapshots and replay rejection.
+
+World drops: `test_world_items.gd` covers swept wall/floor collision, occluded pickup, cross-actor ownership, duplicate claims, guns, reservoir-preserving swaps, focus, bag drops and save schemas. Run it without `--headless` with `-- --preview` for `/tmp/tofufu-world-items.png`. Co-op gameplay tests also exercise another player collecting a host drop with authoritative removal on both peers.
+
+`test_loadout_shop.gd` covers two combat slots, four support slots, coin purchases, merchant range, full bags, equipment transfers, Soyjet reserve and save restoration. Run with `-- --preview` to render equipment and shop previews. Co-op gameplay tests also check authoritative purchases and replicated coin balances.
+
+Stack/trade coverage includes merging a full source into a partial destination, support-slot merging, 999 save/replica limits, sale proceeds, stale sale IDs, merchant distance and host-authoritative guest sales.
+
+`test_map.gd` checks map projection, NPC and party markers, live movement/departure, chat isolation and modal controls. Run with `-- --preview` in a rendered Godot session to save minimap and full-map captures under `/tmp/tofufu-map*.png`.
+
+Soybean nursery: `test_farming.gd` checks growth milestones, isolated state, repeated harvest rejection, inventory rewards, full bags and reach. `preview_farming.gd` renders the garden and harvest into `/tmp/soybean-{garden,harvest}.png`.
+
+`test_coop_farming.gd` covers host and dedicated farming with two guests, JSON state and inventory synchronization, stale/range/capacity guards, checkpoint restoration, and first-person strafing/idle-facing replication. Running without `--headless` saves `/tmp/soy-coop-facing-{false,true}-{0,1}.png`.
+
+Dedicated server acceptance: `python3 tools/verify_dedicated.py` starts a server and two actual launcher processes on loopback, checks movement and leaving, restarts the world, and verifies retained player identities and nearby collision-safe saved positions. No Oracle account or Holepunch runtime is used. `test_dedicated_peer.gd` is invoked only by this coordinator.

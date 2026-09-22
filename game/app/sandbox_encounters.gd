@@ -5,6 +5,7 @@ extends Node3D
 signal progress_changed(beans: int, mobs: int, props: int)
 signal experience_awarded(amount: int)
 signal experience_changed(total: int)
+signal mob_defeated(at: Vector3)
 var mob_nodes: Array[TrainingMob] = []
 var prop_nodes: Array[HarvestProp] = []
 var dummy_nodes: Array[PracticeDummy] = []
@@ -95,6 +96,7 @@ func _mob_defeated(at: Vector3) -> void:
 	experience += MOB_EXPERIENCE
 	experience_changed.emit(experience)
 	experience_awarded.emit(MOB_EXPERIENCE)
+	mob_defeated.emit(at)
 	_drop(at, 2)
 	CombatEffects.burst(self, at, "+%d EXP" % MOB_EXPERIENCE, Color("b0e6cb"))
 	progress_changed.emit(beans, mobs, props)

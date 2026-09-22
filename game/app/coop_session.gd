@@ -5,6 +5,7 @@ extends Node
 var game: Node3D
 var room: PlaytestRoom
 var authority: bool = false
+var farming: CoopFarming
 var roster := CoopRoster.new()
 var opening := CoopOpening.new()
 var checkpoint: Dictionary = {}
@@ -31,6 +32,7 @@ func _ready() -> void:
 		roster.saved_states = checkpoint.party.duplicate(true)
 		game.encounters.experience = int(checkpoint.world.experience)
 	add_child(roster)
+	game.map.roster = roster
 	opening.game = game
 	opening.roster = roster
 	opening.authority = authority
@@ -42,10 +44,18 @@ func _ready() -> void:
 		add_child(encounters)
 		if not checkpoint.is_empty():
 			CoopWorld.apply(game, checkpoint.world, false)
+			if not checkpoint.world.has("world_items"): _migrate_legacy_drops()
 			opening.apply(checkpoint.opening)
 	else:
 		CoopWorld.disable_simulation(game)
 		game.hud.announce("Joining your friends / Synchronizing the adventure…")
+	game.inventory_window.drop_requested.disconnect(game.world_items._queue_bag_drop)
+	var inventory_sync := CoopInventory.new()
+	inventory_sync.session = self
+	add_child(inventory_sync)
+	farming = CoopFarming.new()
+	farming.session = self
+	add_child(farming)
 	game.chat.connect_session(room, roster)
 	room.gameplay_packet.connect(_packet)
 	room.admission = func(key: String) -> bool: return key in roster.saved_states or roster.capture_party().size() < 32
@@ -135,6 +145,7 @@ func _roster_changed() -> void:
 	_world_clock = 1
 
 func _unhandled_input(event: InputEvent) -> void:
+	if game.inventory_window.visible or game.map.expanded: return
 	if event.is_action_pressed("toggle_help") and not event.is_echo(): game.hud.toggle_help()
 
 func local_input_enabled(enabled: bool) -> void:
@@ -149,3 +160,11 @@ func _process(delta: float) -> void:
 		mob._sprite.modulate = mob._sprite.modulate.lerp(Color.WHITE, minf(1, delta * 5))
 	for dummy: PracticeDummy in game.encounters.dummy_nodes:
 		dummy._figure.rotation.z = lerpf(dummy._figure.rotation.z, 0, minf(1, delta * 9))
+
+func _migrate_legacy_drops() -> void:
+	var rows: Array = []
+	for state: Dictionary in checkpoint.party.values():
+		if not state.combat.owned:
+			var at: Array = state.combat.drop
+			rows.append([rows.size() + 1, "knife", 1, 100, at[0], at[1] + 0.4, at[2]])
+	game.world_items.pool.restore(rows)

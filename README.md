@@ -38,8 +38,10 @@ Open `project.godot` in Godot 4.7.2 (the locally verified version), then press F
 | Left mouse | Release for a knife slash; hold to charge. Punches when fists are selected. |
 | Right mouse | Hold knife guard toward the attacker (front 110°); successful blocks spark |
 | F | Punch with either equipment slot |
-| 1 / 2 | Select knife / fists |
-| Q / E | Drop knife / recover nearby knife |
+| 1 / 2 | Select equipped combat item (empty slot uses fists) |
+| 3 / 4 / 5 / 6 | Use support slots |
+| I / B | Open inventory and equipment |
+| Q / E | Drop active combat item / pick up highlighted item or speak to Kaji |
 | Space | Tap and release to jump; hold then release for double height |
 | Shift | Dash; evade slime attacks while dashing |
 | N | Advance the day/night cycle by six hours |
@@ -79,3 +81,7 @@ The verifier finds `godot`, `godot4`, or the standard macOS Godot app. Override 
 Offline play, co-op, remote input, snapshots, host-owned persistence and the Holepunch runtime bridge are implemented. See the co-op design for verification coverage and remaining limitations.
 
 For public tester discovery, shared adventures and desktop runtime setup, see [Co-op setup](networking/README.md).
+
+### Local dedicated multiplayer
+
+Run a persistent four-player meadow without Holepunch or a cloud VM: [local setup and test commands](networking/DEDICATED.md). Co-op mode now offers an explicit Friends / Dedicated server selector. Oracle provisioning remains deferred.

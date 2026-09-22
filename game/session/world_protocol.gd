@@ -3,6 +3,8 @@ extends RefCounted
 ## Fixed-content world schema; no arbitrary resource paths or object deserialization.
 
 static func valid(data: Dictionary) -> bool:
+	if data.has("farming") and not farming(data.farming): return false
+	if data.has("world_items") and not world_items(data.world_items): return false
 	if not _rows(data.get("mobs"), 9, 15, 9) or not _rows(data.get("props"), 24, 24, 2): return false
 	if data.mobs.size() != 9 and data.mobs.size() != 15: return false
 	if data.has("weather_phase") and (not ExplorationProtocol.number(data.weather_phase, 1) or data.weather_phase < 0): return false
@@ -51,4 +53,28 @@ static func _rows(value: Variant, minimum: int, maximum: int, width: int) -> boo
 static func _numeric(row: Array, bound: float) -> bool:
 	for value: Variant in row:
 		if not ExplorationProtocol.number(value, bound): return false
+	return true
+
+static func world_items(value: Variant) -> bool:
+	if not value is Array or value.size() > 128: return false
+	var ids: Array[int] = []
+	for row: Variant in value:
+		if not row is Array or row.size() != 7: return false
+		if not ExplorationProtocol.sequence(row[0]) or row[0] < 1 or int(row[0]) in ids: return false
+		ids.append(int(row[0]))
+		if not row[1] is String or row[1] not in ["knife", "soy_gun", "sotjet", "soybean"]: return false
+		if not ExplorationProtocol.sequence(row[2]) or row[2] < 1 or row[2] > (999 if row[1] == "soybean" else 1): return false
+		if not ExplorationProtocol.number(row[3], 100) or row[3] < 0: return false
+		if not ExplorationProtocol.vector(row.slice(4), 3, 500): return false
+	return true
+
+static func farming(value: Variant) -> bool:
+	if not _rows(value, 4, 4, 4): return false
+	for row: Array in value:
+		if not row[0] is bool: return false
+		if not ExplorationProtocol.number(row[1], 30) or row[1] < 0: return false
+		if not ExplorationProtocol.number(row[2], 1.2) or row[2] < 0: return false
+		if not ExplorationProtocol.sequence(row[3]): return false
+		if row[0] and row[2] != 0: return false
+		if not row[0] and row[1] != 0: return false
 	return true

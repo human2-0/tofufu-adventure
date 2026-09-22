@@ -11,8 +11,8 @@ const SLOTS: Array[String] = [
 	"boots",
 	"backpack",
 	"accessory",
-	"healing_1",
-	"healing_2"
+	"combat_1", "combat_2",
+	"support_1", "support_2", "support_3", "support_4"
 ]
 
 var slots: Dictionary = {}
@@ -22,19 +22,23 @@ func _init() -> void:
 		slots[slot_name] = null
 
 func can_equip(slot_name: String, stack: ItemStack) -> bool:
+	slot_name = slot_name.replace("healing_", "support_")
 	if not slots.has(slot_name):
 		return false
 	if stack == null or stack.item == null:
 		return true
 	var category := stack.item.category
-	if slot_name == "healing_1" or slot_name == "healing_2":
-		return category == "healing" or category == "consumable"
+	if slot_name.begins_with("combat_"): return stack.item.category == "combat" and stack.count == 1
+	if slot_name.begins_with("support_"):
+		return category in ["healing", "consumable", "support"]
 	return category == slot_name
 
 func get_slot(slot_name: String) -> ItemStack:
+	slot_name = slot_name.replace("healing_", "support_")
 	return slots.get(slot_name, null)
 
 func set_slot(slot_name: String, stack: ItemStack) -> void:
+	slot_name = slot_name.replace("healing_", "support_")
 	if slots.has(slot_name):
 		slots[slot_name] = stack
 		changed.emit()
@@ -56,8 +60,8 @@ func capture() -> Dictionary:
 
 func restore(data: Dictionary) -> void:
 	for slot_name in SLOTS:
-		var slot_data: Dictionary = data.get(slot_name, {})
-		if not slot_data.is_empty():
+		var slot_data: Variant = data.get(slot_name, data.get(slot_name.replace("support_", "healing_"), {}))
+		if slot_data is Dictionary and not slot_data.is_empty():
 			slots[slot_name] = ItemStack.restore(slot_data)
 		else:
 			slots[slot_name] = null

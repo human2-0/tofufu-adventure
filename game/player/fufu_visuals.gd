@@ -50,7 +50,7 @@ func _ready() -> void:
 func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing: bool, delta: float, jump_charge: float = 0.0, clearance: float = INF) -> void:
 	var walking := command.move.length_squared() > 0.01 and Vector2(velocity.x, velocity.z).length_squared() > 0.01
 	var direction := command.move if walking else command.aim
-	if command.attack_held:
+	if command.attack_held or command.face_aim:
 		direction = command.aim
 	if not attack_facing.is_zero_approx():
 		direction = attack_facing

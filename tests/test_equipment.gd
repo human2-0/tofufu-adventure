@@ -61,6 +61,7 @@ func _run() -> void:
 	var command := PlayerCommand.new()
 	command.aim = Vector2.UP
 	command.attack_held = true
+	scene.character_equipment.set_slot("combat_2", null)
 	command.weapon_slot = 2
 	scene._on_command(command, 0.4)
 	scene._on_command(command, 0.016)

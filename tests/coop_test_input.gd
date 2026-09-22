@@ -10,6 +10,7 @@ var guard: bool = false
 var punch: bool = false
 var drop: bool = false
 var pickup: bool = false
+var pickup_id: int = -1
 var slot: int = 0
 
 func sample(_position: Vector3) -> PlayerCommand:
@@ -24,6 +25,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 	command.punch_held = punch
 	command.drop_pressed = drop
 	command.pickup_pressed = pickup
+	command.pickup_id = pickup_id
 	command.weapon_slot = slot
 	drop = false
 	pickup = false

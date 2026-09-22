@@ -29,7 +29,7 @@ func _run() -> void:
 	for hit in 27: app.game.progression.progress.weapon_hit("sword")
 	app.game.progression.progress.mana_spent(13)
 	app.game.health.current = 63
-	app.game.combat.equipment.knife_selected = false
+	app.game.loadout.select(2)
 	check(app._save(), "save succeeds")
 	var record: Dictionary = app.store.read_slot(0)
 	check(record.experience == 125 and record.health == 63, "save contains progress and health")

@@ -8,6 +8,7 @@ var preferences := GamePreferences.new()
 var saves := SaveFlow.new()
 var settings := SettingsFlow.new()
 @export var transport: SessionTransport
+@export var server_transport: OracleTransport
 var connection := SessionConnection.new()
 var room := PlaytestRoom.new()
 var lobby := LobbyFlow.new()
@@ -57,8 +58,11 @@ func _ready() -> void:
 	lobby.menu = menu
 	lobby.room = room
 	lobby.connection = connection
+	lobby.peer_transport = transport if transport.can_host() else null
+	lobby.server_transport = server_transport if server_transport != null else transport as OracleTransport
 	lobby.go_back = _home
 	add_child(lobby)
+	if "--dedicated-lobby" in OS.get_cmdline_user_args() and not transport.can_host(): lobby.show_lobby()
 
 func _home() -> void:
 	menu.show_home(is_instance_valid(game), not _online or (is_instance_valid(_coop) and _coop.authority))
@@ -67,6 +71,7 @@ func _home() -> void:
 func _start(slot: int, data: Dictionary) -> void:
 	if slot < 0 or is_instance_valid(game): return
 	if data.has("coop"):
+		if lobby.peer_transport != null: await connection.select_transport(lobby.peer_transport)
 		lobby.show_lobby()
 		lobby.panel.select_adventure(slot)
 		lobby.panel.status.text = "Shared adventure selected. Discover your friends, then open the meadow to continue."
@@ -181,6 +186,11 @@ func _coop_ended(reason: String) -> void:
 	menu.note.text = reason
 
 func _input_enabled(enabled: bool) -> void:
+	if not enabled:
+		game.map.close()
+		game.inventory_window.close()
+		game.merchant.window.close()
+		if game.quest_giver != null: game.quest_giver.window.close()
 	game.chat.set_menu_open(not enabled)
 	if _online: _coop.local_input_enabled(enabled)
 	else: (game.player.command_source as LocalPlayerInput).enabled = enabled

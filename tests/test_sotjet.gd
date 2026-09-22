@@ -45,6 +45,28 @@ func _run() -> void:
 	await ticks(3)
 	combat.equipment.step(Vector2.UP, false, false, false, false, 4, 0.016)
 	check(combat.sotjet.selected and not combat.gun.selected and combat.equipment.suppress_slash(), "slot 4 exclusively equips Sotjet")
+	check(is_equal_approx(combat.sotjet.launch_speed(), 36.0), "base flow is 50 percent faster")
+	var progression := ActorProgression.new()
+	progression.actor = actor
+	progression.combat = combat
+	stage.add_child(progression)
+	progression.progress.stats.shooting = 40
+	progression.progress.changed.emit()
+	var skilled_speed := combat.sotjet.launch_speed()
+	check(skilled_speed > 36.0, "shooting skill increases jet reach")
+	progression.progress.stats.attack_speed = 40
+	progression.progress.changed.emit()
+	check(combat.sotjet.launch_speed() > skilled_speed, "attack speed accelerates flow further")
+	var base_parcel := SotjetParcel.new()
+	var skilled_parcel := SotjetParcel.new()
+	base_parcel.velocity = Vector3(36, 0, 0)
+	skilled_parcel.velocity = Vector3(combat.sotjet.launch_speed(), 0, 0)
+	base_parcel.advance(0.5, 12.0)
+	skilled_parcel.advance(0.5, 12.0)
+	check(skilled_parcel.position.x > base_parcel.position.x and is_equal_approx(skilled_parcel.position.y, base_parcel.position.y), "higher stats carry milk farther before it falls")
+	progression.progress.stats.shooting = 0
+	progression.progress.stats.attack_speed = 0
+	progression.progress.changed.emit()
 	await pour(30)
 	check(target.target.current < target.target.maximum and target.target.current > 160, "continuous milk damages with bounded per-target cadence")
 	check(combat.sotjet.flow.get_children().any(func(child: Node) -> bool: return child is Label3D and child.text.begins_with("-")), "confirmed milk hits show floating damage amounts")
@@ -86,7 +108,18 @@ func _run() -> void:
 	snapshot.jet_firing = true
 	snapshot.jet_sequence += 10
 	snapshot.jet_origin = [0, 0.78, -0.5]
-	snapshot.jet_velocity = [0, 0, -24]
+	var capped_progress := CharacterProgress.new()
+	capped_progress.award_experience(100000000)
+	capped_progress.practice.shooting = CharacterProgress.threshold(99) * CharacterProgress.practice_cost_multiplier("shooting")
+	capped_progress.practice.attack_speed = CharacterProgress.threshold(99)
+	combat.sotjet.range_multiplier = capped_progress.shooting_range_multiplier()
+	combat.sotjet.attack_speed_multiplier = capped_progress.attack_multiplier()
+	snapshot.jet_velocity = [0, 0, -combat.sotjet.launch_speed()]
+	check(ExplorationProtocol.combat(snapshot), "fully upgraded Soyjet speed survives network validation")
+	var valid_velocity: Array = snapshot.jet_velocity.duplicate()
+	snapshot.jet_velocity = [0, 0, -101]
+	check(not ExplorationProtocol.combat(snapshot), "out-of-bounds Soyjet velocity is rejected")
+	snapshot.jet_velocity = valid_velocity
 	combat.sotjet.present(snapshot, Vector2.UP)
 	await ticks(40)
 	check(target.target.current == target.target.maximum, "replica milk cannot apply damage")
@@ -98,13 +131,13 @@ func _run() -> void:
 	snapshot.gun = true
 	check(not ExplorationProtocol.combat(snapshot), "simultaneous guns rejected")
 	var command := PlayerCommand.new()
-	command.weapon_slot = 4
-	check(ExplorationProtocol.valid_input(CoopValues.input(command, 1, 0)), "slot 4 survives input schema")
+	command.weapon_slot = 2
+	check(ExplorationProtocol.valid_input(CoopValues.input(command, 1, 0)), "combat slot 2 survives input schema")
 	command.weapon_slot = 5
 	check(not ExplorationProtocol.valid_input(CoopValues.input(command, 1, 0)), "undefined slot rejected")
-	Input.action_press("sotjet_slot")
-	check(actor.command_source.sample(Vector3.ZERO).weapon_slot == 4, "keyboard action maps to Sotjet")
-	Input.action_release("sotjet_slot")
+	Input.action_press("combat_slot_2")
+	check(actor.command_source.sample(Vector3.ZERO).weapon_slot == 2, "keyboard selects combat slot 2")
+	Input.action_release("combat_slot_2")
 	stage.free()
 	await _saves()
 	print("Sotjet: ", "PASS" if failures == 0 else "FAIL")
@@ -115,7 +148,8 @@ func _saves() -> void:
 	game.play_opening = false
 	root.add_child(game)
 	game.player.set_physics_process(false)
-	game.combat.equipment.step(Vector2.UP, false, false, false, false, 4, 0.016)
+	game.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("sotjet"), 1))
+	game.combat.equipment.step(Vector2.UP, false, false, false, false, 2, 0.016)
 	game.combat.sotjet.milk = 37
 	var data := AdventureSnapshot.capture(game, "Milk", 0)
 	var store := SaveStore.new()
@@ -129,6 +163,9 @@ func _saves() -> void:
 	check(game.combat.sotjet.selected and game.combat.sotjet.milk == 37 and not game.combat.sotjet.firing, "co-op save restores reservoir without firing")
 	data.erase("sotjet_selected")
 	data.erase("soymilk")
+	data.erase("active_slot")
+	data.equipment.erase("combat_1")
+	data.equipment.erase("combat_2")
 	AdventureSnapshot.restore(game, data)
 	check(not game.combat.sotjet.selected and game.combat.sotjet.milk == 100, "legacy saves default safely")
 	game.queue_free()

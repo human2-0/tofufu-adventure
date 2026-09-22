@@ -6,6 +6,8 @@ var shooting_view: ShootingView
 var chat: ProximityChat
 var opening: PodOpening
 var exploration: ExplorationSites
+var farming: SoybeanFarming
+var map: MapFlow
 
 @onready var player: Player = $Player
 @onready var hud: HUD = $HUD
@@ -22,6 +24,10 @@ var _in_water: bool = false
 var inventory: PlayerInventory
 var character_equipment: CharacterEquipment
 var healing: PlayerHealing
+var loadout: ActorLoadout
+var merchant: WeaponMerchant
+var quest_giver: QuestGiver
+var world_items: WorldItems
 var inventory_window: InventoryWindow
 
 func _ready() -> void:
@@ -62,8 +68,15 @@ func _ready() -> void:
 	progression.combat = combat
 	progression.hud = hud
 	add_child(progression)
+	hud.stat_point_allocated.connect(progression.progress.allocate_stat)
 	inventory = PlayerInventory.new()
 	character_equipment = CharacterEquipment.new()
+	loadout = ActorLoadout.new()
+	loadout.combat = combat
+	loadout.inventory = inventory
+	loadout.equipment = character_equipment
+	add_child(loadout)
+	loadout.seed()
 	healing = PlayerHealing.new()
 	healing.equipment = character_equipment
 	healing.health = health
@@ -74,8 +87,12 @@ func _ready() -> void:
 	inventory_window.inventory = inventory
 	inventory_window.equipment = character_equipment
 	add_child(inventory_window)
-	inventory_window.opened.connect(_on_inventory_opened)
-	inventory_window.closed.connect(_on_inventory_closed)
+	world_items = WorldItems.new()
+	world_items.game = self
+	add_child(world_items)
+	var inventory_controls := InventoryControls.new()
+	inventory_controls.game = self
+	add_child(inventory_controls)
 	encounters = SandboxEncounters.new()
 	encounters.player = player
 	encounters.combat = combat
@@ -113,6 +130,18 @@ func _ready() -> void:
 	shooting_view = ShootingView.new()
 	shooting_view.game = self
 	add_child(shooting_view)
+	merchant = WeaponMerchant.new()
+	merchant.game = self
+	add_child(merchant)
+	quest_giver = QuestGiver.new()
+	quest_giver.game = self
+	add_child(quest_giver)
+	map = MapFlow.new()
+	map.game = self
+	add_child(map)
+	farming = SoybeanFarming.new()
+	farming.game = self
+	add_child(farming)
 	if play_opening:
 		_start_opening()
 	else:
@@ -132,18 +161,20 @@ func _physics_process(_delta: float) -> void:
 func _on_command(command: PlayerCommand, delta: float) -> void:
 	if command.cancel_actions: combat.reset()
 	var moving := Vector2(player.velocity.x, player.velocity.z).length_squared() > 0.01
-	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.knife_selected and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta)
-	combat.step(command.aim, command.attack_held, delta, command.move if moving else Vector2.ZERO)
+	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.knife_selected and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
+	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
 	combat.sotjet.flow.targets = combat.targets
 	combat.sotjet.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
-	player.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
-	if moving and not command.attack_held and not command.guard_held:
+	player.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
+	if moving and not command.face_aim and not command.attack_held and not command.guard_held:
 		combat.gun.visual.facing = command.move
 		combat.sotjet.visual.facing = command.move
-	if command.use_healing_1: healing.use_slot("healing_1")
-	if command.use_healing_2: healing.use_slot("healing_2")
+	if command.use_healing_1: healing.use_slot("support_1")
+	if command.use_healing_2: healing.use_slot("support_2")
+	if command.use_healing_3: healing.use_slot("support_3")
+	if command.use_healing_4: healing.use_slot("support_4")
 	healing.step(delta)
 
 func _on_strike(strength: float, hits: int) -> void:
@@ -168,13 +199,12 @@ func _respawn() -> void:
 	hud.announce("Back at the nursery / Fresh health. Keep exploring!")
 
 func _unhandled_input(event: InputEvent) -> void:
+	if inventory_window.visible or (map != null and map.expanded): return
 	if opening != null and opening.active:
 		return
 	if event.is_echo():
 		return
-	if event.is_action_pressed("toggle_inventory"):
-		inventory_window.toggle()
-	elif event.is_action_pressed("return_to_camp"):
+	if event.is_action_pressed("return_to_camp"):
 		_respawn()
 	elif event.is_action_pressed("skip_time"):
 		cycle.phase = fposmod(cycle.phase + 0.25, 1.0)
@@ -223,9 +253,3 @@ func _update_hud_healing() -> void:
 	var stack := character_equipment.get_slot("healing_1")
 	if stack != null and stack.item != null: hud.show_healing_slot(stack.item.name, stack.count, healing.cooldown_remaining)
 	else: hud.show_healing_slot("", 0)
-
-func _on_inventory_opened() -> void:
-	if player.command_source is LocalPlayerInput: (player.command_source as LocalPlayerInput).enabled = false
-
-func _on_inventory_closed() -> void:
-	if player.command_source is LocalPlayerInput: (player.command_source as LocalPlayerInput).enabled = true

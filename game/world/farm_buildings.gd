@@ -6,6 +6,7 @@ static func cottage(parent: Node3D, at: Vector3, title: String, roof_color: Colo
 	var house := Node3D.new()
 	house.name = title.to_pascal_case() if not title.is_empty() else "Cottage"
 	house.position = at
+	house.set_meta("map_footprint", Vector2(size.x, size.z))
 	parent.add_child(house)
 	MeadowGeometry.box(house, Vector3(0, 0.18, 0), Vector3(size.x + 0.4, 0.36, size.z + 0.4), Color("b4a38a"), true)
 	MeadowGeometry.box(house, Vector3(0, size.y * 0.5, 0), size, Color("f5deb0"), true)
@@ -36,7 +37,7 @@ static func _roof(house: Node3D, size: Vector3, color: Color) -> void:
 	MeadowGeometry.box(house, Vector3(0, size.y + 0.6 + width * sin(pitch) * 0.5, 0), Vector3(0.3, 0.3, size.z + 1.35), color.lightened(0.15), true)
 	MeadowGeometry.box(house, Vector3(size.x * 0.27, size.y + 1.15, -size.z * 0.22), Vector3(0.65, 1.9, 0.7), Color("c79b7b"), true)
 
-static func resident(parent: Node3D, at: Vector3, title: String, coat: Color, mayor: bool = false) -> void:
+static func resident(parent: Node3D, at: Vector3, title: String, coat: Color, mayor: bool = false) -> Node3D:
 	var npc := Node3D.new()
 	npc.name = title.to_pascal_case()
 	npc.position = at
@@ -51,13 +52,14 @@ static func resident(parent: Node3D, at: Vector3, title: String, coat: Color, ma
 	if mayor:
 		MeadowGeometry.rock(npc, Vector3(0, 1.22, 0.35), Vector3(0.22, 0.075, 0.07), Color("fff2d7"))
 	var label := Label3D.new()
-	label.text = title + "\n" + ("QUESTS · Coming soon" if mayor else "SHOP · Coming soon")
+	label.text = title + "\n" + ("QUESTS · Coming soon" if mayor else ("WEAPON SHOP" if "Weapons" in title else "SHOP · Coming soon"))
 	label.position.y = 2.45
 	label.font_size = 28
 	label.pixel_size = 0.009
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.modulate = Color("fff0c5")
 	npc.add_child(label)
+	return npc
 
 static func fence(parent: Node3D, terrain: FarmTerrain, from: Vector2, to: Vector2) -> void:
 	var count := int(ceil(from.distance_to(to) / 1.8))

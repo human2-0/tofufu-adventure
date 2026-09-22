@@ -80,11 +80,16 @@ func _add(key: String) -> void:
 		member.combat = game.combat
 		member.health = game.health
 		member.hud = game.hud
+		member.inventory = game.inventory
+		member.character_equipment = game.character_equipment
+		member.healing = game.healing
+		member.loadout = game.loadout
 	member.actor = actor
 	if not authority and key == room.local_key:
 		member.prediction = CoopPrediction.new()
 		member.prediction.actor = actor
 	add_child(member)
+	game.world_items.register(member.combat, member.inventory, member.loadout)
 	member.combat.targets = game.combat.targets
 	member.time_requested.connect(func() -> void: game.cycle.phase = fposmod(game.cycle.phase + 0.25, 1.0))
 	if authority and saved_states.has(key): member.restore(saved_states[key], game.encounters.experience)

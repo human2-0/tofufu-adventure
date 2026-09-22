@@ -2,7 +2,7 @@ class_name SotjetTuning
 extends Resource
 ## Authored pressure, gravity and reservoir values; no shared mutable state.
 
-@export var speed: float = 24.0
+@export var speed: float = 36.0
 @export var gravity: float = 12.0
 @export var lifetime: float = 1.25
 @export var radius: float = 0.055

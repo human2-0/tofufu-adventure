@@ -26,6 +26,8 @@ func emit_milk(origin: Vector3, velocity: Vector3, burst: int, path_start: Vecto
 	if parcels.size() >= 96: return
 	# Sweep actor-to-nozzle too, so the outboard muzzle cannot bypass cover.
 	var parcel := SotjetParcel.new()
+	if visual.nozzle_provider.is_valid():
+		parcel.visual_offset = Vector3(visual.nozzle_provider.call()) - origin
 	parcel.position = origin
 	parcel.previous = origin
 	parcel.velocity = velocity

@@ -7,6 +7,8 @@ var dash_status: Label
 var _dash_slot: DashSlot
 var _jump_meter: JumpMeter
 var _jump_bar: ProgressBar
+signal stat_point_allocated(skill_name: String)
+
 var _jump_text: Label
 var _jump_val: float = 0.0
 
@@ -54,9 +56,10 @@ func _ready() -> void:
 	_session = HUDElements.make_label(heading, "Chapter 01 · Tab for guide", 11, Color("baccc0"))
 	_clock = HUDElements.make_label(heading, "", 11, Color("b8d7dd"))
 
-	var ledger := HUDElements.make_panel(canvas, Vector2(-226, 16), Vector2(210, 210), Vector2(1, 0))
+	var ledger := HUDElements.make_panel(canvas, Vector2(-232, 16), Vector2(216, 235), Vector2(1, 0))
 	_stats = HUDElements.make_label(ledger, "", 10, Color("d8e3d2"))
 	_character = CharacterStats.new()
+	_character.stat_point_allocated.connect(func(k: String) -> void: stat_point_allocated.emit(k))
 	ledger.add_child(_character)
 
 	var health := HUDElements.make_panel(canvas, Vector2(16, -96), Vector2(210, 82), Vector2(0, 1))
@@ -105,7 +108,7 @@ func _setup_center(canvas: Control) -> void:
 	var help_box := HUDElements.make_panel(canvas, Vector2(-180, 110), Vector2(360, 200), Vector2(0.5, 0))
 	_help = help_box.get_parent() as PanelContainer
 	HUDElements.make_label(help_box, "FUFU ADVENTURE GUIDE", 13, Color("f5dfac"))
-	HUDElements.make_label(help_box, "WASD: Walk • Mouse: Aim • Space: Leap • Shift: Dash • LMB: Attack • RMB: Guard\n1/2/3/4: Weapons • I / B: Inventory & EQ • 5 / 6: Healing slot (2s cd)\nQ: Drop • E: Pick up • Tab: Guide • C: Camera • Enter: Chat • V: Voice\nSoybeans: Stack in bag, drag to Healing Spot [5] (+25 HP gradual)", 10, Color("d1ddd0"))
+	HUDElements.make_label(help_box, "WASD: Walk • Mouse: Aim • Space: Leap • Shift: Dash • LMB: Attack • RMB: Guard\n1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • Enter: Chat • V: Voice\nSoybeans: Stack in bag, drag to Support slot [3] (+25 HP gradual)", 10, Color("d1ddd0"))
 	_help.visible = false
 
 	_notice = Label.new()
@@ -223,8 +226,11 @@ func show_sotjet(selected: bool, reservoir: float) -> void:
 func show_healing_slot(item_name: String, count: int, cd: float = 0.0) -> void:
 	if _healing_label == null: return
 	if count > 0:
-		_healing_label.text = ("[5] %s x%d (%.1fs cd)" % [item_name, count, cd]) if cd > 0.05 else ("[5] %s x%d" % [item_name, count])
+		_healing_label.text = ("[3] %s x%d (%.1fs cd)" % [item_name, count, cd]) if cd > 0.05 else ("[3] %s x%d" % [item_name, count])
 		_healing_label.modulate = Color("ffb0a0") if cd > 0.05 else Color("c8efa0")
 		_healing_label.visible = true
 	else:
 		_healing_label.visible = false
+
+func show_loadout(first: String, second: String, selected: int) -> void:
+	_equipment.text = ("[1 %s]  2 %s" if selected == 1 else "1 %s  [2 %s]") % [first, second]

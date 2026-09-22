@@ -6,6 +6,8 @@ signal changed
 
 const CAPACITY: int = 10
 var slots: Array[ItemStack] = []
+var coins: int = 10
+var pending_items: Array[ItemStack] = []
 
 func _init() -> void:
 	slots.resize(CAPACITY)
@@ -90,7 +92,7 @@ func swap_slots(from_idx: int, to_idx: int) -> void:
 		return
 	var a := slots[from_idx]
 	var b := slots[to_idx]
-	if a != null and b != null and a.can_merge(b):
+	if a != null and b != null and a.item.id == b.item.id and b.item.max_stack > 1:
 		var leftover := b.add(a.count)
 		if leftover <= 0:
 			slots[from_idx] = null
@@ -110,8 +112,16 @@ func capture() -> Array:
 func restore(data: Array) -> void:
 	slots.resize(CAPACITY)
 	for i in CAPACITY:
-		if i < data.size() and not (data[i] as Dictionary).is_empty():
+		if i < data.size() and data[i] is Dictionary and not data[i].is_empty():
 			slots[i] = ItemStack.restore(data[i])
 		else:
 			slots[i] = null
 	changed.emit()
+
+func restore_pending(value: Variant) -> void:
+	pending_items.clear()
+	if not value is Array: return
+	for row: Variant in value.slice(0, 32):
+		if not row is Dictionary: continue
+		var stack := ItemStack.restore(row)
+		if stack != null: pending_items.append(stack)

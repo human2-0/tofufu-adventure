@@ -4,6 +4,10 @@ extends Node3D
 
 const TREE: PackedScene = preload("res://game/world/tree.tscn")
 @export var world_seed: int = 1847
+var weapon_merchant: Node3D
+var quest_npc: Node3D
+var map_npcs: Dictionary[String, Node3D] = {}
+var jungle: JungleWorld
 var terrain: FarmTerrain
 var _rng := RandomNumberGenerator.new()
 
@@ -17,8 +21,12 @@ func _ready() -> void:
 	FarmCombatGrounds.build(self, terrain)
 	_countryside()
 	FarmFoliage.populate(self, terrain, _rng)
+	jungle = JungleWorld.new()
+	jungle.farm = terrain
+	add_child(jungle)
 
 func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
+	if x > 42 and jungle != null: return jungle.point(x, z, lift)
 	return terrain.point(x, z, lift)
 
 func is_water(at: Vector3) -> bool:
@@ -79,9 +87,11 @@ func _village() -> void:
 	FarmBuildings.cottage(self, ground_point(30, 0), "WEAPON SHOP", Color("aa7e89"), Vector3(5.8, 3.1, 4.6))
 	FarmBuildings.cottage(self, ground_point(32, 14), "MAYOR'S HOUSE", Color("c4926f"), Vector3(6.5, 3.5, 4.6))
 	FarmBuildings.cottage(self, ground_point(31, -14), "", Color("a8ad7d"), Vector3(4.3, 2.6, 3.7))
-	FarmBuildings.resident(self, ground_point(19.5, -4), "Mugi · Items", Color("8ab6a8"))
-	FarmBuildings.resident(self, ground_point(29, 3.7), "Kaji · Weapons", Color("b98791"))
-	FarmBuildings.resident(self, ground_point(30, 18), "Mayor Mame", Color("7c99bb"), true)
+	map_npcs["Mugi · Items"] = FarmBuildings.resident(self, ground_point(19.5, -4), "Mugi · Items", Color("8ab6a8"))
+	weapon_merchant = FarmBuildings.resident(self, ground_point(29, 3.7), "Kaji · Weapons", Color("b98791"))
+	quest_npc = FarmBuildings.resident(self, ground_point(30, 18), "Mayor Mame", Color("7c99bb"), true)
+	map_npcs["Kaji · Weapons"] = weapon_merchant
+	map_npcs["Mayor Mame"] = quest_npc
 	# Well, market produce and a smith's anvil identify the village services.
 	var well := ground_point(21, 4)
 	MeadowGeometry.rock(self, well + Vector3.UP * 0.45, Vector3(1.0, 0.55, 1.0), Color("b1b5a2"), true)
@@ -101,6 +111,7 @@ func _countryside() -> void:
 	for i in 85:
 		var x := _rng.randf_range(-39, 39)
 		var z := _rng.randf_range(-39, 39)
+		if x > 33 and z > 21 and z < 31: continue
 		if terrain.path_distance(x, z) < 3.2 or terrain.is_field(x, z) or absf(x - terrain.river_x(z)) < 4.5:
 			continue
 		if FarmCombatGrounds.is_clearing(x, z):
@@ -117,13 +128,19 @@ func _countryside() -> void:
 		var radius := 47.0 + sin(angle * 3.0) * 3.0 + _rng.randf_range(-1, 3)
 		var x := cos(angle) * radius
 		var z := sin(angle) * radius
+		if x > 38 and z > 16 and z < 37: continue
 		var hill_height := _rng.randf_range(3.0, 6.5)
 		for center in FarmCombatGrounds.CAMPS:
 			if Vector2(x, z).distance_to(center) < 17.0:
 				hill_height = 1.0
 		MeadowGeometry.rock(self, ground_point(x, z, 0.5), Vector3(5, hill_height, 5), Color("88a17a").lerp(Color("b6be8d"), _rng.randf_range(0, 0.6)))
 	for side in [-1.0, 1.0]:
-		var wall := MeadowGeometry.box(self, Vector3(side * 40, 6, 0), Vector3(1, 20, 81), Color.WHITE, true)
+		var wall := MeadowGeometry.box(self, Vector3(side * 40, 6, 0), Vector3(1, 100, 81), Color.WHITE, true)
 		wall.visible = false
+		if side > 0:
+			wall.queue_free()
+			for segment in [Vector2(-9.5, 61), Vector2(35.5, 9)]:
+				var edge := MeadowGeometry.box(self, Vector3(40, 35, segment.x), Vector3(1, 100, segment.y), Color.WHITE, true)
+				edge.visible = false
 		wall = MeadowGeometry.box(self, Vector3(0, 6, side * 40), Vector3(81, 20, 1), Color.WHITE, true)
 		wall.visible = false
