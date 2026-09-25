@@ -31,6 +31,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 		_held.aim = next.aim
 		_held.aim_point = next.aim_point
 		_held.dash_direction = next.dash_direction
+		_held.dash_held = next.dash_held
 		_held.jump_held = next.jump_held
 		_held.attack_held = next.attack_held
 		_held.guard_held = next.guard_held
@@ -43,6 +44,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 	command.aim = _held.aim
 	command.aim_point = _held.aim_point
 	command.dash_direction = _held.dash_direction
+	command.dash_held = _held.dash_held
 	command.jump_held = _held.jump_held
 	command.attack_held = _held.attack_held
 	command.guard_held = _held.guard_held

@@ -3,7 +3,8 @@ extends RefCounted
 ## Seeded rolling ground with authored clearings; mesh and collision share vertices.
 
 var noise := FastNoiseLite.new()
-const EXTENT: int = 42
+var ground_material: ShaderMaterial
+const EXTENT: int = 84
 
 func _init(world_seed: int = 1847) -> void:
 	noise.seed = world_seed
@@ -11,7 +12,7 @@ func _init(world_seed: int = 1847) -> void:
 	noise.fractal_octaves = 3
 
 func river_x(z: float) -> float:
-	return 11.0 + sin((z - 4.0) * 0.12) * 2.2 * smoothstep(5.0, 14.0, absf(z - 4.0))
+	return RiverCourse.center_x(z)
 
 func height_at(x: float, z: float) -> float:
 	var hills := 1.1 + noise.get_noise_2d(x, z) * 2.2
@@ -26,11 +27,11 @@ func height_at(x: float, z: float) -> float:
 	h = lerpf(h, 0.75, 1.0 - smoothstep(5.0, 7.5, Vector2(x - 32, z - 14).length()))
 	h = lerpf(h, 1.0, 1.0 - smoothstep(3.8, 5.8, Vector2(x - 31, z + 14).length()))
 	h = lerpf(h, 0.0, 1.0 - smoothstep(4.2, 6.0, Vector2(x - 20, z + 8).length()))
-	var stream := absf(x - river_x(z))
-	h = lerpf(-0.85, h, smoothstep(2.1, 3.6, stream))
+	h = RiverCourse.carve(x, z, h)
 	# A gently graded approach to the main plank bridge.
 	var approach := (1.0 - smoothstep(1.3, 3.5, absf(z - 4))) * (1.0 - smoothstep(6.0, 10.0, absf(x - 11)))
-	return lerpf(h, minf(h, 0.0), approach)
+	h = lerpf(h, minf(h, 0.0), approach)
+	return lerpf(h, 0.0, smoothstep(30.0, 40.0, x) * (1.0 - smoothstep(4.0, 8.0, absf(z - 6))))
 
 func point(x: float, z: float, lift: float = 0.0) -> Vector3:
 	return Vector3(x, height_at(x, z) + lift, z)
@@ -58,9 +59,9 @@ func build(parent: Node3D) -> void:
 	var ground := MeshInstance3D.new()
 	ground.name = "RollingGround"
 	ground.mesh = surface.commit()
-	var material := ShaderMaterial.new()
-	material.shader = preload("res://game/world/farm_ground.gdshader")
-	material.set_shader_parameter("combat_centers", PackedVector2Array(FarmCombatGrounds.CAMPS))
-	ground.material_override = material
+	ground_material = ShaderMaterial.new()
+	ground_material.shader = preload("res://game/world/farm_ground.gdshader")
+	ground_material.set_shader_parameter("combat_centers", PackedVector2Array(FarmCombatGrounds.CAMPS))
+	ground.material_override = ground_material
 	parent.add_child(ground)
 	ground.create_trimesh_collision()

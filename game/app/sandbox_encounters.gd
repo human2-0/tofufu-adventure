@@ -14,6 +14,8 @@ var next_pickup_id: int = 1
 var party_hurt: Callable
 var party_collect: Callable
 const MOB_EXPERIENCE: int = 25
+const ARMORED_SNAIL_EXPERIENCE: int = 50
+const SHELL_PIECE_DROP_CHANCE: float = 0.10
 var experience: int = 0
 var mob_centers: Array[Vector2] = []
 var dummy_positions: Array[Vector2] = []
@@ -23,6 +25,8 @@ var combat: PlayerCombat
 var health: Damageable
 var inventory: PlayerInventory
 var ground_point: Callable
+var shell_drop: Callable
+var shell_drop_roll: Callable = func() -> float: return randf()
 var beans: int = 0
 var mobs: int = 0
 var props: int = 0
@@ -37,11 +41,16 @@ func populate() -> void:
 		_add_prop(at, 2)
 	for center in mob_centers:
 		for offset in [Vector2(-2.8, 0), Vector2(2.8, 0), Vector2(0, -2.8)]:
-			_add_mob(center + offset)
+			var at: Vector2 = center + offset
+			_add_mob(at)
 	# Reserve slots follow all nine originals, preserving old checkpoint indices.
 	for center in mob_centers:
 		for offset in [Vector2(-1.8, 2.5), Vector2(1.8, 2.5)]:
-			_add_mob(center + offset, true)
+			var at: Vector2 = center + offset
+			_add_mob(at, true, FarmCombatGrounds.is_camp_armored_spawn(at))
+	# The far meadow sites are single armored spawns and are appended for stable replica ordering.
+	for at: Vector2 in FarmCombatGrounds.FOREST_ARMORED_SPAWNS:
+		_add_mob(at, false, true, true)
 	for at in dummy_positions:
 		var dummy := PracticeDummy.new()
 		dummy.position = ground_point.call(at.x, at.y)
@@ -50,19 +59,21 @@ func populate() -> void:
 		combat.targets.append(dummy.target)
 		dummy_nodes.append(dummy)
 
-func _add_mob(at: Vector2, rain_only: bool = false) -> void:
-	var mob := TrainingMob.new()
+func _add_mob(at: Vector2, rain_only: bool = false, armored: bool = false, free_roaming: bool = false) -> void:
+	var mob: TrainingMob = ArmoredSnail.new() if armored else TrainingMob.new()
 	mob.rain_only = rain_only
+	mob.free_roaming = free_roaming
 	mob.position = ground_point.call(at.x, at.y, 0.1)
 	mob.quarry = player
-	mob.protected_area = protected_area
+	mob.protected_area = Rect2() if free_roaming else protected_area
+	if free_roaming: mob.leash_radius = INF
 	add_child(mob)
 	mob.set_rain(false)
 	mob.target.trains_weapons = true
 	combat.targets.append(mob.target)
 	mob_nodes.append(mob)
 	mob.attacked.connect(_mob_attacked.bind(mob))
-	mob.defeated.connect(_mob_defeated)
+	mob.defeated.connect(_mob_defeated.bind(mob))
 
 func set_rain(wet: bool) -> void:
 	for mob in mob_nodes: mob.set_rain(wet)
@@ -91,43 +102,51 @@ func _harvested(at: Vector3, count: int) -> void:
 	_drop(at, count)
 	progress_changed.emit(beans, mobs, props)
 
-func _mob_defeated(at: Vector3) -> void:
+func _mob_defeated(at: Vector3, mob: TrainingMob) -> void:
 	mobs += 1
-	experience += MOB_EXPERIENCE
+	var reward := ARMORED_SNAIL_EXPERIENCE if mob is ArmoredSnail else MOB_EXPERIENCE
+	experience += reward
 	experience_changed.emit(experience)
-	experience_awarded.emit(MOB_EXPERIENCE)
+	experience_awarded.emit(reward)
 	mob_defeated.emit(at)
-	_drop(at, 2)
-	CombatEffects.burst(self, at, "+%d EXP" % MOB_EXPERIENCE, Color("b0e6cb"))
+	_drop(at, 4 if mob is ArmoredSnail else 2)
+	if mob is ArmoredSnail and shell_drop.is_valid() and float(shell_drop_roll.call()) < SHELL_PIECE_DROP_CHANCE:
+		shell_drop.call("piece_of_shell", at)
+	CombatEffects.burst(self, at, "+%d EXP" % reward, Color("b0e6cb"))
 	progress_changed.emit(beans, mobs, props)
 
 func _drop(at: Vector3, count: int) -> void:
+	spawn_edamame(at, count, player)
+
+func spawn_edamame(at: Vector3, count: int, actor: Node3D) -> bool:
+	if count <= 0 or count > 100 or pickups.size() + count > 128: return false
 	for index in count:
-		if pickups.size() >= 128: break
 		var bean := add_pickup(next_pickup_id, at + Vector3((index - (count - 1) * 0.5) * 0.8, 0, 0))
-		bean.collector = player
+		bean.collector = actor
+	return true
 
 func add_pickup(id: int, at: Vector3) -> SoybeanPickup:
 	var bean := SoybeanPickup.new()
+	bean.texture = CurrencyVisuals.icon("edamame", 1)
 	bean.position = at
 	add_child(bean)
 	pickups[id] = bean
 	next_pickup_id = maxi(next_pickup_id, id + 1)
 	bean.tree_exiting.connect(func() -> void: pickups.erase(id))
-	bean.collected.connect(_pickup_collected.bind(bean))
+	bean.collect_attempt = _pickup_collected.bind(bean)
 	return bean
 
-func _pickup_collected(bean: SoybeanPickup) -> void:
-	if party_collect.is_valid(): party_collect.call(bean.collector)
-	else: _collect()
+func _pickup_collected(bean: SoybeanPickup) -> bool:
+	if party_collect.is_valid(): return bool(party_collect.call(bean.collector))
+	return _collect()
 
 func _mob_attacked(amount: float, source: Vector3, mob: TrainingMob) -> void:
 	if party_hurt.is_valid(): party_hurt.call(mob.quarry, amount, source)
 	else: _hurt_player(amount, source)
 
-func _collect() -> void:
+func _collect() -> bool:
+	if inventory == null or inventory.add_item(InventoryItem.create_edamame(), 1) != 0: return false
 	beans += 1
-	if inventory != null:
-		inventory.add_item(InventoryItem.create_soybean(), 1)
-	CombatEffects.burst(self, player.global_position, "+1 SOY", Color("c8efa0"))
+	CombatEffects.burst(self, player.global_position, "+1 EDAMAME", Color("c8efa0"))
 	progress_changed.emit(beans, mobs, props)
+	return true

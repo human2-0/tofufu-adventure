@@ -44,6 +44,8 @@ func _ready() -> void:
 	prompt.outline_size = 7
 	prompt.pixel_size = 0.008
 	prompt.position.y = 2.65
+	prompt.no_depth_test = true
+	prompt.render_priority = 127
 	add_child(prompt)
 	present(false, "")
 

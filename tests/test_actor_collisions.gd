@@ -4,12 +4,14 @@ extends SceneTree
 class TestInput extends PlayerCommandSource:
 	var move := Vector2.ZERO
 	var dash: bool = false
+	var dash_held: bool = false
 	func sample(_at: Vector3) -> PlayerCommand:
 		var command := PlayerCommand.new()
 		command.move = move
 		command.aim = move
 		command.dash_direction = move
 		command.dash_pressed = dash
+		command.dash_held = dash_held
 		dash = false
 		return command
 
@@ -87,6 +89,15 @@ func _run() -> void:
 	source.dash = true
 	await walk(20)
 	check(player.position.x < -0.84, "dash stops at snail capsule")
+	player.position = Vector3(-2, 0.05, 0)
+	player.velocity = Vector3.ZERO
+	player.motor.cooldown_remaining = 0
+	source.dash = true
+	source.dash_held = true
+	await walk(43)
+	source.dash_held = false
+	await walk(20)
+	check(player.position.x > 0.84, "super dash passes through snail capsules")
 	var second_snail := TrainingMob.new()
 	second_snail.position = Vector3(2, 0.1, 0)
 	world.add_child(second_snail)

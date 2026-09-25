@@ -1,6 +1,8 @@
 extends Node3D
 ## Composition root: connects movement, combat, exploration and presentation.
 
+const FART_CLOUD := preload("res://game/combat/fart_cloud.gd")
+
 @export var play_opening: bool = true
 var shooting_view: ShootingView
 var chat: ProximityChat
@@ -20,6 +22,7 @@ var health: Damageable
 var encounters: SandboxEncounters
 var weather: WeatherCycle
 var weather_view: WeatherView
+var wind: WindField
 var _in_water: bool = false
 var inventory: PlayerInventory
 var character_equipment: CharacterEquipment
@@ -29,6 +32,8 @@ var merchant: WeaponMerchant
 var quest_giver: QuestGiver
 var world_items: WorldItems
 var inventory_window: InventoryWindow
+var seed_storage: SeedStorage
+var factory_dungeon: TofuDungeon
 
 func _ready() -> void:
 	chat = ProximityChat.new()
@@ -49,17 +54,20 @@ func _ready() -> void:
 	health.headshot_height = 0.78
 	health.position.y = 0.55
 	player.add_child(health)
+	combat.owner_health = health
 	combat.gun.owner_health = health
 	combat.sotjet.flow.owner_health = health
 	health.projectile_guard = _reflect_projectile
 	if not health.reflected_hit.is_connected(combat.gun.weapon_trained.emit):
 		health.reflected_hit.connect(combat.gun.weapon_trained.emit)
 	health.changed.connect(hud.show_health)
-	health.depleted.connect(_respawn)
+	health.depleted.connect(_on_player_depleted)
 	health.hit.connect(_on_player_hit)
+	health.pushed.connect(player.apply_push)
 	hud.show_health(health.current, health.maximum)
 	player.command_sampled.connect(_on_command)
 	combat.charge_changed.connect(hud.show_charge)
+	combat.combo_changed.connect(hud.show_combo)
 	combat.equipment.changed.connect(hud.show_equipment)
 	combat.equipment.punch_cadence_updated.connect(hud.show_punch_cadence)
 	combat.struck.connect(_on_strike)
@@ -71,10 +79,13 @@ func _ready() -> void:
 	hud.stat_point_allocated.connect(progression.progress.allocate_stat)
 	inventory = PlayerInventory.new()
 	character_equipment = CharacterEquipment.new()
+	progression.equipment = character_equipment
+	character_equipment.wearer_level = progression.progress.level()
 	loadout = ActorLoadout.new()
 	loadout.combat = combat
 	loadout.inventory = inventory
 	loadout.equipment = character_equipment
+	loadout.hud = hud
 	add_child(loadout)
 	loadout.seed()
 	healing = PlayerHealing.new()
@@ -86,6 +97,7 @@ func _ready() -> void:
 	inventory_window = InventoryWindow.new()
 	inventory_window.inventory = inventory
 	inventory_window.equipment = character_equipment
+	inventory_window.conversion_handler = func(slot: int, source_id: String) -> String: return CurrencyExchange.convert(inventory, slot, source_id)
 	add_child(inventory_window)
 	world_items = WorldItems.new()
 	world_items.game = self
@@ -93,11 +105,15 @@ func _ready() -> void:
 	var inventory_controls := InventoryControls.new()
 	inventory_controls.game = self
 	add_child(inventory_controls)
+	seed_storage = SeedStorage.new()
+	seed_storage.game = self
+	add_child(seed_storage)
 	encounters = SandboxEncounters.new()
 	encounters.player = player
 	encounters.combat = combat
 	encounters.health = health
 	encounters.inventory = inventory
+	encounters.shell_drop = world_items.spawn_mob_loot
 	encounters.experience_awarded.connect(progression.progress.award_experience)
 	encounters.ground_point = world.ground_point
 	encounters.mob_centers = FarmCombatGrounds.CAMPS
@@ -107,6 +123,7 @@ func _ready() -> void:
 	encounters.progress_changed.connect(hud.show_progress)
 	encounters.experience_changed.connect(hud.show_experience)
 	encounters.populate()
+	player.super_dashed.connect(_on_super_dashed)
 	player.placement_peers.append(player)
 	for mob in encounters.mob_nodes: player.placement_peers.append(mob)
 	for mob in encounters.mob_nodes:
@@ -114,6 +131,8 @@ func _ready() -> void:
 			return not PlayerPlacement.overlaps_actors(mob, shape, at, player.placement_peers)
 	weather = WeatherCycle.new()
 	add_child(weather)
+	wind = WindField.new()
+	player.movement_modifier = wind.movement_multiplier
 	weather_view = WeatherView.new()
 	add_child(weather_view)
 	var weather_flow := WeatherFlow.new()
@@ -121,6 +140,9 @@ func _ready() -> void:
 	weather_flow.cycle = cycle
 	weather_flow.encounters = encounters
 	weather_flow.view = weather_view
+	weather_flow.ground = world.rain_effects
+	weather_flow.wind = wind
+	weather_flow.grass = world.grass_material
 	add_child(weather_flow)
 	exploration = ExplorationSites.new()
 	exploration.explorer = player
@@ -136,6 +158,9 @@ func _ready() -> void:
 	quest_giver = QuestGiver.new()
 	quest_giver.game = self
 	add_child(quest_giver)
+	factory_dungeon = TofuDungeon.new()
+	factory_dungeon.game = self
+	add_child(factory_dungeon)
 	map = MapFlow.new()
 	map.game = self
 	add_child(map)
@@ -151,7 +176,7 @@ func _physics_process(_delta: float) -> void:
 	if opening != null and opening.active:
 		return
 	if player.position.y < -5.0:
-		_respawn()
+		_on_player_depleted()
 	var in_water := world.is_water(player.position)
 	player.surface_speed = 0.55 if in_water else 1.0
 	if in_water and not _in_water:
@@ -161,8 +186,8 @@ func _physics_process(_delta: float) -> void:
 func _on_command(command: PlayerCommand, delta: float) -> void:
 	if command.cancel_actions: combat.reset()
 	var moving := Vector2(player.velocity.x, player.velocity.z).length_squared() > 0.01
-	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.knife_selected and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
-	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO)
+	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.melee_selected() and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
+	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO, not player.is_on_floor(), command.guard_held)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
 	combat.sotjet.flow.targets = combat.targets
@@ -181,6 +206,9 @@ func _on_strike(strength: float, hits: int) -> void:
 	if hits > 0:
 		camera.shake(0.22 if strength >= 1.0 else 0.07)
 
+func _on_super_dashed(at: Vector3) -> void:
+	FART_CLOUD.spawn(self, at, combat.targets)
+
 func _on_player_hit(_amount: float, _direction: Vector3) -> void:
 	hud.show_damage_hit(health.last_hit_kind)
 	camera.shake(0.18)
@@ -192,11 +220,17 @@ func _respawn() -> void:
 	player.relocate(Vector3(0, 0.1, 0))
 	player.velocity = Vector3.ZERO
 	player.motor.is_dashing = false
+	player.motor.is_super_dashing = false
 	player.motor.cancel_jump()
 	player.visuals.jump_animation.reset()
 	health.restore()
 	combat.reset()
 	hud.announce("Back at the nursery / Fresh health. Keep exploring!")
+
+func _on_player_depleted() -> void:
+	if world_items != null: world_items.drop_on_death(combat)
+	if seed_storage != null: seed_storage.reset_for_death()
+	_respawn()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if inventory_window.visible or (map != null and map.expanded): return
@@ -219,6 +253,7 @@ func _start_opening() -> void:
 	weather.set_physics_process(false)
 	hud.visible = false
 	combat.sword.visible = false
+	combat.staff.visible = false
 	encounters.process_mode = Node.PROCESS_MODE_DISABLED
 	exploration.process_mode = Node.PROCESS_MODE_DISABLED
 	opening = PodOpening.new()
@@ -231,7 +266,8 @@ func _opening_completed() -> void:
 	weather_view.visible = true
 	weather.set_physics_process(true)
 	hud.visible = true
-	combat.sword.visible = true
+	combat.sword.visible = combat.equipment.knife_selected
+	combat.staff.visible = combat.equipment.staff_selected
 	encounters.process_mode = Node.PROCESS_MODE_INHERIT
 	exploration.process_mode = Node.PROCESS_MODE_INHERIT
 	hud.announce("Welcome to Fufufarm! / Follow the lane to the village and Mayor Mame.")

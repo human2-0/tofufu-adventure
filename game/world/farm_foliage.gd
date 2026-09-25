@@ -2,7 +2,7 @@ class_name FarmFoliage
 extends RefCounted
 ## Instanced field plants and seeded wild ground cover.
 
-static func populate(parent: Node3D, terrain: FarmTerrain, rng: RandomNumberGenerator) -> void:
+static func populate(parent: Node3D, terrain: FarmTerrain, rng: RandomNumberGenerator) -> ShaderMaterial:
 	var plants: Array[Transform3D] = []
 	for row in 24:
 		for column in 23:
@@ -44,9 +44,9 @@ static func populate(parent: Node3D, terrain: FarmTerrain, rng: RandomNumberGene
 		for offset in [Vector3(0.14, 0.4, 0.1), Vector3(-0.16, 0.63, 0.1)]:
 			pod_transforms.append(plant.translated_local(offset))
 	_instances(parent, pods, pod_transforms, "SoyPods")
-	_wildflowers(parent, terrain, rng)
+	return _wildflowers(parent, terrain, rng)
 
-static func _wildflowers(parent: Node3D, terrain: FarmTerrain, rng: RandomNumberGenerator) -> void:
+static func _wildflowers(parent: Node3D, terrain: FarmTerrain, rng: RandomNumberGenerator) -> ShaderMaterial:
 	var tufts: Array[Transform3D] = []
 	var flowers: Array[Transform3D] = []
 	for i in 2400:
@@ -82,6 +82,7 @@ static func _wildflowers(parent: Node3D, terrain: FarmTerrain, rng: RandomNumber
 	flower.rings = 3
 	flower.material = MeadowGeometry.material(Color("ffe7ad"))
 	_instances(parent, flower, flowers, "Wildflowers")
+	return wind
 
 static func _instances(parent: Node3D, mesh: Mesh, transforms: Array[Transform3D], title: String) -> void:
 	var multi := MultiMesh.new()

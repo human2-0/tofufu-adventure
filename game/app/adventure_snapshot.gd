@@ -17,10 +17,13 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 		"sotjet_selected": game.combat.sotjet.selected, "soymilk": game.combat.sotjet.milk, "gun_selected": game.combat.gun.selected, "knife_selected": equipment.knife_selected, "dropped_position": [dropped.x, dropped.y, dropped.z],
 		"gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned,
 		"world_items": game.world_items.pool.capture(),
-		"coins": game.inventory.coins, "active_slot": game.loadout.active_slot,
+		"active_slot": game.loadout.active_slot,
 		"pending_items": game.inventory.pending_items.map(func(stack: ItemStack) -> Dictionary: return stack.capture()),
 		"inventory": game.inventory.capture() if game.inventory != null else [],
+		"seed_storage": game.seed_storage.chest.capture() if game.seed_storage != null else [],
+		"seed_satchel_claimed": game.seed_storage.free_satchel_claimed if game.seed_storage != null else false,
 		"quest": game.quest_giver.quest.capture() if game.quest_giver != null else {},
+		"tofu_dungeon": game.factory_dungeon.capture() if game.factory_dungeon != null else {},
 		"equipment": game.character_equipment.capture() if game.character_equipment != null else {}}
 
 static func restore(game: Node3D, data: Dictionary) -> void:
@@ -43,8 +46,10 @@ static func restore(game: Node3D, data: Dictionary) -> void:
 	game.combat.gun.selected = data.get("gun_selected", false)
 	game.combat.sotjet.selected = data.get("sotjet_selected", false)
 	game.combat.sotjet.milk = data.get("soymilk", game.combat.sotjet.tuning.capacity)
-	if data.has("inventory") and game.inventory != null: game.inventory.restore(data.get("inventory", []))
+	if data.has("seed_storage") and game.seed_storage != null: game.seed_storage.chest.restore(data.get("seed_storage", []))
+	if game.seed_storage != null: game.seed_storage.free_satchel_claimed = data.get("seed_satchel_claimed", false)
 	if data.has("quest") and game.quest_giver != null: game.quest_giver.quest.restore(data.get("quest", {}))
+	if game.factory_dungeon != null: game.factory_dungeon.restore(data.get("tofu_dungeon", {}))
 
 	game.combat.equipment.gun_owned = data.get("gun_owned", true)
 	game.combat.equipment.sotjet_owned = data.get("sotjet_owned", true)
@@ -55,6 +60,7 @@ static func restore(game: Node3D, data: Dictionary) -> void:
 		var at := Vector3(data.dropped_position[0], data.dropped_position[1], data.dropped_position[2]) + Vector3.UP * 0.4
 		game.world_items.pool.restore([[1, "knife", 1, 100, at.x, at.y, at.z]])
 
-	game.inventory.coins = int(data.get("coins", 10))
-	game.inventory.restore_pending(data.get("pending_items", []))
 	game.loadout.restore(data.get("equipment", {}), int(data.get("active_slot", 1)), {"owned": data.knife_owned, "gun_owned": data.get("gun_owned", true), "sotjet_owned": data.get("sotjet_owned", true), "gun": data.get("gun_selected", false), "jet": data.get("sotjet_selected", false), "milk": data.get("soymilk", 100)})
+	if data.has("inventory") and game.inventory != null: game.inventory.restore(data.get("inventory", []))
+	game.inventory.restore_pending(data.get("pending_items", []))
+	game.loadout.stow_ineligible_apparel()

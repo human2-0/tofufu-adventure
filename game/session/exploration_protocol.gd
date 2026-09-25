@@ -2,7 +2,7 @@ class_name ExplorationProtocol
 extends RefCounted
 ## Version-2 co-op input and actor schema. Host identity comes from the transport.
 
-const INPUT_FLAGS: Array[String] = ["face_aim", "jump_held", "jump_pressed", "dash_pressed", "attack_held", "guard_held", "punch_held", "drop_pressed", "pickup_pressed", "camp_pressed", "time_pressed", "cancel_actions", "use_healing_1", "use_healing_2", "use_healing_3", "use_healing_4"]
+const INPUT_FLAGS: Array[String] = ["face_aim", "jump_held", "jump_pressed", "dash_pressed", "dash_held", "attack_held", "guard_held", "punch_held", "drop_pressed", "pickup_pressed", "camp_pressed", "time_pressed", "cancel_actions", "use_healing_1", "use_healing_2", "use_healing_3", "use_healing_4"]
 
 static func valid_input(data: Dictionary) -> bool:
 	if not sequence(data.get("sequence")) or not sequence(data.get("ack")): return false
@@ -25,13 +25,13 @@ static func valid_snapshot(data: Dictionary, members: Array) -> bool:
 	return data.get("opening") is Dictionary and WorldProtocol.opening(data.opening)
 
 static func actor(state: Dictionary) -> bool:
-	if state.has("coins") and (not sequence(state.coins) or state.coins > 1000000): return false
 	if state.has("active_slot") and (not sequence(state.active_slot) or state.active_slot < 1 or state.active_slot > 2): return false
 	if not vector(state.get("position"), 3, 500) or not vector(state.get("velocity"), 3, 200): return false
 	if not vector(state.get("aim"), 2, 1.001): return false
 	if state.has("facing_locked") and not state.facing_locked is bool: return false
 	for field in ["grounded", "dashing"]:
 		if not state.get(field) is bool: return false
+	if state.has("super_dashing") and not state.super_dashing is bool: return false
 	for field in ["charge", "cooldown", "health", "invulnerability"]:
 		if not number(state.get(field), 100) or state[field] < 0: return false
 	if state.charge > 1: return false
@@ -39,28 +39,31 @@ static func actor(state: Dictionary) -> bool:
 	for field in ["respawns", "blocks", "input_ack"]:
 		if state.has(field) and not sequence(state[field]): return false
 	if state.has("hits"):
-		if not state.hits is Array or state.hits.size() != 3: return false
+		if not state.hits is Array or state.hits.size() not in [3, 4]: return false
 		for count in state.hits:
 			if not sequence(count): return false
 	if state.has("progression") and not progression(state.progression): return false
 	return state.get("combat") is Dictionary and combat(state.combat)
 
 static func combat(data: Dictionary) -> bool:
-	for field in ["gun_owned", "sotjet_owned", "world_drops"]:
+	for field in ["gun_owned", "sotjet_owned", "staff_owned", "world_drops"]:
 		if data.has(field) and not data[field] is bool: return false
 	if data.get("gun", false) and not data.get("gun_owned", true): return false
 	if data.get("jet", false) and not data.get("sotjet_owned", true): return false
+	if data.get("staff", false) and not data.get("staff_owned", false): return false
 	if data.has("recoil") and (not number(data.recoil, 1) or data.recoil < 0): return false
-	for field in ["gun", "ads", "jet", "jet_ads", "jet_firing"]:
+	for field in ["gun", "ads", "jet", "jet_ads", "jet_firing", "staff"]:
 		if data.has(field) and not data[field] is bool: return false
 	if data.get("gun", false) and (data.get("selected", false) or data.get("guard", false) or data.get("active", false)): return false
 	if data.get("jet", false) and (data.get("gun", false) or data.get("selected", false) or data.get("guard", false) or data.get("active", false)): return false
+	if data.get("staff", false) and (data.get("gun", false) or data.get("jet", false) or data.get("selected", false) or data.get("guard", false)): return false
 	if data.get("jet_firing", false) and not data.get("jet", false): return false
 	if data.has("milk") and (not number(data.milk, 100) or data.milk < 0): return false
 	if data.has("jet_sequence") and not sequence(data.jet_sequence): return false
 	if data.has("jet_origin") and not vector(data.jet_origin, 3, 500): return false
 	if data.has("jet_velocity") and not vector(data.jet_velocity, 3, 100): return false
 	if data.has("shot") and not sequence(data.shot): return false
+	if data.has("clash") and not sequence(data.clash): return false
 	if data.has("shot_origin") and not vector(data.shot_origin, 3, 500): return false
 	if data.has("shot_velocity") and not vector(data.shot_velocity, 3, 60): return false
 	for field in ["owned", "selected", "guard", "active"]:

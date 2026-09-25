@@ -10,7 +10,7 @@ static func mob(mob: TrainingMob) -> Array:
 static func apply_mob(mob: TrainingMob, data: Array, feedback: bool = false) -> void:
 	if feedback and data[6] < mob.target.current:
 		CombatEffects.damage_number(mob.get_parent(), mob.target, mob.target.current - data[6])
-	if data[6] < mob.target.current: mob._sprite.modulate = Color(3, 1, 0.8)
+	if data[6] < mob.target.current: mob.flash_hit()
 	mob.position = Vector3(data[0], data[1], data[2])
 	mob.velocity = Vector3(data[3], data[4], data[5])
 	mob.target.current = data[6]

@@ -35,11 +35,13 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── pod_opening.gd       # first-quest actor/camera/world composition
 │   │   ├── weather_flow.gd      # weather -> atmosphere, HUD and snail modifiers
 │   │   ├── sandbox_encounters.gd # explicit combat, prop and loot composition
-│   │   └── exploration_sites.gd  # four Fufufarm discovery landmarks
+│   │   ├── exploration_sites.gd  # four Fufufarm discovery landmarks
+│   │   └── tofu_dungeon{,_replica}.gd # factory entry, waves, snapshots and unlock
 │   ├── farming/                 # per-plot soybean lifecycle, soil and supplied atlas presentation
-│   ├── app/soybean_farming.gd  # nursery test plots, reach and inventory grants
+│   ├── app/soybean_farming.gd  # nursery test plots, reach and ground Edamame drops
 │   ├── app/coop_farming.gd     # host/server farming intents, revisions and reward routing
 │   ├── quest/quest_state.gd     # isolated quest rules, status and save representation
+│   ├── quest/tofu_dungeon_state.gd # six factory stages and one-use crate record
 │   ├── progression/character_progress.gd # capped skill practice, EXP curves and derived stats
 │   ├── progression/{progression_tuning.gd,default_progression.tres} # shared authored balance
 │   ├── ui/character_stats.gd   # level, skill ranks, stat points and interactive allocation
@@ -47,7 +49,11 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── settings/game_preferences.gd # saved display and device bindings
 │   ├── chat/                    # bounded proximity rules, composer/history, speech labels, microphone and playback
 │   ├── inventory/equipment_layout.gd # anatomical slot placement and muted SVG placeholders
+│   ├── inventory/apparel_set_bonus.gd # Soypod/Nori full-set movement and combat modifiers
 │   ├── inventory/               # bag, equipment, transfers, healing and world_item_{drop,pool}.gd collision bodies
+│   │   ├── currency_{exchange,visuals}.gd # selected-stack atomic refinement and transparent stack art
+│   │   ├── inventory_icon_quality.gd # isolated high-quality thumbnails for slot art
+│   │   └── icons/*.png          # rendered staff and Soypod Backpack item art
 │   ├── session/                 # roster, actor/world schemas and bounded input window
 │   ├── ui/menu/                 # themed title, settings, saves and lobby views
 │   ├── player/
@@ -63,6 +69,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── player_placement.gd # free capsule placement for joins, respawns and loads
 │   │   ├── player_motor.gd      # walk, jump, dash rules + per-actor state
 │   │   ├── fufu_visuals.gd      # facing, frames, squash/stretch, hand landmarks
+│   │   ├── outfit_equip_effect.gd # short world-space set completion transition
 │   │   ├── fufu_charge_animation.gd # six-frame charge walking, atlas regions and hands
 │   │   ├── directional_jump_art.gd # four generated rows, mirrored views and hand/foot calibration
 │   │   ├── jump_atlas.gdshader # full billboard rendering and source matte removal
@@ -86,6 +93,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── ui/snail_smear.{gd,gdshader} # fading screen refraction on local damage
 │   ├── ui/hud.{gd,tscn}         # presentation of cooldown data
 │   ├── ui/{dash_slot,jump_meter,kawaii_popup,hud_elements}.gd # skill slot, delayed jump, celebrations and HUD styling
+│   ├── ui/outfit_celebration.gd # full-set banner above inventory
 │   ├── combat/
 │   │   ├── {combat,encounter}_state.gd # bounded capture and replica presentation
 │   │   ├── combat_tuning.gd     # shared authored combat values
@@ -102,17 +110,30 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── player_combat.gd     # swept blade overlaps + world occlusion
 │   │   ├── sword_geometry.gd    # upright hand pose, cutting arc, blade transform
 │   │   ├── sword_visual.gd      # eight-view sword, hand attachment + debug bounds
+│   │   ├── staff_attack.gd      # shared melee moves and staff 360-degree secondary sweep
+│   │   ├── staff_visual.gd      # supplied 3D staff aligned with melee pose
 │   │   ├── sword_trail.gd       # visual ribbon during the cutting arc
 │   │   ├── combat_effects.gd    # floating hit/heal feedback
 │   │   ├── training_mob.gd      # snail chase/leash, village exclusion, respawn
 │   │   ├── {snail_tuning.gd,default_snail.tres} # dry/rain health, damage and respawn balance
 │   │   ├── snail_visuals.gd     # idle/walk/attack frames, eight mirrored directions
+│   │   ├── armored_snail_visuals.gd # procedural full-3D level-two snail and shell response
 │   │   ├── practice_dummy.gd    # reusable straw target, damage feedback, recovery
 │   │   ├── harvest_prop.gd      # 3D renewable soy/crate/boulder
-│   │   └── soybean_pickup.gd    # collectible 2D healing drop
+│   │   ├── factory_{bean,crate}.gd # evil soy variants and breakable milk crate
+│   │   └── soybean_pickup.gd    # proximity-collected Edamame drop
+│   ├── world/sky_effects.gd    # pastel cloud sky, twilight palettes and cosmetic thunder
+│   ├── world/storybook_sky.gdshader # drifting billows, celestial details and distant lightning
 │   └── world/
 │       ├── meadow.{gd,tscn}     # Fufufarm terrain/scenery composition
-│       ├── jungle_{world,terrain,props}.gd # level-eight eastern jungle, terrain and tropical scenery
+│       ├── tofu_factory.gd      # Gigalopolis entry and two-deck switchback factory
+│       ├── ocean_{world,terrain,props}.gd # broad northern underwater world and reef scenery
+│       ├── frost_{world,terrain,props}.gd # northern snowfields, ice and alpine scenery
+│       ├── desert_{world,terrain,props}.gd # broad southern dunes, oasis and desert scenery
+│       ├── jungle_{world,terrain,props}.gd # level-eight southern jungle, terrain and tropical scenery
+│       ├── river_course.gd # shared downhill river/oasis profile, carved bed and bounded water queries
+│       ├── river_surface.gd # continuous flowing surface from northern reach to desert pond
+│       ├── river_{wildlife,fish_art,plants}.gd # cosmetic fish jumps, splash rings, reeds and lilies
 │       ├── farm_terrain.gd     # seeded heightfield + shared collision surface
 │       ├── farm_ground.gdshader # soft lanes, soil furrows and stream banks
 │       ├── farm_buildings.gd   # cottages, storage, village NPC placeholders
@@ -126,12 +147,15 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │       └── {tree,stone,platform}.tscn # original reusable environment props
 ├── assets/
 │   ├── AGENTS.md                # import and art conventions
+│   ├── currency/source/*.png    # supplied transparent bean and tofu stack sheets
+│   ├── factory/*.svg            # original evil soybean/Dofu sprites and soy milk bottle
 │   ├── combat/*.svg            # original vector slime, fist and soybean art
 │   ├── characters/snail/       # supplied sources and extracted animation atlases
+│   ├── equipment/               # Soypod/Nori set item art and equipment sheets
 │   ├── weapons/soy_gun/      # unchanged supplied sources and provenance
 │   ├── weapons/sotjet/       # generated ten-view milk sprayer atlas and provenance
 │   ├── weapons/sword/          # generated atlas and generation prompt
-│   └── characters/fufu/        # walk art, eight-pose idle PNG, source provenance
+│   └── characters/fufu/        # walk art, idle/source provenance, and Soypod/Nori outfit walking + standing sheets
 ├── networking/
 │   ├── AGENTS.md                # adapter/transport rules
 │   ├── godot/session_transport.gd # abstract discovery, delivery and shutdown contract
@@ -168,6 +192,9 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── preview_actor_collisions.gd # rendered movement contact and capsule bounds
 │   ├── test_player_motor.gd     # rule behavior and instance isolation
 │   ├── test_scene.gd            # actual scene wiring/collisions/controls
+│   ├── test_tofu_dungeon{,_coop}.gd # stages, loot, healing, recipe and co-op authority
+│   ├── test_factory_route.gd  # real capsule walk through factory doors and ramp
+│   ├── preview_tofu_factory.gd # rendered exterior, decks, machinery and enemies
 │   ├── test_jump.gd             # charge/release, cancellation and animation phases
 │   ├── preview_charge_walk.gd   # all charge directions and six-frame grip renders
 │   ├── preview_jump.gd          # rendered real jump through all ten poses
@@ -175,6 +202,8 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── preview_progression.gd # rendered skill HUD at early, middle and capped ranks
 │   ├── test_combat.gd           # combat/health rules + jump-height regression
 │   ├── test_sandbox.gd          # harvest/heal, occlusion, river, farm slopes, buildings, mobs
+│   ├── {test,preview}_river.gd # river seams/collision, bounded wildlife and rendered oasis QA
+│   ├── {test,preview}_sky.gd # isolated atmosphere timing and six rendered sky moods
 │   ├── test_weather.gd         # rain outcomes, old saves, replicas and rendered weather QA
 │   ├── test_snail.gd           # eight views, attack timing, damage smear and rendered QA
 │   ├── test_farm_combat.gd     # dummy knife/fists, EXP/respawn, village protection
@@ -187,11 +216,14 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── preview_reflection.gd # live sword deflection returning milk to its source
 │   ├── preview_liquid_hits.gd # rendered milk damage numbers and soybean collision drops
 │   ├── preview_sotjet.gd    # rendered directional weapon art and falling milk stream
+│   ├── {test,preview}_soy_flight.gd # continuous single-bean muzzle departure in FPP/overhead
 │   ├── test_soy_gun.gd       # swept hits, headshots, occlusion, protocol, orbit and input
 │   ├── test_first_person.gd # view cycle, eye position, local visibility and camera-relative input
 │   ├── preview_first_person.gd # rendered first-person equipment slots and aim
 │   ├── preview_soy_gun.gd    # rendered overhead, shoulder, ADS and eight orbit directions
 │   ├── test_sword.gd            # eight-direction blade bounds, sweeps, sprites, tilt
+│   ├── test_staff_combat.gd     # power tiers, charged strikes and 360-degree staff hits
+│   ├── preview_staff.gd         # rendered staff and knife size comparison
 │   ├── preview_sword.gd         # rendered directions and hitbox overlays
 │   ├── preview_fufufarm.gd     # overview, farms, storage and village renders
 │   └── preview_sandbox.gd       # rendered day/river/night QA images
@@ -203,6 +235,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── verify_dedicated.py      # separate server/client processes and restart checks
 │   ├── verify_coop.py           # separate Godot/sidecar lifecycle integration
 │   ├── package_coop.py          # platform-matched desktop runtime staging
+│   ├── render_staff_inventory_icon.gd # transparent PNG render from supplied staff GLB
 │   └── verify.py                # headless verification entry point
 └── docs/
     ├── AGENTS.md
@@ -222,6 +255,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 | Combat / healing / mobs | `game/combat/`, app encounter wiring | combat + sandbox tests |
 | Inventory / Equipment | `game/inventory/`, `game/app/actor_loadout.gd`, `game/app/weapon_merchant.gd` | inventory, loadout/shop, world items + sandbox tests |
 | World / exploration | `game/world/meadow.*`, cycle, app discovery wiring | sandbox + rendered preview |
+| Tofu Factory dungeon | `world/tofu_factory.gd`, `world/factory_*.gd`, `world/gigalopolis*.gd`, `app/tofu_dungeon*.gd`, `quest/tofu_dungeon_state.gd` | dungeon/route tests + rendered preview |
 | Controls | local input, command source, `project.godot` | scene test + manual mouse check |
 | Character art / animation | visuals, ghost, `assets/AGENTS.md` | import + manual play |
 | Camera / HUD | respective feature + `game/app/main.gd` | scene test + manual play |

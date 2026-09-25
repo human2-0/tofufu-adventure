@@ -16,6 +16,8 @@ extends Resource
 @export_range(0.0, 100.0) var dash_speed: float = 18.0
 @export_range(0.01, 2.0) var dash_duration: float = 0.18
 @export_range(0.0, 5.0) var dash_cooldown: float = 0.7
+@export_range(0.1, 2.0) var super_dash_charge_seconds: float = 0.66
+@export_range(1.0, 4.0) var super_dash_duration_multiplier: float = 2.0
 
 @export_group("Super jump")
 @export_range(0.1, 2.0) var jump_charge_seconds: float = 0.65

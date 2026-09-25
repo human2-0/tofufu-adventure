@@ -23,7 +23,7 @@ var _pending: String = ""
 var _timeout: float = 0
 var _retry_clock: float = 0
 var _presence_clock: float = 0
-const GAME_VERSION: int = 11
+const GAME_VERSION: int = 18
 
 func receive(event: Dictionary) -> void:
 	var key := str(event.get("key", ""))

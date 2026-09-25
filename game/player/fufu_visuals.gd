@@ -30,8 +30,11 @@ var idle_bob_time: float = 0.0
 var _ghost_timer: float = 0.0
 var jump_animation := FufuJumpAnimation.new()
 var charge_animation := FufuChargeAnimation.new()
+var worn_appearance := FufuWornAppearance.new()
 var _using_charge_frame: bool = false
 var _using_jump_frame: bool = false
+var worn_set: String = ""
+var _outfit_tween: Tween
 
 func _ready() -> void:
 	alpha_cut = Sprite3D.ALPHA_CUT_DISCARD
@@ -73,10 +76,13 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 	jump_animation.step(grounded, velocity.y, jump_charge > 0.0, clearance, delta)
 	_using_charge_frame = false
 	_using_jump_frame = false
-	if grounded and jump_charge > 0.0:
+	if worn_set.is_empty() and grounded and jump_charge > 0.0:
 		_using_charge_frame = charge_animation.apply(self, current_facing, int(anim_timer) % 6 if walking else 0)
 	elif jump_animation.frame >= 0:
-		jump_animation.apply(self, current_facing)
+		if worn_set.is_empty():
+			jump_animation.apply(self, current_facing)
+		else:
+			worn_appearance.apply_jump(self, worn_set, int(current_facing), jump_animation.frame)
 		_using_jump_frame = true
 	if dashing:
 		_ghost_timer -= delta
@@ -98,6 +104,9 @@ func _set_frame(walking: bool) -> void:
 	material_override = null
 	flip_h = false
 	offset = Vector2.ZERO
+	if not worn_set.is_empty():
+		worn_appearance.apply(self, worn_set, int(current_facing), walking, anim_frame)
+		return
 	if not walking:
 		texture = idle_texture
 		hframes = 4
@@ -127,14 +136,32 @@ func _set_frame(walking: bool) -> void:
 		flip_h = current_facing == Facing.RIGHT
 		frame = row * 4 + anim_frame
 
+func set_worn_set(set_id: String, animate: bool = true) -> void:
+	if set_id not in ["", "bright_leaf", "dark_leaf"]: set_id = ""
+	if worn_set == set_id: return
+	if _outfit_tween != null and _outfit_tween.is_valid(): _outfit_tween.kill()
+	modulate.a = 1.0
+	if animate and not set_id.is_empty() and is_inside_tree():
+		OutfitEquipEffect.spawn(self, Color("adf46c") if set_id == "bright_leaf" else Color("85d8c0"))
+	worn_set = set_id
+	_set_frame(false)
+	if animate and not set_id.is_empty() and is_inside_tree():
+		modulate.a = 0.0
+		_outfit_tween = create_tween()
+		_outfit_tween.tween_property(self, "modulate:a", 1.0, 0.35)
+
 func _present_hand() -> void:
 	var camera := get_viewport().get_camera_3d()
 	if camera == null:
 		return
-	var point := IDLE_HANDS[frame] if texture == idle_texture else (DIAGONAL_HANDS[frame] if texture == diagonal_texture else WALK_HANDS[frame])
+	var point: Vector2
+	if not worn_set.is_empty():
+		point = worn_appearance.hand_point(self, anim_timer > 0.0, _using_jump_frame, jump_animation.frame)
+	else:
+		point = IDLE_HANDS[frame] if texture == idle_texture else (DIAGONAL_HANDS[frame] if texture == diagonal_texture else WALK_HANDS[frame])
 	if _using_charge_frame:
 		point = charge_animation.hand
-	elif _using_jump_frame:
+	elif _using_jump_frame and worn_set.is_empty():
 		point = jump_animation.hand
 	var cell := Vector2(texture.get_size()) / Vector2(hframes, vframes)
 	if flip_h:

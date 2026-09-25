@@ -13,14 +13,14 @@ func _ready() -> void:
 	_material.vertex_color_use_as_albedo = true
 	_material.cull_mode = BaseMaterial3D.CULL_DISABLED
 
-func record(pose: Transform3D, tuning: CombatTuning, cutting: bool, heavy: bool) -> void:
+func record(pose: Transform3D, tuning: CombatTuning, cutting: bool, heavy: bool, length: float = -1.0) -> void:
 	visible = cutting
 	if not cutting:
 		_edges.clear()
 		mesh = null
 		return
 	_edges.append(pose.origin)
-	_edges.append(SwordGeometry.tip(pose, tuning))
+	_edges.append(pose * Vector3(0, 0, -(tuning.blade_length if length < 0.0 else length)))
 	while _edges.size() > 14:
 		_edges.pop_front()
 		_edges.pop_front()

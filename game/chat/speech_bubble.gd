@@ -14,7 +14,9 @@ func _ready() -> void:
 	outline_modulate = Color("19312e")
 	width = 340
 	autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	no_depth_test = false
+	# Dialogue must remain readable when the speaker or nearby props fill the view.
+	no_depth_test = true
+	render_priority = 127
 
 func _process(delta: float) -> void:
 	remaining -= delta

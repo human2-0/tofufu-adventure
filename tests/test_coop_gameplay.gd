@@ -20,6 +20,11 @@ func check(ok: bool, message: String) -> void:
 		failures += 1
 		printerr("FAIL: ", message)
 
+func drop_id(pool: WorldItemPool, item_id: String) -> int:
+	for drop: WorldItemDrop in pool.drops.values():
+		if drop.item_id == item_id: return drop.drop_id
+	return 0
+
 func _run() -> void:
 	host = PlaytestRoom.new()
 	guest = PlaytestRoom.new()
@@ -46,51 +51,74 @@ func _run() -> void:
 	var remote := host_session.roster.party[GUEST]
 	var replica := guest_session.roster.party[GUEST]
 	var before_shop := remote.actor.position
+	remote.inventory.add_item(InventoryItem.currency("mature_bean"), 1)
 	guest_game.merchant._request("sotjet")
 	await ticks(10)
-	check(remote.inventory.coins == 10, "remote purchase rejects out-of-range buyer")
+	check(remote.inventory.count_item("mature_bean") == 1, "remote purchase rejects out-of-range buyer")
 	remote.actor.relocate(host_game.world.ground_point(29, 5.2))
 	await ticks(15)
 	guest_game.merchant._request("sotjet")
 	await ticks(15)
-	check(remote.inventory.coins == 9 and replica.inventory.coins == 9, "host charges one coin and synchronizes wallet")
+	check(remote.inventory.count_item("mature_bean") == 1 and replica.inventory.count_item("mature_bean") == 1, "host grants free gear and synchronizes the unchanged Mature Bean balance")
 	check(replica.inventory.count_item("sotjet") == 1, "guest purchase creates a weapon in the bag")
-	guest_game.merchant._request_sale(0, "sotjet")
+	guest_game.merchant._request_sale(1, "sotjet")
 	await ticks(12)
-	check(remote.inventory.coins == 10 and replica.inventory.coins == 10 and replica.inventory.get_slot(0) == null, "guest sale credits coins and removes the sold item on both peers")
-	remote.inventory.set_slot(0, ItemStack.new(InventoryItem.create_soybean(), 999))
+	check(remote.inventory.count_item("mature_bean") == 2 and replica.inventory.count_item("mature_bean") == 2 and replica.inventory.get_slot(0).item.id == "mature_bean", "guest sale credits mature beans and removes the sold item on both peers")
+	var level_five_experience := CharacterProgress.threshold(5, true)
+	remote.progression.progress.award_experience(level_five_experience)
 	await ticks(8)
-	check(replica.inventory.get_slot(0).count == 999, "999 stack replicates")
-	guest_game.merchant._request_sale(0, "soybean")
-	await ticks(12)
-	check(replica.inventory.coins == 11 and replica.inventory.get_slot(0).count == 998, "gathered stack sells one unit through host")
+	check(remote.character_equipment.wearer_level == 5 and replica.character_equipment.wearer_level == 5, "level-five armor requirement follows guest progression")
+	for slot_name in ["helmet", "armor", "legs", "boots"]:
+		var apparel_id := "bright_leaf_%s" % slot_name
+		guest_game.merchant._request(apparel_id)
+		await ticks(12)
+		var apparel_slot := -1
+		for slot in replica.inventory.capacity:
+			var stack := replica.inventory.get_slot(slot)
+			if stack != null and stack.item != null and stack.item.id == apparel_id:
+				apparel_slot = slot
+				break
+		check(apparel_slot >= 0, "%s purchase synchronizes from Kaji" % apparel_id)
+		guest_game.inventory_window.execute_transfer("inventory", apparel_slot, "equipment", slot_name)
+		await ticks(12)
+	check(remote.actor.visuals.worn_set == "bright_leaf" and replica.actor.visuals.worn_set == "bright_leaf" and is_equal_approx(remote.health.armor_multiplier, 0.90), "host equipment sync shows the complete set and protection on both players")
+	remote.inventory.set_slot(0, ItemStack.new(InventoryItem.create_edamame(), 100))
+	remote.inventory.refining_unlocked = true
+	await ticks(8)
+	check(replica.inventory.get_slot(0).count == 100, "100 stack replicates")
+	guest_game.inventory_window._request_conversion(0, "edamame")
+	await ticks(8)
+	check(remote.inventory.get_slot(0).item.id == "mature_bean" and replica.inventory.get_slot(0).item.id == "mature_bean", "guest right-click refine is host-authoritative and replicated")
+	guest_game.inventory_window._request_conversion(0, "edamame")
+	await ticks(8)
+	check(remote.inventory.count_item("mature_bean") == 1, "stale refine request cannot duplicate tender")
 	remote.inventory.set_slot(0, null) # Remove the shop fixture before stacking checks.
 	remote.actor.relocate(before_shop)
 	await ticks(10)
 	check(guest_game.inventory == replica.inventory and guest_game.character_equipment == replica.character_equipment, "window shares local co-op inventory")
-	remote.inventory.add_item(InventoryItem.create_soybean(), 3)
+	remote.inventory.add_item(InventoryItem.create_edamame(), 3)
 	await ticks(8)
-	guest_game.inventory_window.execute_transfer("inventory", 0, "equipment", "support_2")
-	check(replica.character_equipment.get_slot("support_2") == null, "guest transfer awaits host outcome")
+	guest_game.inventory_window.execute_transfer("inventory", 0, "inventory", 1)
+	check(replica.inventory.get_slot(1) == null, "guest transfer awaits host outcome")
 	await ticks(8)
-	check(remote.character_equipment.get_slot("support_2") != null, "host applies guest transfer")
-	check(replica.character_equipment.get_slot("support_2") != null, "guest receives equipped item")
-	guest.send_game(HOST, {"type": "inventory_transfer", "sequence": 1, "src": "equipment", "src_id": "support_2", "dst": "inventory", "dst_id": 0})
+	check(remote.inventory.get_slot(1) != null, "host applies guest transfer")
+	check(replica.inventory.get_slot(1) != null, "guest receives bag transfer")
+	guest.send_game(HOST, {"type": "inventory_transfer", "sequence": 1, "src": "inventory", "src_id": 1, "dst": "inventory", "dst_id": 0})
 	await ticks(3)
-	check(remote.inventory.get_slot(0) == null, "replayed transfer cannot move items")
-	guest_game.inventory_window.drop_requested.emit("equipment", "support_2")
+	check(remote.inventory.get_slot(0) == null, "replayed transfer cannot move currency")
+	guest_game.inventory_window.drop_requested.emit("inventory", 1)
 	for retry in 24:
-		if guest_game.world_items.pool.drops.size() == 1: break
+		if drop_id(guest_game.world_items.pool, "edamame") != 0: break
 		await ticks(1)
-	check(remote.character_equipment.get_slot("support_2") == null and guest_game.world_items.pool.drops.size() == 1, "guest equipment stack drops through authority")
-	var stack_id: int = host_game.world_items.pool.drops.keys()[0]
+	check(remote.inventory.get_slot(1) == null and drop_id(guest_game.world_items.pool, "edamame") != 0, "guest currency stack drops through authority")
+	var stack_id: int = drop_id(host_game.world_items.pool, "edamame")
 	input.pickup_id = stack_id
 	input.pickup = true
 	await ticks(10)
-	check(remote.inventory.count_item("soybean") == 3 and guest_game.world_items.pool.drops.is_empty(), "guest can recover dropped stack through exact focused ID")
+	check(remote.inventory.count_item("edamame") == 3 and drop_id(guest_game.world_items.pool, "edamame") == 0, "guest can recover dropped stack through exact focused ID")
 	input.pickup_id = -1
 	# Clear fixture beans before existing pickup assertions.
-	remote.inventory.remove_item("soybean", 3)
+	remote.inventory.remove_item("edamame", 3)
 	await ticks(8)
 	# Guest intent must collide on the host, then converge to that stopped pose.
 	host_game.player.position = Vector3(0, 0.05, 2)
@@ -128,11 +156,11 @@ func _run() -> void:
 	remote.hurt(12, remote.actor.position + Vector3(0, 0, 1))
 	await ticks(10)
 	check(remote.progression.progress.practice.defence == 1 and replica.progression.progress.practice.defence == 1, "only the successful guard trains defence")
-	check(remote.health.current == 88 and replica.health.current == 88, "rear damage reaches guest health/HUD")
+	check(is_equal_approx(remote.health.current, 89.2) and is_equal_approx(replica.health.current, 89.2), "rear hit is reduced by ten percent for the armored guest")
 	input.guard = false
 	input.drop = true
 	await ticks(10)
-	check(not remote.combat.equipment.knife_owned and guest_game.world_items.pool.drops.size() == 1, "guest dropped knife appears on both peers")
+	check(not remote.combat.equipment.knife_owned and drop_id(guest_game.world_items.pool, "knife") != 0, "guest dropped knife appears on both peers")
 	input.pickup = true
 	await ticks(10)
 	check(remote.combat.equipment.knife_owned and replica.combat.equipment.knife_owned, "guest retrieves own knife")
@@ -149,7 +177,7 @@ func _run() -> void:
 	check(not host_game.combat.equipment.gun_owned and not guest_game.world_items.pool.drops.has(shared_id), "original owner stays unarmed and consumed drop disappears")
 	input.pickup = true
 	await ticks(8)
-	check(host_game.world_items.pool.drops.is_empty(), "repeated pickup cannot recreate consumed item")
+	check(not host_game.world_items.pool.drops.has(shared_id), "repeated pickup cannot recreate consumed item")
 	# Restore fixture ownership for the independent friendly-fire checks below.
 	host_game.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun"), 1))
 	input.pickup_id = -1
@@ -162,13 +190,13 @@ func _run() -> void:
 	var bean: SoybeanPickup = host_game.encounters.add_pickup(host_game.encounters.next_pickup_id, remote.actor.position)
 	bean._age = 1
 	await ticks(35)
-	check(host_game.encounters.beans == 1 and remote.inventory.count_item("soybean") == 1, "nearest guest collects bean into inventory exactly once")
-	check(guest_game.encounters.beans == 1 and remote.inventory.count_item("soybean") == 1, "loot outcome replicates to inventory count")
+	check(host_game.encounters.beans == 1 and remote.inventory.count_item("edamame") == 1, "nearest guest collects edamame into inventory exactly once")
+	check(guest_game.encounters.beans == 1 and remote.inventory.count_item("edamame") == 1, "loot outcome replicates to inventory count")
 	host_game.encounters.mob_nodes[0].target.damage(999)
 	await ticks(10)
 	check(guest_game.encounters.experience == 25 and not guest_game.encounters.mob_nodes[0].visible, "shared enemy death and EXP")
-	check(remote.progression.progress.experience == 25 and host_game.progression.progress.experience == 25, "party EXP awards every active character once")
-	check(replica.progression.progress.experience == 25, "guest character EXP survives world snapshot application")
+	check(remote.progression.progress.experience == level_five_experience + 25 and host_game.progression.progress.experience == 25, "party EXP awards every active character once")
+	check(replica.progression.progress.experience == level_five_experience + 25, "guest character EXP survives world snapshot application")
 	remote.health.invulnerability = 0
 	remote.health.damage(999)
 	await ticks(10)
@@ -176,6 +204,8 @@ func _run() -> void:
 	# Both directions of gun friendly fire cross real room JSON and host physics.
 	remote = host_session.roster.party[GUEST]
 	replica = guest_session.roster.party[GUEST]
+	remote.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun"), 1))
+	remote.loadout.select(2)
 	host_game.player.position = Vector3(0, 0.2, 2)
 	remote.actor.position = Vector3(0, 0.2, -3)
 	host_game.health.current = 100
@@ -191,15 +221,15 @@ func _run() -> void:
 	await ticks(7)
 	input.attack = false
 	await ticks(15)
-	check(host_game.health.current == 80, "guest soybean damages host for 20")
-	check(guest_session.roster.party[HOST].health.current == 80, "host friendly-fire health replicates to guest")
+	check(is_equal_approx(host_game.health.current, 79.2), "level-five guest soybean damage reaches the host")
+	check(is_equal_approx(guest_session.roster.party[HOST].health.current, 79.2), "host friendly-fire health replicates to guest")
 	check(replica.combat.gun.selected, "guest gun slot is replicated")
 	host_game.combat.gun.selected = true
 	host_game.combat.equipment.knife_selected = false
 	host_game.combat.gun.tuning.aim_spread_degrees = 0
 	host_game.combat.gun.step(true, true, Vector2.UP, remote.actor.position + Vector3.UP * 0.98, 0.02)
 	await ticks(18)
-	check(remote.health.current == 60 and replica.health.current == 60, "host headshot damages guest for 40 and replicates")
+	check(is_equal_approx(remote.health.current, 64.0) and is_equal_approx(replica.health.current, 64.0), "armored guest reduces the host headshot and replicates health (remote %.2f, replica %.2f)" % [remote.health.current, replica.health.current])
 	var saved := CoopCheckpoint.capture(host_session)
 	check(CoopCheckpoint.valid(saved), "full checkpoint validates")
 	var store := SaveStore.new()

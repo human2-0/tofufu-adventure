@@ -11,10 +11,14 @@ var _clouds: float = 0.0
 var _motes: MultiMeshInstance3D
 var _lights: Array[OmniLight3D] = []
 var _time: float = 0.0
+var sky_effects: SkyEffects
 
 func _ready() -> void:
 	# A local preview or co-op test may contain multiple independent worlds.
 	world_environment.environment = world_environment.environment.duplicate(true)
+	sky_effects = SkyEffects.new()
+	add_child(sky_effects)
+	sky_effects.setup(world_environment.environment)
 	_build_motes()
 	for at in [Vector3(-22, 4.5, -17), Vector3(19, 1.5, -4), Vector3(29, 2, 18), Vector3(7, 1.5, 4), Vector3(15, 1.5, 4)]: 
 		var light := OmniLight3D.new()
@@ -41,11 +45,8 @@ func _process(delta: float) -> void:
 	environment.fog_enabled = true
 	environment.fog_density = lerpf(0.0025, 0.012, _clouds)
 	environment.fog_light_color = Color("394965").lerp(Color("d9e8da"), daylight)
-	var sky := environment.sky.sky_material as ProceduralSkyMaterial
-	sky.sky_top_color = Color("17293f").lerp(Color("88c9df"), daylight)
-	sky.sky_horizon_color = Color("687594").lerp(Color("ffe4cd"), daylight)
-	sky.sky_top_color = sky.sky_top_color.lerp(Color("657b8d") * lerpf(0.45, 1.0, daylight), _clouds)
-	sky.sky_horizon_color = sky.sky_horizon_color.lerp(Color("9aadb5") * lerpf(0.45, 1.0, daylight), _clouds)
+	var flash := sky_effects.present(delta, phase, daylight, _clouds)
+	sun.light_energy += flash * 0.45
 	environment.fog_light_color = environment.fog_light_color.lerp(Color("7d939e"), _clouds * 0.6)
 	for light in _lights:
 		light.light_energy = (1.0 - daylight) * (1.5 + sin(_time * 3.0) * 0.1)

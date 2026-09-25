@@ -69,6 +69,7 @@ func sample(world_position: Vector3) -> PlayerCommand:
 	command.use_healing_4 = Input.is_action_just_pressed("use_support_4")
 	command.jump_pressed = Input.is_action_just_pressed("jump")
 	command.dash_pressed = Input.is_action_just_pressed("dash")
+	command.dash_held = Input.is_action_pressed("dash")
 	return command
 
 func _update_mouse_aim(world_position: Vector3) -> void:
@@ -109,3 +110,6 @@ func _camera_aim_active() -> bool:
 
 func focus_direction() -> Vector2:
 	return _aim
+
+func pointer_focus() -> bool:
+	return _pointer_aim or shoulder_view

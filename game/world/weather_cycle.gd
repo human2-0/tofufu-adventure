@@ -3,7 +3,7 @@ extends Node
 ## Authority advances this clock; replicas only receive a normalized phase.
 
 signal changed(condition: int)
-enum Condition { CLEAR, OVERCAST, RAIN }
+enum Condition { CLEAR, OVERCAST, RAIN, WINDY }
 @export var cycle_seconds: float = 180.0
 var phase: float = 0.0
 var condition: Condition = Condition.CLEAR
@@ -16,6 +16,8 @@ func set_phase(value: float) -> void:
 	var next := Condition.CLEAR
 	if phase >= 1.0 / 3.0 and phase < 2.0 / 3.0:
 		next = Condition.RAIN
+	elif phase >= 0.08 and phase < 0.22:
+		next = Condition.WINDY
 	elif phase >= 0.25 and phase < 0.75:
 		next = Condition.OVERCAST
 	if condition != next:

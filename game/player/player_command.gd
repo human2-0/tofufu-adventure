@@ -10,6 +10,7 @@ var aim_point: Vector3 = Vector3.ZERO
 var dash_direction: Vector2 = Vector2.DOWN
 var jump_pressed: bool = false
 var dash_pressed: bool = false
+var dash_held: bool = false
 
 var jump_held: bool = false
 var attack_held: bool = false

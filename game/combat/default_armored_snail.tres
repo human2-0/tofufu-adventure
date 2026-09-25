@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmoredSnailTuning" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://game/combat/armored_snail_tuning.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+dry_health = 130.0
+rain_health = 180.0
+dry_damage = 20.0
+rain_damage = 28.0
+dry_respawn = 30.0
+rain_respawn = 10.0
+armor_multiplier = 0.55
+knife_open_duration = 1.1

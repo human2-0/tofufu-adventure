@@ -32,11 +32,13 @@ func _run() -> void:
 			check(not child._protected(child.global_position), "mobs spawn outside the village")
 		elif child is PracticeDummy:
 			dummies.append(child)
-	check(mobs.size() == 15 and dummies.size() == 3, "three outdoor packs with six rain reserves and three village dummies")
-	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9, "nine snails active in dry weather")
+	var forest_count := FarmCombatGrounds.FOREST_ARMORED_SPAWNS.size()
+	check(mobs.size() == 15 + forest_count and dummies.size() == 3, "three outdoor packs, six rain reserves, forest snails and village dummies")
+	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9 + forest_count, "camp and forest snails are active in dry weather")
 	await _practice(dummies[0])
 	await _rewards(mobs[0])
 	await _safe_village(mobs[3])
+	_armored_snail(mobs)
 	_stat_effects(dummies[0])
 	scene.queue_free()
 	await process_frame
@@ -75,6 +77,9 @@ func _rewards(mob: TrainingMob) -> void:
 	mob.target.invulnerability = 0
 	mob.target.damage(999)
 	check(scene.encounters.experience == 50, "respawned enemies award EXP again")
+	mob.velocity = Vector3.ZERO
+	mob._hit(0, Vector3.UP * scene.combat.tuning.launcher_lift)
+	check(is_equal_approx(mob.velocity.y, scene.combat.tuning.launcher_lift), "launcher impulse sends a live enemy upward")
 	scene._respawn()
 	check(scene.encounters.experience == 50, "earned EXP survives player defeat within session")
 
@@ -95,6 +100,36 @@ func _safe_village(mob: TrainingMob) -> void:
 	await ticks(130)
 	check(Vector2(mob.position.x - mob._home.x, mob.position.z - mob._home.z).length() < 4, "distant enemies return toward their spawn")
 	mob.set_physics_process(false)
+
+func _armored_snail(mobs: Array[TrainingMob]) -> void:
+	var armored: ArmoredSnail
+	var armored_count := 0
+	var level_one_names := 0
+	for mob in mobs:
+		if mob is ArmoredSnail:
+			armored_count += 1
+			if armored == null and mob.visible: armored = mob
+			check(not FarmCombatGrounds.VILLAGE.has_point(Vector2(mob.position.x, mob.position.z)), "armored snails spawn outside the village")
+		elif mob._nameplate.text == "SNAIL · LV 1":
+			level_one_names += 1
+	check(armored_count == 3 + FarmCombatGrounds.FOREST_ARMORED_SPAWNS.size() and armored != null and armored.LEVEL == 2, "level-two armored snails occupy rain reserves and forest clearings")
+	check(level_one_names == 12, "normal snails display their level-one nameplate")
+	if armored == null: return
+	check(armored._armored_visual is ArmoredSnailVisuals, "armored snail uses its full 3D model")
+	check(armored.target.maximum > 60 and armored.tuning.dry_damage > 12, "armored snail exceeds normal snail health and damage")
+	var before := armored.target.current
+	check(not armored.target.damage(20, Vector3.FORWARD, Damageable.HitKind.KNIFE), "closed shell dodges the first knife hit")
+	check(is_equal_approx(armored.target.current, before), "shell dodge takes no damage")
+	check(armored.target.damage(20, Vector3.FORWARD, Damageable.HitKind.MELEE), "open shell still takes reduced non-knife damage")
+	var edamame_before: int = scene.encounters.pickups.size()
+	scene.encounters.shell_drop_roll = func() -> float: return 0.05
+	armored.target.invulnerability = 0.0
+	armored.target.damage(999, Vector3.FORWARD, Damageable.HitKind.MELEE)
+	check(scene.encounters.pickups.size() == edamame_before + 4, "armored snail drops four Edamame")
+	var has_shell_piece := false
+	for drop: WorldItemDrop in scene.world_items.pool.drops.values():
+		if drop.item_id == "piece_of_shell": has_shell_piece = true
+	check(has_shell_piece, "armored snail drops a Piece of Shell")
 
 func ticks(count: int) -> void:
 	for i in count:

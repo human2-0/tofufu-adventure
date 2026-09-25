@@ -1,6 +1,6 @@
 class_name SoybeanFarming
 extends Node3D
-## Nursery composition: explicit plot rules, reach checks, and bag grants.
+## Nursery composition: explicit plot rules, reach checks, and ground loot.
 
 var game: Node3D
 var plots: Array[SoybeanPlot] = []
@@ -26,7 +26,7 @@ func available() -> bool:
 	return game.hud.visible and source != null and source.enabled and not source.chat_blocked and not game.inventory_window.visible and not game.map.expanded
 
 func nearest() -> SoybeanPlot:
-	if not available() or game.world_items.focused_id != 0: return null
+	if not available(): return null
 	var result: SoybeanPlot
 	var distance := 2.2
 	for plot in plots:
@@ -38,20 +38,20 @@ func nearest() -> SoybeanPlot:
 	return result
 
 func _process(_delta: float) -> void:
-	focused = nearest()
+	focused = plots[game.world_items.focused_plot] if game.world_items.focused_kind == "plot" and game.world_items.focused_plot >= 0 else null
 	for plot in plots:
 		var text := plot.crop.title()
 		var key := GamePreferences.binding_text("pickup_weapon", "keyboard")
 		match plot.crop.phase():
-			SoybeanCrop.Phase.EMPTY: text = "[%s] Plant soybean · free test seed" % key
-			SoybeanCrop.Phase.RIPE: text = "[%s] Harvest · +3 soybeans" % key
+			SoybeanCrop.Phase.EMPTY: text = "[%s] Plant edamame · free test seed" % key
+			SoybeanCrop.Phase.RIPE: text = "[%s] Harvest · +3 edamame" % key
 			SoybeanCrop.Phase.HARVEST: pass
 			_: text += " · %ds" % ceili(SoybeanCrop.GROW_SECONDS - plot.crop.age)
 		plot.present(plot == focused, text)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_echo() or not event.is_action_pressed("pickup_weapon"): return
-	var plot := nearest()
+	var plot := focused
 	if plot == null: return
 	if request_action.is_valid():
 		request_action.call(plots.find(plot), plot.crop.revision, "plant" if plot.crop.phase() == SoybeanCrop.Phase.EMPTY else "harvest")
@@ -83,15 +83,14 @@ func perform(actor: Node3D, inventory: PlayerInventory, id: int, revision: int, 
 	var plot := plots[id]
 	if not reachable(actor, plot) or revision != plot.crop.revision: return ""
 	if action == "plant":
-		return "Planted soybean! Ready in 30 seconds." if plot.crop.plant() else ""
+		return "Planted edamame! Ready in 30 seconds." if plot.crop.plant() else ""
 	if action != "harvest" or plot.crop.phase() != SoybeanCrop.Phase.RIPE: return ""
-	var bean := InventoryItem.create_soybean()
-	if not inventory.has_space_for(bean, SoybeanCrop.YIELD):
-		return "Bag full · make room for 3 soybeans, then harvest."
+	if game.encounters.pickups.size() + SoybeanCrop.YIELD > 128:
+		return "Too many beans on the ground; collect some before harvesting."
 	if not plot.crop.harvest(): return ""
-	inventory.add_item(bean, SoybeanCrop.YIELD)
+	game.encounters.spawn_edamame(plot.global_position, SoybeanCrop.YIELD, actor)
 	_harvest_effect(plot)
-	return "Harvested 3 soybeans! Ready to replant."
+	return "Harvested 3 edamame! Pick them up nearby."
 
 func capture() -> Array:
 	var rows: Array = []
@@ -110,4 +109,4 @@ func restore(rows: Array) -> void:
 		crop.revision = int(rows[i][3])
 
 func _harvest_effect(plot: SoybeanPlot) -> void:
-	CombatEffects.burst(self, plot.global_position + Vector3.UP, "+3 SOYBEANS", Color("ffdb76"))
+	CombatEffects.burst(self, plot.global_position + Vector3.UP, "+3 EDAMAME", Color("ffdb76"))

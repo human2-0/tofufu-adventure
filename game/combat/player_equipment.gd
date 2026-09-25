@@ -14,6 +14,8 @@ var facing: Vector2 = Vector2.DOWN
 var dropped: Node3D
 var gun_owned: bool = true
 var sotjet_owned: bool = true
+var staff_owned: bool = false
+var staff_selected: bool = false
 var drop_item: Callable
 var pickup_item: Callable
 var select_item: Callable
@@ -50,13 +52,17 @@ func step(aim: Vector2, guard: bool, punch: bool, drop: bool, pickup: bool, slot
 		guarding = false
 		_punch_time = combat.tuning.punch_cooldown
 		_punch()
-	if guarding or not knife_selected or _punch_time > 0.0:
+	if guarding or not melee_selected() or _punch_time > 0.0:
 		combat.rules.cancel_charge()
 	combat.sword.visible = knife_owned and knife_selected
+	combat.staff.visible = staff_owned and staff_selected
 	changed.emit(knife_owned, knife_selected, guarding)
 
 func suppress_slash() -> bool:
-	return guarding or not knife_owned or not knife_selected or _punch_time > 0.0
+	return guarding or not melee_selected() or _punch_time > 0.0
+
+func melee_selected() -> bool:
+	return (knife_owned and knife_selected) or (staff_owned and staff_selected)
 
 func blocks(source: Vector3) -> bool:
 	var offset := source - combat.actor.global_position

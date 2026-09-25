@@ -9,11 +9,13 @@ signal defeated(at: Vector3)
 @export var leash_radius: float = 8.0
 @export var tuning: SnailTuning = preload("res://game/combat/default_snail.tres")
 var rain_only: bool = false
+var free_roaming: bool = false
 var available: bool = true
 var raining: bool = false
 var _returning: bool = false
 var target: Damageable
 var _sprite: SnailVisuals
+var _nameplate: Label3D
 var _warning: Label3D
 var _home: Vector3
 var _destination: Vector3
@@ -41,17 +43,19 @@ func _ready() -> void:
 	collider.shape = capsule
 	collider.position.y = 0.5
 	add_child(collider)
-	_sprite = SnailVisuals.new()
-	add_child(_sprite)
+	_create_visual()
 	_warning = Label3D.new()
 	_warning.text = "!"
 	_warning.font_size = 72
 	_warning.pixel_size = 0.012
 	_warning.modulate = Color("ffca78")
 	_warning.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_warning.position.y = 1.8
+	_warning.no_depth_test = true
+	_warning.render_priority = 127
 	_warning.visible = false
 	add_child(_warning)
+	_create_nameplate()
+	_warning.position.y = _nameplate_height() + 0.55
 	target = Damageable.new()
 	target.maximum = tuning.dry_health
 	target.headshot_height = 0.72
@@ -108,14 +112,46 @@ func _process(delta: float) -> void:
 	var aim := quarry.global_position - global_position if is_instance_valid(quarry) else Vector3.ZERO
 	# Replicas retain their last travel facing; their quarry is not authoritative.
 	if not is_physics_processing(): aim = Vector3.ZERO
+	_present_visual(aim, delta)
+
+func _create_visual() -> void:
+	_sprite = SnailVisuals.new()
+	add_child(_sprite)
+
+func _present_visual(aim: Vector3, delta: float) -> void:
 	_sprite.present(velocity, aim, _windup, delta)
+
+func _flash_visual() -> void:
+	_sprite.modulate = Color(3, 1.0, 0.8)
+
+func flash_hit() -> void:
+	_flash_visual()
+
+func _create_nameplate() -> void:
+	_nameplate = Label3D.new()
+	_nameplate.text = _nameplate_text()
+	_nameplate.font_size = 28
+	_nameplate.pixel_size = 0.008
+	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	_nameplate.modulate = Color("f2f4d0")
+	_nameplate.position.y = _nameplate_height()
+	_nameplate.outline_size = 6
+	_nameplate.no_depth_test = true
+	_nameplate.render_priority = 127
+	add_child(_nameplate)
+
+func _nameplate_text() -> String:
+	return "SNAIL · LV 1"
+
+func _nameplate_height() -> float:
+	return 1.5
 
 func _choose_direction(delta: float) -> Vector3:
 	if not is_instance_valid(quarry):
 		return Vector3.ZERO
 	var home_offset := _home - position
 	home_offset.y = 0.0
-	if home_offset.length() > leash_radius or _protected(quarry.global_position):
+	if not free_roaming and (home_offset.length() > leash_radius or _protected(quarry.global_position)):
 		_returning = true
 	if _returning:
 		_windup = 0.0
@@ -144,8 +180,10 @@ func _choose_direction(delta: float) -> Vector3:
 		return offset.normalized() * 2.5
 	_timer -= delta
 	if _timer <= 0.0:
-		_destination = _home + Vector3(_rng.randf_range(-2.5, 2.5), 0, _rng.randf_range(-2.5, 2.5))
-		_timer = _rng.randf_range(2.0, 4.0)
+		var wander_origin := position if free_roaming else _home
+		var wander_range := 18.0 if free_roaming else 2.5
+		_destination = wander_origin + Vector3(_rng.randf_range(-wander_range, wander_range), 0, _rng.randf_range(-wander_range, wander_range))
+		_timer = _rng.randf_range(4.0, 7.0) if free_roaming else _rng.randf_range(2.0, 4.0)
 	var wander := _destination - position
 	wander.y = 0.0
 	return wander.normalized() * 1.2 if wander.length() > 0.3 else Vector3.ZERO
@@ -162,8 +200,9 @@ func _can_reach_quarry() -> bool:
 	return get_world_3d().direct_space_state.intersect_ray(query).is_empty()
 
 func _hit(_amount: float, direction: Vector3) -> void:
-	_knockback = direction
-	_sprite.modulate = Color(3, 1.0, 0.8)
+	_knockback = Vector3(direction.x, 0, direction.z)
+	if direction.y > 0.0: velocity.y = maxf(velocity.y, direction.y)
+	_flash_visual()
 	_windup = 0.0
 	_warning.visible = false
 	_rest = 0.3

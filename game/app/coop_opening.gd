@@ -35,6 +35,7 @@ func _sync() -> void:
 		member.set_process(false)
 		member.set_physics_process(false)
 		member.combat.sword.hide()
+		member.combat.staff.hide()
 		if member.actor != game.player:
 			member.actor.hide()
 			if _combined != null: _combined.sources.append(member.actor.command_source)
@@ -58,6 +59,7 @@ func _completed() -> void:
 		member.set_physics_process(true)
 		member.actor.set_physics_process(authority)
 		member.combat.sword.visible = member.combat.equipment.knife_selected
+		member.combat.staff.visible = member.combat.equipment.staff_selected
 		if authority and member.actor != game.player:
 			member.actor.relocate(game.player.position + Vector3(roster.actors.keys().find(key) * 1.4, 0.1, 0))
 	if not authority: CoopWorld.disable_simulation(game)

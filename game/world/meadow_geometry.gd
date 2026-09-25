@@ -58,4 +58,6 @@ static func signpost(parent: Node3D, at: Vector3, title: String) -> void:
 	label.pixel_size = 0.007
 	label.position = at + Vector3(0, 1.3, 0.09)
 	label.modulate = Color("f9e6af")
+	label.no_depth_test = true
+	label.render_priority = 127
 	parent.add_child(label)

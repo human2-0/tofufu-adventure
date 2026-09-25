@@ -40,6 +40,8 @@ func _ready() -> void:
 	_label.pixel_size = 0.008
 	_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_label.modulate = Color("fff0bf")
+	_label.no_depth_test = true
+	_label.render_priority = 127
 	add_child(_label)
 	_show_status()
 

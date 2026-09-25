@@ -6,6 +6,7 @@ extends Resource
 @export var gravity: float = 12.0
 @export var lifetime: float = 1.25
 @export var radius: float = 0.055
+@export var push_speed: float = 7.0
 @export var damage_per_second: float = 40.0
 @export var damage_interval: float = 0.12
 @export var capacity: float = 100.0

@@ -8,6 +8,7 @@ var shooter: CollisionObject3D
 var targets: Array[Damageable] = []
 var tuning: SotjetTuning
 var authoritative: bool = true
+var push_multiplier: float = 1.0
 var damage_multiplier: float = 1.0
 var parcels: Array[SotjetParcel] = []
 var visual: SotjetStreamVisual
@@ -70,7 +71,9 @@ func _impact(hit: Dictionary, velocity: Vector3, reflected_by: Damageable = null
 		if _hit_until.has(id): return
 		_hit_until[id] = _clock + tuning.damage_interval
 		var damage := tuning.damage_per_second * tuning.damage_interval * damage_multiplier
-		if target.damage(damage, velocity.normalized(), Damageable.HitKind.SOY):
+		var impulse := Vector3(velocity.x, 0.0, velocity.z).normalized() * tuning.push_speed * push_multiplier
+		if target.damage(damage, impulse, Damageable.HitKind.SOY):
+			if target.current > 0.0 and target.invulnerability <= 0.0: target.pushed.emit(impulse)
 			CombatEffects.damage_number(self, target, target.last_hit_amount)
 			if target.trains_weapons:
 				if is_instance_valid(reflected_by): reflected_by.reflected_hit.emit("shooting")

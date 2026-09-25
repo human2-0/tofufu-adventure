@@ -31,6 +31,8 @@ func _setup_npc_interaction() -> void:
 	_prompt.outline_size = 8
 	_prompt.modulate = Color("ffdc79")
 	_prompt.pixel_size = 0.009
+	_prompt.no_depth_test = true
+	_prompt.render_priority = 127
 	npc.add_child(_prompt)
 	_build_highlight(npc)
 
@@ -48,7 +50,7 @@ func _process(_delta: float) -> void:
 		return
 	var source: LocalPlayerInput = game.shooting_view.local_input
 	var is_nearby := nearby(game.player)
-	_prompt.visible = source != null and source.enabled and not source.chat_blocked and game.hud.visible and is_nearby
+	_prompt.visible = source != null and source.enabled and not source.chat_blocked and game.hud.visible and is_nearby and game.world_items.focused_kind == "quest"
 	if _prompt.visible:
 		var key := GamePreferences.binding_text("pickup_weapon", "keyboard")
 		if quest.status == QuestState.Status.COMPLETED:
@@ -110,15 +112,11 @@ func _on_mob_defeated(_at: Vector3) -> void:
 func _on_reward_claimed() -> void:
 	if not quest.claim_reward():
 		return
-	game.inventory.coins += quest.reward_coins
-	var rare_item := InventoryItem.create_rare_soybean()
-	var leftover: int = game.inventory.add_item(rare_item, 1)
-	if leftover > 0:
-		game.inventory.pending_items.append(ItemStack.new(rare_item, 1))
-		game.hud.announce("+100 Coins · Rare Soybean saved to pending items!")
-	else:
-		game.hud.announce("+100 Coins · Obtained Rare Soybean!")
-	CombatEffects.burst(game, game.player.global_position, "+100 COINS", Color("ffd666"))
+	var edamame := InventoryItem.create_edamame()
+	var edamame_leftover: int = game.inventory.add_item(edamame, quest.reward_edamame)
+	if edamame_leftover > 0: game.inventory.pending_items.append(ItemStack.new(edamame, edamame_leftover))
+	game.hud.announce("+100 Edamame!")
+	CombatEffects.burst(game, game.player.global_position, "+100 EDAMAME", Color("ffd666"))
 	_refresh_window()
 
 func _build_highlight(npc: Node3D) -> void:

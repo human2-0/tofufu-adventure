@@ -3,6 +3,7 @@ extends Button
 ## Slot button supporting click selection and drag-and-drop transfers.
 
 signal transfer_requested(src_source: String, src_id: Variant, dst_source: String, dst_id: Variant)
+signal context_requested(slot: int)
 
 var source: String = "" # "inventory" or "equipment"
 var slot_id: Variant = null
@@ -12,6 +13,8 @@ var window_ref: Variant = null
 var _image: TextureRect
 var _quantity: Label
 var _hotkey: Label
+var _source_icon: Texture2D
+var _display_icon: Texture2D
 
 func _ready() -> void:
 	focus_mode = Control.FOCUS_ALL
@@ -31,12 +34,13 @@ func _ready() -> void:
 	_image.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_image.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_image.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	_image.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	add_child(_image)
 	_image.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	_image.offset_left = 14
-	_image.offset_top = 14
-	_image.offset_right = -14
-	_image.offset_bottom = -14
+	_image.offset_left = 5
+	_image.offset_top = 5
+	_image.offset_right = -5
+	_image.offset_bottom = -5
 	_quantity = Label.new()
 	_quantity.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_quantity.add_theme_font_size_override("font_size", 12)
@@ -63,11 +67,15 @@ func present(stack: ItemStack, placeholder: Texture2D, title: String, hotkey: St
 	var occupied := stack != null and stack.item != null
 	text = ""
 	icon = null
-	_image.texture = stack.item.icon if occupied and stack.item.icon != null else placeholder
+	var source_icon: Texture2D = CurrencyVisuals.icon(stack.item.id, stack.count) if occupied and stack.item.category == "currency" else (stack.item.icon if occupied and stack.item.icon != null else placeholder)
+	if source_icon != _source_icon:
+		_source_icon = source_icon
+		_display_icon = InventoryIconQuality.for_slot(source_icon)
+	_image.texture = _display_icon
 	_image.modulate = Color.WHITE if occupied else Color(0.72, 0.78, 0.77, 0.65)
 	_quantity.text = str(stack.count) if occupied and stack.count > 1 else ""
 	_hotkey.text = hotkey
-	tooltip_text = "%s · %s ×%d" % [title, stack.item.name, stack.count] if occupied else title + " · Empty"
+	tooltip_text = "%s ×%d\n%s" % [stack.item.name, stack.count, stack.item.description] if occupied else title + " · Empty"
 	self_modulate = Color("ffe5a3") if selected else Color.WHITE
 	var style := get_theme_stylebox("normal").duplicate() as StyleBoxFlat
 	style.border_color = Color("f4c75d") if selected else (Color("8fc598") if occupied else Color("547e6e"))
@@ -81,9 +89,10 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	if current_stack == null or current_stack.item == null:
 		return null
 	var preview := TextureRect.new()
-	preview.texture = current_stack.item.icon
+	preview.texture = _image.texture
 	preview.custom_minimum_size = Vector2(40, 40)
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	preview.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	set_drag_preview(preview)
 	return {
 		"source": source,
@@ -108,3 +117,9 @@ func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if not (data is Dictionary):
 		return
 	transfer_requested.emit(data.get("source"), data.get("slot_id"), source, slot_id)
+
+func _gui_input(event: InputEvent) -> void:
+	var click := event as InputEventMouseButton
+	if click != null and click.pressed and click.button_index == MOUSE_BUTTON_RIGHT and source == "inventory" and current_stack != null:
+		context_requested.emit(int(slot_id))
+		accept_event()

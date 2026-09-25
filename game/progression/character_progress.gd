@@ -81,6 +81,9 @@ static func practice_cost_multiplier(name: String) -> int:
 func shooting_spread_multiplier() -> float:
 	return 1.0 - TUNING.shooting_accuracy * (skill("shooting") - 1)
 
+func shooting_push_multiplier() -> float:
+	return 1.0 + TUNING.shooting_jet_push * (skill("shooting") - 1)
+
 func shooting_range_multiplier() -> float:
 	return 1.0 + TUNING.shooting_jet_range * (skill("shooting") - 1)
 

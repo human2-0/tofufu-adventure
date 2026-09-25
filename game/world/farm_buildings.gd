@@ -27,6 +27,45 @@ static func cottage(parent: Node3D, at: Vector3, title: String, roof_color: Colo
 		MeadowGeometry.signpost(house, Vector3(0, 1.8, front + 0.2), title)
 	return house
 
+static func seed_bank(parent: Node3D, at: Vector3) -> Node3D:
+	var bank := Node3D.new()
+	bank.name = "SeedBank"
+	bank.position = at
+	bank.set_meta("map_footprint", Vector2(8.4, 7.0))
+	parent.add_child(bank)
+	# A clear, walkable doorway replaces the old solid cottage volume.
+	MeadowGeometry.box(bank, Vector3(0, 0.16, 0), Vector3(8.8, 0.32, 7.4), Color("b4a38a"), true)
+	# The finished planked floor is solid at its visible height, keeping Fufu above the foundation.
+	MeadowGeometry.box(bank, Vector3(0, 0.42, 0), Vector3(8.2, 0.16, 6.8), Color("e5c991"), true)
+	MeadowGeometry.box(bank, Vector3(0, 2.15, -3.25), Vector3(8.2, 3.7, 0.35), Color("f5deb0"), true)
+	for side in [-1.0, 1.0]:
+		MeadowGeometry.box(bank, Vector3(side * 3.93, 2.15, 0), Vector3(0.35, 3.7, 6.85), Color("f5deb0"), true)
+		MeadowGeometry.box(bank, Vector3(side * 2.55, 2.15, 3.25), Vector3(2.4, 3.7, 0.35), Color("f5deb0"), true)
+	MeadowGeometry.box(bank, Vector3(0, 3.62, 3.25), Vector3(2.35, 0.78, 0.35), Color("f5deb0"), true)
+	MeadowGeometry.box(bank, Vector3(0, 0.48, 3.72), Vector3(2.5, 0.16, 1.0), Color("b98a58"), true)
+	_roof(bank, Vector3(7.85, 3.7, 6.5), Color("7e9e87"))
+	for x in [-2.7, -0.9, 0.9, 2.7]:
+		_chest(bank, Vector3(x, 0.86, -2.58))
+	for z in [-1.35, 0.0, 1.35]:
+		_chest(bank, Vector3(-3.18, 0.86, z))
+		_chest(bank, Vector3(3.18, 0.86, z))
+	MeadowGeometry.box(bank, Vector3(0, 3.0, -3.03), Vector3(4.0, 0.75, 0.08), Color("87684c"))
+	var label := Label3D.new()
+	label.text = "SEED BANK"
+	label.position = Vector3(0, 3.0, 3.48)
+	label.font_size = 34
+	label.pixel_size = 0.008
+	label.modulate = Color("f9e6af")
+	label.no_depth_test = true
+	label.render_priority = 127
+	bank.add_child(label)
+	return bank
+
+static func _chest(parent: Node3D, at: Vector3) -> void:
+	MeadowGeometry.box(parent, at, Vector3(1.25, 0.72, 0.68), Color("9d6c50"), true)
+	MeadowGeometry.box(parent, at + Vector3(0, 0.4, 0.02), Vector3(1.34, 0.2, 0.76), Color("c79b7b"))
+	MeadowGeometry.rock(parent, at + Vector3(0, 0.4, 0.41), Vector3(0.09, 0.1, 0.04), Color("efd08a"))
+
 static func _roof(house: Node3D, size: Vector3, color: Color) -> void:
 	var pitch := 0.48
 	var width := (size.x * 0.5 + 0.65) / cos(pitch)
@@ -52,12 +91,17 @@ static func resident(parent: Node3D, at: Vector3, title: String, coat: Color, ma
 	if mayor:
 		MeadowGeometry.rock(npc, Vector3(0, 1.22, 0.35), Vector3(0.22, 0.075, 0.07), Color("fff2d7"))
 	var label := Label3D.new()
-	label.text = title + "\n" + ("QUESTS · Coming soon" if mayor else ("WEAPON SHOP" if "Weapons" in title else "SHOP · Coming soon"))
+	label.name = "ResidentTitle"
+	label.text = title
+	if not mayor and "Gear" not in title:
+		label.text += "\nSHOP · Coming soon"
 	label.position.y = 2.45
 	label.font_size = 28
 	label.pixel_size = 0.009
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.modulate = Color("fff0c5")
+	label.no_depth_test = true
+	label.render_priority = 127
 	npc.add_child(label)
 	return npc
 

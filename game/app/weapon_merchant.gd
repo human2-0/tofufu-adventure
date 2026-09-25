@@ -18,13 +18,15 @@ func _ready() -> void:
 	window.sale_requested.connect(_request_sale)
 	window.closed.connect(_closed)
 	_prompt = Label3D.new()
-	_prompt.text = "[E] Kaji · Buy / Sell"
+	_prompt.text = "[E] Kaji · Gear Shop"
 	_prompt.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_prompt.position.y = 3
+	_prompt.position.y = 3.3
 	_prompt.font_size = 32
 	_prompt.outline_size = 8
 	_prompt.modulate = Color("ffdc79")
 	_prompt.pixel_size = 0.009
+	_prompt.no_depth_test = true
+	_prompt.render_priority = 127
 	game.world.weapon_merchant.add_child(_prompt)
 	_build_highlight()
 
@@ -36,8 +38,8 @@ func nearby(actor: Node3D) -> bool:
 
 func _process(_delta: float) -> void:
 	var source: LocalPlayerInput = game.shooting_view.local_input
-	_prompt.visible = source != null and source.enabled and not source.chat_blocked and game.hud.visible and game.world_items.focused_id == 0 and nearby(game.player)
-	_prompt.text = "[%s] Talk to Kaji · Buy / Sell" % GamePreferences.binding_text("pickup_weapon", "keyboard")
+	_prompt.visible = source != null and source.enabled and not source.chat_blocked and game.hud.visible and game.world_items.focused_kind == "merchant" and nearby(game.player)
+	_prompt.text = "[%s] Talk to Kaji · Gear Shop" % GamePreferences.binding_text("pickup_weapon", "keyboard")
 	_ring.visible = _prompt.visible
 	for mesh in _meshes: mesh.material_overlay = _highlight if _prompt.visible else null
 	if window.visible and not nearby(game.player): window.close()

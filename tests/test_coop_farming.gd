@@ -87,9 +87,11 @@ func scenario(dedicated: bool) -> void:
 	one.farming.request(0, revision, "harvest")
 	two.farming.request(0, revision, "harvest")
 	await ticks()
-	check(member.inventory.count_item("soybean") + other.inventory.count_item("soybean") == 3, "simultaneous harvest grants exactly one yield")
-	check(one.game.inventory.count_item("soybean") + two.game.inventory.count_item("soybean") == 3, "winner inventory replicated")
+	check(host.game.encounters.pickups.size() == 3, "simultaneous harvest creates one ground yield")
 	check(two.game.farming.plots[0].crop.phase() == SoybeanCrop.Phase.HARVEST, "harvest animation replicated")
+	await ticks(90)
+	check(member.inventory.count_item("edamame") + other.inventory.count_item("edamame") == 3, "simultaneous harvest grants exactly one yield")
+	check(one.game.inventory.count_item("edamame") + two.game.inventory.count_item("edamame") == 3, "winner inventory replicated")
 	host.farming._packet(ONE, {"type": "farm_action", "sequence": 2, "plot": 0, "revision": revision, "action": "harvest"})
 	crop.step(2)
 	one.farming.request(0, revision, "plant")
@@ -99,10 +101,10 @@ func scenario(dedicated: bool) -> void:
 	await ticks()
 	check(crop.planted, "fresh replant accepted")
 	crop.step(30)
-	for i in PlayerInventory.CAPACITY: member.inventory.set_slot(i, ItemStack.new(InventoryItem.create_soybean(), 999))
+	for i in PlayerInventory.CAPACITY: member.inventory.set_slot(i, ItemStack.new(InventoryItem.create_edamame(), 100))
 	one.farming.request(0, crop.revision, "harvest")
 	await ticks()
-	check(crop.phase() == SoybeanCrop.Phase.RIPE, "full bag keeps crop ripe")
+	check(crop.phase() == SoybeanCrop.Phase.HARVEST and host.game.encounters.pickups.size() == 3, "full bag leaves harvested beans on ground")
 	var checkpoint: Dictionary = JSON.parse_string(JSON.stringify(CoopCheckpoint.capture(host)))
 	check(CoopCheckpoint.valid(checkpoint), "crop checkpoint JSON validates")
 	var saved := farm.capture()
@@ -115,6 +117,7 @@ func scenario(dedicated: bool) -> void:
 	bad[0][1] = -1
 	check(not WorldProtocol.farming(bad), "negative growth rejected")
 	bad = saved.duplicate(true)
+	bad[0][0] = true
 	bad[0][2] = 1
 	check(not WorldProtocol.farming(bad), "inconsistent crop phase rejected")
 	# First-person aim is sampled locally, sent to authority, then viewed by another guest.

@@ -14,8 +14,8 @@ func _run() -> void:
 	game.shooting_view.set_process_unhandled_input(false)
 	game.camera.yaw = 0.0
 	game.camera.pitch = 0.0
-	for slot in [1, 2, 3, 4]:
-		var id: String = ["knife", "", "soy_gun", "sotjet"][slot - 1]
+	for slot in [1, 2, 3, 4, 5]:
+		var id: String = ["knife", "", "soy_gun", "sotjet", "sproutwood_staff"][slot - 1]
 		game.character_equipment.set_slot("combat_1", ItemStack.new(InventoryItem.weapon(id), 1) if not id.is_empty() else null)
 		game.loadout.select(1)
 		await create_timer(0.25).timeout

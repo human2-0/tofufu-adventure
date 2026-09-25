@@ -12,6 +12,7 @@ extends Resource
 @export var experience_linear: int = 50
 @export var experience_quadratic: int = 25
 @export_group("Per-rank bonuses above level one")
+@export var shooting_jet_push: float = 0.01
 @export var shooting_jet_range: float = 0.005
 @export var weapon_damage: float = 0.015
 @export var character_damage: float = 0.01

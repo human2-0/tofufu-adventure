@@ -14,8 +14,15 @@ const SLOTS: Array[String] = [
 	"combat_1", "combat_2",
 	"support_1", "support_2", "support_3", "support_4"
 ]
+const APPAREL_SLOTS: Array[String] = ["helmet", "armor", "legs", "boots"]
 
 var slots: Dictionary = {}
+var wearer_level: int = 1:
+	set(value):
+		var next := maxi(1, value)
+		if wearer_level == next: return
+		wearer_level = next
+		changed.emit()
 
 func _init() -> void:
 	for slot_name in SLOTS:
@@ -27,11 +34,32 @@ func can_equip(slot_name: String, stack: ItemStack) -> bool:
 		return false
 	if stack == null or stack.item == null:
 		return true
+	if stack.item.required_level > wearer_level: return false
 	var category := stack.item.category
 	if slot_name.begins_with("combat_"): return stack.item.category == "combat" and stack.count == 1
 	if slot_name.begins_with("support_"):
 		return category in ["healing", "consumable", "support"]
 	return category == slot_name
+
+func complete_set() -> String:
+	for set_id in ["bright_leaf", "dark_leaf"]:
+		var complete := true
+		for slot_name in APPAREL_SLOTS:
+			var stack := get_slot(slot_name)
+			if stack == null or not can_equip(slot_name, stack) or stack.item.id != "%s_%s" % [set_id, slot_name]:
+				complete = false
+				break
+		if complete: return set_id
+	return ""
+
+func damage_multiplier() -> float:
+	if not complete_set().is_empty(): return 0.90
+	var reduction := 0.0
+	for slot_name in APPAREL_SLOTS:
+		var stack := get_slot(slot_name)
+		if stack != null and can_equip(slot_name, stack):
+			reduction += stack.item.damage_reduction
+	return clampf(1.0 - reduction, 0.0, 1.0)
 
 func get_slot(slot_name: String) -> ItemStack:
 	slot_name = slot_name.replace("healing_", "support_")

@@ -21,7 +21,9 @@ func accept(state: Dictionary) -> void:
 		actor.position = at
 		actor.velocity = CoopValues.vector3(state.velocity)
 		actor.motor.is_dashing = false
+		actor.motor.is_super_dashing = false
 		actor.motor.cancel_jump()
+		actor.motor.cancel_dash_charge()
 		actor.motor.cooldown_remaining = state.cooldown
 		history.clear()
 		correction = Vector3.ZERO
@@ -45,7 +47,11 @@ func step(next: PlayerCommand, sequence: int, delta: float) -> void:
 	correction -= adjustment
 	var motion := CoopValues.command(CoopValues.input(next, sequence, 0))
 	motion.move *= actor.surface_speed
-	if motion.cancel_actions: actor.motor.cancel_jump()
+	if actor.movement_modifier.is_valid(): motion.move *= float(actor.movement_modifier.call(motion.move))
+	if motion.cancel_actions:
+		actor.motor.cancel_jump()
+		actor.motor.cancel_dash_charge()
 	actor.velocity = actor.motor.step(motion, actor.velocity, actor.is_on_floor(), delta)
+	actor.collision_mask = 1 if actor.motor.is_super_dashing else 3
 	actor.move_and_slide()
 	history[sequence] = actor.position

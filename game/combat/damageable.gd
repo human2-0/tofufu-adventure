@@ -5,14 +5,16 @@ extends Node3D
 signal changed(current: float, maximum: float)
 signal hit(amount: float, direction: Vector3)
 signal reflected_hit(weapon: String)
+signal pushed(impulse: Vector3)
 signal depleted
 
-enum HitKind { MELEE, SLIME, SOY }
+enum HitKind { MELEE, SLIME, SOY, KNIFE }
 var last_hit_amount: float = 0.0
 var last_hit_kind: HitKind = HitKind.MELEE
-var hit_counts: Array[int] = [0, 0, 0]
+var hit_counts: Array[int] = [0, 0, 0, 0]
 var damage_filter: Callable
 var projectile_guard: Callable
+var armor_multiplier: float = 1.0
 
 var trains_weapons: bool = false
 
@@ -31,6 +33,7 @@ func damage(amount: float, direction: Vector3 = Vector3.ZERO, kind: HitKind = Hi
 	if current <= 0.0 or invulnerability > 0.0 or amount <= 0.0:
 		return false
 	if damage_filter.is_valid(): amount = damage_filter.call(amount, direction, kind)
+	amount *= clampf(armor_multiplier, 0.0, 1.0)
 	if amount <= 0.0: return false
 	last_hit_amount = minf(current, amount)
 	last_hit_kind = kind

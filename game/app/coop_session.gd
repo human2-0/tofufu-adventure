@@ -32,6 +32,8 @@ func _ready() -> void:
 		roster.saved_states = checkpoint.party.duplicate(true)
 		game.encounters.experience = int(checkpoint.world.experience)
 	add_child(roster)
+	game.factory_dungeon.configure_party(roster.party, authority)
+	roster.changed.connect(game.factory_dungeon._sync_unlock)
 	game.map.roster = roster
 	opening.game = game
 	opening.roster = roster
@@ -70,7 +72,7 @@ func _physics_process(delta: float) -> void:
 		return
 	if authority:
 		for member: CoopActor in roster.party.values():
-			if not opening.active() and member.actor.position.y < -5: member.respawn()
+			if not opening.active() and member.actor.position.y < -5: member.die()
 			member.actor.surface_speed = 0.55 if game.world.is_water(member.actor.position) else 1.0
 		_snapshot_clock += delta
 		_world_clock += delta
@@ -156,8 +158,6 @@ func _process(delta: float) -> void:
 	var label := "Co-op · %d/4 beans · %s" % [room.members.size(), "Host saves" if authority else "%d ms RTT" % latency_ms]
 	game.hud.show_session(label)
 	if authority: return
-	for mob: TrainingMob in game.encounters.mob_nodes:
-		mob._sprite.modulate = mob._sprite.modulate.lerp(Color.WHITE, minf(1, delta * 5))
 	for dummy: PracticeDummy in game.encounters.dummy_nodes:
 		dummy._figure.rotation.z = lerpf(dummy._figure.rotation.z, 0, minf(1, delta * 9))
 

@@ -139,6 +139,7 @@ func _run() -> void:
 	check(actor.command_source.sample(Vector3.ZERO).weapon_slot == 2, "keyboard selects combat slot 2")
 	Input.action_release("combat_slot_2")
 	stage.free()
+	await _push()
 	await _saves()
 	print("Sotjet: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
@@ -168,5 +169,52 @@ func _saves() -> void:
 	data.equipment.erase("combat_2")
 	AdventureSnapshot.restore(game, data)
 	check(not game.combat.sotjet.selected and game.combat.sotjet.milk == 100, "legacy saves default safely")
+	game.queue_free()
+	await process_frame
+
+func _push() -> void:
+	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	game.play_opening = false
+	root.add_child(game)
+	await ticks(3)
+	var flow: SotjetFlow = game.combat.sotjet.flow
+	var player: Player = game.player
+	var health: Damageable = game.health
+	var contact := {"collider": player, "position": player.global_position, "normal": Vector3.BACK}
+	var before := player.position
+	flow._impact(contact, Vector3(0, -4, 36))
+	check(is_equal_approx(player.velocity.z, 7.0), "confirmed milk pushes player along stream")
+	check(player.velocity.y <= 0.1, "milk pressure does not launch players vertically")
+	await ticks(6)
+	check(player.position.z > before.z + 0.2, "player push moves through collision-aware physics")
+	flow.clear()
+	game.progression.progress.stats.shooting = 98
+	game.progression.progress.changed.emit()
+	flow._impact(contact, Vector3(0, -4, 36))
+	check(is_equal_approx(player.velocity.z, 13.86), "shooting rank 99 nearly doubles player push")
+	var strong := player.velocity.z
+	flow._impact(contact, Vector3(0, -4, 36))
+	check(is_equal_approx(player.velocity.z, strong), "pressure respects hit cadence without stacking")
+	flow.clear()
+	health.invulnerability = 1.0
+	player.velocity = Vector3.ZERO
+	flow._impact(contact, Vector3(0, 0, 36))
+	check(player.velocity == Vector3.ZERO, "invulnerability prevents stream push")
+	health.invulnerability = 0.0
+	flow.clear()
+	flow.authoritative = false
+	flow._impact(contact, Vector3(0, 0, 36))
+	check(player.velocity == Vector3.ZERO, "cosmetic milk cannot push players")
+	flow.authoritative = true
+	var mob := TrainingMob.new()
+	game.add_child(mob)
+	mob.position = player.position + Vector3(3, 0, 0)
+	flow.targets.append(mob.target)
+	var mob_contact := {"collider": mob, "position": mob.global_position, "normal": Vector3.BACK}
+	flow._impact(mob_contact, Vector3(0, -4, 36))
+	check(is_equal_approx(mob._knockback.z, strong), "shooting strength also applies to enemies")
+	before = mob.position
+	await ticks(6)
+	check(mob.position.z > before.z + 0.2, "enemy push moves through collision-aware physics")
 	game.queue_free()
 	await process_frame

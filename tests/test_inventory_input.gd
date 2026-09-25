@@ -55,10 +55,32 @@ func _run() -> void:
 	key(KEY_I)
 	app._input_enabled(false)
 	check(not game.inventory_window.visible and not game.shooting_view.local_input.enabled, "menu closes bag and keeps input blocked")
+	app._input_enabled(true)
+	game.inventory.add_item(InventoryItem.create_edamame(), 100)
+	game.inventory.refining_unlocked = true
+	key(KEY_I)
+	await process_frame
+	var right_click := InputEventMouseButton.new()
+	right_click.button_index = MOUSE_BUTTON_RIGHT
+	right_click.pressed = true
+	game.inventory_window._inv_buttons[0]._gui_input(right_click)
+	check(game.inventory_window._refine_menu.visible and not game.inventory_window._refine_menu.is_item_disabled(0), "right-click full bean stack opens enabled refine action")
+	game.inventory_window._refine_menu.id_pressed.emit(0)
+	check(game.inventory.count_item("edamame") == 0 and game.inventory.count_item("mature_bean") == 1, "backpack context action refines the selected stack")
+	game.inventory_window._refine_menu.hide()
+	game.inventory_window._inv_buttons[0]._gui_input(right_click)
+	check(not game.inventory_window._refine_menu.is_item_disabled(0), "a single mature bean can refine to one white tofu")
+	check(game.inventory_window._refine_menu.get_item_text(0).contains("1 → 1"), "mature bean menu shows the one-for-one rate")
+	game.inventory_window._refine_menu.hide()
+	game.inventory_window._inv_buttons[0].focus_entered.emit()
+	check(game.inventory_window._description.text.contains("Shop currency"), "focused item shows its description")
+	check(game.inventory_window._inv_buttons[0].tooltip_text.contains("Shop currency"), "hover tooltip includes item description")
 	if "--preview" in OS.get_cmdline_user_args():
-		app._input_enabled(true)
-		game.inventory.add_item(InventoryItem.create_soybean(), 15)
-		key(KEY_I)
+		game.inventory.add_item(InventoryItem.create_edamame(), 15)
+		game.inventory.add_item(InventoryItem.create_edamame(), 5)
+		game.inventory.add_item(InventoryItem.currency("tofu_white_chunk"), 3)
+		game.inventory.add_item(InventoryItem.currency("toasted_tofu_chunk"), 5)
+		game.inventory.add_item(InventoryItem.currency("golden_tofu_chunk"), 100)
 		await process_frame
 		await process_frame
 		await RenderingServer.frame_post_draw

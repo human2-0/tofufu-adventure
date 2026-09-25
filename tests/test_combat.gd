@@ -1,5 +1,6 @@
 extends SceneTree
 
+const FART_CLOUD := preload("res://game/combat/fart_cloud.gd")
 var failures: int = 0
 const DT: float = 1.0 / 60.0
 
@@ -77,6 +78,15 @@ func _health() -> void:
 	health.restore()
 	check(health.current == 100, "explicit respawn restores health")
 	health.queue_free()
+	var cloud_target := Damageable.new()
+	cloud_target.maximum = 30.0
+	root.add_child(cloud_target)
+	FART_CLOUD.spawn(root, Vector3.ZERO, [cloud_target])
+	await physics_frame
+	check(cloud_target.current == 22.0, "super dash fart cloud applies one light damage hit")
+	await physics_frame
+	check(cloud_target.current == 22.0, "fart cloud does not repeatedly damage the same target")
+	cloud_target.queue_free()
 	await process_frame
 	print("Combat and super-jump rules: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)

@@ -103,7 +103,7 @@ func _ready() -> void:
 	prog_row.add_child(_progress_label)
 
 	_rewards_label = Label.new()
-	_rewards_label.text = "Reward: 100 Coins · 1 Rare Soybean"
+	_rewards_label.text = "Reward: 100 Edamame"
 	_rewards_label.add_theme_font_size_override("font_size", 11)
 	_rewards_label.add_theme_color_override("font_color", Color("eacb83"))
 	box_col.add_child(_rewards_label)
@@ -135,7 +135,7 @@ func present(data: Dictionary) -> void:
 			_action_button.disabled = true
 		2: # COMPLETED
 			_dialogue_label.text = "Incredible bravery, Fufu! The fields are peaceful once more thanks to your courage.\n\nPlease accept your reward with our deepest gratitude!"
-			_action_button.text = "Claim Reward (100 Coins + Rare Soybean)"
+			_action_button.text = "Claim Reward (100 Edamame)"
 			_action_button.disabled = false
 		3: # REWARDED
 			_dialogue_label.text = "Thank you again for protecting Fufufarm, Fufu! The entire village is safe because of your valiant efforts."

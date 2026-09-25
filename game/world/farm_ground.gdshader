@@ -1,11 +1,12 @@
 shader_type spatial;
-render_mode diffuse_toon, specular_disabled;
+render_mode diffuse_toon;
 
 uniform vec4 grass_low : source_color = vec4(0.50, 0.67, 0.35, 1.0);
 uniform vec4 grass_high : source_color = vec4(0.68, 0.74, 0.43, 1.0);
 uniform vec4 lane_color : source_color = vec4(0.85, 0.69, 0.45, 1.0);
 uniform vec4 soil_color : source_color = vec4(0.58, 0.39, 0.23, 1.0);
 uniform vec2 combat_centers[3];
+uniform float wetness : hint_range(0.0, 1.0) = 0.0;
 varying vec3 ground;
 
 void vertex() {
@@ -45,6 +46,8 @@ void fragment() {
 	float practice = 1.0 - smoothstep(3.1, 3.7, length(ground.xz - vec2(19.3, 12.0)) + fleck * 3.0);
 	color = mix(color, lane_color.rgb * (0.83 + fleck), clearing);
 	color = mix(color, lane_color.rgb * (1.0 + fleck), practice);
-	ALBEDO = color;
-	ROUGHNESS = 1.0;
+	// Rain darkens every exposed surface before the discrete puddle meshes add pooling.
+	ALBEDO = mix(color, color * vec3(0.57, 0.66, 0.70), wetness * 0.38);
+	ROUGHNESS = mix(1.0, 0.46, wetness);
+	SPECULAR = mix(0.0, 0.42, wetness);
 }

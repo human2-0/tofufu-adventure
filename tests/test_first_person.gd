@@ -34,6 +34,11 @@ func _run() -> void:
 		game.combat.equipment.step(Vector2.UP, false, false, false, false, slot, 0.016)
 		await process_frame
 		check(view.weapon_view.visible, "weapon overlay available for slot %d" % slot)
+	var staff_view := view.weapon_view._staff
+	staff_view.show_charge(1.0)
+	check(not staff_view._meshes.is_empty() and staff_view._meshes[0].material_overlay != null, "loaded staff glows in first person")
+	staff_view.show_charge(0.0, true)
+	check(staff_view._meshes[0].material_overlay == staff_view._spin_glow, "staff tornado has its own first-person glow")
 	for jet in [false, true]:
 		for ads in [false, true]:
 			game.combat.gun.aiming = ads

@@ -38,7 +38,8 @@ func _process(delta: float) -> void:
 		leaf.rotation.z = sin(_time * 1.8 + position.x + leaf.position.y) * 0.12
 
 func _break_apart() -> void:
-	harvested.emit(global_position, 2 if kind == 0 else 1)
+	# Currency enters the world only through soy plants (and mobs in encounter wiring).
+	harvested.emit(global_position, 2 if kind == 0 else 0)
 	CombatEffects.burst(get_parent(), global_position, "SOY +2" if kind == 0 else "SMASH!", Color(0.8, 1, 0.6))
 	visible = false
 	_body.collision_layer = 0

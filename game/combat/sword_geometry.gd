@@ -42,6 +42,37 @@ static func pose(at: Vector3, aim: Vector2, progress: float, tuning: CombatTunin
 	var hand := at + radial * tuning.hand_radius + Vector3.UP * tuning.hand_height
 	return Transform3D(basis, hand + blade * tuning.grip_length)
 
+static func stab_pose(at: Vector3, aim: Vector2, progress: float, tuning: CombatTuning) -> Transform3D:
+	var facing := direction(aim)
+	var forward := Vector3(facing.x, 0, facing.y)
+	var blade := (forward + Vector3.UP * 0.12).normalized()
+	var extension := 0.08
+	if progress < tuning.cut_start:
+		extension = lerpf(0.08, 0.32, smoothstep(0.0, tuning.cut_start, progress))
+	elif progress <= tuning.cut_end:
+		extension = lerpf(0.32, 0.92, inverse_lerp(tuning.cut_start, tuning.cut_end, progress))
+	else:
+		extension = lerpf(0.92, 0.08, smoothstep(tuning.cut_end, 1.0, progress))
+	var width := blade.cross(Vector3(0, 1, 1).normalized()).normalized()
+	if width.length_squared() < 0.01:
+		width = Vector3.RIGHT
+	var basis := Basis(width, -blade.cross(width), -blade)
+	var hand := at + forward * (tuning.hand_radius + extension) + Vector3.UP * tuning.hand_height
+	return Transform3D(basis, hand + blade * tuning.grip_length)
+
+static func dive_pose(at: Vector3, aim: Vector2, progress: float, tuning: CombatTuning) -> Transform3D:
+	var facing := direction(aim)
+	var half_arc := deg_to_rad(tuning.light_arc_degrees) * 0.32
+	var yaw := facing.angle() + lerpf(-half_arc, half_arc, clampf(progress, 0.0, 1.0))
+	var radial := Vector3(cos(yaw), 0, sin(yaw))
+	var blade := (radial * 0.68 + Vector3.DOWN * 0.73).normalized()
+	var width := blade.cross(Vector3(0, 1, 1).normalized()).normalized()
+	if width.length_squared() < 0.01:
+		width = Vector3.RIGHT
+	var basis := Basis(width, -blade.cross(width), -blade)
+	var hand := at + radial * tuning.hand_radius + Vector3.UP * tuning.hand_height
+	return Transform3D(basis, hand + blade * tuning.grip_length)
+
 static func tip(pose: Transform3D, tuning: CombatTuning) -> Vector3:
 	return pose * Vector3(0, 0, -tuning.blade_length)
 

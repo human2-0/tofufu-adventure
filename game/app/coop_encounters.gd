@@ -35,15 +35,15 @@ func _hurt(actor: Node3D, amount: float, source: Vector3) -> void:
 	for member: CoopActor in party.values():
 		if member.actor == actor: member.hurt(amount, source)
 
-func _collect(actor: Node3D) -> void:
+func _collect(actor: Node3D) -> bool:
 	for member: CoopActor in party.values():
 		if member.actor != actor: continue
+		if member.inventory == null or member.inventory.add_item(InventoryItem.create_edamame(), 1) != 0: return false
 		game.encounters.beans += 1
-		if member.inventory != null:
-			member.inventory.add_item(InventoryItem.create_soybean(), 1)
-		CombatEffects.burst(self, actor.global_position, "+1 SOY", Color("c8efa0"))
+		CombatEffects.burst(self, actor.global_position, "+1 EDAMAME", Color("c8efa0"))
 		game.encounters.progress_changed.emit(game.encounters.beans, game.encounters.mobs, game.encounters.props)
-		return
+		return true
+	return false
 
 func _award_experience(amount: int) -> void:
 	for member: CoopActor in party.values():

@@ -6,6 +6,8 @@ var directory: String = "user://adventures"
 var extra_validator: Callable
 var last_error: String = ""
 const MAX_SLOTS: int = 12
+const WORLD_ITEM_LIMITS := {"knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const BACKPACK_CONTENT_LIMIT: int = 20
 
 func list_saves() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
@@ -63,11 +65,19 @@ func _path(slot: int) -> String:
 	return directory.path_join("adventure_%02d.json" % slot)
 
 static func valid(data: Dictionary) -> bool:
-	if data.has("coins") and (not _progress_counter(data.coins) or data.coins > 1000000): return false
+	if data.has("tofu_dungeon"):
+		var dungeon: Variant = data.tofu_dungeon
+		if not dungeon is Dictionary: return false
+		if dungeon.has("units") and (not _progress_counter(dungeon.units) or dungeon.units > 3): return false
+		if dungeon.has("coagulant_added") and not dungeon.coagulant_added is bool: return false
+		if not _progress_counter(dungeon.get("stage")) or dungeon.stage > 6: return false
+		if not dungeon.get("completed") is bool or dungeon.completed != (dungeon.stage == 6): return false
+		if dungeon.has("broken_crates") and (not _progress_counter(dungeon.broken_crates) or dungeon.broken_crates > 4095): return false
 	if data.has("active_slot") and (not _progress_counter(data.active_slot) or data.active_slot < 1 or data.active_slot > 2): return false
 	if data.has("world_items") and not _world_items(data.world_items): return false
 	for field in ["gun_owned", "sotjet_owned"]:
 		if data.has(field) and not data[field] is bool: return false
+	if data.has("seed_satchel_claimed") and not data.seed_satchel_claimed is bool: return false
 	if data.get("version") != 1 or not data.get("name") is String or not data.get("saved_at") is String:
 		return false
 	if data.name.length() > 48 or not data.get("opening_complete") is bool:
@@ -137,13 +147,31 @@ static func _world_items(value: Variant) -> bool:
 	if not value is Array or value.size() > 128: return false
 	var ids: Array[int] = []
 	for row: Variant in value:
-		if not row is Array or row.size() != 7: return false
+		if not row is Array or row.size() not in [7, 8]: return false
 		if not _progress_counter(row[0]) or row[0] < 1 or int(row[0]) in ids: return false
 		ids.append(int(row[0]))
-		if not row[1] is String or row[1] not in ["knife", "soy_gun", "sotjet", "soybean"]: return false
-		if not _progress_counter(row[2]) or row[2] < 1 or row[2] > (999 if row[1] == "soybean" else 1): return false
+		if not row[1] is String: return false
+		var maximum: Variant = WORLD_ITEM_LIMITS.get(row[1])
+		if maximum == null or not _progress_counter(row[2]) or row[2] < 1 or row[2] > maximum: return false
 		for index in range(3, 7):
 			var number: Variant = row[index]
 			if not (number is float or number is int) or not is_finite(float(number)) or absf(number) > (100 if index == 3 else 500): return false
 		if row[3] < 0: return false
+		if row.size() == 8 and not _backpack_contents(row[7], row[1]): return false
 	return true
+
+static func _backpack_contents(value: Variant, backpack_id: String) -> bool:
+	if not value is Array: return false
+	var limit := 10 if backpack_id == "factory_backpack" else (14 if backpack_id == "seed_satchel" else (BACKPACK_CONTENT_LIMIT if backpack_id == "traveler_backpack" else 0))
+	if value.size() > limit: return false
+	for row: Variant in value:
+		if not row is Dictionary: return false
+		if not row.is_empty() and not _backpack_stack(row): return false
+	return true
+
+static func _backpack_stack(row: Dictionary) -> bool:
+	if not row.get("id") is String or not _progress_counter(row.get("count")): return false
+	var maximum: Variant = WORLD_ITEM_LIMITS.get(row.id)
+	if maximum == null or row.count < 1 or row.count > maximum: return false
+	var reserve: Variant = row.get("reserve", 100.0)
+	return (reserve is int or reserve is float) and is_finite(float(reserve)) and reserve >= 0 and reserve <= 100

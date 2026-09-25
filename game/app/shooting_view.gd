@@ -24,6 +24,7 @@ func _ready() -> void:
 	game.combat.sotjet.flow.visual.nozzle_provider = _jet_muzzle
 	_collect_geometry(game.player.visuals)
 	_collect_geometry(game.combat.sword)
+	_collect_geometry(game.combat.staff)
 	_collect_geometry(game.combat.gun.visual)
 	_collect_geometry(game.combat.sotjet.visual)
 	_collect_geometry(game.combat._trail)
@@ -50,7 +51,14 @@ func _process(_delta: float) -> void:
 	game.hud.show_sotjet(game.combat.sotjet.selected, game.combat.sotjet.milk / game.combat.sotjet.tuning.capacity)
 	var first: ItemStack = game.character_equipment.get_slot("combat_1")
 	var second: ItemStack = game.character_equipment.get_slot("combat_2")
-	game.hud.show_loadout(first.item.name if first != null else "Unarmed", second.item.name if second != null else "Unarmed", game.loadout.active_slot)
+	game.hud.show_loadout(_item_label(first), _item_label(second), game.loadout.active_slot)
+	game.hud.show_staff_state(game.combat.equipment.staff_selected, game.combat.active and game.combat.attack_style == StaffAttack.TORNADO, game.combat.rules.cooldown)
+
+func _item_label(stack: ItemStack) -> String:
+	if stack == null or stack.item == null: return "Unarmed"
+	if stack.item.weapon_level > 0:
+		return "%s L%d P%d" % ["Staff" if stack.item.id == "sproutwood_staff" else stack.item.name, stack.item.weapon_level, stack.item.weapon_power]
+	return stack.item.name
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_instance_valid(local_input): return

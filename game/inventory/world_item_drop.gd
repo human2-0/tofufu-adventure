@@ -7,6 +7,7 @@ var drop_id: int
 var item_id: String
 var count: int = 1
 var reserve: float = 100.0
+var contents: Array = []
 var authoritative: bool = true
 var label: Label3D
 var ring: MeshInstance3D
@@ -27,6 +28,8 @@ func _ready() -> void:
 	label.pixel_size = 0.006
 	label.position.y = 0.6
 	label.outline_size = 7
+	label.no_depth_test = true
+	label.render_priority = 127
 	add_child(label)
 	ring = MeshInstance3D.new()
 	var mesh := TorusMesh.new()
@@ -60,4 +63,4 @@ func set_focus(active: bool, prompt: String) -> void:
 
 func capture() -> Array:
 	var p := global_position
-	return [drop_id, item_id, count, reserve, p.x, p.y, p.z]
+	return [drop_id, item_id, count, reserve, p.x, p.y, p.z, contents.duplicate(true)]

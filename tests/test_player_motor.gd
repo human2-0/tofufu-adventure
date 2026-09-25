@@ -7,6 +7,8 @@ func _initialize() -> void:
 	_test_walk_and_fall()
 	_test_jump_windows()
 	_test_dash_and_isolation()
+	_test_super_dash()
+	_test_wind_resistance()
 	print("Player motor tests: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
 
@@ -84,3 +86,38 @@ func _test_dash_and_isolation() -> void:
 	command.dash_pressed = true
 	motor.step(command, Vector3.ZERO, true, DT)
 	check(motor.is_dashing, "dash becomes available after cooldown")
+
+func _test_super_dash() -> void:
+	var tuning := PlayerTuning.new()
+	var motor := PlayerMotor.new(tuning)
+	var command := PlayerCommand.new()
+	command.dash_pressed = true
+	command.dash_held = true
+	command.dash_direction = Vector2.LEFT
+	motor.step(command, Vector3.ZERO, true, DT)
+	check(motor.is_charging_dash and not motor.is_dashing, "held dash begins a charge without spending cooldown")
+	command.dash_pressed = false
+	for tick in ceili(tuning.super_dash_charge_seconds / DT):
+		motor.step(command, Vector3.ZERO, true, DT)
+	check(motor.is_dashing and motor.is_super_dashing, "holding dash for 0.66 seconds starts super dash")
+	check(is_equal_approx(motor.dash_remaining, tuning.dash_duration * tuning.super_dash_duration_multiplier), "super dash lasts twice as long")
+	var velocity := motor.step(command, Vector3(0, 4, 0), false, DT)
+	check(velocity == Vector3(-tuning.dash_speed, 0, 0), "super dash preserves dash speed and freezes height")
+	motor = PlayerMotor.new(tuning)
+	command.dash_pressed = true
+	command.dash_held = true
+	motor.step(command, Vector3.ZERO, true, DT)
+	command.dash_pressed = false
+	command.dash_held = false
+	motor.step(command, Vector3.ZERO, true, DT)
+	check(motor.is_dashing and not motor.is_super_dashing, "releasing before charge starts a normal dash")
+
+func _test_wind_resistance() -> void:
+	var wind := WindField.new()
+	for tick in 120:
+		wind.step(0.15, true, DT)
+	check(wind.strength > 0.5, "windy weather builds a sustained gust")
+	var headwind := -wind.direction
+	var crosswind := Vector2(-wind.direction.y, wind.direction.x)
+	check(wind.movement_multiplier(headwind) < 0.75, "walking into wind is meaningfully slower")
+	check(wind.movement_multiplier(crosswind) > 0.99, "crosswind preserves ordinary walking speed")

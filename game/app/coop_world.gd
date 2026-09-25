@@ -5,9 +5,9 @@ extends RefCounted
 static func capture(game: Node3D) -> Dictionary:
 	var encounters: SandboxEncounters = game.encounters
 	var data := {"mobs": [], "props": [], "dummies": [], "pickups": [], "phase": game.cycle.phase,
-		"weather_phase": game.weather.phase, "farming": game.farming.capture(),
+		"weather_phase": game.weather.phase, "farming": game.farming.capture(), "seed_storage": game.seed_storage.chest.capture(), "seed_satchel_claimed": game.seed_storage.free_satchel_claimed,
 		"beans": encounters.beans, "kills": encounters.mobs, "harvests": encounters.props,
-		"experience": encounters.experience, "places": game.exploration.found_places(), "next_pickup": encounters.next_pickup_id, "world_items": game.world_items.pool.capture()}
+		"experience": encounters.experience, "places": game.exploration.found_places(), "next_pickup": encounters.next_pickup_id, "world_items": game.world_items.pool.capture(), "factory": game.factory_dungeon.capture_world()}
 	for mob in encounters.mob_nodes: data.mobs.append(EncounterState.mob(mob))
 	for prop in encounters.prop_nodes: data.props.append(EncounterState.prop(prop))
 	for dummy in encounters.dummy_nodes: data.dummies.append(EncounterState.dummy(dummy))
@@ -19,7 +19,12 @@ static func capture(game: Node3D) -> Dictionary:
 static func apply(game: Node3D, data: Dictionary, replica: bool) -> void:
 	var encounters: SandboxEncounters = game.encounters
 	if data.has("farming"): game.farming.restore(data.farming)
+	if data.has("seed_storage"): game.seed_storage.chest.restore(data.seed_storage)
+	if data.has("seed_satchel_claimed"): game.seed_storage.free_satchel_claimed = data.seed_satchel_claimed
 	if data.has("world_items"): game.world_items.pool.restore(data.world_items)
+	if data.has("factory"):
+		if replica: game.factory_dungeon.apply_world(data.factory)
+		else: game.factory_dungeon.restore(data.factory)
 	game.weather.set_phase(float(data.get("weather_phase", 0.0)))
 	for i in data.mobs.size(): EncounterState.apply_mob(encounters.mob_nodes[i], data.mobs[i], replica)
 	for i in encounters.prop_nodes.size(): EncounterState.apply_prop(encounters.prop_nodes[i], data.props[i], replica)
@@ -49,6 +54,8 @@ static func apply(game: Node3D, data: Dictionary, replica: bool) -> void:
 	game.hud.show_experience(encounters.experience)
 
 static func disable_simulation(game: Node3D) -> void:
+	game.factory_dungeon.enabled = false
+	game.factory_dungeon.set_physics_process(false)
 	game.world_items.pool.authoritative = false
 	for drop: WorldItemDrop in game.world_items.pool.drops.values(): drop.authoritative = false
 	game.set_physics_process(false)

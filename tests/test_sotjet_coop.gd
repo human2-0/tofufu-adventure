@@ -66,6 +66,7 @@ func _run() -> void:
 	check(guest_actor.combat.sotjet.selected and g.game.combat.sotjet.selected, "guest slot 4 is authoritative and replicated")
 	check(host_actor.health.current < 100 and host_actor.health.current > 60, "guest stream hits host with bounded friendly damage")
 	check(absf(g.roster.party[HOST].health.current - host_actor.health.current) <= 5.0, "authoritative health replicates without extra guest damage")
+	check(host_actor.actor.position.z > 2.2, "guest milk pushes host away on authority")
 	check(guest_actor.health.current == 100, "guest stream excludes its owner")
 	check(not g.game.combat.sotjet.flow.authoritative, "guest presentation has no damage authority")
 	check(g.game.combat.sotjet.flow.parcels.size() > 0, "guest sees continuous replicated milk")
@@ -85,6 +86,10 @@ func _run() -> void:
 	check(is_equal_approx(g.roster.party[GUEST].health.current, guest_actor.health.current), "guest receives host milk damage")
 	# Both weapons return to the caster when the other player faces the shot.
 	for slot in [3, 4]:
+		host_actor.actor.position = Vector3(0, 0.1, 1.4)
+		guest_actor.actor.position = Vector3(0, 0.1, -1.4)
+		host_actor.actor.velocity = Vector3.ZERO
+		guest_actor.actor.velocity = Vector3.ZERO
 		host_actor.health.current = 100
 		guest_actor.health.current = 100
 		host_actor.health.invulnerability = 0
@@ -124,6 +129,10 @@ func _run() -> void:
 	guest_actor.combat.gun.spread_multiplier = 0
 	await ticks(15)
 	for slot in [3, 4]:
+		host_actor.actor.position = Vector3(0, 0.1, 1.4)
+		guest_actor.actor.position = Vector3(0, 0.1, -1.4)
+		host_actor.actor.velocity = Vector3.ZERO
+		guest_actor.actor.velocity = Vector3.ZERO
 		host_actor.health.current = 100
 		guest_actor.health.current = 100
 		host_actor.health.invulnerability = 0

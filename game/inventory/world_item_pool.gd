@@ -9,7 +9,7 @@ var next_id: int = 1
 var authoritative: bool = true
 var build_visual: Callable
 
-func spawn(item_id: String, count: int, origin: Vector3, direction: Vector2, reserve: float = 100.0) -> WorldItemDrop:
+func spawn(item_id: String, count: int, origin: Vector3, direction: Vector2, reserve: float = 100.0, contents: Array = []) -> WorldItemDrop:
 	if drops.size() >= LIMIT: return null
 	var start := origin + Vector3.UP * 0.6
 	var query := PhysicsShapeQueryParameters3D.new()
@@ -24,17 +24,18 @@ func spawn(item_id: String, count: int, origin: Vector3, direction: Vector2, res
 	query.motion = forward * 0.9
 	var sweep := space.cast_motion(query)
 	var at := start + query.motion * maxf(0, sweep[0] - 0.04)
-	var drop := _create(next_id, item_id, count, reserve, at)
+	var drop := _create(next_id, item_id, count, reserve, at, contents)
 	next_id += 1
 	drop.velocity = forward * 1.3
 	return drop
 
-func _create(id: int, item_id: String, count: int, reserve: float, at: Vector3) -> WorldItemDrop:
+func _create(id: int, item_id: String, count: int, reserve: float, at: Vector3, contents: Array = []) -> WorldItemDrop:
 	var drop := WorldItemDrop.new()
 	drop.drop_id = id
 	drop.item_id = item_id
 	drop.count = count
 	drop.reserve = reserve
+	drop.contents = contents.duplicate(true)
 	drop.authoritative = authoritative
 	add_child(drop)
 	drop.global_position = at
@@ -84,10 +85,11 @@ func restore(rows: Array) -> void:
 		live.append(id)
 		var at := Vector3(row[4], row[5], row[6])
 		if drops.has(id) and drops[id].item_id != row[1]: remove(id)
-		if not drops.has(id): _create(id, row[1], int(row[2]), float(row[3]), at)
+		if not drops.has(id): _create(id, row[1], int(row[2]), float(row[3]), at, row[7] if row.size() > 7 else [])
 		var drop := drops[id]
 		drop.count = int(row[2])
 		drop.reserve = float(row[3])
+		drop.contents = (row[7] if row.size() > 7 else []).duplicate(true)
 		drop.global_position = at
 		drop.last_safe = at
 		next_id = maxi(next_id, id + 1)

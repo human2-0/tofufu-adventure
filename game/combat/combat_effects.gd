@@ -12,6 +12,7 @@ static func burst(parent: Node, at: Vector3, text: String, color: Color) -> void
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.modulate = color
 	label.no_depth_test = true
+	label.render_priority = 127
 	var tween := label.create_tween().set_parallel(true)
 	tween.tween_property(label, "position:y", label.position.y + 1.2, 0.8)
 	tween.tween_property(label, "modulate:a", 0.0, 0.8)
@@ -64,6 +65,7 @@ static func damage_number(parent: Node, receiver: Damageable, amount: float) -> 
 		label.pixel_size = 0.007
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		label.no_depth_test = true
+		label.render_priority = 127
 		label.set_meta("amount", 0.0)
 		receiver.set_meta("damage_number", label)
 	var old_tween: Tween = label.get_meta("fade") if label.has_meta("fade") else null

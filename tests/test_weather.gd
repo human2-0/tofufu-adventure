@@ -28,8 +28,14 @@ func _run() -> void:
 	scene.hud.toggle_help()
 	scene.hud.announce("")
 	await physics_frame
-	check(active_count() == 9, "dry population starts at nine")
+	var forest_count := FarmCombatGrounds.FOREST_ARMORED_SPAWNS.size()
+	check(active_count() == 9 + forest_count, "dry population includes camp and forest snails")
 	await capture("clear")
+	scene.weather.set_phase(0.1)
+	check(scene.weather.condition == WeatherCycle.Condition.WINDY, "clock enters a directional windy spell")
+	scene.wind.step(scene.weather.phase, true, 2.0)
+	check(scene.wind.strength > 0.5, "windy spell produces a movement-affecting gust")
+	scene.weather.set_phase(0.0)
 	scene.weather._physics_process(46.0)
 	check(scene.weather.condition == WeatherCycle.Condition.OVERCAST, "clock advances into overcast")
 	await capture("overcast")
@@ -41,16 +47,18 @@ func _run() -> void:
 	check(not dead.visible, "dry respawn is still pending at eleven seconds")
 	scene.weather._physics_process(15.0)
 	check(scene.weather.condition == WeatherCycle.Condition.RAIN, "clock advances into rain")
+	scene.world.rain_effects._process(2.0)
+	check(scene.world.rain_effects.is_raining() and scene.world.rain_effects.wetness > 0.9 and scene.world.rain_effects.puddle_count == 15, "rain wets terrain and activates its puddle impacts")
 	check(mob.target.maximum == 90 and mob.target.current == 45, "rain strength preserves injury proportion")
 	scene.weather.set_phase(0.4)
 	check(mob.target.current == 45, "repeated weather state does not heal")
 	dead._physics_process(4.01)
 	check(dead.visible and dead.target.current == 90, "pending respawn accelerates with rain")
-	for reserve: TrainingMob in scene.encounters.mob_nodes.slice(9):
-		reserve._physics_process(7.9)
+	for reserve: TrainingMob in scene.encounters.mob_nodes.slice(9, 15):
+		reserve._physics_process(reserve.tuning.rain_respawn - 0.1)
 		check(not reserve.visible, "rain recruits wait for respawn")
 		reserve._physics_process(0.11)
-	check(active_count() == 15, "rain increases population to fifteen")
+	check(active_count() == 15 + forest_count, "rain activates six additional camp snails")
 	var hits: Array[float] = []
 	mob.attacked.connect(func(amount: float, _source: Vector3) -> void: hits.append(amount))
 	mob.position = mob._home
@@ -83,7 +91,9 @@ func _run() -> void:
 	invalid.weather_phase = 2.0
 	check(not WorldProtocol.valid(invalid), "out-of-range weather rejected")
 	scene.weather.set_phase(0.8)
-	check(active_count() == 9 and mob.target.maximum == 60 and mob.target.current == 30, "dry weather retires extras and restores normal strength")
+	scene.world.rain_effects._process(2.0)
+	check(not scene.world.rain_effects.is_raining() and scene.world.rain_effects.wetness < 0.1, "clearing rain drains the surface presentation")
+	check(active_count() == 9 + forest_count and mob.target.maximum == 60 and mob.target.current == 30, "dry weather retires reserves and restores normal strength")
 	check(scene.encounters.mob_nodes[9].target.current == 0, "retired reserves cannot be damaged for loot")
 	AdventureSnapshot.restore(scene, saved)
 	check(scene.weather.condition == WeatherCycle.Condition.RAIN, "solo load restores rain")

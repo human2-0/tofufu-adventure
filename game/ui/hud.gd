@@ -35,9 +35,15 @@ var _mobs: int = 0
 var _props: int = 0
 var _experience: int = 0
 var _knife_selected: bool = true
+var _staff_selected: bool = false
+var _tornado_active: bool = false
+var _tornado_cooldown: float = 0.0
 var _guarding: bool = false
 var _fist_hit_rate: float = 2.9
 var _fist_damage: int = 12
+var _knife_charge: float = 0.0
+var _combo_count: int = 0
+var _combo_critical_chance: float = 0.0
 var _prev_level: int = 1
 var _prev_skills: Dictionary = {}
 
@@ -105,10 +111,10 @@ func _setup_center(canvas: Control) -> void:
 	_popup.offset_top = 40
 	_popup.offset_bottom = 110
 
-	var help_box := HUDElements.make_panel(canvas, Vector2(-180, 110), Vector2(360, 200), Vector2(0.5, 0))
+	var help_box := HUDElements.make_panel(canvas, Vector2(-180, 110), Vector2(360, 220), Vector2(0.5, 0))
 	_help = help_box.get_parent() as PanelContainer
 	HUDElements.make_label(help_box, "FUFU ADVENTURE GUIDE", 13, Color("f5dfac"))
-	HUDElements.make_label(help_box, "WASD: Walk • Mouse: Aim • Space: Leap • Shift: Dash • LMB: Attack • RMB: Guard\n1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • Enter: Chat • V: Voice\nSoybeans: Stack in bag, drag to Support slot [3] (+25 HP gradual)", 10, Color("d1ddd0"))
+	HUDElements.make_label(help_box, "WASD: Walk • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power\nRMB: Knife guard / Staff tornado spin. Staff Lv1 Power 5; Knife Lv2 Power 10.\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • Enter: Chat • V: Voice", 10, Color("d1ddd0"))
 	_help.visible = false
 
 	_notice = Label.new()
@@ -141,18 +147,62 @@ func show_dash_cooldown(current: float, total: float) -> void:
 func show_punch_cadence(remaining: float, total: float, damage: int, hit_rate: float) -> void:
 	_fist_damage = damage
 	_fist_hit_rate = hit_rate
-	if not _knife_selected:
+	if not _knife_selected and not _staff_selected:
 		var progress := 1.0 if total <= 0.0 else clampf(1.0 - remaining / total, 0.0, 1.0)
 		_charge_bar.value = progress * 100.0
 		_charge_text.text = ("PUNCHING · %d DMG" if remaining > 0.001 else "LMB / PUNCH · %d DMG") % damage
 
 func show_charge(value: float) -> void:
+	_knife_charge = value
 	if _knife_selected:
-		_charge_bar.value = value * 100.0
-		_charge_text.text = "POWER SLASH! / RELEASE" if value >= 1.0 else "HOLD LMB / CHARGE"
-		if _guarding: _charge_text.text = "GUARDING / AIM AT FOE"
+		_present_knife_rhythm()
+	elif _staff_selected:
+		_present_staff_rhythm()
 	else:
 		_charge_text.text = "LMB / PUNCH · %d DMG" % _fist_damage
+
+func show_combo(count: int, critical_chance: float) -> void:
+	_combo_count = count
+	_combo_critical_chance = critical_chance
+	if _knife_selected:
+		_present_knife_rhythm()
+	elif _staff_selected:
+		_present_staff_rhythm()
+
+func show_staff_state(selected: bool, tornado: bool, cooldown: float) -> void:
+	_staff_selected = selected
+	_tornado_active = tornado
+	_tornado_cooldown = cooldown
+	if selected: _present_staff_rhythm()
+
+func _present_staff_rhythm() -> void:
+	_charge_bar.value = _knife_charge * 100.0
+	if _tornado_active:
+		_charge_text.text = "TORNADO / 360° SWING"
+	elif _knife_charge >= 1.0:
+		_charge_text.text = "STAFF LOADED / RELEASE"
+	elif _knife_charge > 0.0:
+		_charge_text.text = "STAFF CHARGING %d%%" % roundi(_knife_charge * 100.0)
+	elif _tornado_cooldown > 0.05:
+		_charge_text.text = "STAFF / SPIN %.1fs" % _tornado_cooldown
+	elif _combo_count > 0:
+		_charge_text.text = "STAFF COMBO x%d / RMB SPIN" % _combo_count
+	else:
+		_charge_text.text = "STAFF / LMB COMBO · RMB SPIN"
+
+func _present_knife_rhythm() -> void:
+	_charge_bar.value = _knife_charge * 100.0
+	if _guarding:
+		_charge_text.text = "GUARDING / AIM AT FOE"
+	elif _combo_count > 0 and _knife_charge >= 1.0:
+		_charge_text.text = "COMBO LAUNCHER! / RELEASE"
+	elif _knife_charge >= 1.0:
+		_charge_text.text = "POWER SLASH! / RELEASE"
+	elif _combo_count > 0:
+		var hint := "RELEASE STAB" if _knife_charge > 0.0 else "TAP LMB FOR STAB"
+		_charge_text.text = "COMBO x%d · %d%% CRIT / %s" % [_combo_count, roundi(_combo_critical_chance * 100.0), hint]
+	else:
+		_charge_text.text = "HOLD LMB / CHARGE"
 
 func show_jump_charge(value: float) -> void: _jump_val = value
 
@@ -183,6 +233,7 @@ func show_equipment(owned: bool, selected: bool, guarding: bool) -> void:
 	var fists_str := "2 FISTS (%d DMG)" % _fist_damage
 	_equipment.text = ("[1 %s]  %s" % [knife, fists_str]) if selected else ("1 %s  [%s]" % [knife, fists_str])
 	if guarding: _equipment.text = "[1 KNIFE: GUARD]"
+	if _knife_selected: _present_knife_rhythm()
 
 func show_experience(total: int) -> void:
 	_experience = total

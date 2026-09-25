@@ -1,25 +1,29 @@
 class_name JungleTerrain
 extends RefCounted
-## Continuous eastern biome; the entrance blends exactly into the farm heightfield.
+## Southern jungle; its entrance blends exactly into the desert crossing.
 
-static func height_at(x: float, z: float, farm: FarmTerrain) -> float:
-	var blend := smoothstep(42.0, 52.0, x)
-	var hills := 1.8 + sin(x * 0.14) * 1.1 + cos(z * 0.19) * 0.9
-	hills += 4.0 * exp(-Vector2(x - 86, z + 17).length_squared() / 110.0)
+const SOUTH_START: float = DesertTerrain.SOUTH_END
+const SOUTH_END: float = 340.0
+const HALF_WIDTH: float = 80.0
+
+static func height_at(x: float, z: float, desert: DesertWorld) -> float:
+	var blend := smoothstep(SOUTH_START, SOUTH_START + 20.0, z)
+	var hills := 1.8 + sin(x * 0.16) * 1.1 + cos(z * 0.18) * 0.9
+	hills += 4.0 * exp(-Vector2(x + 19, z - 157).length_squared() / 110.0)
 	var trail := trail_distance(x, z)
 	hills = lerpf(1.2, hills, smoothstep(1.5, 4.0, trail))
-	return lerpf(farm.height_at(minf(x, 42), z), hills, blend)
+	return lerpf(desert.point(x, minf(z, SOUTH_START)).y, hills, blend)
 
 static func trail_distance(x: float, z: float) -> float:
-	var main := absf(z - (26.0 - (x - 42) * 0.65 + sin((x - 42) * 0.15) * 3.0))
-	var loop := absf(Vector2((x - 75) * 0.9, z - 3).length() - 15.0)
+	var main := absf(x - (sin((z - SOUTH_START) * 0.15) * 3.0))
+	var loop := absf(Vector2(x * 0.9, z - 143).length() - 15.0)
 	return minf(main, loop)
 
-static func build(parent: Node3D, farm: FarmTerrain) -> void:
+static func build(parent: Node3D, desert: DesertWorld) -> void:
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for z in range(-32, 39):
-		for x in range(42, 103):
+	for z in range(int(SOUTH_START), int(SOUTH_END)):
+		for x in range(-int(HALF_WIDTH), int(HALF_WIDTH)):
 			for corner in [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)]:
 				var px: float = x + corner.x
 				var pz: float = z + corner.y
@@ -27,7 +31,7 @@ static func build(parent: Node3D, farm: FarmTerrain) -> void:
 				var color := Color("376c50").lerp(Color("67934f"), shade)
 				color = color.lerp(Color("bdac72"), 1.0 - smoothstep(1.0, 2.3, trail_distance(px, pz)))
 				surface.set_color(color)
-				surface.add_vertex(Vector3(px, height_at(px, pz, farm), pz))
+				surface.add_vertex(Vector3(px, height_at(px, pz, desert), pz))
 	surface.generate_normals()
 	var ground := MeshInstance3D.new()
 	ground.name = "JungleGround"

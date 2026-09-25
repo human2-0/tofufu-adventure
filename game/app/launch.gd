@@ -189,6 +189,7 @@ func _input_enabled(enabled: bool) -> void:
 	if not enabled:
 		game.map.close()
 		game.inventory_window.close()
+		game.seed_storage.window.close()
 		game.merchant.window.close()
 		if game.quest_giver != null: game.quest_giver.window.close()
 	game.chat.set_menu_open(not enabled)

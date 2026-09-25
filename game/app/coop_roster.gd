@@ -16,8 +16,10 @@ func _ready() -> void:
 	_world_targets = game.combat.targets.duplicate()
 	local_input = game.player.command_source
 	game.player.command_sampled.disconnect(game._on_command)
+	if game.player.super_dashed.is_connected(game._on_super_dashed):
+		game.player.super_dashed.disconnect(game._on_super_dashed)
 	game.encounters.experience_awarded.disconnect(game.progression.progress.award_experience)
-	game.health.depleted.disconnect(game._respawn)
+	game.health.depleted.disconnect(game._on_player_depleted)
 	game.set_process_unhandled_input(false)
 	if authority and room.dedicated:
 		game.player.set_physics_process(false)
@@ -54,9 +56,12 @@ func _sync() -> void:
 		if actor != game.player: game.exploration.companions.append(actor)
 	for member: CoopActor in party.values():
 		member.combat.targets = _world_targets.duplicate()
+		member.combat.clash.opponents.clear()
 		member.combat.gun.friends.clear()
 		for other: CoopActor in party.values():
-			if other != member: member.combat.targets.append(other.health)
+			if other != member:
+				member.combat.targets.append(other.health)
+				member.combat.clash.opponents.append(other.combat)
 		member.combat.gun.targets = member.combat.targets
 		member.combat.sotjet.flow.targets = member.combat.targets
 	changed.emit()
@@ -85,6 +90,8 @@ func _add(key: String) -> void:
 		member.healing = game.healing
 		member.loadout = game.loadout
 	member.actor = actor
+	member.world_items = game.world_items
+	actor.movement_modifier = game.wind.movement_multiplier
 	if not authority and key == room.local_key:
 		member.prediction = CoopPrediction.new()
 		member.prediction.actor = actor
@@ -102,6 +109,8 @@ func _add(key: String) -> void:
 	label.pixel_size = 0.008
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.position.y = 1.6
+	label.no_depth_test = true
+	label.render_priority = 127
 	actor.add_child(label)
 
 func capture_party() -> Dictionary:

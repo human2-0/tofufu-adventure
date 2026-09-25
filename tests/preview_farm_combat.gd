@@ -17,8 +17,7 @@ func _run() -> void:
 	scene.get_node("Player").add_child(source)
 	scene.get_node("Player").command_source = source
 	root.add_child(scene)
-	scene.hud.toggle_help()
-	scene.hud.announce("")
+	scene.hud.visible = false
 	scene.cycle.set_process(false)
 	scene.cycle.phase = 0.4
 	scene.cycle._process(0)
@@ -26,7 +25,7 @@ func _run() -> void:
 	for child in scene.encounters.get_children():
 		if child is TrainingMob:
 			child.set_physics_process(false)
-			mob = child
+			if child is ArmoredSnail: mob = child
 	scene.player.position = scene.world.ground_point(19.3, 13.4, 0.1)
 	scene.camera.position = scene.player.position + scene.camera.offset
 	await ticks(20)

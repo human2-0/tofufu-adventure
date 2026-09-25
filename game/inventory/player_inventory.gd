@@ -1,24 +1,45 @@
 class_name PlayerInventory
 extends RefCounted
-## Ten-slot bag storing stacked items up to their max capacity.
+## Backpack-owned inventory with a ten-slot factory pack and expandable capacity.
 
 signal changed
 
 const CAPACITY: int = 10
+const MAX_CAPACITY: int = 20
 var slots: Array[ItemStack] = []
-var coins: int = 10
+var capacity: int = CAPACITY
 var pending_items: Array[ItemStack] = []
+var refining_unlocked: bool = false
 
 func _init() -> void:
 	slots.resize(CAPACITY)
 	for i in CAPACITY:
 		slots[i] = null
 
+func set_capacity(value: int) -> void:
+	var next := clampi(value, 0, MAX_CAPACITY)
+	if capacity == next: return
+	slots.resize(next)
+	if next > capacity:
+		for index in range(capacity, next): slots[index] = null
+	capacity = next
+	changed.emit()
+
+func has_overflow_for(next_capacity: int) -> bool:
+	for index in range(clampi(next_capacity, 0, capacity), capacity):
+		if slots[index] != null: return true
+	return false
+
+func clear() -> void:
+	for index in capacity: slots[index] = null
+	changed.emit()
+
 func has_space_for(item: InventoryItem, amount: int = 1) -> bool:
 	if item == null or amount <= 0:
 		return false
 	var needed := amount
-	for stack in slots:
+	for index in capacity:
+		var stack := slots[index]
 		if stack != null and stack.item != null and stack.item.id == item.id:
 			needed -= (item.max_stack - stack.count)
 			if needed <= 0:
@@ -34,14 +55,15 @@ func add_item(item: InventoryItem, amount: int = 1) -> int:
 		return amount
 	var remaining := amount
 	# First pass: fill existing non-full stacks
-	for stack in slots:
+	for index in capacity:
+		var stack := slots[index]
 		if stack != null and stack.item != null and stack.item.id == item.id and stack.count < item.max_stack:
 			remaining = stack.add(remaining)
 			if remaining <= 0:
 				break
 	# Second pass: fill empty slots
 	if remaining > 0:
-		for i in CAPACITY:
+		for i in capacity:
 			if slots[i] == null:
 				var to_add := mini(item.max_stack, remaining)
 				slots[i] = ItemStack.new(item, to_add)
@@ -54,7 +76,7 @@ func add_item(item: InventoryItem, amount: int = 1) -> int:
 
 func remove_item(item_id: String, amount: int = 1) -> int:
 	var remaining := amount
-	for i in range(CAPACITY - 1, -1, -1):
+	for i in range(capacity - 1, -1, -1):
 		var stack := slots[i]
 		if stack != null and stack.item != null and stack.item.id == item_id:
 			if stack.count <= remaining:
@@ -72,23 +94,24 @@ func remove_item(item_id: String, amount: int = 1) -> int:
 
 func count_item(item_id: String) -> int:
 	var total := 0
-	for stack in slots:
+	for index in capacity:
+		var stack := slots[index]
 		if stack != null and stack.item != null and stack.item.id == item_id:
 			total += stack.count
 	return total
 
 func get_slot(index: int) -> ItemStack:
-	if index >= 0 and index < CAPACITY:
+	if index >= 0 and index < capacity:
 		return slots[index]
 	return null
 
 func set_slot(index: int, stack: ItemStack) -> void:
-	if index >= 0 and index < CAPACITY:
+	if index >= 0 and index < capacity:
 		slots[index] = stack
 		changed.emit()
 
 func swap_slots(from_idx: int, to_idx: int) -> void:
-	if from_idx < 0 or from_idx >= CAPACITY or to_idx < 0 or to_idx >= CAPACITY or from_idx == to_idx:
+	if from_idx < 0 or from_idx >= capacity or to_idx < 0 or to_idx >= capacity or from_idx == to_idx:
 		return
 	var a := slots[from_idx]
 	var b := slots[to_idx]
@@ -105,13 +128,14 @@ func swap_slots(from_idx: int, to_idx: int) -> void:
 
 func capture() -> Array:
 	var data: Array = []
-	for stack in slots:
+	for index in capacity:
+		var stack := slots[index]
 		data.append(stack.capture() if stack != null else {})
 	return data
 
 func restore(data: Array) -> void:
-	slots.resize(CAPACITY)
-	for i in CAPACITY:
+	slots.resize(capacity)
+	for i in capacity:
 		if i < data.size() and data[i] is Dictionary and not data[i].is_empty():
 			slots[i] = ItemStack.restore(data[i])
 		else:

@@ -32,14 +32,23 @@ func run() -> void:
 	var plot: SoybeanPlot = game.farming.plots[3]
 	game.player.position = plot.position + Vector3(0, 0.1, 1.2)
 	check(game.farming.interact(plot), "nearby ripe plot harvest")
-	check(game.inventory.count_item("soybean") == 3, "three real bag beans")
+	check(game.encounters.pickups.size() == 3 and game.inventory.count_item("edamame") == 0, "harvest creates three ground edamame")
+	var ground_bean: SoybeanPickup = game.encounters.pickups.values()[0]
+	check(ground_bean.pixel_size * maxf(ground_bean.texture.get_width(), ground_bean.texture.get_height()) < 0.6, "ground bean remains smaller than the player")
 	check(not game.farming.interact(plot), "no duplicate grant")
-	plot.crop.step(2)
+	for tick in 90: await physics_frame
+	check(game.inventory.count_item("edamame") == 3, "nearby ground drops automatically enter backpack")
+	if plot.crop.phase() == SoybeanCrop.Phase.HARVEST: plot.crop.step(2)
 	check(game.farming.interact(plot), "replant soil")
 	plot.crop.step(30)
 	for i in PlayerInventory.CAPACITY:
-		game.inventory.set_slot(i, ItemStack.new(InventoryItem.create_soybean(), 999))
-	check(not game.farming.interact(plot) and plot.crop.phase() == SoybeanCrop.Phase.RIPE, "full bag preserves ripe crop")
+		game.inventory.set_slot(i, ItemStack.new(InventoryItem.create_edamame(), 100))
+	check(game.farming.interact(plot), "full bag can harvest into ground drops")
+	for tick in 90: await physics_frame
+	check(game.encounters.pickups.size() == 3 and game.inventory.count_item("edamame") == 1000, "full bag leaves currency on ground without loss")
+	game.inventory.set_slot(0, null)
+	for tick in 90: await physics_frame
+	check(game.encounters.pickups.is_empty() and game.inventory.count_item("edamame") == 903, "ground currency can be recovered after making bag space")
 	game.player.position = Vector3(20, 0, 20)
 	check(not game.farming.interact(plot), "range validation")
 	game.queue_free()

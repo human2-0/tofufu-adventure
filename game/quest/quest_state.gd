@@ -12,8 +12,7 @@ var description: String = "Defeat 50 slimes roaming around Fufufarm."
 var target_count: int = 50
 var current_count: int = 0
 var status: Status = Status.NOT_STARTED
-var reward_coins: int = 100
-var reward_item_id: String = "rare_soybean"
+var reward_edamame: int = 100
 
 func start() -> void:
 	if status == Status.NOT_STARTED:

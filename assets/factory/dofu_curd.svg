@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
+<!-- Original vector sprite: awakened Chinese tofu curd, nigari crest and cutting-board shield. -->
+<g stroke="#344c43" stroke-width="7" stroke-linejoin="round">
+<ellipse cx="130" cy="229" rx="78" ry="13" fill="#263b35" opacity=".22" stroke="none"/>
+<path d="M69 178L60 224H88L106 185M157 184L176 223H201L186 174" fill="#718d65"/>
+<path d="M55 100L29 141L40 169L67 143M192 101L222 128L229 170L209 179L186 137" fill="#b7ca91"/>
+<path d="M53 70L93 40L209 65L190 183L78 197L49 164Z" fill="#f6efd7"/>
+<path d="M53 70L168 89L209 65M168 89L160 187" fill="none" stroke="#c5bc97"/>
+<path d="M82 117L111 126M136 125L158 111" stroke="#5c5442"/>
+<path d="M88 135L107 138M137 139L151 134" stroke="#b54843" stroke-width="10"/>
+<path d="M111 157L125 151L139 159" fill="none"/>
+<path d="M83 40L103 17L123 42L143 22L163 53" fill="#80b9a5"/>
+<path d="M25 162L53 151L75 197L42 211Z" fill="#b98956"/>
+<path d="M39 169L59 194" stroke="#e9bd79"/>
+<path d="M177 109L184 124M175 142L181 152M73 89L80 93" stroke="#d3c9a9" stroke-width="4"/>
+</g></svg>

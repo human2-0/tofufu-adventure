@@ -57,11 +57,11 @@ func _eight_blade_boundaries() -> void:
 		combat.strike(aim, 0.0)
 		check(edge.current == 100, "wind-up does not damage targets")
 		combat._resolve_blade(Vector3.ZERO, pose)
-		check(edge.current == 80, "blade tip touches target's actual collider in direction %d" % index)
+		check(edge.current == 100 - tuning.light_damage, "blade tip touches target's actual collider in direction %d" % index)
 		check(beyond.current == 100, "no damage past visible tip in direction %d" % index)
 		check(lateral.current == 100 and overhead.current == 100 and behind.current == 100, "blade width, height and rear bounds are respected")
 		combat._resolve_blade(Vector3.ZERO, pose)
-		check(edge.current == 80, "each target is hit only once per attack")
+		check(edge.current == 100 - tuning.light_damage, "each target is hit only once per attack")
 		combat.reset()
 		for target in combat.targets:
 			target.body.queue_free()
@@ -78,7 +78,7 @@ func _moving_sweep() -> void:
 	combat._elapsed = combat.tuning.swing_seconds * 0.48
 	actor.position.x = 1.2
 	combat.step(Vector2.UP, false, 0.01)
-	check(target.current == 80, "blade sweeps between ticks instead of tunneling during a dash")
+	check(target.current == 100 - combat.tuning.light_damage, "blade sweeps between ticks instead of tunneling during a dash")
 	combat.reset()
 
 func _slash_crosses_front() -> void:
@@ -95,7 +95,7 @@ func _slash_crosses_front() -> void:
 	check(early.current == 100 and late.current == 100, "wind-up is harmless")
 	for tick in 24:
 		combat.step(Vector2.DOWN, false, 1.0 / 60.0)
-	check(early.current == 80 and late.current == 80, "slash cuts across both sides of the forward arc exactly once")
+	check(early.current == 100 - combat.tuning.light_damage and late.current == 100 - combat.tuning.light_damage, "slash cuts across both sides of the forward arc exactly once")
 	check(not combat.active, "slash completes recovery")
 
 func _body_clearance() -> void:

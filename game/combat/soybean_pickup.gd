@@ -3,6 +3,7 @@ extends Sprite3D
 ## Drops settle under gravity, then latch onto a nearby collector and fly to them.
 
 signal collected
+var collect_attempt: Callable
 @export var collector: Node3D
 @export var attraction_radius: float = 3.5
 @export var collection_radius: float = 0.28
@@ -16,18 +17,15 @@ var _fall_speed: float = 3.0
 var _grounded: bool = false
 
 func _ready() -> void:
-	texture = preload("res://assets/combat/soybean.svg")
+	if texture == null: texture = preload("res://assets/combat/soybean.svg")
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	pixel_size = 0.01
+	pixel_size = 0.0014
 	position.y += 0.3
 
 func _physics_process(delta: float) -> void:
 	if _collected:
 		return
-	_age += delta
-	if _age > 60.0:
-		queue_free()
-		return
+	_age = minf(_age + delta, 60.0)
 	if is_instance_valid(collector) and _age > 0.25:
 		var destination := collector.global_position + Vector3.UP * 0.45
 		if (_attracted or global_position.distance_to(destination) <= attraction_radius) and _clear_path(destination):
@@ -44,6 +42,9 @@ func _follow(destination: Vector3, delta: float) -> void:
 	_speed = move_toward(_speed, attraction_speed, attraction_acceleration * delta)
 	global_position = global_position.move_toward(destination, _speed * delta)
 	if global_position.distance_to(destination) <= collection_radius:
+		if collect_attempt.is_valid() and not bool(collect_attempt.call()):
+			_attracted = false
+			return
 		_collected = true
 		collected.emit()
 		queue_free()

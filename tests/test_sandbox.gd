@@ -59,26 +59,19 @@ func _harvest_and_heal() -> void:
 	await ticks(2)
 	source.command.attack_held = false
 	await ticks(26)
-	check(plant.current == 0, "real input command harvests soy with a tap")
+	check(plant.current == 10, "first tap deals the authored light attack damage")
+	source.command.attack_held = true
+	await ticks(2)
+	source.command.attack_held = false
+	await ticks(26)
+	check(plant.current == 0, "real input combo harvests soy")
 	check(scene.encounters.props == 1, "harvest is counted once")
 	await ticks(100)
-	check(scene.encounters.beans == 2, "destroyed soy drops two collectible 2D beans")
-	check(scene.inventory.count_item("soybean") == 2, "collected beans are stored in inventory")
-	check(scene.health.current == 60, "collecting soy into bag does not immediately heal")
+	check(scene.encounters.beans == 2, "destroyed soy plant drops two collectible edamame")
+	check(scene.inventory.count_item("edamame") == 2, "collected edamame are stored in inventory")
+	check(scene.health.current == 60, "collecting edamame into bag does not immediately heal")
 	var stack: ItemStack = scene.inventory.get_slot(0)
-	scene.character_equipment.set_slot("support_1", stack)
-	scene.inventory.set_slot(0, null)
-	check(scene.character_equipment.get_slot("support_1").count == 2, "soybean stack equipped to healing slot")
-	var used: bool = scene.healing.use_slot("support_1")
-	check(used, "eating equipped soybean succeeds")
-	check(scene.character_equipment.get_slot("support_1").count == 1, "eating consumes 1 soybean from stack")
-	check(scene.healing.cooldown_remaining > 1.8, "eating soybean triggers 2s cooldown")
-	check(not scene.healing.use_slot("support_1"), "cannot eat another soybean during 2s cooldown")
-	var hp_before: float = scene.health.current
-	await ticks(30)
-	check(scene.health.current > hp_before, "soybean gradually restores health over time")
-	await ticks(130)
-	check(absf(scene.health.current - 85.0) < 0.5, "soybean restores +25 HP total gradually")
+	check(not scene.character_equipment.can_equip("support_1", stack), "currency cannot be equipped or consumed as healing")
 	var prop := plant.get_parent() as HarvestProp
 	prop._physics_process(30)
 	check(prop.visible and plant.current == plant.maximum, "plants regrow for repeat testing")
@@ -115,7 +108,12 @@ func _occlusion_and_sword() -> void:
 	await ticks(55)
 	source.command.attack_held = false
 	await ticks(32)
-	check(prop.target.current == 0, "charged slash breaks a nearby crate")
+	check(prop.target.current == 10, "charged slash damages a nearby crate")
+	source.command.attack_held = true
+	await ticks(2)
+	source.command.attack_held = false
+	await ticks(32)
+	check(prop.target.current == 0, "follow-up slash breaks the weakened crate")
 
 func _river_and_farm() -> void:
 	player.position = Vector3(7, 0.1, 4)

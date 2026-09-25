@@ -43,20 +43,12 @@ static func restore(data: Dictionary) -> ItemStack:
 	var raw_count: Variant = data.get("count", 1)
 	if not raw_id is String or raw_id.is_empty() or raw_id.length() > 64: return null
 	if not (raw_count is int or raw_count is float): return null
-	if not is_finite(float(raw_count)) or raw_count < 1 or raw_count > 999 or float(raw_count) != floor(float(raw_count)): return null
+	if not is_finite(float(raw_count)) or raw_count < 1 or raw_count > 100 or float(raw_count) != floor(float(raw_count)): return null
 	var id: String = raw_id
 	var count: int = int(raw_count)
 	var item: InventoryItem
-	if id == "soybean":
-		item = InventoryItem.create_soybean()
-	elif id == "rare_soybean":
-		item = InventoryItem.create_rare_soybean()
-	elif id in ["knife", "soy_gun", "sotjet"]:
-		item = InventoryItem.weapon(id)
-	else:
-		item = InventoryItem.new()
-		item.id = id
-		item.name = id.capitalize()
+	item = InventoryItem.from_id(id)
+	if item == null: return null
 	if count > item.max_stack: return null
 	var stack := ItemStack.new(item, count)
 	var reserve: Variant = data.get("reserve", 100.0)

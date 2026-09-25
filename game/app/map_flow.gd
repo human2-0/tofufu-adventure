@@ -6,10 +6,11 @@ var game: Node3D
 var roster: CoopRoster
 var view := MapView.new()
 var expanded: bool = false
+const MAP_PIXELS_PER_UNIT: float = 1.5
 
 func _ready() -> void:
 	add_child(view)
-	view.mini.bounds = Rect2(-42, -42, 146, 84)
+	view.mini.bounds = Rect2(-142, -369, 342, 709)
 	view.full.bounds = view.mini.bounds
 	var texture := _terrain_texture()
 	view.mini.terrain_texture = texture
@@ -39,6 +40,7 @@ func markers() -> Array[Dictionary]:
 
 func _marker(actor: Node3D, title: String, kind: String, color: Color) -> Dictionary:
 	var at: Vector3 = game.world.to_local(actor.global_position)
+	if TofuFactory.contains(at): at = TofuFactory.EAST_ENTRANCE
 	return {"point": Vector2(at.x, at.z), "label": title, "kind": kind, "color": color}
 
 func _available() -> bool:
@@ -76,24 +78,37 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 func _terrain_texture() -> Texture2D:
-	var image := Image.create(438, 252, false, Image.FORMAT_RGB8)
+	var image := Image.create(513, 1064, false, Image.FORMAT_RGB8)
 	var terrain: FarmTerrain = game.world.terrain
-	for y in 252:
-		for x in 438:
-			var at := Vector2(x, y) / 3.0 - Vector2.ONE * 42
+	for y in 1064:
+		for x in 513:
+			var at := Vector2(x, y) / MAP_PIXELS_PER_UNIT - Vector2(142, 369)
 			var color := Color("8faa78").lerp(Color("c6ca98"), clampf(terrain.height_at(at.x, at.y) / 5.0, 0, 1))
 			if terrain.is_field(at.x, at.y): color = Color("b6bd75") if y % 5 < 3 else Color("929d60")
 			if terrain.path_distance(at.x, at.y) < 1.1: color = Color("dfcb9b")
-			if absf(at.x - terrain.river_x(at.y)) < 2.6: color = Color("6faab5")
+			if at.y <= OceanTerrain.NORTH_START:
+				if at.y >= FrostTerrain.NORTH_START:
+					color = Color("256f86") if absf(at.x) <= OceanTerrain.HALF_WIDTH and at.y >= OceanTerrain.NORTH_END else Color("183e58")
+					if OceanTerrain.trail_distance(at.x, at.y) < 1.8: color = Color("6baaa6")
+				else:
+					color = Color("d9f2f2") if absf(at.x) <= FrostTerrain.HALF_WIDTH and at.y >= FrostTerrain.NORTH_END else Color("7898a7")
+					if FrostTerrain.trail_distance(at.x, at.y) < 1.8: color = Color("9cd1dc")
+			elif at.y >= DesertTerrain.SOUTH_START:
+				if at.y < JungleTerrain.SOUTH_START:
+					color = Color("dfad62") if absf(at.x) <= DesertTerrain.HALF_WIDTH and at.y <= DesertTerrain.SOUTH_END else Color("6d533c")
+					if DesertTerrain.trail_distance(at.x, at.y) < 1.8: color = Color("f0d18a")
+				else:
+					color = Color("447851") if absf(at.x) <= JungleTerrain.HALF_WIDTH and at.y <= JungleTerrain.SOUTH_END else Color("294f46")
+					if JungleTerrain.trail_distance(at.x, at.y) < 1.8: color = Color("bdac72")
+			if at.x > 84 and at.x < 184 and at.y > -44 and at.y < 56:
+				color = Color("899b92") if absf(at.y - 6) > 4 else Color("dfcb9b")
+			if RiverCourse.bank_distance(at.x, at.y) < 0.0: color = Color("6faab5")
 			if at.x > 7 and at.x < 15.4 and absf(at.y - 4) < 1.4: color = Color("b38c62")
-			if at.x > 42:
-				color = Color("447851") if at.y >= -32 and at.y <= 39 else Color("294f46")
-				if JungleTerrain.trail_distance(at.x, at.y) < 1.8: color = Color("bdac72")
 			image.set_pixel(x, y, color)
 	for building: Node in game.world.get_children():
 		if not building.has_meta("map_footprint"): continue
 		var footprint: Vector2 = building.get_meta("map_footprint")
 		var at: Vector3 = building.position
-		var corner := (Vector2(at.x, at.z) - footprint * 0.5 + Vector2.ONE * 42) * 3
+		var corner := (Vector2(at.x, at.z) - footprint * 0.5 + Vector2(142, 369)) * MAP_PIXELS_PER_UNIT
 		image.fill_rect(Rect2i(Vector2i(corner), Vector2i(footprint * 3)), Color("916d60"))
 	return ImageTexture.create_from_image(image)
