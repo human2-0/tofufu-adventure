@@ -19,7 +19,7 @@ func _ready() -> void:
 		if i >= 2:
 			plot.crop.plant()
 			plot.crop.age = 18.0 if i == 2 else SoybeanCrop.GROW_SECONDS
-	MeadowGeometry.signpost(self, game.world.ground_point(-9.9, 3.5), "SOY TEST GARDEN\nFree seeds · 30s growth\nPlant / harvest nearby")
+	MeadowGeometry.signpost(self, game.world.ground_point(-9.9, 3.5), "SOY TEST GARDEN\nNo seeds needed · 30s growth\nPlant / harvest nearby")
 
 func available() -> bool:
 	var source: LocalPlayerInput = game.shooting_view.local_input
@@ -43,7 +43,7 @@ func _process(_delta: float) -> void:
 		var text := plot.crop.title()
 		var key := GamePreferences.binding_text("pickup_weapon", "keyboard")
 		match plot.crop.phase():
-			SoybeanCrop.Phase.EMPTY: text = "[%s] Plant edamame · free test seed" % key
+			SoybeanCrop.Phase.EMPTY: text = "[%s] Plant edamame · no seeds needed" % key
 			SoybeanCrop.Phase.RIPE: text = "[%s] Harvest · +3 edamame" % key
 			SoybeanCrop.Phase.HARVEST: pass
 			_: text += " · %ds" % ceili(SoybeanCrop.GROW_SECONDS - plot.crop.age)

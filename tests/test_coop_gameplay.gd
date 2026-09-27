@@ -143,6 +143,8 @@ func _run() -> void:
 	check(host_game.progression.progress.practice.sword == 0, "guest practice does not train host")
 	check(dummy.hit_count == 1, "guest knife hits exactly once through host collision queries")
 	check(guest_game.encounters.dummy_nodes[0].target.current == dummy.target.current, "dummy health replicates")
+	remote.actor.position = dummy.position + Vector3(0, 0.05, 1.1)
+	remote.actor.velocity = Vector3.ZERO
 	input.punch = true
 	await ticks(4)
 	input.punch = false
@@ -152,11 +154,11 @@ func _run() -> void:
 	input.guard = true
 	await ticks(30)
 	remote.hurt(12, remote.actor.position + Vector3(0, 0, -1))
-	check(remote.health.current == 100, "guest forward guard blocks damage")
+	check(is_equal_approx(remote.health.current, remote.health.maximum), "guest forward guard blocks damage")
 	remote.hurt(12, remote.actor.position + Vector3(0, 0, 1))
 	await ticks(10)
 	check(remote.progression.progress.practice.defence == 1 and replica.progression.progress.practice.defence == 1, "only the successful guard trains defence")
-	check(is_equal_approx(remote.health.current, 89.2) and is_equal_approx(replica.health.current, 89.2), "rear hit is reduced by ten percent for the armored guest")
+	check(is_equal_approx(remote.health.current, remote.health.maximum - 10.8) and is_equal_approx(replica.health.current, remote.health.current), "rear hit is reduced by ten percent for the armored guest")
 	input.guard = false
 	input.drop = true
 	await ticks(10)
@@ -200,14 +202,19 @@ func _run() -> void:
 	remote.health.invulnerability = 0
 	remote.health.damage(999)
 	await ticks(10)
-	check(remote.health.current == 100 and remote.actor.position.x < 1, "guest defeat respawns safely")
+	check(is_equal_approx(remote.health.current, remote.health.maximum) and remote.actor.position.x < 1, "guest defeat respawns safely")
 	# Both directions of gun friendly fire cross real room JSON and host physics.
+	# Death may randomly drop apparel; restore the independent armor fixture.
+	for slot_name in ["helmet", "armor", "legs", "boots"]:
+		remote.character_equipment.set_slot(slot_name, ItemStack.new(InventoryItem.apparel("bright_leaf_%s" % slot_name), 1))
 	remote = host_session.roster.party[GUEST]
 	replica = guest_session.roster.party[GUEST]
 	remote.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun"), 1))
 	remote.loadout.select(2)
 	host_game.player.position = Vector3(0, 0.2, 2)
 	remote.actor.position = Vector3(0, 0.2, -3)
+	host_game.combat.vitals.engage()
+	remote.combat.vitals.engage()
 	host_game.health.current = 100
 	host_game.health.invulnerability = 0
 	remote.health.current = 100
@@ -221,8 +228,9 @@ func _run() -> void:
 	await ticks(7)
 	input.attack = false
 	await ticks(15)
-	check(is_equal_approx(host_game.health.current, 79.2), "level-five guest soybean damage reaches the host")
-	check(is_equal_approx(guest_session.roster.party[HOST].health.current, 79.2), "host friendly-fire health replicates to guest")
+	var expected_host_health: float = 100.0 - 20.0 * remote.combat.gun.damage_multiplier * host_game.combat.incoming_damage_multiplier * host_game.health.armor_multiplier
+	check(is_equal_approx(host_game.health.current, expected_host_health), "level-five guest soybean damage reaches the host (%.2f)" % host_game.health.current)
+	check(is_equal_approx(guest_session.roster.party[HOST].health.current, expected_host_health), "host friendly-fire health replicates to guest")
 	check(replica.combat.gun.selected, "guest gun slot is replicated")
 	host_game.combat.gun.selected = true
 	host_game.combat.equipment.knife_selected = false

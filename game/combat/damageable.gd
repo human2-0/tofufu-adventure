@@ -6,12 +6,18 @@ signal changed(current: float, maximum: float)
 signal hit(amount: float, direction: Vector3)
 signal reflected_hit(weapon: String)
 signal pushed(impulse: Vector3)
+signal engaged
+signal attack_confirmed(normal: bool)
+var guard_payment: Callable
+signal restored
 signal depleted
 
 enum HitKind { MELEE, SLIME, SOY, KNIFE }
 var last_hit_amount: float = 0.0
 var last_hit_kind: HitKind = HitKind.MELEE
 var hit_counts: Array[int] = [0, 0, 0, 0]
+var impact_point := Vector3.INF
+var hit_absorbed: bool = false
 var damage_filter: Callable
 var projectile_guard: Callable
 var armor_multiplier: float = 1.0
@@ -29,9 +35,12 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	invulnerability = maxf(0.0, invulnerability - delta)
 
-func damage(amount: float, direction: Vector3 = Vector3.ZERO, kind: HitKind = HitKind.MELEE) -> bool:
+func damage(amount: float, direction: Vector3 = Vector3.ZERO, kind: HitKind = HitKind.MELEE, point: Vector3 = Vector3.INF) -> bool:
+	hit_absorbed = false
 	if current <= 0.0 or invulnerability > 0.0 or amount <= 0.0:
 		return false
+	engaged.emit()
+	impact_point = point
 	if damage_filter.is_valid(): amount = damage_filter.call(amount, direction, kind)
 	amount *= clampf(armor_multiplier, 0.0, 1.0)
 	if amount <= 0.0: return false
@@ -52,6 +61,7 @@ func heal(amount: float) -> void:
 
 func restore() -> void:
 	current = maximum
+	restored.emit()
 	invulnerability = 2.0
 	changed.emit(current, maximum)
 
@@ -61,6 +71,11 @@ var headshot_height: float = INF
 func is_headshot(point: Vector3) -> bool:
 	return body != null and body.to_local(point).y >= headshot_height
 
-func reflection_normal(incoming: Vector3, point: Vector3, confirmed: bool) -> Vector3:
+func reflection_normal(incoming: Vector3, point: Vector3, confirmed: bool, amount: float = 0.0) -> Vector3:
 	if current <= 0 or not projectile_guard.is_valid(): return Vector3.ZERO
+	var normal: Vector3 = projectile_guard.call(incoming, point, false)
+	if normal.is_zero_approx(): return normal
+	if confirmed:
+		engaged.emit()
+		if guard_payment.is_valid() and not guard_payment.call(amount): return Vector3.ZERO
 	return projectile_guard.call(incoming, point, confirmed)

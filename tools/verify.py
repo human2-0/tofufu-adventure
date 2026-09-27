@@ -25,9 +25,9 @@ def find_godot():
     raise RuntimeError("Godot not found. Set GODOT_BIN to the Godot 4.7 executable.")
 
 
-def run_stage(godot, name, args, logs):
+def run_stage(godot, name, args, logs, timeout_seconds=60):
     command = [godot, "--headless", "--path", str(ROOT), "--log-file", str(logs / f"{name}.engine.log"), *args]
-    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=60)
+    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=timeout_seconds)
     output = result.stdout + result.stderr
     (logs / f"{name}.log").write_text(output)
     failed = result.returncode != 0 or re.search(r"(?:SCRIPT ERROR:|ERROR:|FAIL:)", output)
@@ -43,21 +43,26 @@ def main():
     logs = Path(tempfile.mkdtemp(prefix="tofufu-verify-"))
     print(f"Logs: {logs}", flush=True)
     run_stage(godot, "import", ["--editor", "--import"], logs)
-    run_stage(godot, "coop_farming", ["--script", "res://tests/test_coop_farming.gd"], logs)
+    # Two three-world scenarios include a sustained full-party harvest check.
+    run_stage(godot, "coop_farming", ["--script", "res://tests/test_coop_farming.gd"], logs, timeout_seconds=120)
     run_stage(godot, "farming", ["--script", "res://tests/test_farming.gd"], logs)
     run_stage(godot, "jungle", ["--script", "res://tests/test_jungle.gd"], logs)
     run_stage(godot, "northern_biomes", ["--script", "res://tests/test_northern_biomes.gd"], logs)
+    run_stage(godot, "map_exploration", ["--script", "res://tests/test_map_exploration.gd"], logs)
     run_stage(godot, "map", ["--script", "res://tests/test_map.gd"], logs)
     run_stage(godot, "input", ["--script", "res://tests/test_input.gd"], logs)
     run_stage(godot, "motor", ["--script", "res://tests/test_player_motor.gd"], logs)
     run_stage(godot, "actor_collisions", ["--script", "res://tests/test_actor_collisions.gd"], logs)
     run_stage(godot, "jump", ["--script", "res://tests/test_jump.gd"], logs)
+    run_stage(godot, "vitals", ["--script", "res://tests/test_vitals.gd"], logs)
     run_stage(godot, "progression", ["--script", "res://tests/test_progression.gd"], logs)
     run_stage(godot, "combat", ["--script", "res://tests/test_combat.gd"], logs)
     run_stage(godot, "knife_combo", ["--script", "res://tests/test_knife_combo.gd"], logs)
     run_stage(godot, "melee_clash", ["--script", "res://tests/test_melee_clash.gd"], logs)
     run_stage(godot, "equipment", ["--script", "res://tests/test_equipment.gd"], logs)
     run_stage(godot, "loadout_shop", ["--script", "res://tests/test_loadout_shop.gd"], logs)
+    run_stage(godot, "nori_katana", ["--script", "res://tests/test_nori_katana.gd"], logs)
+    run_stage(godot, "edamame_sword", ["--script", "res://tests/test_edamame_sword.gd"], logs)
     run_stage(godot, "staff_combat", ["--script", "res://tests/test_staff_combat.gd"], logs)
     run_stage(godot, "backpack", ["--script", "res://tests/test_backpack.gd"], logs)
     run_stage(godot, "world_items", ["--script", "res://tests/test_world_items.gd"], logs)
@@ -76,6 +81,7 @@ def main():
     run_stage(godot, "sotjet_coop", ["--script", "res://tests/test_sotjet_coop.gd"], logs)
     run_stage(godot, "sword", ["--script", "res://tests/test_sword.gd"], logs)
     run_stage(godot, "sandbox", ["--script", "res://tests/test_sandbox.gd"], logs)
+    run_stage(godot, "armored_shell", ["--script", "res://tests/test_armored_shell.gd"], logs)
     run_stage(godot, "farm_combat", ["--script", "res://tests/test_farm_combat.gd"], logs)
     run_stage(godot, "snail", ["--script", "res://tests/test_snail.gd"], logs)
     run_stage(godot, "river", ["--script", "res://tests/test_river.gd"], logs)

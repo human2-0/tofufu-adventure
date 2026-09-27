@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+<defs><linearGradient id="shell" x2=".7" y2="1"><stop stop-color="#d7b57a"/><stop offset=".5" stop-color="#a27b50"/><stop offset="1" stop-color="#594638"/></linearGradient></defs>
+<path d="M18 88 Q10 36 59 17 Q94 8 113 47 L99 60 108 76 86 80 77 103 57 97 40 110Z" fill="url(#shell)" stroke="#403b32" stroke-width="6" stroke-linejoin="round"/>
+<path d="M21 85 Q30 39 67 33 Q90 29 101 47 M30 98 Q39 56 69 50 Q86 47 93 61 M47 101 Q52 71 72 66 Q84 64 90 77" fill="none" stroke="#e4c38a" stroke-width="7" stroke-linecap="round"/>
+<path d="M40 110 57 97 77 103 86 80 108 76" fill="none" stroke="#f0d9a6" stroke-width="6" stroke-linejoin="round"/>
+</svg>

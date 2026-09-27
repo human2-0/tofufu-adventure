@@ -4,8 +4,10 @@ extends CanvasLayer
 
 signal quest_accepted
 signal reward_claimed
+signal quest_selected(index: int)
 signal closed
 
+var _selector: OptionButton
 var _dialogue_label: Label
 var _objective_title: Label
 var _progress_label: Label
@@ -53,6 +55,12 @@ func _ready() -> void:
 	close_btn.focus_mode = Control.FOCUS_NONE
 	close_btn.pressed.connect(close)
 	header.add_child(close_btn)
+
+	_selector = OptionButton.new()
+	_selector.add_item("Cull the Slimes")
+	_selector.add_item("Armored Snail Hunt")
+	_selector.item_selected.connect(func(index: int) -> void: quest_selected.emit(index))
+	column.add_child(_selector)
 
 	_dialogue_label = Label.new()
 	_dialogue_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -117,6 +125,9 @@ func _ready() -> void:
 var _current_status: int = 0
 
 func present(data: Dictionary) -> void:
+	_selector.select(1 if bool(data.get("armored", false)) else 0)
+	_objective_title.text = "Quest: Cull the Slimes"
+	_rewards_label.text = "Reward: 100 Edamame"
 	_current_status = int(data.get("status", 0))
 	var count: int = int(data.get("current_count", 0))
 	var target: int = int(data.get("target_count", 50))
@@ -141,6 +152,15 @@ func present(data: Dictionary) -> void:
 			_dialogue_label.text = "Thank you again for protecting Fufufarm, Fufu! The entire village is safe because of your valiant efforts."
 			_action_button.text = "✓ Quest Completed"
 			_action_button.disabled = true
+
+	if bool(data.get("armored", false)):
+		_objective_title.text = "Quest: Armored Snail Hunt"
+		_rewards_label.text = "Reward: 20 Mature Beans + 1000 EXP"
+		_progress_label.text = " %d / 50 Armored Snails" % count
+		_dialogue_label.text = "Defeat 50 armored snails and deliver 10 pieces of shell. Aim for their exposed heads and dodge the rush!\n\nShell pieces in bag: %d / 10 (consumed on delivery)." % int(data.get("shells", 0))
+		if _current_status == 2:
+			_action_button.text = "Deliver Shells & Claim Reward"
+			_action_button.disabled = int(data.get("shells", 0)) < 10
 
 func _on_action_pressed() -> void:
 	if _current_status == 0:

@@ -5,13 +5,18 @@ extends RefCounted
 static func mob(mob: TrainingMob) -> Array:
 	var p := mob.position
 	var v := mob.velocity
-	return [p.x, p.y, p.z, v.x, v.y, v.z, mob.target.current, maxf(0, mob._respawn), maxf(0, mob._windup)]
+	var row := [p.x, p.y, p.z, v.x, v.y, v.z, mob.target.current, maxf(0, mob._respawn), maxf(0, mob._windup)]
+	if mob is ArmoredSnail: row.append_array([mob.shell_health, mob.facing.x, mob.facing.z])
+	return row
 
 static func apply_mob(mob: TrainingMob, data: Array, feedback: bool = false) -> void:
 	if feedback and data[6] < mob.target.current:
 		CombatEffects.damage_number(mob.get_parent(), mob.target, mob.target.current - data[6])
 	if data[6] < mob.target.current: mob.flash_hit()
 	mob.position = Vector3(data[0], data[1], data[2])
+	if mob is ArmoredSnail:
+		mob.set_shell_health(float(data[9]) if data.size() == 12 else 50.0, feedback)
+		if data.size() == 12: mob.facing = Vector3(data[10], 0, data[11])
 	mob.velocity = Vector3(data[3], data[4], data[5])
 	mob.target.current = data[6]
 	mob._respawn = data[7]

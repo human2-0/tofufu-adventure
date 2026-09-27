@@ -2,6 +2,7 @@ class_name FactoryBean
 extends CharacterBody3D
 ## One-life dungeon enemy. Variants share attack rules but use original factory art.
 
+signal targeting(quarry: Node3D)
 signal attacked(amount: float, source: Vector3)
 signal defeated(at: Vector3)
 
@@ -73,6 +74,7 @@ func _physics_process(delta: float) -> void:
 	if not _alive or not is_instance_valid(quarry): return
 	_rest = maxf(0.0, _rest - delta)
 	var offset := quarry.global_position - global_position
+	if offset.length() < 9.0: targeting.emit(quarry)
 	offset.y = 0.0
 	var direction := Vector3.ZERO
 	if _windup > 0.0:

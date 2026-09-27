@@ -86,6 +86,7 @@ func _command(command: PlayerCommand, delta: float) -> void:
 	if command.time_pressed: time_requested.emit()
 	var moving := Vector2(actor.velocity.x, actor.velocity.z).length_squared() > 0.01
 	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.melee_selected() and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
+	actor.ability_velocity = combat.plunge.velocity
 	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO, not actor.is_on_floor(), command.guard_held)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
@@ -103,7 +104,7 @@ func _command(command: PlayerCommand, delta: float) -> void:
 
 func hurt(amount: float, source: Vector3) -> void:
 	if actor.motor.is_dashing: return
-	if combat.equipment.defend(source):
+	if combat.equipment.defend(source, amount):
 		block_count += 1
 		return
 	amount *= combat.incoming_damage_multiplier
@@ -180,6 +181,7 @@ func accept_view(state: Dictionary) -> void:
 	progression.progress.restore(state.get("progression", {}))
 	if state.get("super_dashing", false) and not target_state.get("super_dashing", false):
 		FART_CLOUD.spawn(actor.get_parent(), CoopValues.vector3(state.position), [])
+	combat.vitals.restore(state.combat.get("vitals", {}))
 	health.current = state.health
 	target_state = state
 	_view_age = 0
@@ -210,17 +212,19 @@ func _refresh_hud(state: Dictionary) -> void:
 	var combo_count := int(state.combat.get("combo", 0))
 	var critical_chance := minf(combat.tuning.combo_critical_chance_cap, combo_count * combat.tuning.combo_critical_chance_per_hit)
 	hud.show_health(state.health, health.maximum)
+	hud.show_stamina(combat.vitals.current, combat.vitals.maximum, combat.vitals.combat_remaining)
 	hud.show_dash_cooldown(state.cooldown, actor.tuning.dash_cooldown)
 	hud.show_jump_charge(state.charge)
 	hud.show_charge(state.combat.charge)
 	hud.show_combo(combo_count, critical_chance)
 	hud.show_equipment(state.combat.owned, state.combat.selected, state.combat.guard)
 	hud.show_staff_state(state.combat.get("staff", false), state.combat.get("style", 0) == StaffAttack.TORNADO and state.combat.active, state.combat.cooldown)
+	hud.show_pod_state(state.combat.get("pod", false), state.combat.get("pod_cooldown", 0.0))
 
 func _filter_hit(amount: float, direction: Vector3, kind: Damageable.HitKind) -> float:
 	if kind == Damageable.HitKind.SLIME: return amount
 	if actor.motor.is_dashing: return 0.0
-	if combat.equipment.defend(actor.global_position - direction):
+	if combat.equipment.defend(actor.global_position - direction, amount):
 		block_count += 1
 		return 0.0
 	return amount * combat.incoming_damage_multiplier

@@ -2,6 +2,8 @@ class_name EquipmentLayout
 extends Control
 ## Anatomical placement; the window supplies the interactive slot buttons.
 
+const COMPACT_SCALE: float = 0.78
+
 const POSITIONS := {
 	"helmet": Vector2(96, 0), "armor": Vector2(96, 80),
 	"legs": Vector2(96, 160), "boots": Vector2(96, 240),
@@ -26,10 +28,11 @@ const ICONS := {
 }
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(264, 390)
+	custom_minimum_size = Vector2(208, 306)
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func _draw() -> void:
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2.ONE * COMPACT_SCALE)
 	var line := Color(0.55, 0.7, 0.65, 0.15)
 	draw_line(Vector2(132, 36), Vector2(132, 276), line, 2, true)
 	draw_line(Vector2(36, 36), Vector2(228, 36), line, 2, true)

@@ -78,6 +78,7 @@ func scenario(dedicated: bool) -> void:
 	check(not one.game.farming.plots[0].crop.planted, "no speculative guest mutation")
 	await ticks()
 	check(farm.plots[0].crop.planted and two.game.farming.plots[0].crop.planted, "plant visible to all guests")
+	check(member.inventory.count_item("edamame") == 0, "placeholder planting requires no seeds or currency")
 	check(farm.plots[0].crop.age > 0, "authority advances crop clock")
 	var crop: SoybeanCrop = farm.plots[0].crop
 	crop.step(30)
@@ -97,14 +98,22 @@ func scenario(dedicated: bool) -> void:
 	one.farming.request(0, revision, "plant")
 	await ticks()
 	check(not crop.planted, "stale revision cannot replant cleared soil")
+	# Any nearby party member may collect shared drops; fill every bag for this case.
+	for actor: CoopActor in host.roster.party.values():
+		for i in actor.inventory.capacity:
+			actor.inventory.set_slot(i, ItemStack.new(InventoryItem.create_edamame(), 100))
 	one.farming.request(0, crop.revision, "plant")
 	await ticks()
-	check(crop.planted, "fresh replant accepted")
+	check(crop.planted, "fresh replant accepted with full bag and no seed cost")
+	check(member.inventory.count_item("edamame") == member.inventory.capacity * 100, "planting consumes no inventory items")
 	crop.step(30)
-	for i in PlayerInventory.CAPACITY: member.inventory.set_slot(i, ItemStack.new(InventoryItem.create_edamame(), 100))
-	one.farming.request(0, crop.revision, "harvest")
+	var harvest_revision := crop.revision
+	one.farming.request(0, harvest_revision, "harvest")
 	await ticks()
-	check(crop.phase() == SoybeanCrop.Phase.HARVEST and host.game.encounters.pickups.size() == 3, "full bag leaves harvested beans on ground")
+	# Check the durable outcome; the brief harvest animation may finish between snapshots.
+	check(not crop.planted and crop.revision == harvest_revision + 1 and host.game.encounters.pickups.size() == 3, "full party bags leave all harvested beans on ground")
+	await ticks(90)
+	check(host.game.encounters.pickups.size() == 3, "uncollected harvest persists while all party bags stay full")
 	var checkpoint: Dictionary = JSON.parse_string(JSON.stringify(CoopCheckpoint.capture(host)))
 	check(CoopCheckpoint.valid(checkpoint), "crop checkpoint JSON validates")
 	var saved := farm.capture()

@@ -48,6 +48,22 @@ func _run() -> void:
 	check(not game.inventory_window.visible, "Escape closes inventory")
 	check(game.shooting_view.local_input.enabled, "closing restores gameplay")
 	check(not app.menu.visible, "Escape closes bag before pause menu")
+	game.shooting_view.cycle_mode()
+	game.shooting_view.cycle_mode()
+	check(game.camera.first_person, "test starts inventory inspection from first person")
+	key(KEY_I)
+	await physics_frame
+	await process_frame
+	check(not game.camera.first_person and not game.camera.shoulder, "bag shows actor using overhead camera")
+	check(game.player.visuals.layers != 0, "first-person actor becomes visible for inventory")
+	var actor_screen: Vector2 = game.camera.unproject_position(game.player.global_position + Vector3.UP * 0.8)
+	for dock_name in ["EquipmentDock", "BackpackDock"]:
+		var dock: Control = game.inventory_window.get_child(0).get_node(dock_name)
+		check(not dock.get_global_rect().has_point(actor_screen), dock_name + " leaves character visible")
+	key(KEY_ESCAPE)
+	check(game.camera.first_person and game.shooting_view.first_person, "closing bag restores first-person camera")
+	check(game.player.visuals.layers == 0, "closing bag restores first-person actor hiding")
+	game.shooting_view.cycle_mode()
 	game.chat.view.set_editing(true)
 	key(KEY_I)
 	check(not game.inventory_window.visible, "typing I in chat does not open bag")
@@ -85,6 +101,11 @@ func _run() -> void:
 		await process_frame
 		await RenderingServer.frame_post_draw
 		root.get_texture().get_image().save_png("/tmp/tofufu-inventory.png")
+		game.inventory.set_capacity(PlayerInventory.MAX_CAPACITY)
+		await process_frame
+		await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png("/tmp/tofufu-inventory-expanded.png")
 		root.size = Vector2i(960, 540)
 		await process_frame
 		await process_frame

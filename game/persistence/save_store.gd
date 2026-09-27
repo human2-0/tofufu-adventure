@@ -6,7 +6,7 @@ var directory: String = "user://adventures"
 var extra_validator: Callable
 var last_error: String = ""
 const MAX_SLOTS: int = 12
-const WORLD_ITEM_LIMITS := {"knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const WORLD_ITEM_LIMITS := {"nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
 const BACKPACK_CONTENT_LIMIT: int = 20
 
 func list_saves() -> Array[Dictionary]:
@@ -65,6 +65,10 @@ func _path(slot: int) -> String:
 	return directory.path_join("adventure_%02d.json" % slot)
 
 static func valid(data: Dictionary) -> bool:
+	if data.has("map_exploration"):
+		if not data.map_exploration is String or data.map_exploration.length() != 10120: return false
+		if RegEx.create_from_string("^[A-Za-z0-9+/]{10119}=$").search(data.map_exploration) == null: return false
+		if Marshalls.base64_to_raw(data.map_exploration).size() != 7589: return false
 	if data.has("tofu_dungeon"):
 		var dungeon: Variant = data.tofu_dungeon
 		if not dungeon is Dictionary: return false
@@ -103,7 +107,13 @@ static func valid(data: Dictionary) -> bool:
 	if data.has("weather_phase"):
 		var weather: Variant = data.weather_phase
 		if not (weather is float or weather is int) or not is_finite(float(weather)) or weather < 0 or weather > 1: return false
-	if data.health > 100 or data.phase > 1:
+	if data.has("vitals"):
+		if not data.vitals is Dictionary: return false
+		for key in ["stamina", "combat_remaining"]:
+			var value: Variant = data.vitals.get(key)
+			var limit := 30.0 if key == "combat_remaining" else 100.0 * pow(1.02, 98)
+			if not (value is int or value is float) or not is_finite(float(value)) or value < 0 or value > limit: return false
+	if data.health > 100.0 * pow(1.05, 98) or data.phase > 1:
 		return false
 	if not data.get("knife_owned") is bool or not data.get("knife_selected") is bool:
 		return false

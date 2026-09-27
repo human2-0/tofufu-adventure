@@ -1,5 +1,7 @@
 class_name Player
 extends CharacterBody3D
+
+signal threatened
 ## Actor composition: intent -> movement rules -> physics -> presentation.
 
 signal dash_cooldown_updated(current: float, total: float)
@@ -14,6 +16,7 @@ signal jump_charge_updated(value: float)
 
 var surface_speed: float = 1.0
 var movement_modifier: Callable
+var ability_velocity: Callable
 var motor: PlayerMotor
 var placement_peers: Array[CharacterBody3D] = []
 
@@ -32,6 +35,7 @@ func _physics_process(delta: float) -> void:
 	command.move *= surface_speed
 	if movement_modifier.is_valid(): command.move *= float(movement_modifier.call(command.move))
 	velocity = motor.step(command, velocity, is_on_floor(), delta)
+	if ability_velocity.is_valid(): velocity = ability_velocity.call(velocity, is_on_floor(), delta)
 	# Super dash remains solid against terrain, but passes through actor bodies.
 	collision_mask = 1 if motor.is_super_dashing else 3
 	move_and_slide()

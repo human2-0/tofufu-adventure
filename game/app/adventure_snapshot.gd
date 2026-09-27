@@ -9,6 +9,8 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 	var dropped := equipment.dropped.global_position if is_instance_valid(equipment.dropped) else Vector3.ZERO
 	return {"version": 1, "name": title, "saved_at": Time.get_datetime_string_from_system(),
 		"opening_complete": game.opening == null or not game.opening.active,
+		"map_exploration": game.map.exploration.capture(),
+		"vitals": game.combat.vitals.capture(),
 		"position": [position.x, position.y, position.z], "health": game.health.current,
 		"phase": game.cycle.phase, "seconds": seconds, "beans": game.encounters.beans,
 		"weather_phase": game.weather.phase,
@@ -27,11 +29,13 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 		"equipment": game.character_equipment.capture() if game.character_equipment != null else {}}
 
 static func restore(game: Node3D, data: Dictionary) -> void:
+	game.map.restore_exploration(data.get("map_exploration", ""))
 	if data.opening_complete:
 		game.player.relocate(Vector3(data.position[0], data.position[1], data.position[2]))
 		game.camera.global_position = game.player.position + game.camera.offset
 	game.progression.progress.restore(data.get("progression", {}), int(data.experience))
-	game.health.current = maxf(1, data.health)
+	game.combat.vitals.restore(data.get("vitals", {}))
+	game.health.current = clampf(data.health, 1.0, game.health.maximum)
 	game.hud.show_health(game.health.current, game.health.maximum)
 	game.cycle.phase = data.phase
 	game.weather.set_phase(float(data.get("weather_phase", 0.0)))

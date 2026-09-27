@@ -12,6 +12,8 @@ signal stat_point_allocated(skill_name: String)
 var _jump_text: Label
 var _jump_val: float = 0.0
 
+var _stamina_bar: ProgressBar
+var _stamina_text: Label
 var _health_bar: ProgressBar
 var _health_text: Label
 var _charge_bar: ProgressBar
@@ -22,6 +24,8 @@ var _clock: Label
 var _character: CharacterStats
 var _stats: Label
 var _notice: Label
+var _ledger: PanelContainer
+var _help_before_inventory: bool = false
 var _help: PanelContainer
 var _popup: KawaiiPopup
 var _soy_hit: SoyHitFlash
@@ -63,14 +67,18 @@ func _ready() -> void:
 	_clock = HUDElements.make_label(heading, "", 11, Color("b8d7dd"))
 
 	var ledger := HUDElements.make_panel(canvas, Vector2(-232, 16), Vector2(216, 235), Vector2(1, 0))
+	_ledger = ledger.get_parent() as PanelContainer
 	_stats = HUDElements.make_label(ledger, "", 10, Color("d8e3d2"))
 	_character = CharacterStats.new()
 	_character.stat_point_allocated.connect(func(k: String) -> void: stat_point_allocated.emit(k))
 	ledger.add_child(_character)
 
-	var health := HUDElements.make_panel(canvas, Vector2(16, -96), Vector2(210, 82), Vector2(0, 1))
+	var health := HUDElements.make_panel(canvas, Vector2(16, -138), Vector2(210, 124), Vector2(0, 1))
 	_health_text = HUDElements.make_label(health, "FUFU / 100 HP", 12, Color("dbe8c1"))
 	_health_bar = HUDElements.make_bar(health, Color("a3cc86"), 170, 7)
+	_stamina_text = HUDElements.make_label(health, "100 / 100 SP", 12, Color("aee6e8"))
+	_stamina_bar = HUDElements.make_bar(health, Color("70cbd4"), 170, 7)
+	_stamina_bar.value = 100
 	_equipment = HUDElements.make_label(health, "[1] KNIFE   2 FISTS   3 GUN", 11, Color("aee6d0"))
 	_healing_label = HUDElements.make_label(health, "", 10, Color("c8efa0"))
 	_healing_label.visible = false
@@ -114,7 +122,7 @@ func _setup_center(canvas: Control) -> void:
 	var help_box := HUDElements.make_panel(canvas, Vector2(-180, 110), Vector2(360, 220), Vector2(0.5, 0))
 	_help = help_box.get_parent() as PanelContainer
 	HUDElements.make_label(help_box, "FUFU ADVENTURE GUIDE", 13, Color("f5dfac"))
-	HUDElements.make_label(help_box, "WASD: Walk • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power\nRMB: Knife guard / Staff tornado spin. Staff Lv1 Power 5; Knife Lv2 Power 10.\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • Enter: Chat • V: Voice", 10, Color("d1ddd0"))
+	HUDElements.make_label(help_box, "WASD: Walk • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power\nRMB: Knife guard / Staff tornado / Podburst. Nori: hold RMB, steer with WASD, release to plunge (75 SP).\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • Enter: Chat • V: Voice", 10, Color("d1ddd0"))
 	_help.visible = false
 
 	_notice = Label.new()
@@ -136,7 +144,11 @@ func _process(delta: float) -> void:
 
 func show_health(current: float, maximum: float) -> void:
 	_health_bar.value = current / maximum * 100.0
-	_health_text.text = "FUFU / %d HP" % int(current)
+	_health_text.text = "%d / %d HP" % [ceili(current), ceili(maximum)]
+
+func show_stamina(current: float, maximum: float, combat_seconds: float) -> void:
+	_stamina_bar.value = current / maximum * 100.0
+	_stamina_text.text = "%d / %d SP · %s" % [ceili(current), ceili(maximum), "COMBAT %ds" % ceili(combat_seconds) if combat_seconds > 0.0 else "REST"]
 
 func show_snail_hit() -> void:
 	_smear.splash()
@@ -175,6 +187,17 @@ func show_staff_state(selected: bool, tornado: bool, cooldown: float) -> void:
 	_tornado_cooldown = cooldown
 	if selected: _present_staff_rhythm()
 
+func show_nori_state(selected: bool, plunging: bool, cooldown: float) -> void:
+	if not selected: return
+	_present_knife_rhythm()
+	_charge_text.text += " · NORI +10% SPEED · "
+	_charge_text.text += "MOVE TO AIM / RELEASE RMB TO DIVE" if plunging else ("PLUNGE %.1fs" % cooldown if cooldown > 0.05 else "RMB PLUNGE 75 SP / 3× HIT")
+
+func show_pod_state(selected: bool, cooldown: float) -> void:
+	if not selected: return
+	_present_knife_rhythm()
+	_charge_text.text += " · PODBURST %.1fs" % cooldown if cooldown > 0.05 else " · RMB CRESCENT 25 SP"
+
 func _present_staff_rhythm() -> void:
 	_charge_bar.value = _knife_charge * 100.0
 	if _tornado_active:
@@ -188,7 +211,7 @@ func _present_staff_rhythm() -> void:
 	elif _combo_count > 0:
 		_charge_text.text = "STAFF COMBO x%d / RMB SPIN" % _combo_count
 	else:
-		_charge_text.text = "STAFF / LMB COMBO · RMB SPIN"
+		_charge_text.text = "STAFF / LMB · RMB SPIN 25 SP"
 
 func _present_knife_rhythm() -> void:
 	_charge_bar.value = _knife_charge * 100.0
@@ -223,6 +246,15 @@ func show_discovery(title: String, count: int) -> void:
 func announce(text: String) -> void:
 	_notice.text = text
 	_notice_time = 4.0
+
+func set_inventory_open(active: bool) -> void:
+	_ledger.visible = not active
+	_notice.visible = not active
+	if active:
+		_help_before_inventory = _help.visible
+		_help.hide()
+	else:
+		_help.visible = _help_before_inventory
 
 func toggle_help() -> void: _help.visible = not _help.visible
 

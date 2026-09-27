@@ -1,9 +1,11 @@
-# Leaf set character art
+# Soypod and Nori character art
 
-The walking and standing sheets were supplied in `Tofufu_Standing_Pose_Sheets.zip`. The jump sheets were supplied in `Jumping_Sprites.zip` and copied unchanged:
+The walking sheets come from `Tofufu_Equipment_Assets.zip` (`Character_References/*_leaf_character_reference.png`), the standing sheets from `Tofufu_Standing_Pose_Sheets.zip`, and the jump sheets from `Jumping_Sprites.zip`. The imported art is copied unchanged. The internal `bright_leaf` and `dark_leaf` IDs remain for saved items:
 
-- `green_leaf_knight_jump_sprite_sheet.png` is used with the Bright Leaf set.
-- `dark_sprout_soldier_jump_sprite_sheet.png` is used with the Dark Leaf set.
+- `green_leaf_knight_jump_sprite_sheet.png` is used with Soypod.
+- `dark_sprout_soldier_jump_sprite_sheet.png` is used with Nori.
+
+`bright_leaf_standing.png` is the supplied green `chibi_leaf_knight_turnaround_sprite_sheet.png`; `dark_leaf_standing.png` contains the dark Nori turnaround. The original content of these two destination files was reversed before the direction correction. Source profile and three-quarter poses face left, so runtime mirrors them for screen-right facings. Each standing pose uses its painted boot baseline and horizontal center.
 
 Both jump sheets are 1254 × 1254 transparent PNGs containing five facing columns and five animation rows. The painted poses have uneven spacing, so runtime crops each full pose from its authored bounds. Columns are Back, Back 3/4, Side, Front 3/4 and Front; rows are anticipation, takeoff, rising, peak and landing/recovery. The existing ten jump phases reuse these authored stages while preserving the game’s jump timing and movement.
 

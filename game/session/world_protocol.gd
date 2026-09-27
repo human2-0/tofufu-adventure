@@ -2,7 +2,7 @@ class_name WorldProtocol
 extends RefCounted
 ## Fixed-content world schema; no arbitrary resource paths or object deserialization.
 
-const ITEM_LIMITS := {"knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const ITEM_LIMITS := {"nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
 const BACKPACK_CONTENT_LIMIT: int = 20
 const CURRENT_MOB_COUNT: int = 39
 
@@ -10,13 +10,15 @@ static func valid(data: Dictionary) -> bool:
 	if data.has("farming") and not farming(data.farming): return false
 	if data.has("factory") and not factory(data.factory): return false
 	if data.has("world_items") and not world_items(data.world_items): return false
-	if not _rows(data.get("mobs"), 9, CURRENT_MOB_COUNT, 9) or not _rows(data.get("props"), 24, 24, 2): return false
+	if not data.get("mobs") is Array or not _rows(data.get("props"), 24, 24, 2): return false
 	if data.mobs.size() not in [9, 15, 27, CURRENT_MOB_COUNT]: return false
 	if data.has("weather_phase") and (not ExplorationProtocol.number(data.weather_phase, 1) or data.weather_phase < 0): return false
 	if data.has("seed_satchel_claimed") and not data.seed_satchel_claimed is bool: return false
 	var wet: bool = data.get("weather_phase", 0.0) >= 1.0 / 3.0 and data.get("weather_phase", 0.0) < 2.0 / 3.0
 	if not _rows(data.get("dummies"), 3, 3, 4) or not _rows(data.get("pickups"), 0, 128, 10): return false
-	for row: Array in data.mobs:
+	for row: Variant in data.mobs:
+		if not row is Array or row.size() not in [9, 12]: return false
+		if row.size() == 12 and (not _numeric(row.slice(9), 50) or row[9] < 0 or absf(row[10]) > 1 or absf(row[11]) > 1): return false
 		if not _numeric(row, 500) or row[6] < 0 or row[6] > (180 if wet else 130) or row[7] < 0 or row[8] < 0: return false
 	for row: Array in data.props:
 		if not _numeric(row, 100) or row[0] < 0 or row[1] < 0: return false

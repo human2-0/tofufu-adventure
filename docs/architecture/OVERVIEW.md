@@ -42,9 +42,17 @@ The initial refactor preserves coyote time, buffered jump, faster falling, dash 
 
 Snail mobs use `SnailVisuals` for five-frame idle, walk and attack atlases, mirroring side views into eight directions. Source sheets are preserved under `assets/characters/snail/source/`. The HUD owns a 1.6-second refractive slime stroke; app damage feedback triggers it only for local slime hits. Replicated per-source hit counters also preserve fatal-hit feedback across immediate respawns; soybean-gun hits use a brief amber impact instead. Presentation never applies damage or changes attack timing.
 
+Armored snails have a separate 50-HP shell. Authored foot and dome collision shapes provide projectile impact positions; melee supplies its blade contact height. Low foot and forward head hits damage the body, while shell contacts consume only armor HP, including the breaking hit. Absorbed melee hits are remembered for that swing. Breaking removes the dome collider and visual, ends shell defence, and doubles a successful shell-piece drop from one to two at death without changing its probability. Respawn restores armor. Presentation only displays the resulting shell state and disposable hit/break effects.
+
 ### Eastern jungle (implemented)
 
 Jadewild extends the farm east through a signed pass at X=41, Z=26. `JungleWorld`, `JungleTerrain` and `JungleProps` own continuous collision terrain, palms, ferns, ruins and a decorative waterfall basin. There are no jungle encounters or interactive objects. Collision layer 8 is reserved for the entrance barrier; `ActorProgression` enables its mask only below character level 8, independently for each offline, authoritative and predicted actor. Existing replicated progression supplies the level; no new network payload is needed. Tall perimeter barriers prevent jumping around the pass. The map includes the extension.
+
+### Personal map exploration (implemented)
+
+`MapExploration` owns a per-instance, two-unit visited-cell mask. `MapFlow` reveals a ten-unit radius around the local player after the opening, supplies mouse aim or shoulder/first-person camera direction, and injects map textures and markers into UI. The minimap follows the player with a default 44-unit span; its −/+ controls adjust the span from 17.6 to 88 units and persist through injected game preferences; the full map supports drag and cursor-centered zoom. `map_fog.gdshader` covers unknown terrain with a dark starfield and soft reveal edges. NPC markers require a visited cell; replicated friends remain visible but never reveal terrain. Teleports reveal their destination without tracing a path. Factory interiors retain the existing entrance-marker convention.
+
+Solo and participating-host adventure saves include an optional bounded bitset; older saves start undiscovered. Guest exploration is personal for the current session and is not stored in host checkpoints or shared by network snapshots. Map exploration does not affect gameplay authority.
 
 ### Exploration sandbox composition (implemented)
 
@@ -190,3 +198,17 @@ Kaji highlights locally with a gold overlay and ground ring when trade is availa
 ## Soybean nursery playtest (implemented, solo and multiplayer)
 
 `farming/SoybeanCrop` owns isolated elapsed-time crop state. `SoybeanPlot` presents soil and atlas frames; `app/SoybeanFarming` validates proximity and input gates and grants inventory beans. Four plots southwest of the nursery provide free test seeds, a 30-second growth cycle, flowering and pod filling, and a single three-bean harvest. A full bag leaves the plant ripe. The final pod frame plays for 1.2 seconds before replanting. Growth pauses during the opening and tree pause. `app/CoopFarming` routes revisioned actions to the participating host or dedicated server, which alone advances growth and grants beans. Crop state is included in world snapshots and host co-op checkpoints. Local solo plot persistence, resource costs and watering remain planned. Network rules are documented in COOP.
+
+### Stamina and combat recovery (implemented)
+
+`VitalRules` owns per-actor SP and the combat timeout; `ActorProgression` wires movement spending, confirmed combat hits, health, HUD and mob targeting signals. The motor receives only a spending callable, preserving its independence from combat and scenes. Authority advances recovery on sampled physics commands; guest views restore authoritative values.
+
+Level one has 100 SP and the existing 100 HP. Maximum SP compounds by 2% and HP by 5% per level. Level changes preserve the current fraction. Dash costs 15 SP; super dash costs 25 SP; charged jump costs up to 25 SP proportional to charge (insufficient SP falls back to a normal leap). Staff spin and Podburst each cost 25 SP. A guard or projectile reflection costs one SP per incoming damage point; insufficient SP lets the hit through. Normal confirmed hits restore 1% of maximum SP per successful target hit; special attacks and reflected shots do not refund SP. SP regenerates at 5% of maximum per second in and out of battle.
+
+Pursuit/attack targeting, incoming hits and confirmed outgoing hits refresh a 30-second combat clock. After it expires, living actors recover 2% of maximum HP per second. Outdoor leashing ends targeting; factory enemies target within their nine-unit pursuit range. Death/respawn restores SP and clears the timer. These are authored balance choices, not offline elapsed-time recovery. Saves retain SP and remaining combat time; old records default to full SP and no combat timer.
+
+### Nori Katana (implemented)
+
+Kaji stocks the level-five Nori Katana: power 10 versus Edamame Pod Sword power 12, a 1.2-unit blade versus the knife's 0.65 and pod sword's 0.95, and 1.1× melee cadence while selected. Existing charged and confirmed-hit combos apply. `NoriPlunge` owns per-actor launch/dive timing, 75 SP payment, two-second cooldown and one landing impact: 3× light-hit damage after sword modifiers within 2.6 units, with world occlusion and height checks. Special hits do not refund SP. Reset cancels flight but preserves cooldown. Hold RMB to rise about 4.8 units while steering with movement; release commits the straight-down thrust after at least 0.55 seconds, or it auto-commits at 1.05 seconds. The pod sword now retains its broad 0.36-unit silhouette with mipmap filtering; its wind delivers 18-unit knockback velocity to creatures and the existing player push contract.
+
+The app injects the ability's velocity callable into the player physics adapter. It overrides motor velocity during the ability; ordinary `move_and_slide` remains responsible for walls/floor contact. Movement rules do not depend on combat. Generated katana pixels map to the physical blade length. Transparent shockwave art, rings, shards and light flash are cosmetic only.

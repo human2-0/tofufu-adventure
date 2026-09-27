@@ -9,9 +9,12 @@ var config := ConfigFile.new()
 var deadzone: float = 0.25
 var resolution: int = 1
 var fullscreen: bool = false
+var minimap_zoom: float = 1.0
 
 func load_preferences() -> void:
 	config.load(path)
+	var zoom_value: Variant = config.get_value("map", "zoom", 1.0)
+	minimap_zoom = clampf(float(zoom_value), 0.5, 2.5) if (zoom_value is float or zoom_value is int) and is_finite(float(zoom_value)) else 1.0
 	deadzone = clampf(float(config.get_value("controls", "deadzone", 0.25)), 0.1, 0.5)
 	resolution = clampi(int(config.get_value("display", "resolution", 1)), 0, RESOLUTIONS.size() - 1)
 	fullscreen = bool(config.get_value("display", "fullscreen", false))
@@ -26,6 +29,7 @@ func load_preferences() -> void:
 	apply_display(resolution, fullscreen)
 
 func save() -> Error:
+	config.set_value("map", "zoom", minimap_zoom)
 	config.set_value("display", "resolution", resolution)
 	config.set_value("display", "fullscreen", fullscreen)
 	config.set_value("controls", "deadzone", deadzone)

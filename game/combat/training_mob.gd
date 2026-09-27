@@ -2,6 +2,7 @@ class_name TrainingMob
 extends CharacterBody3D
 ## Small roaming snail: wander, chase, telegraph, strike, recover.
 
+signal targeting(quarry: Node3D)
 signal attacked(amount: float, source: Vector3)
 signal defeated(at: Vector3)
 @export var quarry: Node3D
@@ -161,6 +162,7 @@ func _choose_direction(delta: float) -> Vector3:
 			return Vector3.ZERO
 		return home_offset.normalized() * 3.5
 	var offset := quarry.global_position - global_position
+	if offset.length() < 7.0 or _windup > 0.0: targeting.emit(quarry)
 	if _windup > 0.0:
 		_windup -= delta
 		if _windup <= 0.0:

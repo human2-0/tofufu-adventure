@@ -39,6 +39,7 @@ func _run() -> void:
 	await _rewards(mobs[0])
 	await _safe_village(mobs[3])
 	_armored_snail(mobs)
+	_armored_quest()
 	_stat_effects(dummies[0])
 	scene.queue_free()
 	await process_frame
@@ -54,6 +55,8 @@ func _practice(dummy: PracticeDummy) -> void:
 	check(dummy.hit_count == 1 and dummy.target.current < 200, "real knife sweep hits dummy once")
 	check(scene.progression.progress.practice.sword == 1, "dummy trains sword once per actual swing")
 	var before := dummy.target.current
+	# The knife reaches farther than the 1.35-unit punch. Step into fist range.
+	scene.player.position = dummy.position + Vector3(0, 0.05, 1.1)
 	scene.combat.equipment.step(Vector2.UP, false, true, false, false, 0, 0.1)
 	check(dummy.target.current < before, "fists hit the same practice target")
 	check(scene.progression.progress.practice.fist == 1, "dummy trains fists separately")
@@ -118,18 +121,38 @@ func _armored_snail(mobs: Array[TrainingMob]) -> void:
 	check(armored._armored_visual is ArmoredSnailVisuals, "armored snail uses its full 3D model")
 	check(armored.target.maximum > 60 and armored.tuning.dry_damage > 12, "armored snail exceeds normal snail health and damage")
 	var before := armored.target.current
-	check(not armored.target.damage(20, Vector3.FORWARD, Damageable.HitKind.KNIFE), "closed shell dodges the first knife hit")
-	check(is_equal_approx(armored.target.current, before), "shell dodge takes no damage")
-	check(armored.target.damage(20, Vector3.FORWARD, Damageable.HitKind.MELEE), "open shell still takes reduced non-knife damage")
+	armored.facing = Vector3.BACK
+	for kind in [Damageable.HitKind.KNIFE, Damageable.HitKind.MELEE, Damageable.HitKind.SOY, Damageable.HitKind.SLIME]:
+		check(not armored.target.damage(2, Vector3.BACK, kind), "shell blocks every rear attack")
+		check(not armored.target.damage(2, Vector3.RIGHT, kind), "shell blocks side attacks")
+	check(is_equal_approx(armored.target.current, before), "shell hits never reduce health")
+	check(armored.target.damage(20, Vector3.FORWARD, Damageable.HitKind.MELEE), "exposed front takes damage")
+	check(armored.facing == Vector3.FORWARD and armored._defend > 0, "ambushed snail turns its shell toward attacker")
+	check(not armored.target.damage(20, Vector3.FORWARD, Damageable.HitKind.KNIFE), "defensive turn blocks follow-up")
+	armored._defend = 0.0
+	armored._rest = 0.0
+	armored._returning = false
+	armored.free_roaming = true
+	var player_position: Vector3 = scene.player.position
+	scene.player.global_position = armored.global_position + Vector3.BACK * 4.0
+	armored._choose_direction(0.01)
+	check(armored._charging and armored._windup > 0.0, "rush telegraphs before moving")
+	armored._choose_direction(0.8)
+	var rush_motion := armored._choose_direction(0.01)
+	check(rush_motion.length() > 7.0, "headbutt rush accelerates toward locked target")
+	scene.player.global_position += Vector3.RIGHT * 3.0
+	check(armored._choose_direction(0.01).is_equal_approx(rush_motion), "rush remains dodgeable without homing")
+	scene.player.position = player_position
 	var edamame_before: int = scene.encounters.pickups.size()
 	scene.encounters.shell_drop_roll = func() -> float: return 0.05
 	armored.target.invulnerability = 0.0
-	armored.target.damage(999, Vector3.FORWARD, Damageable.HitKind.MELEE)
+	armored.target.damage(999, -armored.facing, Damageable.HitKind.MELEE)
 	check(scene.encounters.pickups.size() == edamame_before + 4, "armored snail drops four Edamame")
 	var has_shell_piece := false
 	for drop: WorldItemDrop in scene.world_items.pool.drops.values():
 		if drop.item_id == "piece_of_shell": has_shell_piece = true
 	check(has_shell_piece, "armored snail drops a Piece of Shell")
+	check(SaveStore._world_items(scene.world_items.pool.capture()), "shell drops remain valid in saved adventures")
 
 func ticks(count: int) -> void:
 	for i in count:
@@ -155,3 +178,28 @@ func _stat_effects(dummy: PracticeDummy) -> void:
 	check(is_equal_approx(scene.health.current, 93.43), "defence skill mitigates actual unguarded enemy damage")
 	scene._respawn()
 	check(progress.level() == 99 and progress.skill("sword") == 99, "respawn retains trained levels and modifiers")
+
+func _armored_quest() -> void:
+	var giver: QuestGiver = scene.quest_giver
+	giver._select_quest(1)
+	giver._on_quest_accepted()
+	scene.encounters.mob_defeated.emit(Vector3.ZERO)
+	check(giver.quest.armored_count == 0, "ordinary kills do not count for armored hunt")
+	for index in 50: scene.encounters.armored_snail_defeated.emit()
+	check(giver.quest.armored_status == QuestState.Status.COMPLETED, "50 armored kills complete hunt objective")
+	var restored := QuestState.new()
+	restored.restore(giver.quest.capture())
+	check(restored.armored_count == 50 and restored.armored_status == QuestState.Status.COMPLETED, "hunt survives save roundtrip")
+	scene.inventory.remove_item("piece_of_shell", 1000)
+	giver._on_reward_claimed()
+	check(giver.quest.armored_status == QuestState.Status.COMPLETED, "delivery requires shell pieces")
+	scene.inventory.add_item(InventoryItem.shell_piece(), 12)
+	var beans: int = scene.inventory.count_item("mature_bean")
+	var experience: int = scene.encounters.experience
+	giver._on_reward_claimed()
+	check(scene.inventory.count_item("piece_of_shell") == 2, "delivery consumes exactly ten shell pieces")
+	check(scene.inventory.count_item("mature_bean") == beans + 20, "delivery awards twenty mature beans")
+	check(scene.encounters.experience == experience + 1000, "delivery awards 1000 EXP")
+	check(scene.progression.progress.experience == scene.encounters.experience, "quest EXP reaches character progression")
+	giver._on_reward_claimed()
+	check(scene.encounters.experience == experience + 1000, "reward cannot be claimed twice")

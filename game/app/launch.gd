@@ -84,6 +84,7 @@ func _start(slot: int, data: Dictionary) -> void:
 	game.process_mode = Node.PROCESS_MODE_PAUSABLE
 	game.play_opening = not data.get("opening_complete", false)
 	add_child(game)
+	game.map.configure_preferences(preferences)
 	if data.has("version"): AdventureSnapshot.restore(game, data)
 	_resume()
 	_save()
@@ -168,6 +169,7 @@ func _start_coop(hosting: bool, _members: Array, _key: String) -> void:
 	game.play_opening = not data.get("opening_complete", false)
 	game.process_mode = Node.PROCESS_MODE_PAUSABLE
 	add_child(game)
+	game.map.configure_preferences(preferences)
 	if hosting and data.has("version"): AdventureSnapshot.restore(game, data)
 	_coop = CoopSession.new()
 	_coop.game = game

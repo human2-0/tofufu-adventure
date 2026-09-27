@@ -28,6 +28,7 @@ func _run() -> void:
 	app.game.progression.progress.award_experience(125)
 	for hit in 27: app.game.progression.progress.weapon_hit("sword")
 	app.game.progression.progress.mana_spent(13)
+	app.game.combat.vitals.engage() # Preserve a damaged in-combat save without passive recovery.
 	app.game.health.current = 63
 	app.game.loadout.select(2)
 	check(app._save(), "save succeeds")

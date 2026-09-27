@@ -24,7 +24,7 @@ func _ready() -> void:
 	_panel = PanelContainer.new()
 	_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	_panel.offset_left = 18
-	_panel.offset_bottom = -116
+	_panel.offset_bottom = -158
 	add_child(_panel)
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("173632c9")
@@ -115,10 +115,10 @@ func _apply_compact() -> void:
 	_composer.visible = editing
 	_toggle_btn.text = "▼" if show_full else "▲ Chat"
 	if show_full:
-		_panel.offset_top = -340
+		_panel.offset_top = -382
 		_panel.offset_right = 390
 	else:
-		_panel.offset_top = -146
+		_panel.offset_top = -188
 		_panel.offset_right = 260
 
 func _input(event: InputEvent) -> void:

@@ -90,6 +90,8 @@ func _run() -> void:
 		guest_actor.actor.position = Vector3(0, 0.1, -1.4)
 		host_actor.actor.velocity = Vector3.ZERO
 		guest_actor.actor.velocity = Vector3.ZERO
+		host_actor.combat.vitals.reset()
+		guest_actor.combat.vitals.reset()
 		host_actor.health.current = 100
 		guest_actor.health.current = 100
 		host_actor.health.invulnerability = 0
@@ -109,6 +111,7 @@ func _run() -> void:
 		await ticks(8 if slot == 3 else 35)
 		host_input.attack = false
 		await ticks(15)
+		check(guest_actor.combat.vitals.current > 50, "guard charges damage cadence, not visual droplets")
 		check(guest_actor.health.current == 100, "front sword protects guest from slot %d" % slot)
 		check(host_actor.health.current < 100, "slot %d reflection damages original host shooter" % slot)
 		check(is_equal_approx(g.roster.party[HOST].health.current, host_actor.health.current), "reflected slot %d damage replicates once" % slot)
@@ -133,6 +136,8 @@ func _run() -> void:
 		guest_actor.actor.position = Vector3(0, 0.1, -1.4)
 		host_actor.actor.velocity = Vector3.ZERO
 		guest_actor.actor.velocity = Vector3.ZERO
+		host_actor.combat.vitals.reset()
+		guest_actor.combat.vitals.reset()
 		host_actor.health.current = 100
 		guest_actor.health.current = 100
 		host_actor.health.invulnerability = 0

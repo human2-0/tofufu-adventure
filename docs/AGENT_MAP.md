@@ -80,8 +80,10 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── pod_escape_rules.gd  # timed pushes, stem snap, fall, split, reveal
 │   │   └── soybean_plant.gd     # 3D nursery plant, shell and occupant marker
 │   ├── camera/camera_follow.gd # follows an assigned target
-│   ├── app/map_flow.gd       # terrain atlas, NPC and replicated party marker composition
-│   ├── ui/{map_view,map_canvas}.gd # minimap and full north-up map presentation
+│   ├── cartography/map_exploration.gd # personal visited-cell mask and bounded save values
+│   ├── app/map_flow.gd       # local map tracking, look direction, discovery and party markers
+│   ├── ui/{map_view,map_canvas}.gd # following minimap and draggable/zoomable full map
+│   ├── ui/map_fog.gdshader   # soft exploration edges and unvisited galaxy cover
 │   ├── ui/gun_reticle.gd     # pointer/center aim and spread cue
 │   ├── ui/touch_controls.gd      # multitouch action buttons
 │   ├── ui/pod_quest_hud.gd     # opening instructions and precision meter
@@ -106,10 +108,13 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── soy_projectile.gd  # swept fast-bean collision, body/head damage
 │   │   ├── soy_gun_visual.gd # camera-facing directional atlas and grip attachment
 │   │   ├── melee_rules.gd       # per-instance charge/cooldown
+│   │   ├── vital_rules.gd     # per-actor SP spending, recovery and combat timeout
 │   │   ├── damageable.gd        # explicit health and hit contract
 │   │   ├── player_combat.gd     # swept blade overlaps + world occlusion
 │   │   ├── sword_geometry.gd    # upright hand pose, cutting arc, blade transform
 │   │   ├── sword_visual.gd      # eight-view sword, hand attachment + debug bounds
+│   │   ├── nori_plunge{,_vfx}.gd # vertical katana ability, landing damage and transparent shockwave
+│   │   ├── podburst.gd        # edamame sword authority wind cone and cosmetic gust
 │   │   ├── staff_attack.gd      # shared melee moves and staff 360-degree secondary sweep
 │   │   ├── staff_visual.gd      # supplied 3D staff aligned with melee pose
 │   │   ├── sword_trail.gd       # visual ribbon during the cutting arc
@@ -117,6 +122,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   │   ├── training_mob.gd      # snail chase/leash, village exclusion, respawn
 │   │   ├── {snail_tuning.gd,default_snail.tres} # dry/rain health, damage and respawn balance
 │   │   ├── snail_visuals.gd     # idle/walk/attack frames, eight mirrored directions
+│   │   ├── snail_shell_effects.gd # shell contact sparks and break fragments
 │   │   ├── armored_snail_visuals.gd # procedural full-3D level-two snail and shell response
 │   │   ├── practice_dummy.gd    # reusable straw target, damage feedback, recovery
 │   │   ├── harvest_prop.gd      # 3D renewable soy/crate/boulder
@@ -154,6 +160,8 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── equipment/               # Soypod/Nori set item art and equipment sheets
 │   ├── weapons/soy_gun/      # unchanged supplied sources and provenance
 │   ├── weapons/sotjet/       # generated ten-view milk sprayer atlas and provenance
+│   ├── weapons/nori/          # generated transparent katana, plunge ring and prompts
+│   ├── weapons/edamame/        # unchanged supplied pod sword sprite and provenance
 │   ├── weapons/sword/          # generated atlas and generation prompt
 │   └── characters/fufu/        # walk art, idle/source provenance, and Soypod/Nori outfit walking + standing sheets
 ├── networking/
@@ -185,7 +193,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── preview_coop.gd          # rendered host/guest views
 │   ├── preview_menu.gd          # rendered title/settings/lobby at two sizes
 │   ├── test_jungle.gd          # per-character level gate, collision ground and rendered jungle QA
-│   ├── test_map.gd             # map markers, projection, modal input and rendered atlas QA
+│   ├── test_map{,_exploration}.gd # personal fog, tracking, headings, saves and rendered map QA
 │   ├── test_input.gd            # gamepad actions, deadzones and touch composition
 │   ├── preview_controls.gd      # desktop/phone/tablet rendered layouts
 │   ├── test_actor_collisions.gd # player/snail sweeps, dash and occupied respawns
@@ -198,6 +206,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── test_jump.gd             # charge/release, cancellation and animation phases
 │   ├── preview_charge_walk.gd   # all charge directions and six-frame grip renders
 │   ├── preview_jump.gd          # rendered real jump through all ten poses
+│   ├── test_vitals.gd        # stamina costs, growth, combat recovery and saves
 │   ├── test_progression.gd   # growth curves, training gates, caps and value validation
 │   ├── preview_progression.gd # rendered skill HUD at early, middle and capped ranks
 │   ├── test_combat.gd           # combat/health rules + jump-height regression
@@ -206,6 +215,7 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── {test,preview}_sky.gd # isolated atmosphere timing and six rendered sky moods
 │   ├── test_weather.gd         # rain outcomes, old saves, replicas and rendered weather QA
 │   ├── test_snail.gd           # eight views, attack timing, damage smear and rendered QA
+│   ├── {test,preview}_armored_shell.gd # foot/shell hit regions, armor HP, break loot, snapshots and VFX QA
 │   ├── test_farm_combat.gd     # dummy knife/fists, EXP/respawn, village protection
 │   ├── preview_farm_combat.gd  # rendered practice, packs and EXP HUD
 │   ├── test_equipment.gd       # directional guard, charge cancellation, slots and punches
@@ -222,6 +232,8 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 │   ├── preview_first_person.gd # rendered first-person equipment slots and aim
 │   ├── preview_soy_gun.gd    # rendered overhead, shoulder, ADS and eight orbit directions
 │   ├── test_sword.gd            # eight-direction blade bounds, sweeps, sprites, tilt
+│   ├── test_edamame_sword.gd   # level gate, free shop, wind cone, walls, cooldown and replica checks
+│   ├── preview_edamame.gd      # rendered knife/pod comparison and wind crescent
 │   ├── test_staff_combat.gd     # power tiers, charged strikes and 360-degree staff hits
 │   ├── preview_staff.gd         # rendered staff and knife size comparison
 │   ├── preview_sword.gd         # rendered directions and hitbox overlays
@@ -266,3 +278,5 @@ This is a routing map for coding work, not a list of runtime AI characters or an
 | Agent instructions | root + affected scope, this map | architecture checker |
 
 For an explicit parallel-agent task, divide by these ownership roles, assign exact files, and have one integrator own scene wiring and shared contracts. Do not have multiple agents edit the same scene. Otherwise use the map for focused single-agent work.
+
+Nori Katana verification: `tests/test_nori_katana.gd` (rules, physical landing, occlusion, replica safety) and `tests/preview_nori.gd` (rendered art/ability QA).

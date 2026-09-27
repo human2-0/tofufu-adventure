@@ -16,6 +16,7 @@ var _sequence: int = 0
 var _clock: float = 0.0
 var _splash_until: float = 0.0
 var _hit_until: Dictionary[int, float] = {}
+var _guard_until: Dictionary[int, float] = {}
 
 func _ready() -> void:
 	visual = SotjetStreamVisual.new()
@@ -51,6 +52,8 @@ func _physics_process(delta: float) -> void:
 		var hit := _ray(parcel.previous, parcel.position, parcel.excluded_body)
 		if not hit.is_empty():
 			if not _resolve(parcel, hit): parcels.remove_at(index)
+	for id: int in _guard_until.keys():
+		if _guard_until[id] <= _clock: _guard_until.erase(id)
 	for id: int in _hit_until.keys():
 		if _hit_until[id] <= _clock: _hit_until.erase(id)
 
@@ -72,9 +75,11 @@ func _impact(hit: Dictionary, velocity: Vector3, reflected_by: Damageable = null
 		_hit_until[id] = _clock + tuning.damage_interval
 		var damage := tuning.damage_per_second * tuning.damage_interval * damage_multiplier
 		var impulse := Vector3(velocity.x, 0.0, velocity.z).normalized() * tuning.push_speed * push_multiplier
-		if target.damage(damage, impulse, Damageable.HitKind.SOY):
+		if target.damage(damage, impulse, Damageable.HitKind.SOY, hit.position):
 			if target.current > 0.0 and target.invulnerability <= 0.0: target.pushed.emit(impulse)
 			CombatEffects.damage_number(self, target, target.last_hit_amount)
+			var credited := reflected_by if is_instance_valid(reflected_by) else owner_health
+			if is_instance_valid(credited): credited.attack_confirmed.emit(reflections == 0)
 			if target.trains_weapons:
 				if is_instance_valid(reflected_by): reflected_by.reflected_hit.emit("shooting")
 				elif reflections == 0: weapon_trained.emit("shooting")
@@ -83,6 +88,7 @@ func _impact(hit: Dictionary, velocity: Vector3, reflected_by: Damageable = null
 func clear() -> void:
 	parcels.clear()
 	_hit_until.clear()
+	_guard_until.clear()
 	visual.pouring = false
 
 func _receivers() -> Array[Damageable]:
@@ -93,8 +99,12 @@ func _receivers() -> Array[Damageable]:
 func _resolve(parcel: SotjetParcel, hit: Dictionary) -> bool:
 	for target in _receivers():
 		if not is_instance_valid(target) or target.body != hit.collider: continue
-		var normal := target.reflection_normal(parcel.velocity, hit.position, authoritative)
-		if normal.is_zero_approx() or parcel.reflections >= 4: break
+		if parcel.reflections >= 4: break
+		var id := target.get_instance_id()
+		var cost := 0.0 if _guard_until.has(id) else tuning.damage_per_second * tuning.damage_interval * damage_multiplier
+		var normal := target.reflection_normal(parcel.velocity, hit.position, authoritative, cost)
+		if normal.is_zero_approx(): break
+		if authoritative and cost > 0.0: _guard_until[id] = _clock + tuning.damage_interval
 		parcel.velocity = parcel.velocity.bounce(normal)
 		parcel.position = hit.position + normal * 0.04
 		parcel.previous = parcel.position

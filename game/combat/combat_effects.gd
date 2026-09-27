@@ -18,8 +18,8 @@ static func burst(parent: Node, at: Vector3, text: String, color: Color) -> void
 	tween.tween_property(label, "modulate:a", 0.0, 0.8)
 	tween.chain().tween_callback(label.queue_free)
 
-static func sparks(parent: Node, at: Vector3) -> void:
-	burst(parent, at - Vector3.UP * 0.7, "CLINK!", Color("fff1a8"))
+static func sparks(parent: Node, at: Vector3, show_label: bool = true) -> void:
+	if show_label: burst(parent, at - Vector3.UP * 0.7, "CLINK!", Color("fff1a8"))
 	for index in 10:
 		var spark := MeshInstance3D.new()
 		var mesh := SphereMesh.new()

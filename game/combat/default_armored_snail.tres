@@ -10,5 +10,3 @@ dry_damage = 20.0
 rain_damage = 28.0
 dry_respawn = 30.0
 rain_respawn = 10.0
-armor_multiplier = 0.55
-knife_open_duration = 1.1

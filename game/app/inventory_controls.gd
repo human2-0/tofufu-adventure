@@ -22,6 +22,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	get_viewport().set_input_as_handled()
 
 func _opened() -> void:
+	game.shooting_view.set_inventory_inspection(true)
+	game.hud.set_inventory_open(true)
 	game.shooting_view.local_input.enabled = false
 	game.chat.set_menu_open(true)
 	game.player.motor.cancel_jump()
@@ -29,5 +31,7 @@ func _opened() -> void:
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
 
 func _closed() -> void:
+	game.shooting_view.set_inventory_inspection(false)
+	game.hud.set_inventory_open(false)
 	game.shooting_view.local_input.enabled = true
 	game.chat.set_menu_open(false)

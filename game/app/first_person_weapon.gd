@@ -7,6 +7,7 @@ var actor: CharacterBody3D
 var _viewport: SubViewport
 var _rig: Node3D
 var _knife: Sprite3D
+var _knife_texture: Texture2D
 var _staff: StaffVisual
 var _gun: Sprite3D
 var _jet: SotjetVisual
@@ -40,6 +41,7 @@ func _ready() -> void:
 	_viewport.add_child(_rig)
 	_rig.position = Vector3(0.32, -0.30, -1.0)
 	_knife = _sprite(SwordVisual.ATLAS, Rect2(Vector2(SwordVisual.ATLAS.get_width() * 0.5, 0), Vector2(SwordVisual.ATLAS.get_size()) / Vector2(4, 2)), 0.0018)
+	_knife_texture = _knife.texture
 	_staff = StaffVisual.new()
 	_rig.add_child(_staff)
 	_staff.position = Vector3(0.16, 0.11, -0.30)
@@ -87,7 +89,7 @@ func _process(delta: float) -> void:
 	if combat.active and not _was_active: _swing = 0.0
 	_was_active = combat.active
 	var stabbing := combat.active and combat.attack_style == KnifeAttack.Style.STAB
-	var diving := combat.active and combat.attack_style == KnifeAttack.Style.AIR_SLASH
+	var diving := (combat.active and combat.attack_style == KnifeAttack.Style.AIR_SLASH) or combat.plunge.active
 	var swing_seconds := combat._attack_duration()
 	_swing = minf(1.0, _swing + delta / swing_seconds)
 	var cut := sin(_swing * PI) if combat.active else 0.0
@@ -96,12 +98,14 @@ func _process(delta: float) -> void:
 	_rig.position += Vector3(0, -cut * 0.38, -cut * 0.3) if diving else (Vector3(0, 0, -cut * 0.48) if stabbing else Vector3(-cut * 0.5, cut * 0.12, 0))
 	_rig.position.z += _kick * 0.07
 	_rig.rotation.z = _swing * TAU if combat.active and combat.attack_style == StaffAttack.TORNADO else (cut * -0.5 if diving else (cut * -0.15 if stabbing else cut * 1.1))
+	_knife.texture = SwordVisual.NORI if combat.equipment.nori_selected else (SwordVisual.POD if combat.equipment.pod_selected else _knife_texture)
+	_knife.pixel_size = 0.00065 if combat.equipment.pod_selected or combat.equipment.nori_selected else 0.0018
 	_knife.visible = combat.equipment.knife_owned and combat.equipment.knife_selected
 	_staff.visible = combat.equipment.staff_owned and combat.equipment.staff_selected
 	_staff.show_charge(combat.rules.charge, combat.active and combat.attack_style == StaffAttack.TORNADO)
 	_gun.visible = combat.gun.selected
 	_jet.visible = combat.sotjet.selected
-	_knife.rotation.z = -0.25 - combat.rules.charge * 0.4
+	_knife.rotation.z = PI if combat.plunge.active or combat.plunge.recovery > 0 else -0.25 - combat.rules.charge * 0.4
 	if combat.equipment.guarding:
 		_knife.rotation.z = 1.2
 		_rig.position = Vector3(0.1, -0.1, -1.0)

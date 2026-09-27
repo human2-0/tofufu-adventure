@@ -16,6 +16,8 @@ var gun_owned: bool = true
 var sotjet_owned: bool = true
 var staff_owned: bool = false
 var staff_selected: bool = false
+var pod_selected: bool = false
+var nori_selected: bool = false
 var drop_item: Callable
 var pickup_item: Callable
 var select_item: Callable
@@ -47,7 +49,7 @@ func step(aim: Vector2, guard: bool, punch: bool, drop: bool, pickup: bool, slot
 		_drop()
 	if pickup and not combat.active:
 		_pickup(pickup_id)
-	guarding = guard and knife_owned and knife_selected and not combat.active and _punch_time <= 0.0
+	guarding = guard and not pod_selected and not nori_selected and knife_owned and knife_selected and not combat.active and _punch_time <= 0.0
 	if punch and not combat.ranged_selected() and not combat.active and _punch_time <= 0.0:
 		guarding = false
 		_punch_time = combat.tuning.punch_cooldown
@@ -69,9 +71,11 @@ func blocks(source: Vector3) -> bool:
 	var planar := Vector2(offset.x, offset.z)
 	return guarding and not planar.is_zero_approx() and absf(offset.y) < 1.5 and facing.dot(planar.normalized()) >= cos(deg_to_rad(combat.tuning.guard_half_angle))
 
-func defend(source: Vector3) -> bool:
+func defend(source: Vector3, amount: float = 0.0) -> bool:
 	if not blocks(source):
 		return false
+	combat.vitals.engage()
+	if not combat.vitals.spend(amount): return false
 	var at := combat.actor.global_position + Vector3(facing.x, 0, facing.y) * 0.65 + Vector3.UP * 0.7
 	CombatEffects.sparks(self, at)
 	defended.emit()
@@ -91,6 +95,7 @@ func _punch() -> void:
 		var dmg: float = combat.tuning.punch_damage * combat.fist_damage_multiplier
 		if combat._unobstructed(combat.actor.global_position, target) and target.damage(dmg, forward * 3.0):
 			CombatEffects.burst(self, target.global_position, "-%d POW!" % int(dmg), Color("ffccaa"))
+			combat.vitals.confirmed_hit()
 			combat.struck.emit(0.0, 1)
 			if target.trains_weapons and not trained:
 				trained = true

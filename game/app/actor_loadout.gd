@@ -51,16 +51,20 @@ func refresh(show_feedback: bool = true) -> void:
 	persist_reserve()
 	_active = equipment.get_slot("combat_%d" % active_slot)
 	combat.reset()
-	var id := _active.item.id if _active != null else ""
-	combat.equipment.knife_owned = has_equipped("knife")
+	var id := _active.item.id if _active != null and equipment.can_equip("combat_%d" % active_slot, _active) else ""
+	combat.equipment.nori_selected = id == "nori_katana"
+	combat.sword.set_nori(combat.equipment.nori_selected)
+	combat.equipment.pod_selected = id == "edamame_sword"
+	combat.sword.set_pod(combat.equipment.pod_selected)
+	combat.equipment.knife_owned = has_equipped("knife") or has_equipped("edamame_sword") or has_equipped("nori_katana")
 	combat.equipment.gun_owned = has_equipped("soy_gun")
 	combat.equipment.sotjet_owned = has_equipped("sotjet")
 	combat.equipment.staff_owned = has_equipped("sproutwood_staff")
-	combat.equipment.knife_selected = id == "knife"
+	combat.equipment.knife_selected = id in ["knife", "edamame_sword", "nori_katana"]
 	combat.equipment.staff_selected = id == "sproutwood_staff"
 	combat.gun.selected = id == "soy_gun"
 	combat.sotjet.selected = id == "sotjet"
-	combat.sword.visible = id == "knife"
+	combat.sword.visible = id in ["knife", "edamame_sword", "nori_katana"]
 	combat.staff.visible = id == "sproutwood_staff"
 	if id == "sotjet": combat.sotjet.milk = _active.reserve
 
@@ -80,7 +84,7 @@ func has_equipped(id: String) -> bool:
 
 func receive(stack: ItemStack) -> bool:
 	for slot in ["combat_1", "combat_2"]:
-		if equipment.get_slot(slot) == null:
+		if equipment.get_slot(slot) == null and equipment.can_equip(slot, stack):
 			equipment.set_slot(slot, stack)
 			select(int(slot.right(1)))
 			return true

@@ -6,6 +6,8 @@ var game: Node3D
 var quest := QuestState.new()
 var window := QuestWindow.new()
 
+var _armored_selected: bool = false
+
 var _prompt: Label3D
 var _ring: MeshInstance3D
 var _meshes: Array[MeshInstance3D] = []
@@ -17,10 +19,13 @@ func _ready() -> void:
 	window.reward_claimed.connect(_on_reward_claimed)
 	window.closed.connect(_on_window_closed)
 	quest.changed.connect(_refresh_window)
+	window.quest_selected.connect(_select_quest)
+	game.inventory.changed.connect(_refresh_window)
 	if game.world.quest_npc != null:
 		_setup_npc_interaction()
 	if game.encounters != null:
 		game.encounters.mob_defeated.connect(_on_mob_defeated)
+		game.encounters.armored_snail_defeated.connect(quest.record_armored_kill)
 
 func _setup_npc_interaction() -> void:
 	var npc: Node3D = game.world.quest_npc
@@ -90,12 +95,18 @@ func _on_window_closed() -> void:
 
 func _refresh_window() -> void:
 	window.present({
-		"status": quest.status,
-		"current_count": quest.current_count,
+		"armored": _armored_selected,
+		"shells": game.inventory.count_item("piece_of_shell"),
+		"status": quest.armored_status if _armored_selected else quest.status,
+		"current_count": quest.armored_count if _armored_selected else quest.current_count,
 		"target_count": quest.target_count
 	})
 
 func _on_quest_accepted() -> void:
+	if _armored_selected:
+		quest.start_armored()
+		game.hud.announce("Quest Accepted: Armored Snail Hunt")
+		return
 	quest.start()
 	game.hud.announce("Quest Accepted: Cull 50 Slimes")
 	_refresh_window()
@@ -110,6 +121,9 @@ func _on_mob_defeated(_at: Vector3) -> void:
 		game.hud.announce("Quest: %d / %d Slimes" % [quest.current_count, quest.target_count])
 
 func _on_reward_claimed() -> void:
+	if _armored_selected:
+		_claim_armored()
+		return
 	if not quest.claim_reward():
 		return
 	var edamame := InventoryItem.create_edamame()
@@ -140,3 +154,19 @@ func _build_highlight(npc: Node3D) -> void:
 	_ring.material_override = material
 	npc.add_child(_ring)
 	_ring.visible = false
+
+func _select_quest(index: int) -> void:
+	_armored_selected = index == 1
+	_refresh_window()
+
+func _claim_armored() -> void:
+	if not quest.claim_armored(game.inventory.count_item("piece_of_shell")): return
+	game.inventory.remove_item("piece_of_shell", 10)
+	var reward := InventoryItem.currency("mature_bean")
+	var leftover: int = game.inventory.add_item(reward, 20)
+	if leftover > 0: game.inventory.pending_items.append(ItemStack.new(reward, leftover))
+	game.encounters.experience += 1000
+	game.encounters.experience_changed.emit(game.encounters.experience)
+	game.encounters.experience_awarded.emit(1000)
+	game.hud.announce("Delivered 10 shell pieces · +20 Mature Beans · +1000 EXP")
+	_refresh_window()

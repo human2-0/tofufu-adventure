@@ -187,6 +187,7 @@ func _on_command(command: PlayerCommand, delta: float) -> void:
 	if command.cancel_actions: combat.reset()
 	var moving := Vector2(player.velocity.x, player.velocity.z).length_squared() > 0.01
 	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.melee_selected() and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
+	player.ability_velocity = combat.plunge.velocity
 	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO, not player.is_on_floor(), command.guard_held)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)

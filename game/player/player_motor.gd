@@ -6,6 +6,7 @@ signal jumped
 signal dashed
 signal super_dashed
 
+var spend_stamina: Callable
 var walk_multiplier: float = 1.0
 var dash_distance_multiplier: float = 1.0
 var jump_launch_multiplier: float = 1.0
@@ -68,6 +69,8 @@ func _step_jump(command: PlayerCommand, velocity: Vector3, grounded: bool, delta
 			is_charging_jump = false
 			jump_charge = 0.0
 		if _jump_buffer_remaining > 0.0 and eligible:
+			if _buffered_charge > 0.0 and spend_stamina.is_valid() and not spend_stamina.call(25.0 * _buffered_charge):
+				_buffered_charge = 0.0
 			var height_multiplier := lerpf(1.0, _tuning.super_jump_height_multiplier, _buffered_charge)
 			velocity.y = _tuning.jump_velocity * sqrt(height_multiplier) * jump_launch_multiplier
 			cancel_jump()
@@ -112,6 +115,7 @@ func _step_dash_charge(command: PlayerCommand, velocity: Vector3, delta: float) 
 func _start_dash(direction: Vector2, super_dash: bool = false) -> void:
 	cancel_jump()
 	cancel_dash_charge()
+	if spend_stamina.is_valid() and not spend_stamina.call(25.0 if super_dash else 15.0): return
 	_dash_direction = _dash_vector(direction)
 	is_dashing = true
 	is_super_dashing = super_dash

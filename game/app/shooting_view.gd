@@ -53,6 +53,8 @@ func _process(_delta: float) -> void:
 	var second: ItemStack = game.character_equipment.get_slot("combat_2")
 	game.hud.show_loadout(_item_label(first), _item_label(second), game.loadout.active_slot)
 	game.hud.show_staff_state(game.combat.equipment.staff_selected, game.combat.active and game.combat.attack_style == StaffAttack.TORNADO, game.combat.rules.cooldown)
+	game.hud.show_nori_state(game.combat.equipment.nori_selected, game.combat.plunge.active, game.combat.plunge.cooldown)
+	game.hud.show_pod_state(game.combat.equipment.pod_selected, game.combat.podburst.cooldown)
 
 func _item_label(stack: ItemStack) -> String:
 	if stack == null or stack.item == null: return "Unarmed"
@@ -91,6 +93,16 @@ func cycle_mode() -> void:
 		_local_geometry[index].layers = 0 if first_person else _layers[index]
 	var label := "First person / Mouse: look · RMB: aim / guard · C: overhead" if first_person else ("Behind Fufu / Mouse: orbit · C: first person" if shoulder else "Overhead / Mouse: aim · C: behind Fufu")
 	game.hud.announce(label)
+
+func set_inventory_inspection(active: bool) -> void:
+	# Inspect the real actor even when the player opened the bag from first person.
+	if active:
+		game.camera.set_shoulder(false)
+	else:
+		game.camera.set_shoulder(shoulder)
+		if first_person: game.camera.set_first_person()
+	for index in _local_geometry.size():
+		_local_geometry[index].layers = 0 if first_person and not active else _layers[index]
 
 func _collect_geometry(node: Node) -> void:
 	if node is GeometryInstance3D:

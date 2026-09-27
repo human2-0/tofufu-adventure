@@ -5,7 +5,7 @@ extends RefCounted
 static func capture(combat: PlayerCombat) -> Dictionary:
 	var equipment := combat.equipment
 	var drop := equipment.dropped.global_position if is_instance_valid(equipment.dropped) else Vector3.ZERO
-	return {"world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
+	return {"nori": equipment.nori_selected, "plunging": combat.plunge.active, "plunge_recovery": combat.plunge.recovery, "plunge_sequence": combat.plunge.sequence, "plunge_at": _array(combat.plunge.impact_at), "plunge_cooldown": combat.plunge.cooldown, "vitals": combat.vitals.capture(), "pod": equipment.pod_selected, "podburst": combat.podburst.sequence, "pod_cooldown": combat.podburst.cooldown, "world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
 		"jet_firing": combat.sotjet.firing, "jet_sequence": combat.sotjet.sequence,
 		"jet_origin": _array(combat.sotjet.origin), "jet_velocity": _array(combat.sotjet.velocity), "recoil": combat.gun.recoil.heat, "gun": combat.gun.selected, "ads": combat.gun.aiming, "shot": combat.gun.shot_sequence,
 		"shot_origin": _array(combat.gun.shot_origin), "shot_velocity": _array(combat.gun.shot_velocity), "owned": equipment.knife_owned, "selected": equipment.knife_selected, "guard": equipment.guarding,
@@ -17,6 +17,13 @@ static func capture(combat: PlayerCombat) -> Dictionary:
 
 static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.reset()
+	combat.vitals.restore(state.get("vitals", {}))
+	combat.podburst.cooldown = state.get("pod_cooldown", 0.0)
+	combat.equipment.pod_selected = state.get("pod", false)
+	combat.sword.set_pod(combat.equipment.pod_selected)
+	combat.equipment.nori_selected = state.get("nori", false)
+	combat.sword.set_nori(combat.equipment.nori_selected)
+	combat.plunge.cooldown = state.get("plunge_cooldown", 0.0)
 	combat.equipment.gun_owned = state.get("gun_owned", true)
 	combat.equipment.sotjet_owned = state.get("sotjet_owned", true)
 	combat.equipment.staff_owned = state.get("staff_owned", false)
@@ -34,6 +41,20 @@ static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.clash.sequence = int(state.get("clash", 0))
 
 static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector2) -> void:
+	combat.vitals.restore(state.get("vitals", {}))
+	combat.podburst.cooldown = state.get("pod_cooldown", 0.0)
+	combat.equipment.pod_selected = state.get("pod", false)
+	combat.sword.set_pod(combat.equipment.pod_selected)
+	combat.equipment.nori_selected = state.get("nori", false)
+	combat.sword.set_nori(combat.equipment.nori_selected)
+	combat.plunge.cooldown = state.get("plunge_cooldown", 0.0)
+	if int(state.get("plunge_sequence", 0)) > combat.plunge.sequence:
+		NoriPlungeVFX.impact(combat, _vector(state.get("plunge_at", [0,0,0])), combat.tuning.nori_plunge_radius)
+	combat.plunge.sequence = int(state.get("plunge_sequence", 0))
+	combat.plunge.active = state.get("plunging", false)
+	if int(state.get("podburst", 0)) > combat.podburst.sequence:
+		Podburst.visual(combat, Vector2(state.aim[0], state.aim[1]))
+	combat.podburst.sequence = int(state.get("podburst", 0))
 	var new_clash := int(state.get("clash", 0)) > combat.clash.sequence
 	combat.clash.sequence = int(state.get("clash", 0))
 	combat.gun.selected = state.get("gun", false)
@@ -72,6 +93,10 @@ static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector
 		pose = SwordGeometry.guard_pose(combat.actor.global_position, aim, combat.tuning)
 		attachment = 0.0
 	var cutting: bool = state.active and SwordGeometry.cutting(progress, combat.tuning)
+	if state.get("plunging", false) or state.get("plunge_recovery", 0.0) > 0.0:
+		pose = NoriPlunge.pose(combat.actor.global_position)
+		attachment = 0.0
+		cutting = false
 	combat.sword.present(pose, aim, maxf(state.charge, state.strength if state.active else 0), cutting, attachment)
 	combat.staff.present(pose, state.charge, state.active and combat.attack_style == StaffAttack.TORNADO)
 	combat._trail.record(pose, combat.tuning, cutting, heavy, combat._melee_length())

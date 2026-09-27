@@ -71,8 +71,10 @@ func _hit(body: Object, point: Vector3) -> void:
 		if not is_instance_valid(target) or target.body != body: continue
 		var headshot := target.is_headshot(point)
 		var amount := head_damage if headshot else body_damage
-		if target.damage(amount, velocity.normalized() * 2.0, Damageable.HitKind.SOY):
+		if target.damage(amount, velocity.normalized() * 2.0, Damageable.HitKind.SOY, point):
 			CombatEffects.burst(get_parent(), point, "%d HEAD!" % int(amount) if headshot else str(int(amount)), Color("ffe4a0"))
+			var credited := reflected_by if is_instance_valid(reflected_by) else owner_health
+			if is_instance_valid(credited): credited.attack_confirmed.emit(reflections == 0)
 			if target.trains_weapons:
 				if is_instance_valid(reflected_by): reflected_by.reflected_hit.emit("shooting")
 				elif reflections == 0: weapon_trained.emit("shooting")
@@ -101,8 +103,9 @@ func _reflect(hit: Dictionary) -> bool:
 	if is_instance_valid(owner_health) and owner_health not in receivers: receivers.append(owner_health)
 	for target in receivers:
 		if not is_instance_valid(target) or target.body != hit.collider: continue
-		var normal := target.reflection_normal(velocity, hit.position, authoritative)
-		if normal.is_zero_approx() or reflections >= 4: return false
+		if reflections >= 4: return false
+		var normal := target.reflection_normal(velocity, hit.position, authoritative, head_damage if target.is_headshot(hit.position) else body_damage)
+		if normal.is_zero_approx(): return false
 		velocity = velocity.bounce(normal)
 		global_position = hit.position + normal * 0.04
 		shooter = target.body

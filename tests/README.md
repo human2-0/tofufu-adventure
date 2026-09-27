@@ -82,3 +82,7 @@ Dedicated server acceptance: `python3 tools/verify_dedicated.py` starts a server
 Sky atmosphere: `test_sky.gd` checks per-world materials, storm thresholds, flash decay and delayed thunder. Run `Godot --path . --script res://tests/preview_sky.gd` without `--headless` to render day, dawn, peach/lavender twilight, night and lightning over the meadow to `/tmp/tofufu-sky-*.png`. Thunder is cosmetic and locally timed; its final playback mix needs listening on the target device.
 
 River and oasis: `test_river.gd` checks downhill water levels, collision-backed channels, the desert seam, correct wading bounds and bounded fish/jump/splash presentation. `preview_river.gd` renders the village, extended stream, desert descent, oasis and a fish jump to `/tmp/tofufu-river-*.png`. Wildlife is cosmetic; it does not grant loot or replicate gameplay state.
+
+`test_map_exploration.gd` checks personal reveal radius, history, teleport gaps, world edges and mask round trips. `test_map.gd` also checks the following crop, pointer/camera headings, fogged NPCs, zoom and adventure-save restoration.
+
+Armored shell coverage: `test_armored_shell.gd` checks real low foot rays, separate 50-HP armor, break-hit isolation, removed dome collision, respawn, snapshot restoration, doubled successful drops, and one shell hit per sword swing. `godot --path . --script res://tests/preview_armored_shell.gd` renders intact, hit, and break frames to `/tmp/armored-shell-{intact,hit,break}.png`.

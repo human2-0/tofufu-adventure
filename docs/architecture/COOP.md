@@ -58,6 +58,9 @@ Guests disable authoritative actor, encounter and quest outcome simulation. The 
 
 ## N3 — Bounded protocol (implemented)
 
+Armored-snail encounter rows append shell HP (0–50) and two horizontal facing components to the existing nine values. Legacy nine-value checkpoints restore an intact shell. The host owns armor damage and loot; replicas apply shell state and play hit/break feedback on decreases. Matchmaking game version 21 requires peers with this schema. Shell pieces are bounded to 50 per stack.
+
+
 Both streams use a four-byte big-endian JSON length, maximum 64 KiB per frame. Incremental decoding handles fragmentation/coalescing, rejects malformed frames and caps buffers at 256 KiB. Peer framing limits message rates and uses explicit queued-byte accounting plus a three-second stalled-write deadline. Loopback Node streams complete writes through callbacks; encrypted streamx peers use `Writable.drained()` because their `write()` does not accept a callback. Completed writes release queued bytes and cancel the stall deadline on both paths. Handshake version/build and session epoch reject incompatible or obsolete traffic. Sender identity comes from the encrypted stream, never from an input field.
 
 `ExplorationProtocol` validates finite bounded vectors, booleans, integer counters and actor/combat records. `WorldProtocol` validates the fixed-content world and opening records. No remote object or Resource deserialization is used. `InputWindow` rejects duplicate/replayed inputs, future acknowledgements, acknowledgements over 180 host ticks old, sequence leaps over 240 and input rates over 90 per second. Remote queues hold at most 12 commands. Each host tick consumes the newest held intent and coalesces queued one-shot actions once, so different peer tick rates do not accumulate simulation debt. Overflow discards stale actions and cancels the current charge instead of removing the member. Packet validation and rate limits still apply. Held intent expires after 250 ms, cancelling pending charge instead of synthesizing an attack or jump release.
@@ -180,3 +183,15 @@ The factory record contains stage, completion, process timer, a twelve-bit broke
 ### Gigalopolis production revision (implemented; gameplay protocol 18)
 
 Factory interaction uses the existing sampled `pickup_pressed` command edge on each host actor; only the authority validates station distance, production order, sack ownership and operation cooldown. Adding coagulant spawns the Dofu encounter. Guests receive bounded production units, coagulant/secured flags and up to four carried-sack positions in addition to waves, crates and stage. A new original Dofu kind extends factory enemy kinds to 0–3. Saves/checkpoints retain delivered units and the coagulant trigger; unfinished encounters restart and in-transit sacks return. The new eastern district uses explicit factory interior bounds rather than an X-coordinate threshold. `test_factory_route.gd` walks real collision geometry through the doorways and elevated switchback; dungeon tests cover manual production, healing, rewards and host/guest completion.
+
+### Edamame Pod Sword (implemented; gameplay protocol 19)
+
+Kaji stocks the free level-5 sword. Authority applies its knife moves at 1.2× damage and validates RMB Podburst as a 3.6-unit forward cone with world occlusion, 8 base damage, horizontal impulse 9 and a three-second per-actor cooldown that survives weapon swaps. Existing guard intent triggers the special instead of guarding. Snapshots carry the selected pod skin, bounded burst sequence and cooldown; replicas only display the gust. The item is supported by inventory, shared drops and save validation. All peers must use protocol 19.
+
+### Stamina and health growth (implemented; gameplay protocol 20)
+
+Vital records were introduced in protocol 20; live peers now require the current game version. Actor combat snapshots/checkpoints now include bounded `vitals` (current stamina and remaining combat seconds). Character progression derives maximum SP and HP; actor validation accepts the corresponding compounded health maximum. Authority alone resolves costs, hit rewards and health recovery; guest movement predicts spending against the last received stamina and is corrected by host snapshots. Replicas never regenerate health. Solo saves include the same optional vital values. Legacy checkpoints without vitals default to full SP and no combat timer.
+
+### Nori Katana replication
+
+The host resolves the katana plunge and landing damage. Combat snapshots carry bounded Nori selection, plunge activity/cooldown, impact counter and position; replicas display the vertical blade and play impact VFX without spending stamina or applying damage. The item is allowlisted for inventory/world saves and snapshots. Guest movement remains host-corrected; plunge flight is not independently predicted.

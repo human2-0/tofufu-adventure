@@ -35,7 +35,7 @@ static func shell_piece() -> InventoryItem:
 	item.id = "piece_of_shell"
 	item.name = "Piece of Shell"
 	item.description = "A sturdy fragment from a defeated shell-bearing creature."
-	item.icon = preload("res://game/inventory/icons/combat.svg")
+	item.icon = preload("res://assets/combat/shell_piece.svg")
 	item.max_stack = 50
 	item.category = "material"
 	item.healing_amount = 0.0
@@ -73,11 +73,13 @@ static func currency(id: String) -> InventoryItem:
 	return item
 
 static func weapon(id: String) -> InventoryItem:
-	if id not in ["knife", "soy_gun", "sotjet", "sproutwood_staff"]: return null
+	if id not in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return null
 	var item := InventoryItem.new()
 	item.id = id
-	item.name = {"knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Soyjet", "sproutwood_staff": "Sproutwood Staff"}[id]
+	item.name = {"nori_katana": "Nori Katana", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Soyjet", "edamame_sword": "Edamame Pod Sword", "sproutwood_staff": "Sproutwood Staff"}[id]
 	item.description = {
+		"nori_katana": "Requires level 5. Nori armory: long-reaching hack-and-slash combos, +10% attack speed while selected. Hold RMB: rise and steer with movement, release to plunge (auto after 1.05s), 75 SP, 3x normal hit in a 2.6m radius.",
+		"edamame_sword": "Requires level 5. Knife combos with 20% more damage. RMB: Podburst wind cone pushes enemies (3s cooldown).",
 		"knife": "A close-range blade for quick strikes and guarding.",
 		"soy_gun": "A ranged weapon that fires soybeans.",
 		"sotjet": "A ranged sprayer that uses a limited milk reserve.",
@@ -86,13 +88,23 @@ static func weapon(id: String) -> InventoryItem:
 	item.category = "combat"
 	item.max_stack = 1
 	item.healing_amount = 0
-	if id == "knife":
+	if id == "nori_katana":
+		item.weapon_level = 3
+		item.weapon_power = 10
+		item.required_level = 5
+	elif id == "edamame_sword":
+		item.weapon_level = 3
+		item.weapon_power = 12
+		item.required_level = 5
+	elif id == "knife":
 		item.weapon_level = 2
 		item.weapon_power = 10
 	elif id == "sproutwood_staff":
 		item.weapon_level = 1
 		item.weapon_power = 5
-	if id == "sotjet": item.icon = _soyjet_icon()
+	if id == "nori_katana": item.icon = preload("res://assets/weapons/nori/nori_katana.png")
+	elif id == "edamame_sword": item.icon = preload("res://assets/weapons/edamame/edamame_pod_sword_sprite.png")
+	elif id == "sotjet": item.icon = _soyjet_icon()
 	elif id == "sproutwood_staff": item.icon = preload("res://game/inventory/icons/sproutwood_staff.png")
 	else:
 		var atlas := AtlasTexture.new()
@@ -139,7 +151,7 @@ static func apparel(id: String) -> InventoryItem:
 
 static func from_id(id: String) -> InventoryItem:
 	if id in ["edamame", "mature_bean", "tofu_white_chunk", "toasted_tofu_chunk", "golden_tofu_chunk"]: return currency(id)
-	if id in ["knife", "soy_gun", "sotjet", "sproutwood_staff"]: return weapon(id)
+	if id in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return weapon(id)
 	if id in ["factory_backpack", "seed_satchel", "traveler_backpack"]: return backpack(id)
 	if id.begins_with("bright_leaf_") or id.begins_with("dark_leaf_"): return apparel(id)
 	if id == "piece_of_shell": return shell_piece()

@@ -6,6 +6,7 @@ signal progress_changed(beans: int, mobs: int, props: int)
 signal experience_awarded(amount: int)
 signal experience_changed(total: int)
 signal mob_defeated(at: Vector3)
+signal armored_snail_defeated
 var mob_nodes: Array[TrainingMob] = []
 var prop_nodes: Array[HarvestProp] = []
 var dummy_nodes: Array[PracticeDummy] = []
@@ -72,6 +73,7 @@ func _add_mob(at: Vector2, rain_only: bool = false, armored: bool = false, free_
 	mob.target.trains_weapons = true
 	combat.targets.append(mob.target)
 	mob_nodes.append(mob)
+	mob.targeting.connect(ActorProgression.threaten)
 	mob.attacked.connect(_mob_attacked.bind(mob))
 	mob.defeated.connect(_mob_defeated.bind(mob))
 
@@ -90,7 +92,7 @@ func _add_prop(at: Vector3, kind: int) -> void:
 func _hurt_player(amount: float, source: Vector3) -> void:
 	if player.motor.is_dashing:
 		return
-	if combat.equipment.defend(source):
+	if combat.equipment.defend(source, amount):
 		return
 	amount *= combat.incoming_damage_multiplier
 	if health.damage(amount, Vector3.ZERO, Damageable.HitKind.SLIME):
@@ -109,9 +111,11 @@ func _mob_defeated(at: Vector3, mob: TrainingMob) -> void:
 	experience_changed.emit(experience)
 	experience_awarded.emit(reward)
 	mob_defeated.emit(at)
+	if mob is ArmoredSnail: armored_snail_defeated.emit()
 	_drop(at, 4 if mob is ArmoredSnail else 2)
 	if mob is ArmoredSnail and shell_drop.is_valid() and float(shell_drop_roll.call()) < SHELL_PIECE_DROP_CHANCE:
-		shell_drop.call("piece_of_shell", at)
+		for index in (2 if mob.shell_health <= 0.0 else 1):
+			shell_drop.call("piece_of_shell", at + Vector3.RIGHT * index * 0.35)
 	CombatEffects.burst(self, at, "+%d EXP" % reward, Color("b0e6cb"))
 	progress_changed.emit(beans, mobs, props)
 

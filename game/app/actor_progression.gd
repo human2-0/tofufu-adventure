@@ -20,9 +20,34 @@ func _ready() -> void:
 	combat.sotjet.weapon_trained.connect(progress.weapon_hit)
 	combat.equipment.defended.connect(progress.defended)
 	progress.changed.connect(_apply)
+	actor.motor.spend_stamina = combat.vitals.spend
+	actor.threatened.connect(combat.vitals.engage)
+	actor.command_sampled.connect(_step_vitals)
+	if combat.owner_health != null:
+		combat.owner_health.engaged.connect(combat.vitals.engage)
+		combat.owner_health.attack_confirmed.connect(combat.vitals.confirmed_hit)
+		combat.owner_health.restored.connect(combat.vitals.reset)
+		combat.owner_health.guard_payment = combat.vitals.spend
 	_apply()
 
+func _step_vitals(_command: PlayerCommand, delta: float) -> void:
+	var health := combat.owner_health
+	var fraction := combat.vitals.step(delta, health != null and health.current > 0.0)
+	if fraction > 0.0 and health.current < health.maximum: health.heal(health.maximum * fraction)
+	if hud != null: hud.show_stamina(combat.vitals.current, combat.vitals.maximum, combat.vitals.combat_remaining)
+
+static func threaten(quarry: Node3D) -> void:
+	if quarry is Player: quarry.threatened.emit()
+
 func _apply() -> void:
+	combat.vitals.set_level(progress.level())
+	if combat.owner_health != null:
+		var health := combat.owner_health
+		var maximum := combat.tuning.maximum_health * pow(VitalRules.HP_GROWTH, progress.level() - 1)
+		if not is_equal_approx(maximum, health.maximum):
+			health.current = health.current / health.maximum * maximum
+			health.maximum = maximum
+			health.changed.emit(health.current, health.maximum)
 	if equipment != null: equipment.wearer_level = progress.level()
 	var set_id := equipment.complete_set() if equipment != null else ""
 	actor.set_collision_mask_value(JungleWorld.GATE_LAYER, progress.level() < JungleWorld.ENTRY_LEVEL)

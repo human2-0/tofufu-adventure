@@ -151,6 +151,7 @@ func _spawn_stage() -> void:
 		enemy.position = TofuFactory.CENTERS[state.stage] + Vector3(-3 + float(i % 3) * 3, 0.1, -1 + float(i / 3) * 3)
 		enemy.quarry = _nearest_actor(enemy.position)
 		game.world.add_child(enemy)
+		enemy.targeting.connect(ActorProgression.threaten)
 		enemy.attacked.connect(_enemy_attack)
 		enemy.defeated.connect(_enemy_defeated.bind(enemy))
 		_register_target(enemy.target)
@@ -172,8 +173,7 @@ func _enemy_attack(amount: float, source: Vector3) -> void:
 		if victim != null and victim.actor.global_position.distance_to(source) < 2.5: victim.hurt(amount, source)
 		return
 	if not _inside or game.health.current <= 0.0: return
-	var push: Vector3 = (game.player.global_position - source).normalized() * 2.0
-	game.health.damage(amount, push, Damageable.HitKind.SLIME)
+	game.encounters._hurt_player(amount, source)
 
 func _enemy_defeated(_at: Vector3, enemy: FactoryBean) -> void:
 	_enemies.erase(enemy)

@@ -1,6 +1,6 @@
 class_name ArmoredSnailVisuals
 extends Node3D
-## A small all-mesh snail body with a shell that reacts to knife deflection.
+## A small all-mesh snail body with a shell that reacts to blocked attacks.
 
 const CREAM := Color("e9dcae")
 const BODY := Color("a7c883")
@@ -14,6 +14,8 @@ const PUPIL := Color("3b3a39")
 var _body: Node3D
 var _head: Node3D
 var _shell: Node3D
+var _shell_flash: float = 0.0
+var _shell_health: float = 50.0
 var _flash_left: float = 0.0
 var _dodge_left: float = 0.0
 var _clock: float = 0.0
@@ -25,6 +27,7 @@ func _ready() -> void:
 	_build_model()
 
 func present(motion: Vector3, aim: Vector3, windup: float, shell_open: float, delta: float) -> void:
+	_shell_flash = maxf(0.0, _shell_flash - delta)
 	_clock += delta
 	_flash_left = maxf(0.0, _flash_left - delta)
 	_dodge_left = maxf(0.0, _dodge_left - delta)
@@ -132,4 +135,15 @@ func _material(tint: Color) -> StandardMaterial3D:
 func _apply_flash() -> void:
 	var amount := clampf(_flash_left / 0.12, 0.0, 1.0)
 	for index in _materials.size():
-		_materials[index].albedo_color = _base_colors[index].lerp(CREAM, amount)
+		var tint := _base_colors[index]
+		if tint in [SHELL, SHELL_RIDGE, SHELL_DARK]:
+			tint = tint.lerp(SHELL_DARK, (1.0 - _shell_health / 50.0) * 0.5)
+			tint = tint.lerp(Color("fff3a6"), _shell_flash / 0.18)
+		_materials[index].albedo_color = tint.lerp(CREAM, amount)
+
+func set_shell_health(value: float) -> void:
+	if value < _shell_health:
+		_shell_flash = 0.18
+		dodge()
+	_shell_health = value
+	_shell.visible = value > 0.0

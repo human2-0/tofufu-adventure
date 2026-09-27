@@ -5,7 +5,13 @@ extends RefCounted
 const APPAREL_DROP_SPANS: Dictionary = {"helmet": 0.38, "armor": 0.44, "legs": 0.38, "boots": 0.34}
 
 static func build(drop: WorldItemDrop) -> void:
-	if drop.item_id == "knife":
+	if drop.item_id in ["edamame_sword", "nori_katana"]:
+		var sprite := Sprite3D.new()
+		sprite.texture = SwordVisual.NORI if drop.item_id == "nori_katana" else SwordVisual.POD
+		sprite.pixel_size = 0.0007
+		sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		drop.add_child(sprite)
+	elif drop.item_id == "knife":
 		var sprite := Sprite3D.new()
 		var atlas := AtlasTexture.new()
 		atlas.atlas = SwordVisual.ATLAS
@@ -44,15 +50,10 @@ static func build(drop: WorldItemDrop) -> void:
 		sprite.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		drop.add_child(sprite)
 	elif drop.item_id == "piece_of_shell":
-		var shell := SphereMesh.new()
-		shell.radius = 0.28
-		shell.height = 0.22
-		shell.radial_segments = 10
-		shell.rings = 5
-		shell.material = MeadowGeometry.material(Color("8a765c"))
-		var shell_piece := MeshInstance3D.new()
-		shell_piece.mesh = shell
-		shell_piece.position.y = 0.12
+		var shell_piece := Sprite3D.new()
+		shell_piece.texture = InventoryItem.shell_piece().icon
+		shell_piece.pixel_size = 0.005
+		shell_piece.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		drop.add_child(shell_piece)
 	elif drop.item_id == "soy_milk":
 		var milk := Sprite3D.new()

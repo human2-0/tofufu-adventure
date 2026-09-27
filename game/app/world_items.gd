@@ -3,7 +3,7 @@ extends Node
 ## Wires shared world drops to actor equipment, local focus, and inventory grants.
 
 const DEATH_DROP_CHANCE: float = 0.10
-const NAMES := {"knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Sotjet", "sproutwood_staff": "Sproutwood Staff", "factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel · +4 slots", "traveler_backpack": "Soypod Backpack", "edamame": "Edamame", "mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk", "piece_of_shell": "Piece of Shell", "soy_milk": "Soy Milk", "bright_leaf_helmet": "Soypod Helmet", "bright_leaf_armor": "Soypod Armor", "bright_leaf_legs": "Soypod Legs", "bright_leaf_boots": "Soypod Boots", "dark_leaf_helmet": "Nori Helmet", "dark_leaf_armor": "Nori Armor", "dark_leaf_legs": "Nori Legs", "dark_leaf_boots": "Nori Boots"}
+const NAMES := {"nori_katana": "Nori Katana", "edamame_sword": "Edamame Pod Sword", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Sotjet", "sproutwood_staff": "Sproutwood Staff", "factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel · +4 slots", "traveler_backpack": "Soypod Backpack", "edamame": "Edamame", "mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk", "piece_of_shell": "Piece of Shell", "soy_milk": "Soy Milk", "bright_leaf_helmet": "Soypod Helmet", "bright_leaf_armor": "Soypod Armor", "bright_leaf_legs": "Soypod Legs", "bright_leaf_boots": "Soypod Boots", "dark_leaf_helmet": "Nori Helmet", "dark_leaf_armor": "Nori Armor", "dark_leaf_legs": "Nori Legs", "dark_leaf_boots": "Nori Boots"}
 
 signal backpack_claimed(item_id: String)
 var game: Node3D
@@ -36,6 +36,8 @@ func _drop_weapon(combat: PlayerCombat) -> bool:
 	if not pool.authoritative: return false
 	var gear := combat.equipment
 	var id := "sotjet" if combat.sotjet.selected else ("soy_gun" if combat.gun.selected else ("sproutwood_staff" if gear.staff_selected else ("knife" if gear.knife_selected else "")))
+	if gear.nori_selected: id = "nori_katana"
+	if gear.pod_selected: id = "edamame_sword"
 	if id.is_empty() or not _owns(combat, id): return false
 	var drop := pool.spawn(id, 1, combat.actor.global_position, gear.facing, combat.sotjet.milk if id == "sotjet" else 100.0)
 	if drop == null:
@@ -115,7 +117,7 @@ func _backpack_empty(drop: WorldItemDrop) -> bool:
 	return true
 
 func _owns(combat: PlayerCombat, id: String) -> bool:
-	if id == "knife": return combat.equipment.knife_owned
+	if id in ["knife", "edamame_sword", "nori_katana"]: return combat.equipment.knife_owned
 	if id == "soy_gun": return combat.equipment.gun_owned
 	if id == "sotjet": return combat.equipment.sotjet_owned
 	return combat.equipment.staff_owned

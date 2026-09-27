@@ -1,6 +1,6 @@
 class_name InventoryWindow
 extends CanvasLayer
-## Modal frosted interface for 10 inventory slots and character equipment.
+## Edge-docked equipment and backpack leave the local character unobstructed.
 
 var transfer_handler: Callable
 var conversion_handler: Callable
@@ -32,6 +32,7 @@ var _conversion_status: Label
 var _refine_menu: PopupMenu
 var _refine_slot: int = -1
 var _refine_id: String = ""
+var _backpack_dock: PanelContainer
 var _bag_label: Label
 var _selected_source: String = ""
 var _selected_slot: Variant = null
@@ -69,31 +70,16 @@ func _build_ui() -> void:
 	var root := Control.new()
 	root.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(root)
-	var panel := PanelContainer.new()
-	panel.set_anchors_preset(Control.PRESET_CENTER)
-	panel.offset_left = -350
-	panel.offset_right = 350
-	panel.offset_top = -265
-	panel.offset_bottom = 265
-	var style := StyleBoxFlat.new()
-	style.bg_color = Color("173632f5")
-	style.set_corner_radius_all(18)
-	style.set_content_margin_all(22)
-	style.border_color = Color("9bd58c")
-	style.set_border_width_all(3)
-	style.shadow_color = Color("07171599")
-	style.shadow_size = 14
-	style.shadow_offset = Vector2(0, 6)
-	panel.add_theme_stylebox_override("panel", style)
-	root.add_child(panel)
-
-	var vbox := VBoxContainer.new()
-	vbox.add_theme_constant_override("separation", 10)
-	panel.add_child(vbox)
+	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var eq_box := _make_dock(root, false, 240)
+	_label(eq_box, "EQUIPMENT", Color("aee6d0"))
+	_build_equipment(eq_box)
+	_label(eq_box, "1–2 Combat · 3–6 Support", Color("829b96"))
+	var vbox := _make_dock(root, true, 350)
 	var header := HBoxContainer.new()
 	vbox.add_child(header)
 	var title := Label.new()
-	title.text = "INVENTORY & EQUIPMENT"
+	title.text = "BACKPACK"
 	title.add_theme_font_size_override("font_size", 14)
 	title.add_theme_color_override("font_color", Color("f5dfac"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -101,18 +87,16 @@ func _build_ui() -> void:
 	_currency = Label.new()
 	_currency.add_theme_color_override("font_color", Color("eacb83"))
 	_currency.add_theme_font_size_override("font_size", 12)
-	header.add_child(_currency)
+	_currency.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	vbox.add_child(_currency)
 	var close_btn := Button.new()
 	close_btn.text = "✕"
 	close_btn.pressed.connect(close)
 	header.add_child(close_btn)
 
-	var body := HBoxContainer.new()
-	body.add_theme_constant_override("separation", 30)
-	vbox.add_child(body)
-	_build_columns(body)
+	_build_backpack(vbox)
 	_description = Label.new()
-	_description.custom_minimum_size.y = 42
+	_description.custom_minimum_size = Vector2(0, 66)
 	_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_description.add_theme_font_size_override("font_size", 12)
 	_description.add_theme_color_override("font_color", Color("e9f4dd"))
@@ -135,12 +119,29 @@ func _build_ui() -> void:
 			refresh())
 	vbox.add_child(drop_button)
 
-func _build_columns(body: HBoxContainer) -> void:
-	var eq_box := VBoxContainer.new()
-	eq_box.custom_minimum_size = Vector2(264, 0)
-	eq_box.add_theme_constant_override("separation", 12)
-	body.add_child(eq_box)
-	_label(eq_box, "EQUIPMENT", Color("aee6d0"))
+func _make_dock(root: Control, right: bool, width: float) -> VBoxContainer:
+	var panel := PanelContainer.new()
+	panel.name = "BackpackDock" if right else "EquipmentDock"
+	root.add_child(panel)
+	if right: _backpack_dock = panel
+	panel.set_anchors_preset(Control.PRESET_CENTER_RIGHT if right else Control.PRESET_CENTER_LEFT)
+	panel.offset_left = -width - 16 if right else 16
+	panel.offset_right = -16 if right else width + 16
+	panel.offset_top = -210
+	panel.offset_bottom = 210
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color("173632ef")
+	style.set_corner_radius_all(14)
+	style.set_content_margin_all(14)
+	style.border_color = Color("9bd58c")
+	style.set_border_width_all(2)
+	panel.add_theme_stylebox_override("panel", style)
+	var box := VBoxContainer.new()
+	box.add_theme_constant_override("separation", 10)
+	panel.add_child(box)
+	return box
+
+func _build_equipment(eq_box: VBoxContainer) -> void:
 	var eq_grid := EquipmentLayout.new()
 	eq_box.add_child(eq_grid)
 	for slot_name in CharacterEquipment.SLOTS:
@@ -148,19 +149,17 @@ func _build_columns(body: HBoxContainer) -> void:
 		btn.source = "equipment"
 		btn.slot_id = slot_name
 		btn.window_ref = self
-		var edge: float = 60 if slot_name.begins_with("support_") else 72
+		var edge: float = 46 if slot_name.begins_with("support_") else 56
 		btn.custom_minimum_size = Vector2(edge, edge)
 		btn.size = Vector2(edge, edge)
-		btn.position = EquipmentLayout.POSITIONS[slot_name]
+		btn.position = EquipmentLayout.POSITIONS[slot_name] * EquipmentLayout.COMPACT_SCALE
 		btn.pressed.connect(_on_slot_clicked.bind("equipment", slot_name))
 		btn.transfer_requested.connect(execute_transfer)
 		_watch_description(btn)
 		eq_grid.add_child(btn)
 		_eq_buttons[slot_name] = btn
 
-	var inv_box := VBoxContainer.new()
-	inv_box.add_theme_constant_override("separation", 12)
-	body.add_child(inv_box)
+func _build_backpack(inv_box: VBoxContainer) -> void:
 	_bag_label = Label.new()
 	_bag_label.add_theme_font_size_override("font_size", 12)
 	_bag_label.add_theme_color_override("font_color", Color("aee6d0"))
@@ -176,7 +175,7 @@ func _build_columns(body: HBoxContainer) -> void:
 		btn.source = "inventory"
 		btn.slot_id = i
 		btn.window_ref = self
-		btn.custom_minimum_size = Vector2(60, 60)
+		btn.custom_minimum_size = Vector2(56, 56)
 		btn.icon_alignment = HORIZONTAL_ALIGNMENT_CENTER
 		btn.expand_icon = true
 		btn.pressed.connect(_on_slot_clicked.bind("inventory", i))
@@ -185,7 +184,7 @@ func _build_columns(body: HBoxContainer) -> void:
 		_watch_description(btn)
 		inv_grid.add_child(btn)
 		_inv_buttons.append(btn)
-	_label(inv_box, "Drag an item to equip it.\nOr select an item, then a slot.", Color("829b96"))
+	_label(inv_box, "Drag to equip, or select then choose a slot.\nI / B / Esc · Close backpack", Color("829b96"))
 
 func _label(parent: Control, text: String, col: Color) -> void:
 	var l := Label.new()
@@ -198,6 +197,11 @@ func refresh() -> void:
 	if not is_inside_tree(): return
 	if _currency != null:
 		_currency.text = "E %d · M %d · W %d · T %d · G %d  " % [_count("edamame"), _count("mature_bean"), _count("tofu_white_chunk"), _count("toasted_tofu_chunk"), _count("golden_tofu_chunk")]
+	if _backpack_dock != null:
+		var rows := ceili(float(inventory.capacity if inventory != null else 0) / 5.0)
+		var height := 432.0 + maxf(0.0, rows - 2) * 64.0
+		_backpack_dock.offset_top = -height * 0.5
+		_backpack_dock.offset_bottom = height * 0.5
 	if _bag_label != null:
 		_bag_label.text = "BAG · %d SLOTS" % (inventory.capacity if inventory != null else 0)
 	for slot_name in CharacterEquipment.SLOTS:

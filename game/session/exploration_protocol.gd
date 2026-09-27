@@ -32,8 +32,11 @@ static func actor(state: Dictionary) -> bool:
 	for field in ["grounded", "dashing"]:
 		if not state.get(field) is bool: return false
 	if state.has("super_dashing") and not state.super_dashing is bool: return false
-	for field in ["charge", "cooldown", "health", "invulnerability"]:
+	for field in ["charge", "cooldown", "invulnerability"]:
 		if not number(state.get(field), 100) or state[field] < 0: return false
+	if state.has("progression") and not progression(state.progression): return false
+	var level := _character_level(state.get("progression", {}))
+	if not number(state.get("health"), 100.0 * pow(1.05, level - 1)) or state.health < 0: return false
 	if state.charge > 1: return false
 	if state.has("clearance") and not number(state.clearance, 100): return false
 	for field in ["respawns", "blocks", "input_ack"]:
@@ -46,13 +49,23 @@ static func actor(state: Dictionary) -> bool:
 	return state.get("combat") is Dictionary and combat(state.combat)
 
 static func combat(data: Dictionary) -> bool:
+	if data.has("vitals") and not vitals(data.vitals): return false
 	for field in ["gun_owned", "sotjet_owned", "staff_owned", "world_drops"]:
 		if data.has(field) and not data[field] is bool: return false
 	if data.get("gun", false) and not data.get("gun_owned", true): return false
 	if data.get("jet", false) and not data.get("sotjet_owned", true): return false
+	if not number(data.get("pod_cooldown", 0.0), 3.0) or data.get("pod_cooldown", 0.0) < 0: return false
+	if not number(data.get("plunge_recovery", 0.0), 0.22) or data.get("plunge_recovery", 0.0) < 0: return false
+	if not sequence(data.get("plunge_sequence", 0)): return false
+	if not number(data.get("plunge_cooldown", 0.0), 2.0) or data.get("plunge_cooldown", 0.0) < 0: return false
+	if not vector(data.get("plunge_at", [0,0,0]), 3, 500): return false
+	if data.get("nori", false) and (not data.get("selected", false) or data.get("pod", false)): return false
+	if data.get("plunging", false) and (not data.get("nori", false) or not data.get("active", false)): return false
+	if not sequence(data.get("podburst", 0)): return false
+	if data.get("pod", false) and not data.get("selected", false): return false
 	if data.get("staff", false) and not data.get("staff_owned", false): return false
 	if data.has("recoil") and (not number(data.recoil, 1) or data.recoil < 0): return false
-	for field in ["gun", "ads", "jet", "jet_ads", "jet_firing", "staff"]:
+	for field in ["gun", "ads", "jet", "jet_ads", "jet_firing", "staff", "pod", "nori", "plunging"]:
 		if data.has(field) and not data[field] is bool: return false
 	if data.get("gun", false) and (data.get("selected", false) or data.get("guard", false) or data.get("active", false)): return false
 	if data.get("jet", false) and (data.get("gun", false) or data.get("selected", false) or data.get("guard", false) or data.get("active", false)): return false
@@ -116,3 +129,16 @@ static func progression(value: Variant) -> bool:
 
 static func _progress_counter(value: Variant) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= 100000000 and float(value) == floorf(value)
+
+static func vitals(data: Variant) -> bool:
+	return data is Dictionary and number(data.get("stamina"), 100.0 * pow(1.02, 98)) and data.stamina >= 0 and number(data.get("combat_remaining"), 30.0) and data.combat_remaining >= 0
+
+static func _character_level(data: Dictionary) -> int:
+	var xp := int(data.get("experience", 0))
+	var level := 1
+	while level < 99:
+		var cost := 100 + 50 * (level - 1) + 25 * (level - 1) * (level - 1)
+		if xp < cost: break
+		xp -= cost
+		level += 1
+	return level

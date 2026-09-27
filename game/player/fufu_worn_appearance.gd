@@ -8,8 +8,12 @@ const BRIGHT_STANDING: Texture2D = preload("res://assets/characters/fufu/sets/br
 const DARK_STANDING: Texture2D = preload("res://assets/characters/fufu/sets/dark_leaf_standing.png")
 const BRIGHT_JUMP: Texture2D = preload("res://assets/characters/fufu/sets/green_leaf_knight_jump_sprite_sheet.png")
 const DARK_JUMP: Texture2D = preload("res://assets/characters/fufu/sets/dark_sprout_soldier_jump_sprite_sheet.png")
-const STANDING_FEET: Array[float] = [724.0, 700.0, 689.0, 644.0, 708.0]
-const DARK_STANDING_FEET: Array[float] = [724.0, 698.0, 706.0, 670.0, 724.0]
+# The source profile and three-quarter poses look left; rightward views mirror them.
+const MIRROR_RIGHT_FACINGS: Array[int] = [0, 1, 7]
+const STANDING_FEET: Array[float] = [637.0, 640.0, 641.0, 640.0, 641.0]
+const DARK_STANDING_FEET: Array[float] = [650.0, 651.0, 654.0, 659.0, 653.0]
+const STANDING_CENTER_OFFSETS: Array[float] = [-7.0, -3.0, 10.0, 22.0, 17.0]
+const DARK_STANDING_CENTER_OFFSETS: Array[float] = [0.0, 12.0, -22.0, 29.0, 17.0]
 const WALK_COLUMN_STARTS: Array[int] = [27, 294, 560, 829]
 const WALK_ROW_STARTS: Array[int] = [20, 280, 540, 800, 1055]
 const WALK_CELL_SIZE := Vector2i(240, 260)
@@ -47,19 +51,20 @@ func apply(sprite: Sprite3D, set_id: String, facing: int, walking: bool, walk_ph
 		sprite.hframes = 1
 		sprite.vframes = 1
 		sprite.frame = 0
-		sprite.flip_h = facing in [3, 4, 5]
+		sprite.flip_h = facing in MIRROR_RIGHT_FACINGS
 		sprite.pixel_size = WALK_PIXEL_SIZE
 		var feet := BRIGHT_WALK_FEET if set_id == "bright_leaf" else DARK_WALK_FEET
-		sprite.offset.y = feet[direction_row] - WALK_CELL_SIZE.y * 0.5 - 0.56 / WALK_PIXEL_SIZE
+		sprite.offset = Vector2(0, feet[direction_row] - WALK_CELL_SIZE.y * 0.5 - 0.56 / WALK_PIXEL_SIZE)
 		return
 	sprite.texture = BRIGHT_STANDING if set_id == "bright_leaf" else DARK_STANDING
 	sprite.hframes = 5
 	sprite.vframes = 1
 	sprite.frame = _standing_frame(facing)
-	sprite.flip_h = facing in [3, 4, 5]
+	sprite.flip_h = facing in MIRROR_RIGHT_FACINGS
 	sprite.pixel_size = STANDING_PIXEL_SIZE
 	var feet := STANDING_FEET if set_id == "bright_leaf" else DARK_STANDING_FEET
-	sprite.offset.y = feet[sprite.frame] - sprite.texture.get_height() * 0.5 - 0.56 / sprite.pixel_size
+	var centers := STANDING_CENTER_OFFSETS if set_id == "bright_leaf" else DARK_STANDING_CENTER_OFFSETS
+	sprite.offset = Vector2(centers[sprite.frame] * (-1.0 if sprite.flip_h else 1.0), feet[sprite.frame] - sprite.texture.get_height() * 0.5 - 0.56 / sprite.pixel_size)
 
 func apply_jump(sprite: Sprite3D, set_id: String, facing: int, jump_phase: int) -> void:
 	var direction_column := _standing_frame(facing)
@@ -69,7 +74,7 @@ func apply_jump(sprite: Sprite3D, set_id: String, facing: int, jump_phase: int) 
 	sprite.hframes = 1
 	sprite.vframes = 1
 	sprite.frame = 0
-	sprite.flip_h = facing in [3, 4, 5]
+	sprite.flip_h = facing in MIRROR_RIGHT_FACINGS
 	sprite.pixel_size = JUMP_PIXEL_SIZE
 	var bounds: Array = BRIGHT_JUMP_BOUNDS[direction_column] if set_id == "bright_leaf" else DARK_JUMP_BOUNDS[direction_column]
 	var painted_bottom: int = bounds[animation_row * 2 + 1]

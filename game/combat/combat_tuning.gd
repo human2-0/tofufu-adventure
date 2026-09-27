@@ -43,6 +43,13 @@ extends Resource
 @export var staff_tornado_seconds: float = 0.72
 @export var staff_tornado_cooldown: float = 0.9
 @export var staff_tornado_damage: float = 5.0
+@export_group("Edamame Pod Sword")
+@export var pod_length: float = 0.95
+@export var pod_width: float = 0.36
+@export_group("Nori Katana")
+@export var nori_length: float = 1.2
+@export var nori_speed: float = 1.1
+@export var nori_plunge_radius: float = 2.6
 @export_group("Slash")
 @export var swing_seconds: float = 0.38
 @export var heavy_swing_seconds: float = 0.48

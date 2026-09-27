@@ -13,6 +13,8 @@ signal combo_changed(count: int, critical_chance: float)
 signal clashed
 @export var actor: Node3D
 @export var tuning: CombatTuning = CombatTuning.new()
+var vitals := VitalRules.new()
+var special_attack: bool = false
 var equipment: PlayerEquipment
 var targets: Array[Damageable] = []
 var rules: MeleeRules
@@ -22,6 +24,8 @@ var owner_health: Damageable
 var sotjet: Sotjet
 var gun: SoyGun
 var sword: SwordVisual
+var podburst := Podburst.new()
+var plunge := NoriPlunge.new()
 var staff: StaffVisual
 var active: bool = false
 var attack_aim: Vector2 = Vector2.DOWN
@@ -60,14 +64,25 @@ func _ready() -> void:
 	_shape = BoxShape3D.new()
 	_shape.size = Vector3(tuning.blade_width, tuning.blade_thickness, tuning.blade_length)
 func step(aim: Vector2, held: bool, delta: float, resting_aim: Vector2 = Vector2.ZERO, airborne: bool = false, secondary_held: bool = false) -> void:
+	podburst.cooldown = maxf(0.0, podburst.cooldown - delta)
+	if plunge.active and not secondary_held: plunge.released = true
+	plunge.step(self, delta)
+	if plunge.active or plunge.recovery > 0.0:
+		sword.present(plunge.pose(actor.global_position), aim, 1.0, true, 0.0)
+		return
 	held = held and not equipment.suppress_slash()
 	if combo.step(delta):
 		_emit_combo()
-	var strength := rules.step(held, delta, attack_speed_multiplier)
+	var strength := rules.step(held, delta, melee_speed())
 	var secondary_pressed := secondary_held and not _secondary_was_held
 	_secondary_was_held = secondary_held
 	if secondary_pressed and equipment.staff_selected and not active and not held and rules.cooldown <= 0.0:
 		_start_tornado(aim)
+	if secondary_pressed and equipment.pod_selected and not active and not held and not equipment.suppress_slash() and rules.cooldown <= 0.0:
+		podburst.fire(self, aim)
+	if secondary_pressed and equipment.nori_selected and not active and not held and not equipment.suppress_slash() and rules.cooldown <= 0.0:
+		plunge.start(self, aim)
+		if plunge.active: return
 	charge_changed.emit(rules.charge)
 	if strength >= 0.0 and not active:
 		strike(aim, strength, airborne)
@@ -76,7 +91,7 @@ func step(aim: Vector2, held: bool, delta: float, resting_aim: Vector2 = Vector2
 	var heavy := KnifeAttack.powered(attack_style) or attack_style == StaffAttack.TORNADO
 	if active:
 		var duration := _attack_duration()
-		_elapsed = minf(duration, _elapsed + delta * attack_speed_multiplier)
+		_elapsed = minf(duration, _elapsed + delta * melee_speed())
 		progress = _elapsed / duration
 		_sample_sweep(progress)
 		facing = attack_aim
@@ -101,6 +116,7 @@ func step(aim: Vector2, held: bool, delta: float, resting_aim: Vector2 = Vector2
 func strike(aim: Vector2, strength: float, airborne: bool = false) -> void:
 	if active or equipment.suppress_slash():
 		return
+	special_attack = false
 	active = true
 	attack_aim = SwordGeometry.direction(aim)
 	_strength = clampf(strength, 0, 1)
@@ -116,11 +132,13 @@ func strike(aim: Vector2, strength: float, airborne: bool = false) -> void:
 	_previous_progress = 0.0
 
 func _start_tornado(aim: Vector2) -> void:
+	if not vitals.spend(VitalRules.SPECIAL_COST): return
 	rules.cancel_charge()
 	rules.cooldown = tuning.staff_tornado_cooldown
 	clash.clear()
 	active = true
 	attack_aim = SwordGeometry.direction(aim)
+	special_attack = true
 	attack_style = StaffAttack.TORNADO
 	_strength = 0.0
 	_attack_critical_chance = 0.0
@@ -132,6 +150,7 @@ func _start_tornado(aim: Vector2) -> void:
 	_previous_at = actor.global_position
 	_previous_progress = 0.0
 func reset() -> void:
+	plunge.cancel()
 	equipment.reset()
 	gun.reset()
 	sotjet.reset()
@@ -184,7 +203,8 @@ func _resolve_blade(at: Vector3, pose: Transform3D) -> void:
 				if opponent != null:
 					clash.resolve(self, opponent)
 					return
-				_damage(target)
+				var point := Geometry3D.get_closest_point_to_segment(target.global_position, pose.origin, pose.origin - pose.basis.z * _melee_length())
+				_damage(target, point)
 
 func _unobstructed(at: Vector3, target: Damageable) -> bool:
 	var origin := at + Vector3.UP * tuning.hand_height
@@ -192,7 +212,7 @@ func _unobstructed(at: Vector3, target: Damageable) -> bool:
 	var obstacle := actor.get_world_3d().direct_space_state.intersect_ray(query)
 	return obstacle.is_empty() or obstacle.collider == target.body
 
-func _damage(target: Damageable) -> void:
+func _damage(target: Damageable, point: Vector3 = Vector3.INF) -> void:
 	var base_damage := _melee_damage()
 	var critical := _attack_critical_chance > 0.0 and _critical_roll() < _attack_critical_chance
 	var damage := base_damage * sword_damage_multiplier
@@ -203,7 +223,8 @@ func _damage(target: Damageable) -> void:
 		var outward := target.global_position - actor.global_position
 		impulse = Vector3(outward.x, 0.0, outward.z).normalized() * 5.0
 	var kind := Damageable.HitKind.MELEE if equipment.staff_selected else Damageable.HitKind.KNIFE
-	if target.damage(damage, impulse, kind):
+	if target.damage(damage, impulse, kind, point):
+		vitals.confirmed_hit(not special_attack)
 		_hit_targets.append(target)
 		if combo.confirm_hit():
 			_emit_combo()
@@ -213,6 +234,9 @@ func _damage(target: Damageable) -> void:
 		var text := "CRIT! %d" % int(damage) if critical else str(int(damage))
 		CombatEffects.burst(self, target.global_position, text, Color("ff8f7f") if critical else Color(1, 0.86, 0.4))
 		struck.emit(_strength, 1)
+
+	elif target.hit_absorbed:
+		_hit_targets.append(target)
 
 func _critical_roll() -> float:
 	return float(critical_roll.call()) if critical_roll.is_valid() else randf()
@@ -227,9 +251,12 @@ func _set_melee_shape() -> void:
 	_shape.size = Vector3(_melee_width(), tuning.blade_thickness, _melee_length())
 
 func _melee_length() -> float:
+	if equipment.nori_selected: return tuning.nori_length
+	if equipment.pod_selected: return tuning.pod_length
 	return tuning.staff_length if equipment.staff_selected else tuning.blade_length
 
 func _melee_width() -> float:
+	if equipment.pod_selected: return tuning.pod_width
 	return tuning.staff_width if equipment.staff_selected else tuning.blade_width
 
 func _melee_tip(pose: Transform3D) -> Vector3:
@@ -238,7 +265,10 @@ func _melee_tip(pose: Transform3D) -> Vector3:
 func _melee_damage() -> float:
 	if equipment.staff_selected:
 		return StaffAttack.damage(attack_style, tuning)
-	return KnifeAttack.damage(attack_style, tuning)
+	return KnifeAttack.damage(attack_style, tuning) * (1.2 if equipment.pod_selected else 1.0)
+
+func melee_speed() -> float:
+	return attack_speed_multiplier * (tuning.nori_speed if equipment.nori_selected else 1.0)
 
 func _attack_duration() -> float:
 	return StaffAttack.duration(attack_style, tuning)

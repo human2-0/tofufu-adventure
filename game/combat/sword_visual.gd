@@ -8,6 +8,10 @@ const GUARDS: Array[Vector2] = [Vector2(177,212), Vector2(635,226), Vector2(1109
 const TIPS: Array[Vector2] = [Vector2(418,212), Vector2(807,86), Vector2(1109,61), Vector2(1410,86), Vector2(27,648), Vector2(520,762), Vector2(1108,816), Vector2(1698,762)]
 const WIDTHS: Array[float] = [56, 53, 57, 53, 55, 53, 61, 53]
 const GRIPS: Array[Vector2] = [Vector2(118,213), Vector2(588,268), Vector2(1109,301), Vector2(1619,265), Vector2(331,648), Vector2(739,575), Vector2(1108,550), Vector2(1475,570)]
+const POD: Texture2D = preload("res://assets/weapons/edamame/edamame_pod_sword_sprite.png")
+const NORI: Texture2D = preload("res://assets/weapons/nori/nori_katana.png")
+var nori: bool = false
+var pod: bool = false
 var tuning: CombatTuning
 var debug_visible: bool = false
 var _debug: MeshInstance3D
@@ -49,6 +53,24 @@ func _ready() -> void:
 	_debug.visible = false
 	add_child(_debug)
 
+func set_pod(value: bool) -> void:
+	if pod == value: return
+	pod = value
+	_material.albedo_texture = NORI if nori else (POD if pod else ATLAS)
+	_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC if pod or nori else BaseMaterial3D.TEXTURE_FILTER_LINEAR
+	_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if pod or nori else BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	_meshes.clear()
+	for index in 8: _meshes.append(_build_view(index))
+
+func set_nori(value: bool) -> void:
+	if nori == value: return
+	nori = value
+	_material.albedo_texture = NORI if nori else (POD if pod else ATLAS)
+	_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC if pod or nori else BaseMaterial3D.TEXTURE_FILTER_LINEAR
+	_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA if pod or nori else BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+	_meshes.clear()
+	for index in 8: _meshes.append(_build_view(index))
+
 func present(pose: Transform3D, aim: Vector2, charge: float, cutting: bool = false, attachment: float = 0.0) -> void:
 	_index = SwordGeometry.direction_index(aim)
 	_sprite.mesh = _meshes[_index]
@@ -57,7 +79,9 @@ func present(pose: Transform3D, aim: Vector2, charge: float, cutting: bool = fal
 	_has_pose = true
 	_apply_pose()
 	_debug.visible = debug_visible and cutting
-	_debug.global_transform = SwordGeometry.blade_transform(pose, tuning)
+	var length := tuning.nori_length if nori else (tuning.pod_length if pod else tuning.blade_length)
+	(_debug.mesh as BoxMesh).size = Vector3(tuning.pod_width if pod else tuning.blade_width, tuning.blade_thickness, length)
+	_debug.global_transform = pose.translated_local(Vector3(0, 0, -length * 0.5))
 	_material.albedo_color = Color(1, 0.83, 0.45) if charge >= 1.0 else Color.WHITE
 
 func follow_hand(hand: Vector3, plane: Basis, outward: float, in_front: bool) -> void:
@@ -78,10 +102,14 @@ func _apply_pose() -> void:
 	var basis := Basis(width, -blade.cross(width), -blade)
 	# Front-facing hands hold the knife over the body; rear views hide overlap.
 	var grip := _hand + _hand_plane.z * (0.035 if _in_front else -0.035)
-	var held := Transform3D(basis, grip - basis * calibrated_vertex(GRIPS[_index], _index))
+	var held := Transform3D(basis, grip - basis * calibrated_vertex(Vector2(512, 1270) if nori else (Vector2(646, 988) if pod else GRIPS[_index]), _index))
 	_sprite.global_transform = _physical_pose.interpolate_with(held, _attachment)
 
 func calibrated_vertex(pixel: Vector2, index: int) -> Vector3:
+	if nori:
+		return Vector3((pixel.x - 506.0) / 106.0 * tuning.blade_width, 0, (pixel.y - 1045.0) / 1008.0 * tuning.nori_length)
+	if pod:
+		return Vector3((pixel.x - 646.0) / 270.0 * tuning.pod_width, 0, (pixel.y - 710.0) / 685.0 * tuning.pod_length)
 	var axis := (TIPS[index] - GUARDS[index]).normalized()
 	var perpendicular := Vector2(-axis.y, axis.x)
 	var offset := pixel - GUARDS[index]
@@ -90,9 +118,9 @@ func calibrated_vertex(pixel: Vector2, index: int) -> Vector3:
 	return Vector3(across, 0, -along)
 
 func _build_view(index: int) -> ArrayMesh:
-	var size := Vector2(ATLAS.get_size())
-	var cell := size / Vector2(4, 2)
-	var origin := Vector2(index % 4, index / 4) * cell
+	var size := Vector2(NORI.get_size() if nori else (POD.get_size() if pod else ATLAS.get_size()))
+	var cell := size if pod or nori else size / Vector2(4, 2)
+	var origin := Vector2.ZERO if pod or nori else Vector2(index % 4, index / 4) * cell
 	var corners: Array[Vector2] = [origin, origin + Vector2(cell.x, 0), origin + cell, origin + Vector2(0, cell.y)]
 	var vertices := PackedVector3Array()
 	var uvs := PackedVector2Array()
