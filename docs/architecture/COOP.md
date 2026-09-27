@@ -58,7 +58,7 @@ Guests disable authoritative actor, encounter and quest outcome simulation. The 
 
 ## N3 — Bounded protocol (implemented)
 
-Armored-snail encounter rows append shell HP (0–50) and two horizontal facing components to the existing nine values. Legacy nine-value checkpoints restore an intact shell. The host owns armor damage and loot; replicas apply shell state and play hit/break feedback on decreases. Matchmaking game version 21 requires peers with this schema. Shell pieces are bounded to 50 per stack.
+Armored-snail encounter rows append shell HP (0–65) and two horizontal facing components to the existing nine values. Legacy nine-value checkpoints restore an intact shell. The host owns armor damage and loot; replicas apply shell state and play hit/break feedback on decreases. Matchmaking game version 22 requires peers with this schema. Edamame ground drops use one bounded stack row per drop, with legacy single-bean rows still accepted.
 
 
 Both streams use a four-byte big-endian JSON length, maximum 64 KiB per frame. Incremental decoding handles fragmentation/coalescing, rejects malformed frames and caps buffers at 256 KiB. Peer framing limits message rates and uses explicit queued-byte accounting plus a three-second stalled-write deadline. Loopback Node streams complete writes through callbacks; encrypted streamx peers use `Writable.drained()` because their `write()` does not accept a callback. Completed writes release queued bytes and cancel the stall deadline on both paths. Handshake version/build and session epoch reject incompatible or obsolete traffic. Sender identity comes from the encrypted stream, never from an input field.

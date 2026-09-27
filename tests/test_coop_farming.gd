@@ -88,7 +88,9 @@ func scenario(dedicated: bool) -> void:
 	one.farming.request(0, revision, "harvest")
 	two.farming.request(0, revision, "harvest")
 	await ticks()
-	check(host.game.encounters.pickups.size() == 3, "simultaneous harvest creates one ground yield")
+	var ground_yield := 0
+	for drop: SoybeanPickup in host.game.encounters.pickups.values(): ground_yield += drop.count
+	check(host.game.encounters.beans + ground_yield == 3 and (ground_yield == 0 or (host.game.encounters.pickups.size() == 1 and host.game.encounters.pickups.values()[0].count == 3)), "simultaneous harvest creates one stacked yield")
 	check(two.game.farming.plots[0].crop.phase() == SoybeanCrop.Phase.HARVEST, "harvest animation replicated")
 	await ticks(90)
 	check(member.inventory.count_item("edamame") + other.inventory.count_item("edamame") == 3, "simultaneous harvest grants exactly one yield")
@@ -111,9 +113,9 @@ func scenario(dedicated: bool) -> void:
 	one.farming.request(0, harvest_revision, "harvest")
 	await ticks()
 	# Check the durable outcome; the brief harvest animation may finish between snapshots.
-	check(not crop.planted and crop.revision == harvest_revision + 1 and host.game.encounters.pickups.size() == 3, "full party bags leave all harvested beans on ground")
+	check(not crop.planted and crop.revision == harvest_revision + 1 and host.game.encounters.pickups.size() == 1 and host.game.encounters.pickups.values()[0].count == 3, "full party bags leave one stacked ground yield")
 	await ticks(90)
-	check(host.game.encounters.pickups.size() == 3, "uncollected harvest persists while all party bags stay full")
+	check(host.game.encounters.pickups.size() == 1 and host.game.encounters.pickups.values()[0].count == 3, "uncollected stack persists while all party bags stay full")
 	var checkpoint: Dictionary = JSON.parse_string(JSON.stringify(CoopCheckpoint.capture(host)))
 	check(CoopCheckpoint.valid(checkpoint), "crop checkpoint JSON validates")
 	var saved := farm.capture()

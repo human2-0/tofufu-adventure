@@ -3,9 +3,10 @@ extends TrainingMob
 ## Directional shell protection and a telegraphed, committed headbutt rush.
 
 const LEVEL: int = 2
+const SHELL_MAX_HEALTH: float = 65.0
 @export var armored_tuning: ArmoredSnailTuning = preload("res://game/combat/default_armored_snail.tres")
 var _armored_visual: ArmoredSnailVisuals
-var shell_health: float = 50.0
+var shell_health: float = SHELL_MAX_HEALTH
 var _shell_collider: CollisionShape3D
 var facing := Vector3.BACK
 var _defend: float = 0.0
@@ -27,6 +28,9 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	_defend_cooldown = maxf(0.0, _defend_cooldown - delta)
 	_rush_cooldown = maxf(0.0, _rush_cooldown - delta)
+	if _protected(global_position):
+		position = _outside_protected_position(global_position)
+		_returning = true
 	_shell_collider.position = Vector3.UP * 0.72 - facing * 0.1
 	super(delta)
 
@@ -42,7 +46,7 @@ func _flash_visual() -> void:
 	_armored_visual.flash()
 
 func _nameplate_text() -> String:
-	return "ARMORED SNAIL · LV %d\n%s" % [LEVEL, "SHELL %d / 50" % ceili(shell_health) if shell_health > 0 else "SHELL BROKEN"]
+	return "ARMORED SNAIL · LV %d\n%s" % [LEVEL, "SHELL %d / %d" % [ceili(shell_health), int(SHELL_MAX_HEALTH)] if shell_health > 0 else "SHELL BROKEN"]
 
 func _nameplate_height() -> float:
 	return 1.75
@@ -142,7 +146,7 @@ func _add_hit_shape(radius: float, height: float, at: Vector3) -> CollisionShape
 
 func set_shell_health(value: float, feedback: bool = false, point: Vector3 = Vector3.INF) -> void:
 	var previous := shell_health
-	shell_health = clampf(value, 0.0, 50.0)
+	shell_health = clampf(value, 0.0, SHELL_MAX_HEALTH)
 	_armored_visual.set_shell_health(shell_health)
 	_nameplate.text = _nameplate_text()
 	_shell_collider.set_deferred("disabled", shell_health <= 0.0)
@@ -152,4 +156,19 @@ func set_shell_health(value: float, feedback: bool = false, point: Vector3 = Vec
 		SnailShellEffects.impact(get_parent(), at, shell_health <= 0.0)
 
 func _restore_shell() -> void:
-	set_shell_health(50.0)
+	set_shell_health(SHELL_MAX_HEALTH)
+
+func _outside_protected_position(at: Vector3) -> Vector3:
+	var bounds := protected_area
+	var point := Vector2(at.x, at.z)
+	var distances := [point.x - bounds.position.x, bounds.end.x - point.x, point.y - bounds.position.y, bounds.end.y - point.y]
+	var nearest := 0
+	for index in range(1, distances.size()):
+		if distances[index] < distances[nearest]: nearest = index
+	var margin := 0.08
+	match nearest:
+		0: point.x = bounds.position.x - margin
+		1: point.x = bounds.end.x + margin
+		2: point.y = bounds.position.y - margin
+		_: point.y = bounds.end.y + margin
+	return Vector3(point.x, at.y, point.y)

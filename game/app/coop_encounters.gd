@@ -35,12 +35,17 @@ func _hurt(actor: Node3D, amount: float, source: Vector3) -> void:
 	for member: CoopActor in party.values():
 		if member.actor == actor: member.hurt(amount, source)
 
-func _collect(actor: Node3D) -> bool:
+func _collect(actor: Node3D, bean: SoybeanPickup) -> bool:
 	for member: CoopActor in party.values():
 		if member.actor != actor: continue
-		if member.inventory == null or member.inventory.add_item(InventoryItem.create_edamame(), 1) != 0: return false
-		game.encounters.beans += 1
-		CombatEffects.burst(self, actor.global_position, "+1 EDAMAME", Color("c8efa0"))
+		if member.inventory == null: return false
+		var requested := bean.count
+		var remaining := member.inventory.add_item(InventoryItem.create_edamame(), requested)
+		if remaining == requested: return false
+		var collected := requested - remaining
+		bean.count = remaining
+		game.encounters.beans += collected
+		CombatEffects.collect(self, actor.global_position, collected)
 		game.encounters.progress_changed.emit(game.encounters.beans, game.encounters.mobs, game.encounters.props)
 		return true
 	return false

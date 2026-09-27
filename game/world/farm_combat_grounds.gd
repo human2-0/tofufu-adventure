@@ -14,6 +14,7 @@ const FOREST_ARMORED_SPAWNS: Array[Vector2] = [
 ]
 const DUMMIES: Array[Vector2] = [Vector2(16.8, 12), Vector2(19.3, 12), Vector2(21.8, 12)]
 const VILLAGE: Rect2 = Rect2(15, -21, 24, 44)
+const VILLAGE_SNAIL_MARGIN: float = 1.5
 
 static func is_camp_armored_spawn(at: Vector2) -> bool:
 	for spawn in CAMP_ARMORED_SPAWNS:

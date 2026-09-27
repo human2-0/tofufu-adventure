@@ -3,9 +3,11 @@ extends RefCounted
 ## Eastern industrial district and the forest road connecting it to the meadow.
 
 static func build(parent: Node3D) -> void:
-	MeadowGeometry.box(parent, Vector3(132, -0.3, 6), Vector3(104, 0.6, 100), Color("8d9d8c"), true)
+	MeadowGeometry.box(parent, Vector3(134, -0.3, 6), Vector3(100, 0.6, 100), Color("8d9d8c"), true)
 	# Broad elevated causeway blends into the graded meadow road.
-	MeadowGeometry.box(parent, Vector3(110, -0.05, 6), Vector3(140, 0.1, 7), Color("c9ba96"), true)
+	# It is presentation-only: the meadow and district ground provide one continuous
+	# collision surface underneath, avoiding coplanar z-fighting at x=80..84.
+	MeadowGeometry.box(parent, Vector3(110, 0.025, 6), Vector3(140, 0.05, 7), Color("c9ba96"))
 	for x in range(88, 178, 10):
 		MeadowGeometry.box(parent, Vector3(x, 0.02, 6), Vector3(3, 0.02, 0.16), Color("fff0bf"))
 		MeadowGeometry.box(parent, Vector3(x, 1.7, 11), Vector3(0.15, 3.4, 0.15), Color("45625e"), true)

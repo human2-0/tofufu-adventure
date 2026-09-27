@@ -5,6 +5,7 @@ extends Sprite3D
 signal collected
 var collect_attempt: Callable
 @export var collector: Node3D
+@export var count: int = 1
 @export var attraction_radius: float = 3.5
 @export var collection_radius: float = 0.28
 @export var attraction_speed: float = 14.0
@@ -42,8 +43,13 @@ func _follow(destination: Vector3, delta: float) -> void:
 	_speed = move_toward(_speed, attraction_speed, attraction_acceleration * delta)
 	global_position = global_position.move_toward(destination, _speed * delta)
 	if global_position.distance_to(destination) <= collection_radius:
-		if collect_attempt.is_valid() and not bool(collect_attempt.call()):
+		var routed := collect_attempt.is_valid()
+		if routed and not bool(collect_attempt.call()):
 			_attracted = false
+			return
+		if routed and count > 0:
+			_attracted = false
+			_speed = 3.0
 			return
 		_collected = true
 		collected.emit()

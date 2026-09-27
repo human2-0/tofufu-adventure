@@ -67,7 +67,7 @@ func _harvest_and_heal() -> void:
 	check(plant.current == 0, "real input combo harvests soy")
 	check(scene.encounters.props == 1, "harvest is counted once")
 	await ticks(100)
-	check(scene.encounters.beans == 2, "destroyed soy plant drops two collectible edamame")
+	check(scene.encounters.beans == 2 and scene.encounters.pickups.is_empty(), "destroyed soy plant's stacked edamame are collected")
 	check(scene.inventory.count_item("edamame") == 2, "collected edamame are stored in inventory")
 	check(scene.health.current == 60, "collecting edamame into bag does not immediately heal")
 	var stack: ItemStack = scene.inventory.get_slot(0)

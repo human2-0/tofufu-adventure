@@ -15,7 +15,7 @@ var _body: Node3D
 var _head: Node3D
 var _shell: Node3D
 var _shell_flash: float = 0.0
-var _shell_health: float = 50.0
+var _shell_health: float = 65.0
 var _flash_left: float = 0.0
 var _dodge_left: float = 0.0
 var _clock: float = 0.0
@@ -137,7 +137,7 @@ func _apply_flash() -> void:
 	for index in _materials.size():
 		var tint := _base_colors[index]
 		if tint in [SHELL, SHELL_RIDGE, SHELL_DARK]:
-			tint = tint.lerp(SHELL_DARK, (1.0 - _shell_health / 50.0) * 0.5)
+			tint = tint.lerp(SHELL_DARK, (1.0 - _shell_health / 65.0) * 0.5)
 			tint = tint.lerp(Color("fff3a6"), _shell_flash / 0.18)
 		_materials[index].albedo_color = tint.lerp(CREAM, amount)
 

@@ -18,6 +18,35 @@ static func burst(parent: Node, at: Vector3, text: String, color: Color) -> void
 	tween.tween_property(label, "modulate:a", 0.0, 0.8)
 	tween.chain().tween_callback(label.queue_free)
 
+static func collect(parent: Node, at: Vector3, amount: int) -> void:
+	if amount <= 0: return
+	const META := "edamame_collection_feedback"
+	var label: Label3D = parent.get_meta(META) if parent.has_meta(META) else null
+	if not is_instance_valid(label):
+		label = Label3D.new()
+		parent.add_child(label)
+		label.font_size = 42
+		label.pixel_size = 0.009
+		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		label.no_depth_test = true
+		label.render_priority = 127
+		label.set_meta("amount", 0)
+		parent.set_meta(META, label)
+	var old_tween: Tween = label.get_meta("fade") if label.has_meta("fade") else null
+	if old_tween != null and old_tween.is_valid(): old_tween.kill()
+	var total := int(label.get_meta("amount")) + amount
+	label.set_meta("amount", total)
+	label.text = "+%d EDAMAME" % total
+	label.global_position = at + Vector3.UP * 1.4
+	label.modulate = Color("c8efa0")
+	var tween := label.create_tween().set_parallel(true)
+	label.set_meta("fade", tween)
+	tween.tween_property(label, "position:y", label.position.y + 1.2, 1.0)
+	tween.tween_property(label, "modulate:a", 0.0, 1.0)
+	tween.chain().tween_callback(func() -> void:
+		if parent.has_meta(META) and parent.get_meta(META) == label: parent.remove_meta(META)
+		if is_instance_valid(label): label.queue_free())
+
 static func sparks(parent: Node, at: Vector3, show_label: bool = true) -> void:
 	if show_label: burst(parent, at - Vector3.UP * 0.7, "CLINK!", Color("fff1a8"))
 	for index in 10:

@@ -15,7 +15,7 @@ static func apply_mob(mob: TrainingMob, data: Array, feedback: bool = false) -> 
 	if data[6] < mob.target.current: mob.flash_hit()
 	mob.position = Vector3(data[0], data[1], data[2])
 	if mob is ArmoredSnail:
-		mob.set_shell_health(float(data[9]) if data.size() == 12 else 50.0, feedback)
+		mob.set_shell_health(float(data[9]) if data.size() == 12 else ArmoredSnail.SHELL_MAX_HEALTH, feedback)
 		if data.size() == 12: mob.facing = Vector3(data[10], 0, data[11])
 	mob.velocity = Vector3(data[3], data[4], data[5])
 	mob.target.current = data[6]
@@ -52,7 +52,7 @@ static func apply_dummy(dummy: PracticeDummy, data: Array, feedback: bool = fals
 static func pickup(id: int, pickup: SoybeanPickup) -> Array:
 	var p := pickup.position
 	return [id, p.x, p.y, p.z, pickup._age, pickup._speed, pickup._fall_speed,
-		int(pickup._grounded), int(pickup._attracted), int(pickup._collected)]
+		int(pickup._grounded), int(pickup._attracted), int(pickup._collected), pickup.count]
 
 static func apply_pickup(pickup: SoybeanPickup, data: Array) -> void:
 	pickup.position = Vector3(data[1], data[2], data[3])
@@ -62,3 +62,4 @@ static func apply_pickup(pickup: SoybeanPickup, data: Array) -> void:
 	pickup._grounded = data[7] == 1
 	pickup._attracted = data[8] == 1
 	pickup._collected = data[9] == 1
+	pickup.count = clampi(int(data[10]) if data.size() > 10 else 1, 1, 100)

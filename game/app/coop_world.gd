@@ -38,7 +38,7 @@ static func apply(game: Node3D, data: Dictionary, replica: bool) -> void:
 		var id := int(state[0])
 		live.append(id)
 		var bean: SoybeanPickup = encounters.pickups.get(id)
-		if bean == null: bean = encounters.add_pickup(id, Vector3.ZERO)
+		if bean == null: bean = encounters.add_pickup(id, Vector3.ZERO, int(state[10]) if state.size() > 10 else 1)
 		bean.set_physics_process(not replica)
 		EncounterState.apply_pickup(bean, state)
 	for id: int in encounters.pickups.keys():

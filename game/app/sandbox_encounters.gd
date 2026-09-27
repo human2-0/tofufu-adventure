@@ -66,7 +66,7 @@ func _add_mob(at: Vector2, rain_only: bool = false, armored: bool = false, free_
 	mob.free_roaming = free_roaming
 	mob.position = ground_point.call(at.x, at.y, 0.1)
 	mob.quarry = player
-	mob.protected_area = Rect2() if free_roaming else protected_area
+	mob.protected_area = protected_area.grow(FarmCombatGrounds.VILLAGE_SNAIL_MARGIN) if armored else (Rect2() if free_roaming else protected_area)
 	if free_roaming: mob.leash_radius = INF
 	add_child(mob)
 	mob.set_rain(false)
@@ -123,15 +123,15 @@ func _drop(at: Vector3, count: int) -> void:
 	spawn_edamame(at, count, player)
 
 func spawn_edamame(at: Vector3, count: int, actor: Node3D) -> bool:
-	if count <= 0 or count > 100 or pickups.size() + count > 128: return false
-	for index in count:
-		var bean := add_pickup(next_pickup_id, at + Vector3((index - (count - 1) * 0.5) * 0.8, 0, 0))
-		bean.collector = actor
+	if count <= 0 or count > 100 or pickups.size() + 1 > 128: return false
+	var bean := add_pickup(next_pickup_id, at, count)
+	bean.collector = actor
 	return true
 
-func add_pickup(id: int, at: Vector3) -> SoybeanPickup:
+func add_pickup(id: int, at: Vector3, count: int = 1) -> SoybeanPickup:
 	var bean := SoybeanPickup.new()
 	bean.texture = CurrencyVisuals.icon("edamame", 1)
+	bean.count = clampi(count, 1, 100)
 	bean.position = at
 	add_child(bean)
 	pickups[id] = bean
@@ -141,16 +141,21 @@ func add_pickup(id: int, at: Vector3) -> SoybeanPickup:
 	return bean
 
 func _pickup_collected(bean: SoybeanPickup) -> bool:
-	if party_collect.is_valid(): return bool(party_collect.call(bean.collector))
-	return _collect()
+	if party_collect.is_valid(): return bool(party_collect.call(bean.collector, bean))
+	return _collect(bean)
 
 func _mob_attacked(amount: float, source: Vector3, mob: TrainingMob) -> void:
 	if party_hurt.is_valid(): party_hurt.call(mob.quarry, amount, source)
 	else: _hurt_player(amount, source)
 
-func _collect() -> bool:
-	if inventory == null or inventory.add_item(InventoryItem.create_edamame(), 1) != 0: return false
-	beans += 1
-	CombatEffects.burst(self, player.global_position, "+1 EDAMAME", Color("c8efa0"))
+func _collect(bean: SoybeanPickup) -> bool:
+	if inventory == null: return false
+	var requested := bean.count
+	var remaining := inventory.add_item(InventoryItem.create_edamame(), requested)
+	if remaining == requested: return false
+	var collected := requested - remaining
+	bean.count = remaining
+	beans += collected
+	CombatEffects.collect(self, player.global_position, collected)
 	progress_changed.emit(beans, mobs, props)
 	return true

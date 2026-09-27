@@ -85,7 +85,7 @@ func perform(actor: Node3D, inventory: PlayerInventory, id: int, revision: int, 
 	if action == "plant":
 		return "Planted edamame! Ready in 30 seconds." if plot.crop.plant() else ""
 	if action != "harvest" or plot.crop.phase() != SoybeanCrop.Phase.RIPE: return ""
-	if game.encounters.pickups.size() + SoybeanCrop.YIELD > 128:
+	if game.encounters.pickups.size() + 1 > 128:
 		return "Too many beans on the ground; collect some before harvesting."
 	if not plot.crop.harvest(): return ""
 	game.encounters.spawn_edamame(plot.global_position, SoybeanCrop.YIELD, actor)

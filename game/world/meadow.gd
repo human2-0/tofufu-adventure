@@ -150,9 +150,8 @@ func _countryside() -> void:
 			if Vector2(x, z).distance_to(center) < 17.0:
 				hill_height = 1.0
 		MeadowGeometry.rock(self, ground_point(x, z, 0.5), Vector3(5, hill_height, 5), Color("88a17a").lerp(Color("b6be8d"), _rng.randf_range(0, 0.6)))
-	for z in [-43.5, 46.5]:
-		var edge := MeadowGeometry.box(self, Vector3(80, 6, z), Vector3(1, 100, 67), Color.WHITE, true)
-		edge.visible = false
-	for side in [-1.0]:
-		var wall := MeadowGeometry.box(self, Vector3(side * 80, 6, 0), Vector3(1, 100, 161), Color.WHITE, true)
-		wall.visible = false
+	# The east side continues into Gigalopolis and the north/south sides continue into
+	# the biome chain. Keep only the true western map edge; the old x=80 walls blocked
+	# the factory road and made walkable terrain look like invisible dead ends.
+	var western_edge := MeadowGeometry.box(self, Vector3(-84, 6, 0), Vector3(0.8, 12, 168), Color.WHITE, true)
+	western_edge.visible = false

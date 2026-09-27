@@ -32,7 +32,7 @@ func run() -> void:
 	var plot: SoybeanPlot = game.farming.plots[3]
 	game.player.position = plot.position + Vector3(0, 0.1, 1.2)
 	check(game.farming.interact(plot), "nearby ripe plot harvest")
-	check(game.encounters.pickups.size() == 3 and game.inventory.count_item("edamame") == 0, "harvest creates three ground edamame")
+	check(game.encounters.pickups.size() == 1 and game.encounters.pickups.values()[0].count == 3 and game.inventory.count_item("edamame") == 0, "harvest creates one stacked ground edamame drop")
 	var ground_bean: SoybeanPickup = game.encounters.pickups.values()[0]
 	check(ground_bean.pixel_size * maxf(ground_bean.texture.get_width(), ground_bean.texture.get_height()) < 0.6, "ground bean remains smaller than the player")
 	check(not game.farming.interact(plot), "no duplicate grant")
@@ -45,7 +45,7 @@ func run() -> void:
 		game.inventory.set_slot(i, ItemStack.new(InventoryItem.create_edamame(), 100))
 	check(game.farming.interact(plot), "full bag can harvest into ground drops")
 	for tick in 90: await physics_frame
-	check(game.encounters.pickups.size() == 3 and game.inventory.count_item("edamame") == 1000, "full bag leaves currency on ground without loss")
+	check(game.encounters.pickups.size() == 1 and game.encounters.pickups.values()[0].count == 3 and game.inventory.count_item("edamame") == 1000, "full bag leaves one stacked currency drop without loss")
 	game.inventory.set_slot(0, null)
 	for tick in 90: await physics_frame
 	check(game.encounters.pickups.is_empty() and game.inventory.count_item("edamame") == 903, "ground currency can be recovered after making bag space")

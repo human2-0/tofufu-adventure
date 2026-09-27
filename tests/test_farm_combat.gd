@@ -118,6 +118,7 @@ func _armored_snail(mobs: Array[TrainingMob]) -> void:
 	check(armored_count == 3 + FarmCombatGrounds.FOREST_ARMORED_SPAWNS.size() and armored != null and armored.LEVEL == 2, "level-two armored snails occupy rain reserves and forest clearings")
 	check(level_one_names == 12, "normal snails display their level-one nameplate")
 	if armored == null: return
+	check(armored.protected_area == FarmCombatGrounds.VILLAGE.grow(FarmCombatGrounds.VILLAGE_SNAIL_MARGIN), "armored snails use a margin outside the village boundary")
 	check(armored._armored_visual is ArmoredSnailVisuals, "armored snail uses its full 3D model")
 	check(armored.target.maximum > 60 and armored.tuning.dry_damage > 12, "armored snail exceeds normal snail health and damage")
 	var before := armored.target.current
@@ -147,7 +148,8 @@ func _armored_snail(mobs: Array[TrainingMob]) -> void:
 	scene.encounters.shell_drop_roll = func() -> float: return 0.05
 	armored.target.invulnerability = 0.0
 	armored.target.damage(999, -armored.facing, Damageable.HitKind.MELEE)
-	check(scene.encounters.pickups.size() == edamame_before + 4, "armored snail drops four Edamame")
+	check(scene.encounters.pickups.size() == edamame_before + 1, "armored snail drops one stacked Edamame pickup")
+	check(scene.encounters.pickups.values().any(func(drop: SoybeanPickup) -> bool: return drop.count == 4), "armored snail stack contains four Edamame")
 	var has_shell_piece := false
 	for drop: WorldItemDrop in scene.world_items.pool.drops.values():
 		if drop.item_id == "piece_of_shell": has_shell_piece = true
