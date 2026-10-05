@@ -2,6 +2,7 @@ class_name Player
 extends CharacterBody3D
 
 signal threatened
+signal relocated
 ## Actor composition: intent -> movement rules -> physics -> presentation.
 
 signal dash_cooldown_updated(current: float, total: float)
@@ -14,6 +15,10 @@ signal jump_charge_updated(value: float)
 @export var command_source: PlayerCommandSource
 @onready var visuals: FufuVisuals = $Sprite3D
 
+var transport_active: bool = false
+var transport_step: Callable
+var parrot_rest := Vector3.INF
+var transport_origin := Vector3.ZERO
 var surface_speed: float = 1.0
 var movement_modifier: Callable
 var ability_velocity: Callable
@@ -23,12 +28,20 @@ var placement_peers: Array[CharacterBody3D] = []
 func _ready() -> void:
 	assert(command_source != null, "Player requires a command source")
 	motor = PlayerMotor.new(tuning)
+	add_child(PlayerFootsteps.new())
 	motor.jumped.connect(visuals.show_jump)
 	motor.dashed.connect(_on_dashed)
 	motor.super_dashed.connect(_on_super_dashed)
 
 func _physics_process(delta: float) -> void:
 	var command := command_source.sample(global_position)
+	if transport_active:
+		if transport_step.is_valid(): transport_step.call(command, delta)
+		command = PlayerCommand.new()
+		command.cancel_actions = true
+		command_sampled.emit(command, delta)
+		visuals.present(command, Vector3.ZERO, true, false, delta, 0.0, 0.0)
+		return
 	if command.cancel_actions:
 		motor.cancel_jump()
 		motor.cancel_dash_charge()
@@ -51,8 +64,10 @@ func _on_dashed() -> void:
 func _on_super_dashed() -> void:
 	super_dashed.emit(global_position)
 
-func relocate(desired: Vector3) -> bool:
-	return PlayerPlacement.relocate(self, $CollisionShape3D, desired, placement_peers)
+func relocate(desired: Vector3, preserve_transport: bool = false) -> bool:
+	var placed := PlayerPlacement.relocate(self, $CollisionShape3D, desired, placement_peers)
+	if placed and not preserve_transport: relocated.emit()
+	return placed
 
 func _ground_clearance() -> float:
 	if is_on_floor():

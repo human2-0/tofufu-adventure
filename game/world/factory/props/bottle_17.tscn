@@ -1,0 +1,126 @@
+[gd_scene load_steps=13 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/cream.svg" id="e1"]
+
+[ext_resource type="Material" path="res://game/world/factory/props/factory_ink.tres" id="e2"]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/iron.svg" id="e3"]
+
+[sub_resource type="BoxShape3D" id="r1"]
+size = Vector3(0.2, 0.4, 0.2)
+
+[sub_resource type="CylinderMesh" id="r2"]
+top_radius = 0.1
+bottom_radius = 0.1
+height = 0.34
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="r3"]
+albedo_color = Color(0.721569, 0.831373, 0.792157, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="CylinderMesh" id="r4"]
+top_radius = 0.075
+bottom_radius = 0.075
+height = 0.16
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="r5"]
+albedo_color = Color(0.823529, 0.741176, 0.537255, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="CylinderMesh" id="r6"]
+top_radius = 0.12
+bottom_radius = 0.12
+height = 0.09
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="r7"]
+albedo_color = Color(0.784314, 0.658824, 0.419608, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e3")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="BoxMesh" id="r8"]
+size = Vector3(0.18, 0.11, 0.012)
+
+[sub_resource type="StandardMaterial3D" id="r9"]
+albedo_color = Color(0.941176, 0.913725, 0.823529, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[node name="Bottle17" type="Node3D"]
+metadata/content_id = "sodium_citrate"
+
+[node name="Body" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="Body"]
+position = Vector3(0.0, 0.2, 0.0)
+shape = SubResource("r1")
+
+[node name="StaticVisual" type="Node3D" parent="."]
+
+[node name="MovingParts" type="Node3D" parent="."]
+
+[node name="Vessel" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.2, 0.0)
+mesh = SubResource("r2")
+material_override = SubResource("r3")
+
+[node name="Contents" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.12, 0.0)
+mesh = SubResource("r4")
+material_override = SubResource("r5")
+
+[node name="Cap" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.38, 0.0)
+mesh = SubResource("r6")
+material_override = SubResource("r7")
+
+[node name="PaperLabel" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.23, 0.105)
+mesh = SubResource("r8")
+material_override = SubResource("r9")
+
+[node name="ContentLabel" type="Label3D" parent="."]
+double_sided = false
+position = Vector3(0.0, 0.235, 0.142)
+text = "Sodium citrate"
+font_size = 32
+pixel_size = 0.0007
+billboard = 0
+no_depth_test = false
+modulate = Color(0.152941, 0.231373, 0.231373, 1.0)
+
+[node name="carry_grip" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.42, 0.0)
+
+[node name="interaction" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.24, 0.35)

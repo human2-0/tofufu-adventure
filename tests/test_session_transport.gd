@@ -104,7 +104,7 @@ func connect_room(transport: SessionTransport, room: PlaytestRoom) -> SessionCon
 	return connection
 
 func check_launch_injection() -> void:
-	var app: Node = load("res://game/app/launch.tscn").instantiate()
+	var app: Node = load("res://game/app/bootstrap/launch.tscn").instantiate()
 	app.get_node("Transport").free()
 	var alternate := LocalTransport.new()
 	alternate.key = "c".repeat(64)

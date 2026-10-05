@@ -27,6 +27,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 	if not pending.is_empty():
 		var next := _consume_pending()
 		_held.move = next.move
+		_held.run_held = next.run_held
 		_held.face_aim = next.face_aim
 		_held.aim = next.aim
 		_held.aim_point = next.aim_point
@@ -40,6 +41,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 		return next
 	var command := PlayerCommand.new()
 	command.move = _held.move
+	command.run_held = _held.run_held
 	command.face_aim = _held.face_aim
 	command.aim = _held.aim
 	command.aim_point = _held.aim_point

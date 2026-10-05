@@ -23,7 +23,7 @@ var _pending: String = ""
 var _timeout: float = 0
 var _retry_clock: float = 0
 var _presence_clock: float = 0
-const GAME_VERSION: int = 22
+const GAME_VERSION: int = 38
 
 func receive(event: Dictionary) -> void:
 	var key := str(event.get("key", ""))
@@ -51,7 +51,7 @@ func receive(event: Dictionary) -> void:
 		"packet":
 			if peers.has(key) and event.get("data") is Dictionary:
 				_packet(key, event.data)
-				if event.data.get("type") in ["input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice"]: return
+				if event.data.get("type") in ["input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice", "tofu_puzzle", "tofu_puzzle_result"]: return
 		"error":
 			_reset_session(str(event.get("message", "Connection failed.")))
 			peers.clear()
@@ -104,61 +104,7 @@ func leave(reason: String = "You left the meadow.") -> void:
 	changed.emit()
 
 func _packet(key: String, data: Dictionary) -> void:
-	match data.get("type"):
-		"presence":
-			peers[key].hosting = data.get("hosting") == true
-			peers[key].busy = data.get("busy") == true
-		"join":
-			if not hosting or (members.size() >= 4 and key not in members) or data.get("version") != GAME_VERSION or (admission.is_valid() and not admission.call(key)):
-				send_packet.call(key, {"type": "reject"})
-				return
-			if key not in members: members.append(key)
-			_broadcast_roster()
-			status = "%d / 4 beans gathered. Ready when you are." % members.size()
-		"welcome":
-			if key != _pending and key != host_key: return
-			if not data.get("members") is Array or data.members.size() > 4 or data.members.size() < 1: return
-			if not data.get("dedicated", false) is bool: return
-			if (key not in data.members and not data.get("dedicated", false)) or local_key not in data.members: return
-			if data.get("dedicated", false) and key in data.members: return
-			for member: Variant in data.members:
-				if not ExplorationProtocol.key(member) or data.members.count(member) != 1: return
-			if not data.get("epoch") is String or data.epoch.length() != 32: return
-			if not data.get("names") is Dictionary or data.names.size() > 4 or not data.get("playing") is bool: return
-			for member: Variant in data.names:
-				if member not in data.members or not data.names[member] is String or data.names[member].length() > 24: return
-			dedicated = data.get("dedicated", false)
-			names = data.names
-			host_key = key
-			epoch = data.epoch
-			members = data.members
-			_pending = ""
-			status = "Connected · %d beans in the meadow. Waiting for the host to start." % members.size()
-			if data.playing and not playing:
-				playing = true
-				started.emit(false, members.duplicate(), local_key)
-		"reject":
-			if key == _pending:
-				_pending = ""
-				status = "This meadow is full, unavailable, or running a different game version."
-		"begin":
-			if key != host_key or hosting or playing or data.get("epoch") != epoch: return
-			playing = true
-			_presence()
-			started.emit(false, members.duplicate(), local_key)
-		"leave":
-			if data.get("epoch") != epoch: return
-			if key == host_key and not hosting: _reset_session("The host closed the meadow.")
-			elif hosting and key in members:
-				members.erase(key)
-				_broadcast_roster()
-		"removed":
-			if key == host_key and not hosting and data.get("epoch") == epoch:
-				_reset_session(str(data.get("reason", "The host ended this connection.")).left(160))
-				_presence()
-		"input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice", "inventory_transfer", "shop_result", "farm_action", "farm_result":
-			if playing and (key in members or key == host_key) and data.get("epoch") == epoch:
-				gameplay_packet.emit(key, data)
+	RoomMessages.packet(self, key, data)
 
 func _broadcast_roster() -> void:
 	if not hosting: return

@@ -60,8 +60,8 @@ func _initialize() -> void:
 	room.create_room()
 	var old_peer := "f".repeat(64)
 	room.peers[old_peer] = {"name": "Old build", "hosting": false, "busy": false}
-	room.receive({"type": "packet", "key": old_peer, "data": {"type": "join", "version": 2}})
-	check(old_peer not in room.members, "pre-weather clients cannot join incompatible world schema")
+	room.receive({"type": "packet", "key": old_peer, "data": {"type": "join", "version": PlaytestRoom.GAME_VERSION - 1}})
+	check(old_peer not in room.members, "older clients without cloud terrain cannot join the new world")
 	for letter: String in ["b", "c", "d", "e"]:
 		var key := letter.repeat(64)
 		room.peers[key] = {"name": letter, "hosting": false, "busy": false}

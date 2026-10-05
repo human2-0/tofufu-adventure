@@ -145,7 +145,7 @@ func _run() -> void:
 	quit(1 if failures else 0)
 
 func _saves() -> void:
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	game.player.set_physics_process(false)
@@ -173,7 +173,7 @@ func _saves() -> void:
 	await process_frame
 
 func _push() -> void:
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	await ticks(3)

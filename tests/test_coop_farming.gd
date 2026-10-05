@@ -50,7 +50,7 @@ func scenario(dedicated: bool) -> void:
 		viewport.size = Vector2i(1280, 720)
 		root.add_child(viewport)
 		views.append(viewport)
-		var game: Node3D = load("res://game/app/main.tscn").instantiate()
+		var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 		game.play_opening = false
 		viewport.add_child(game)
 		var session := CoopSession.new()
@@ -68,6 +68,7 @@ func scenario(dedicated: bool) -> void:
 	var other: CoopActor = host.roster.party[TWO]
 	check(one._synchronized and two._synchronized, "both guests synchronized")
 	check(host.roster.party.has(HOST) != dedicated, "dedicated authority has no player actor")
+	await orchard(host, one, two, member, other)
 	# Requests must not mutate the guest and must fail when too far away.
 	one.farming.request(0, 0, "plant")
 	await ticks()
@@ -173,3 +174,39 @@ func scenario(dedicated: bool) -> void:
 	views.clear()
 	rooms.clear()
 	sessions.clear()
+
+func orchard(host: CoopSession, one: CoopSession, two: CoopSession, member: CoopActor, other: CoopActor) -> void:
+	var first := one.get_node("AppleHarvestSync") as CoopAppleHarvest
+	var second := two.get_node("AppleHarvestSync") as CoopAppleHarvest
+	var authority := host.get_node("AppleHarvestSync") as CoopAppleHarvest
+	var tree: AppleTree = host.game.world.apple_trees[0]
+	first.request(0)
+	await ticks()
+	check(tree.can_harvest(), "orchard rejects a remote shake beyond reach")
+	member.actor.relocate(tree.global_position + Vector3(0, 0.2, 2.2))
+	other.actor.relocate(tree.global_position + Vector3(2.2, 0.2, 0))
+	await ticks()
+	first.request(0)
+	second.request(0)
+	check(one.game.world.apple_trees[0].can_harvest(), "guest does not harvest apples speculatively")
+	await ticks(45)
+	var apples := 0
+	var apple_id := 0
+	for drop: WorldItemDrop in host.game.world_items.pool.drops.values():
+		if drop.item_id == "apple":
+			apples += drop.count
+			apple_id = drop.drop_id
+	check(apples == 4 and member.inventory.count_item("apple") + other.inventory.count_item("apple") == 0, "simultaneous shakes leave exactly four apples on the ground")
+	check(not one.game.world.apple_trees[0].can_harvest() and not two.game.world.apple_trees[0].can_harvest(), "tree regrowth state reaches every guest")
+	await ticks(30)
+	check(member.inventory.count_item("apple") + other.inventory.count_item("apple") == 0, "proximity never automatically collects orchard fruit")
+	check(host.game.world_items._pickup(apple_id, member.combat), "explicit authority pickup grants the reachable fruit")
+	check(not host.game.world_items._pickup(apple_id, other.combat), "a second actor cannot collect the same fruit stack")
+	await ticks()
+	check(one.game.inventory.count_item("apple") == 4 and two.game.inventory.count_item("apple") == 0, "explicit pickup inventory reaches the owning guest once")
+	tree.step(AppleTree.REGROW_SECONDS)
+	authority._packet(ONE, {"type": "apple_harvest", "sequence": 2, "tree": 0})
+	authority._physics_process(0.0)
+	check(tree.can_harvest(), "replayed harvest intent cannot shake a regrown tree")
+	member.actor.relocate(Vector3(0, 0.2, 0))
+	other.actor.relocate(Vector3(2, 0.2, 2))

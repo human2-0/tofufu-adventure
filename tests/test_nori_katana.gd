@@ -154,9 +154,11 @@ func _run() -> void:
 	check(not combat.plunge.active, "reset cancels flight")
 	combat.equipment.nori_selected = false
 	check(is_equal_approx(combat.melee_speed(), 1.0), "speed removed on unequip")
-	var image := SwordVisual.NORI.get_image()
-	if image.is_compressed(): image.decompress()
-	check(image.get_pixel(0, 0).a < 0.01, "generated artwork background is transparent")
+	check(combat.sword._model_id == "nori_katana" and combat.sword._model_instance != null, "supplied katana GLB is loaded for combat presentation")
+	var model_pose := SwordGeometry.pose(Vector3.ZERO, Vector2.UP, -1, combat.tuning)
+	combat.sword.present(model_pose, Vector2.UP, 0)
+	var model_tip := model_pose * Vector3(0, 0, -combat.tuning.nori_length)
+	check(combat.sword.model_tip_position().distance_to(model_tip) < 0.001, "katana model tip matches physical reach")
 	stage.queue_free()
 	await process_frame
 	print("Nori Katana: ", "PASS" if failures == 0 else "FAIL")

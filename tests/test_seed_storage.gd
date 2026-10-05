@@ -12,7 +12,7 @@ func check(condition: bool, message: String) -> void:
 		printerr("FAIL: ", message)
 
 func _run() -> void:
-	scene = preload("res://game/app/main.tscn").instantiate()
+	scene = preload("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	root.add_child(scene)
 	await physics_frame
@@ -33,8 +33,8 @@ func _run() -> void:
 	check(storage.free_satchel_claimed and not scene.world_items.pool.drops.has(satchel.drop_id), "claimed satchel is removed and cannot respawn")
 	check(InventoryTransfer.apply(scene.inventory, scene.character_equipment, "inventory", 0, "equipment", "backpack"), "claimed satchel equips from the bag")
 	check(scene.inventory.capacity == PlayerInventory.CAPACITY + 4, "equipped Seed Satchel expands the bag to fourteen slots")
-	var doorway_from: Vector3 = scene.world.seed_bank.global_position + Vector3(0, 1.1, 4.1)
-	var doorway_to: Vector3 = scene.world.seed_bank.global_position + Vector3(0, 1.1, 2.0)
+	var doorway_from: Vector3 = scene.world.seed_bank.global_position + Vector3(0, 1.1, 15.0)
+	var doorway_to: Vector3 = scene.world.seed_bank.global_position + Vector3(0, 1.1, 12.5)
 	var doorway_ray := PhysicsRayQueryParameters3D.create(doorway_from, doorway_to, 1)
 	check(scene.get_world_3d().direct_space_state.intersect_ray(doorway_ray).is_empty(), "open doorway provides a physical path into the bank")
 	check(storage.chest.slots.size() == ChestInventory.CAPACITY and ChestInventory.CAPACITY == 24, "seed bank supplies 24 chest slots")
@@ -57,10 +57,28 @@ func _run() -> void:
 	AdventureSnapshot.restore(scene, saved)
 	check(storage.chest.get_slot(4) != null and storage.chest.get_slot(4).count == 17, "stored stack survives save restore")
 	check(storage.free_satchel_claimed, "satchel claim survives save restore")
-	scene.player.global_position = scene.world.seed_bank.global_position + Vector3(0, 0.2, 1.4)
+	scene.player.global_position = scene.world.seed_bank.to_global(MeadowBarn.table_position(0) + MeadowBarn.front(0) * 1.1 + Vector3.DOWN * 0.7)
 	await physics_frame
 	check(storage.nearby(scene.player), "player can reach storage from inside the open doorway")
+	scene.inventory.set_slot(2, ItemStack.new(bean, 7))
+	check(ChestTransfer.quick_move(scene.inventory, storage.chest, "inventory", 2), "quick move sends a bag stack to the first matching depot stack")
+	check(scene.inventory.get_slot(2) == null and storage.chest.get_slot(4).count == 24, "quick move merges the complete bag stack")
+	check(ChestTransfer.quick_move(scene.inventory, storage.chest, "chest", 4), "quick move also moves depot contents back to the bag")
+	check(storage.chest.get_slot(4) == null and scene.inventory.count_item("edamame") == 24, "reciprocal quick move preserves the total stack")
+	var shift_click := InputEventMouseButton.new()
+	shift_click.button_index = MOUSE_BUTTON_LEFT
+	shift_click.pressed = true
+	shift_click.shift_pressed = true
+	scene.inventory_window._inv_buttons[0]._gui_input(shift_click)
+	check(scene.inventory.get_slot(0) == null and storage.chest.get_slot(0).count == 24, "Shift-click in the backpack stores the stack at the Seed Bank")
+	scene.inventory.set_slot(2, ItemStack.new(bean, 4))
 	storage.window.open()
+	await process_frame
+	storage.window._bag_buttons[2]._gui_input(shift_click)
+	check(scene.inventory.get_slot(2) == null and storage.chest.get_slot(0).count == 28, "Shift-click in the depot bag quick-stacks into the chest")
+	storage.window._chest_buttons[0]._gui_input(shift_click)
+	check(storage.chest.get_slot(0) == null and scene.inventory.count_item("edamame") == 28, "Shift-click in the depot chest returns the stack to the bag")
+	storage.chest.set_slot(4, ItemStack.new(bean, 17))
 	check(storage.window.visible, "storage interaction opens chest transfer panel")
 	await process_frame
 	storage.window._chest_buttons[4].grab_focus()

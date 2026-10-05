@@ -74,6 +74,7 @@ func apply(sprite: Sprite3D, facing: int = 2) -> void:
 		hand = directional.hand
 		return
 	hand = HANDS[frame]
+	hand.x = 2.0 * CENTERS[frame] - hand.x
 	sprite.material_override = null
 	sprite.texture = TEXTURES[frame]
 	sprite.hframes = 1

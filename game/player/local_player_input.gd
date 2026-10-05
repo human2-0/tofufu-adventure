@@ -4,6 +4,7 @@ extends PlayerCommandSource
 
 var first_person_view: bool = false
 var shoulder_view: bool = false
+var camera_aim_offset := Vector2.ZERO # Normalized screen offset supplied by app presentation.
 var enabled: bool = true
 var pickup_target: int = 0
 var focus_point: Vector3 = Vector3.INF
@@ -30,6 +31,7 @@ func sample(world_position: Vector3) -> PlayerCommand:
 		command.cancel_actions = true
 		return command
 	command.move = Input.get_vector("move_left", "move_right", "move_up", "move_down")
+	command.run_held = Input.is_action_pressed("run")
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
 	var vp := get_viewport()
 	var ui_active: bool = vp != null and vp.gui_get_hovered_control() != null
@@ -39,9 +41,13 @@ func sample(world_position: Vector3) -> PlayerCommand:
 		_aim = stick.normalized()
 	elif not shoulder_view and not command.move.is_zero_approx():
 		_aim = command.move.normalized()
-	command.aim_point = _shooting_point(world_position)
+	command.aim_point = _shooting_point(world_position, camera_aim_offset)
 	focus_point = command.aim_point
-	_shot_direction = (command.aim_point - world_position - Vector3.UP * 0.65).normalized()
+	var resting_point := command.aim_point
+	if shoulder_view and not camera_aim_offset.is_zero_approx():
+		# Cache the raised aim, so lowering never accumulates in free-look aim.
+		resting_point = _shooting_point(world_position, Vector2.ZERO, true)
+	_shot_direction = (resting_point - world_position - Vector3.UP * 0.65).normalized()
 	if shoulder_view:
 		var camera := get_viewport().get_camera_3d()
 		var right := Vector2(camera.global_basis.x.x, camera.global_basis.x.z).normalized()
@@ -86,13 +92,14 @@ func _update_mouse_aim(world_position: Vector3) -> void:
 		if planar.length_squared() > 0.09:
 			_aim = planar.normalized()
 
-func _shooting_point(world_position: Vector3) -> Vector3:
+func _shooting_point(world_position: Vector3, offset: Vector2 = Vector2.ZERO, force_camera: bool = false) -> Vector3:
 	var camera := get_viewport().get_camera_3d()
-	if shoulder_view and not _camera_aim_active():
+	if shoulder_view and not _camera_aim_active() and not force_camera:
 		return world_position + Vector3.UP * 0.65 + _shot_direction * 60
 	if camera == null or (not _pointer_aim and not shoulder_view):
 		return world_position + Vector3.UP * 0.65 + Vector3(_aim.x, 0, _aim.y) * 60
 	var pointer := get_viewport().get_visible_rect().size * 0.5 if shoulder_view else get_viewport().get_mouse_position()
+	if shoulder_view: pointer += offset * get_viewport().get_visible_rect().size
 	var origin := camera.project_ray_origin(pointer)
 	var direction := camera.project_ray_normal(pointer)
 	var excluded: Array[RID] = []
@@ -106,7 +113,7 @@ func _shooting_point(world_position: Vector3) -> Vector3:
 	return origin + direction * 90
 
 func _camera_aim_active() -> bool:
-	return first_person_view or Input.is_action_pressed("attack") or Input.is_action_pressed("guard")
+	return first_person_view or not camera_aim_offset.is_zero_approx() or Input.is_action_pressed("attack") or Input.is_action_pressed("guard")
 
 func focus_direction() -> Vector2:
 	return _aim

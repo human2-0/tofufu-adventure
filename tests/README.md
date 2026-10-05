@@ -1,5 +1,7 @@
 # Validation
 
+Use [the feature routing map](../docs/AGENT_MAP.md#route-a-change) to find a focused scenario. Test/preview entry scripts stay under `tests/` while runtime files are organized within their feature directories; their resource paths must follow runtime moves. Long integration scenarios are exempt from the 200-line runtime budget.
+
 Run `python3 tools/verify.py` from the root. It runs the structural check, a Godot editor import, movement and combat rule tests, the original headless scene test, and sandbox integration tests. No third-party test framework is required.
 
 Rule coverage: movement bounds, friction, falling gravity, coyote time, jump buffering, cooldown/re-entry, dash end and isolated per-player state. Scene coverage: actual world loading, floor collision, injected command source movement/jump/dash, cooldown HUD, camera target and zero-duration cooldown display.
@@ -12,6 +14,10 @@ Manual visual check in Godot after art/control/camera changes:
 - Dash while jumping; vertical motion pauses on active dash ticks as in the prototype.
 
 Sandbox coverage: light/heavy attack release and cooldown, per-instance health, healing caps, super-jump apex, blade width/height/tip bounds in eight directions, solid-wall occlusion, real crop destruction and healing drops, plant regrowth, bridge crossing, riverbed/wading, walking up the seed-bank hill, shop wall collision, slime telegraph/damage/respawn, and player recovery after defeat.
+
+Parrot transport: `test_parrot_travel.gd` covers steering, altitude, menu hover, real obstacle collision, arbitrary safe landings/remounts and bounded persistence. `test_coop_parrot_travel.gd` covers JSON-wire mount/landing, guest steering, parked state, replay rejection, checkpoints and departure cleanup. `preview_parrot.gd` renders the jungle bird, free-flight hints/riding and the parked bird at 1280×720 and 960×540 to `/tmp/tofufu-parrot-*.png`.
+
+Cloud Realm: `test_cloud_realm.gd` covers an actual flight from jungle to the realm at Y≈58, cloud landing and walking, connected satellite islands, Godfufu's placeholder greeting, landed save/load and elevated remounting. The co-op parrot scenario also checks authoritative cloud landing, guest prediction recovery and disconnect persistence. `preview_cloud_realm.gd` renders `/tmp/tofufu-cloud-{overview,godfufu,landing}.png` in Godot.
 
 Additional visual checks:
 
@@ -61,11 +67,11 @@ For physical voice QA, run two desktop clients with headphones, grant microphone
 
 `test_session_transport.gd` verifies a non-Holepunch transport against room admission, delivery, reconnect, host loss, delayed shutdown and actual launch injection. It runs in `tools/verify.py` with no sidecar or network.
 
-Inventory coverage: `test_inventory.gd` checks stacking, equipment restrictions, transfers, invalid slot IDs and malformed saved stacks. `test_inventory_input.gd` exercises real viewport I/B events with the solo handler disabled, Escape, key repeat, chat and menu isolation, plus item descriptions on focus. Run it without `--headless` and with `-- --preview` to render `/tmp/tofufu-inventory.png`. `test_seed_storage.gd` and `test_loadout_shop.gd` also check focused item descriptions in chest and shop views. `test_coop_gameplay.gd` checks local bag identity, host-applied transfers, guest snapshots and replay rejection.
+Inventory coverage: `test_inventory.gd` checks stacking, equipment restrictions, transfers, invalid slot IDs and malformed saved stacks. `test_inventory_input.gd` exercises I/B events, item descriptions, and the first-drop confirmation with its saved opt-out. Run it without `--headless` and with `-- --preview` to render `/tmp/tofufu-inventory.png` and `/tmp/tofufu-drop-confirmation.png`. `test_seed_storage.gd` checks both Shift-click directions between bag and depot; `test_loadout_shop.gd` checks shop descriptions. `test_coop_gameplay.gd` checks host-applied inventory and depot transfers, guest snapshots and replay rejection.
 
 `test_currency.gd` checks 100-item stacks, the 100:1 / 1:1 / 100:1 / 100:1 refinement path, shortcut/replay rejection, shop tender, save limits, high-quality thumbnails, transparent 5+ art and non-overlapping sprite-sheet crop dividers. Run `godot --path . --script res://tests/preview_currency.gd` with a display for `/tmp/tofufu-currency-crops.png`, showing every stack in real backpack slots. `test_farming.gd` and `test_world_items.gd` cover compact ground beans and backpacks, full-bag retention and recovery.
 
-World drops: `test_world_items.gd` covers swept wall/floor collision, occluded pickup, cross-actor ownership, duplicate claims, guns, reservoir-preserving swaps, focus, bag drops and save schemas. Run it without `--headless` with `-- --preview` for `/tmp/tofufu-world-items.png` and `/tmp/tofufu-ground-backpack.png`. Co-op gameplay tests also exercise another player collecting a host drop with authoritative removal on both peers.
+World drops: `test_world_items.gd` covers swept wall/floor collision, occluded pickup, cross-actor ownership, duplicate claims, guns, reservoir-preserving swaps, focus, bag drops and save schemas. Run it without `--headless` with `-- --preview` for `/tmp/tofufu-world-items.png` and `/tmp/tofufu-ground-backpack.png`. `test_depot_focus.gd` checks both chest rows, separate mouse targets for desk items and chest lids, directional pickup priority, stale prompts, owner protection and pickup followed by opening storage. Run with `-- --preview` and a display for `/tmp/tofufu-depot-{chest,item}-{0,10}.png`. Co-op gameplay tests also exercise another player collecting a host drop with authoritative removal on both peers.
 
 `test_loadout_shop.gd` covers two combat slots, four support slots, Mature Bean purchases, merchant range, full bags, equipment transfers, Soyjet reserve and save restoration. Run with `-- --preview` to render equipment and shop previews. Co-op gameplay tests also check authoritative purchases and replicated currency inventories.
 
@@ -86,3 +92,52 @@ River and oasis: `test_river.gd` checks downhill water levels, collision-backed 
 `test_map_exploration.gd` checks personal reveal radius, history, teleport gaps, world edges and mask round trips. `test_map.gd` also checks the following crop, pointer/camera headings, fogged NPCs, zoom and adventure-save restoration.
 
 Armored shell coverage: `test_armored_shell.gd` checks real low foot rays, separate 65-HP armor, break-hit isolation, removed dome collision, respawn, snapshot restoration, doubled successful drops, and one shell hit per sword swing. `godot --path . --script res://tests/preview_armored_shell.gd` renders intact, hit, and break frames to `/tmp/armored-shell-{intact,hit,break}.png`. Farming and encounter drops use one stacked soybean pickup per drop event, and collection feedback is aggregated for one second.
+
+`test_meadow_reorg.gd` covers camera-relative NPC art, both depot entrances,
+wide machinery access, locked-room boundaries, village lawn/path coverage and
+the satellite-plan village's personal chest
+ownership, stale-bay rejection, attended/public frontal displays, save/protocol
+validation, actual food harvests and the barn combat boundary.
+`preview_meadow_reorg.gd` renders the village, barn cutaway, both Fufu NPCs,
+wood-fired kitchen, guest room, split garden, covered Studnia and detailed walnuts
+with the actual renderer. `preview_village_residents.gd` renders the five camera
+angles for both NPCs together, including matched scale, feet and mirrored SE. The co-op gameplay
+scenario checks guest quest acceptance, personal kill progress, authoritative
+reward replication and duplicate-claim rejection.
+
+`test_soy_reload.gd` checks reload countdown/progress through render callbacks,
+world and first-person poses, replica presentation, weapon switching and refill.
+Run it without `--headless` with `-- --preview` to save start, midpoint and ready
+frames in all three camera modes to `/tmp/tofufu-reload-*.png`.
+
+`test_gun_run_pose.gd` checks smooth running/walking carry transitions, matching
+reticle and aiming rays, fire/reload priority, exhaustion and camera/weapon cleanup.
+Run with a display and `-- --preview` to save shoulder and first-person carry
+poses to `/tmp/tofufu-gun-carry-*.png`.
+
+Grass: `test_grass.gd` checks the fixed deformation map, gradual recovery, swept
+contacts, teleport gaps, jumping/mounted/departed actors, co-op cosmetic contacts,
+seeded dense patches and preserved wind/rain wiring. `preview_grass.gd` renders normal
+and close views, a walked trail, wind and recovery to `/tmp/tofufu-grass-*.png`.
+Grass uses five triangles per narrow blade, eight-metre culled patches with
+distance taper, and a shared 304 × 256 texture updated at 20 Hz only while dirty.
+No grass physics bodies or per-blade CPU simulation are created.
+
+Natural terrain: `test_world_contours.gd` checks reproducible seeded coastlines,
+continuous biome crossings and colours, collision-backed islands, lagoon access,
+map discovery, aquatic wildlife and actual walking from reef to dry atoll ground.
+`test_ocean.gd` and `test_coop_ocean.gd` cover sustained underwater movement,
+save recovery and authoritative/predicted water resistance. `preview_world_contours.gd`
+renders the atoll, lagoon, meadow/dunes and dunes/jungle crossings plus the map to
+`/tmp/tofufu-world-*.png` using Godot's renderer.
+
+`test_volcanic.gd` verifies the separate ocean channel, actual parrot crossing/landing, all 149 royal-route chamber passages, every physical switchback ascent, retained collision under cutaway, local/host lava burns and guest exclusion, King greeting, expanded map round trips and original-mask migration. `preview_volcanic.gd` captures the actual Godot continent, ocean, castle, maze and king to `/tmp/tofufu-volcanic-*.png`.
+
+`test_volcanic_expansion.gd` walks a player-size capsule across every outdoor lava bridge and both ramps, sweeps the complete ash circuit for supported dry terrain, lava protection and obstacle clearance, and checks eastern-coast co-op records plus finite coordinate bounds. Volcanic tests also retain both older exploration masks and eastern-coast saves. The preview includes all five authored districts and the enlarged central volcano.
+
+`test_lava_king_art.gd` orbits a real camera through eight directions, checks the
+five authored King Lava views, mirrored western angles, constant height and foot
+anchors, authored rotation, retained collider and greeting state. Run
+`preview_lava_king.gd` with a display for the five-view plate and eight camera views
+at `/tmp/tofufu-lava-king-*.png`. Original art and exact generation prompts remain
+under `assets/characters/lava_king/`.

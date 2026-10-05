@@ -35,5 +35,8 @@ func apply(sprite: Sprite3D, facing: int, phase: int) -> bool:
 	var hand_y := 0.68
 	if phase in [1, 2, 3, 4]: hand_y = 0.48
 	if phase == 7: hand_y = 0.77
-	hand = Vector2(HAND_X[row], hand_y) * bounds.size
+	var right_x := HAND_X[row]
+	if facing == 3: right_x = 0.22
+	if facing == 5: right_x = 0.85
+	hand = Vector2(right_x, hand_y) * bounds.size
 	return true

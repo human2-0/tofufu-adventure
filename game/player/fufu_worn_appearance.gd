@@ -81,12 +81,13 @@ func apply_jump(sprite: Sprite3D, set_id: String, facing: int, jump_phase: int) 
 	var region := (sprite.texture as AtlasTexture).region
 	sprite.offset = Vector2(0, painted_bottom - region.position.y - region.size.y * 0.5 - 0.56 / JUMP_PIXEL_SIZE)
 
-func hand_point(sprite: Sprite3D, walking: bool, jumping: bool = false, jump_phase: int = -1) -> Vector2:
+func hand_point(sprite: Sprite3D, walking: bool, jumping: bool = false, jump_phase: int = -1, facing: int = 2) -> Vector2:
 	var cell := Vector2(sprite.texture.get_size()) / Vector2(sprite.hframes, sprite.vframes)
+	var right_x: float = [0.44, 0.72, 0.22, 0.18, 0.44, 0.85, 0.78, 0.22][facing]
 	if jumping:
 		var animation_row := JUMP_ROWS_BY_PHASE[clampi(jump_phase, 0, JUMP_ROWS_BY_PHASE.size() - 1)]
-		return Vector2(cell.x * 0.78, cell.y * JUMP_HAND_HEIGHTS[animation_row])
-	return Vector2(cell.x * 0.78, cell.y * (0.62 if walking else 0.67))
+		return Vector2(cell.x * right_x, cell.y * JUMP_HAND_HEIGHTS[animation_row])
+	return Vector2(cell.x * right_x, cell.y * (0.62 if walking else 0.67))
 
 func _walk_frame(set_id: String, row: int, column: int) -> AtlasTexture:
 	var key := "%s:%d:%d" % [set_id, row, column]

@@ -26,7 +26,7 @@ func _run() -> void:
 		viewport.size = Vector2i(1280, 720)
 		viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 		root.add_child(viewport)
-		var game: Node3D = load("res://game/app/main.tscn").instantiate()
+		var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 		game.play_opening = false
 		viewport.add_child(game)
 		if room == host: game.hud.toggle_help()

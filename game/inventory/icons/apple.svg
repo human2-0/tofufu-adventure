@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Apple stem -->
+  <path d="M32 16 C33 10, 37 6, 42 5" fill="none" stroke="#68472b" stroke-width="3" stroke-linecap="round"/>
+  <!-- Apple leaf -->
+  <path d="M35 12 C40 8, 48 10, 48 14 C48 18, 40 18, 35 12 Z" fill="#58ab3a" stroke="#3d7828" stroke-width="1.5" stroke-linejoin="round"/>
+  <!-- Apple body -->
+  <path d="M32 20 C27 16, 14 17, 12 28 C10 39, 17 55, 27 57 C30 57.5, 31 56, 32 56 C33 56, 34 57.5, 37 57 C47 55, 54 39, 52 28 C50 17, 37 16, 32 20 Z" fill="#e03131" stroke="#8f1818" stroke-width="2.5" stroke-linejoin="round"/>
+  <!-- Apple highlight -->
+  <path d="M19 26 C17 32, 18 42, 22 47" fill="none" stroke="#ff8787" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="21" cy="24" r="1.5" fill="#ffa8a8"/>
+</svg>

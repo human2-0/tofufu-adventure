@@ -20,7 +20,7 @@ func _game(room: PlaytestRoom) -> CoopSession:
 	var viewport := SubViewport.new()
 	viewport.own_world_3d = true
 	root.add_child(viewport)
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	viewport.add_child(game)
 	var session := CoopSession.new()
@@ -129,7 +129,6 @@ func _run() -> void:
 	host_input.aim = Vector2.UP
 	guest_input.aim = Vector2.DOWN
 	guest_input.aim_point = Vector3(-0.32, 0.8, 1.4)
-	guest_actor.combat.gun.spread_multiplier = 0
 	await ticks(15)
 	for slot in [3, 4]:
 		host_actor.actor.position = Vector3(0, 0.1, 1.4)
@@ -143,6 +142,8 @@ func _run() -> void:
 		host_actor.health.invulnerability = 0
 		guest_actor.health.invulnerability = 0
 		guest_actor.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun" if slot == 3 else "sotjet"), 1))
+		# Equipment refresh reapplies progression spread; override it afterwards.
+		guest_actor.combat.gun.spread_multiplier = 0
 		guest_input.slot = 2
 		await ticks(10)
 		guest_input.attack = true

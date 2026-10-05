@@ -12,7 +12,7 @@ func check(ok: bool, message: String) -> void:
 		printerr("FAIL: ", message)
 
 func _run() -> void:
-	var world: Meadow = load("res://game/world/meadow.tscn").instantiate()
+	var world: Meadow = load("res://game/world/farm/meadow.tscn").instantiate()
 	root.add_child(world)
 	await physics_frame
 	await physics_frame

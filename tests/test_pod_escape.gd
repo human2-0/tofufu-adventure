@@ -32,7 +32,7 @@ func _run() -> void:
 	rules.step(0, -1, false)
 	check(rules.pushes == 0, "wrong direction is rejected")
 	check(PodEscapeRules.new().pushes == 0, "quest state is per instance")
-	var scene: Node3D = load("res://game/app/main.tscn").instantiate()
+	var scene: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	var player: Player = scene.get_node("Player")
 	var source := QuestInput.new()
 	player.add_child(source)

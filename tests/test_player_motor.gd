@@ -5,6 +5,7 @@ const DT: float = 1.0 / 60.0
 
 func _initialize() -> void:
 	_test_walk_and_fall()
+	_test_acceleration_consistency()
 	_test_jump_windows()
 	_test_dash_and_isolation()
 	_test_super_dash()
@@ -60,6 +61,21 @@ func _test_jump_windows() -> void:
 		motor.step(idle, Vector3.ZERO, false, DT)
 	velocity = motor.step(idle, Vector3.ZERO, true, DT)
 	check(velocity.y == 0.0, "expired jump buffer does not fire")
+
+func _test_acceleration_consistency() -> void:
+	var tuning := PlayerTuning.new()
+	var cardinal := PlayerMotor.new(tuning)
+	var diagonal := PlayerMotor.new(tuning)
+	var command := PlayerCommand.new()
+	command.move = Vector2.RIGHT
+	var straight := cardinal.step(command, Vector3.ZERO, true, DT)
+	command.move = Vector2.ONE.normalized()
+	var angled := diagonal.step(command, Vector3.ZERO, true, DT)
+	check(is_equal_approx(straight.length(), angled.length()), "acceleration is consistent in every direction")
+	command.move = Vector2.ZERO
+	var stopped := diagonal.step(command, Vector3(4, 7, 4), false, DT)
+	check(is_equal_approx(Vector2(4, 4).length() - Vector2(stopped.x, stopped.z).length(), tuning.friction * tuning.air_control * DT), "planar braking has a single bounded friction rate")
+	check(stopped.y < 7 and stopped.y > 0, "planar acceleration preserves the jump arc")
 
 func _test_dash_and_isolation() -> void:
 	var tuning := PlayerTuning.new()

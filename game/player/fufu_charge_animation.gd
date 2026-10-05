@@ -56,8 +56,8 @@ func apply(sprite: Sprite3D, facing: int, column: int) -> bool:
 	var size := Vector2(view.get_size())
 	sprite.offset = Vector2(0, size.y * 0.5 - 3.0 - 0.56 / PIXEL_SIZE)
 	match row:
-		0: hand = Vector2(25, size.y - 67)
-		1: hand = Vector2(size.x - 41, size.y - 56)
+		0: hand = Vector2(size.x - 48 if facing == 1 else 25.0, size.y - 67)
+		1: hand = Vector2(30, size.y - 56)
 		2: hand = Vector2(48, size.y - 66)
 		3: hand = Vector2(size.x - 25, size.y - 53)
 	return true

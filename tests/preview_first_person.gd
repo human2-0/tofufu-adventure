@@ -4,7 +4,7 @@ func _initialize() -> void: call_deferred("_run")
 
 func _run() -> void:
 	root.size = Vector2i(1440, 900)
-	var game := load("res://game/app/main.tscn").instantiate() as Node3D
+	var game := load("res://game/app/adventure/main.tscn").instantiate() as Node3D
 	game.play_opening = false
 	root.add_child(game)
 	await process_frame
@@ -14,8 +14,10 @@ func _run() -> void:
 	game.shooting_view.set_process_unhandled_input(false)
 	game.camera.yaw = 0.0
 	game.camera.pitch = 0.0
-	for slot in [1, 2, 3, 4, 5]:
-		var id: String = ["knife", "", "soy_gun", "sotjet", "sproutwood_staff"][slot - 1]
+	# Preview the level-gated blades through the real loadout path.
+	game.progression.progress.award_experience(CharacterProgress.threshold(5, true))
+	for slot in [1, 2, 3, 4, 5, 6, 7]:
+		var id: String = ["knife", "", "soy_gun", "sotjet", "sproutwood_staff", "nori_katana", "edamame_sword"][slot - 1]
 		game.character_equipment.set_slot("combat_1", ItemStack.new(InventoryItem.weapon(id), 1) if not id.is_empty() else null)
 		game.loadout.select(1)
 		await create_timer(0.25).timeout

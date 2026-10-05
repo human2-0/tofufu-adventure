@@ -3,6 +3,7 @@ extends Sprite3D
 ## Eight-way presentation; walking faces travel, mouse aiming faces attacks/idle.
 
 signal hand_presented(hand: Vector3, plane: Basis, outward: float, in_front: bool)
+signal hand_tint_presented(tint: Color)
 
 @export_enum("Full Billboard", "Y-Billboard", "Fixed Tilt", "Upright") var orientation_mode: int = 0
 var idle_texture: Texture2D = preload("res://assets/characters/fufu/soybean_fufu-idle-eight.png")
@@ -15,10 +16,6 @@ const IDLE_FEET: Array[float] = [411, 410, 420, 412, 407.5, 406.5, 413.5, 407.5]
 const IDLE_CENTERS: Array[float] = [253, 221, 201, 219, 237.5, 230, 224.5, 234]
 const DIAGONAL_PIXEL_SIZE: float = 0.0112 * 512.0 / 1254.0
 const DIAGONAL_FOOT_Y: Array[float] = [297.0, 295.0, 299.0, 296.0, 282.5, 282.5, 286.5, 284.5, 269.0, 265.0, 269.0, 264.0, 256.5, 254.5, 256.5, 254.5]
-# Grip landmarks in source-cell pixels, before mirroring and foot/center offsets.
-const IDLE_HANDS: Array[Vector2] = [Vector2(313,301), Vector2(138,297), Vector2(117,309), Vector2(116,292), Vector2(363,286), Vector2(123,285), Vector2(321,305), Vector2(305,290)]
-const WALK_HANDS: Array[Vector2] = [Vector2(195,212), Vector2(195,208), Vector2(195,208), Vector2(193,210), Vector2(218,205), Vector2(217,203), Vector2(212,204), Vector2(214,199), Vector2(120,205), Vector2(123,204), Vector2(119,204), Vector2(119,206)]
-const DIAGONAL_HANDS: Array[Vector2] = [Vector2(219,226), Vector2(220,222), Vector2(218,225), Vector2(217,224), Vector2(100,218), Vector2(99,219), Vector2(100,219), Vector2(102,219), Vector2(235,184), Vector2(232,183), Vector2(234,186), Vector2(230,184), Vector2(99,180), Vector2(99,177), Vector2(98,180), Vector2(100,178)]
 
 enum Facing { RIGHT, DOWN_RIGHT, DOWN, DOWN_LEFT, LEFT, UP_LEFT, UP, UP_RIGHT }
 var current_facing: Facing = Facing.DOWN
@@ -65,7 +62,8 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 	if direction.length_squared() > 0.01:
 		current_facing = posmod(roundi(direction.angle() / (PI / 4.0)), 8) as Facing
 	if walking:
-		anim_timer += delta * anim_fps
+		var stride := clampf(Vector2(velocity.x, velocity.z).length() / 4.8, 0.45, 1.65)
+		anim_timer += delta * anim_fps * stride
 		anim_frame = int(anim_timer) % 4
 		idle_bob_time = 0.0
 	else:
@@ -154,15 +152,7 @@ func _present_hand() -> void:
 	var camera := get_viewport().get_camera_3d()
 	if camera == null:
 		return
-	var point: Vector2
-	if not worn_set.is_empty():
-		point = worn_appearance.hand_point(self, anim_timer > 0.0, _using_jump_frame, jump_animation.frame)
-	else:
-		point = IDLE_HANDS[frame] if texture == idle_texture else (DIAGONAL_HANDS[frame] if texture == diagonal_texture else WALK_HANDS[frame])
-	if _using_charge_frame:
-		point = charge_animation.hand
-	elif _using_jump_frame and worn_set.is_empty():
-		point = jump_animation.hand
+	var point := FufuRightHand.point(self)
 	var cell := Vector2(texture.get_size()) / Vector2(hframes, vframes)
 	if flip_h:
 		point.x = cell.x - point.x
@@ -174,10 +164,11 @@ func _present_hand() -> void:
 		var normal := Vector3(camera.global_basis.z.x, 0, camera.global_basis.z.z).normalized()
 		plane = Basis(Vector3.UP.cross(normal), Vector3.UP, normal)
 	var hand := global_position + plane * (local * global_basis.get_scale())
-	var in_front := (_using_jump_frame and current_facing in [Facing.RIGHT, Facing.DOWN_RIGHT, Facing.DOWN, Facing.DOWN_LEFT, Facing.LEFT]) or current_facing in [Facing.DOWN_LEFT, Facing.DOWN, Facing.DOWN_RIGHT]
-	if _using_charge_frame and current_facing in [Facing.LEFT, Facing.RIGHT]:
-		in_front = true
-	hand_presented.emit(hand, plane, -1.0 if local.x < 0 else 1.0, in_front)
+	# Anatomical right is near in E/SE/S/NE, far in W/SW/N/NW.
+	var in_front := int(current_facing) in [0, 1, 2, 7]
+	var outward := -1.0 if int(current_facing) in [1, 2, 3, 4] else 1.0
+	hand_tint_presented.emit(FufuRightHand.tint(worn_set))
+	hand_presented.emit(hand, plane, outward, in_front)
 
 func show_jump() -> void:
 	jump_animation.launch()

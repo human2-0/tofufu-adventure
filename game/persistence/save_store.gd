@@ -6,7 +6,7 @@ var directory: String = "user://adventures"
 var extra_validator: Callable
 var last_error: String = ""
 const MAX_SLOTS: int = 12
-const WORLD_ITEM_LIMITS := {"nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const WORLD_ITEM_LIMITS := {"nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
 const BACKPACK_CONTENT_LIMIT: int = 20
 
 func list_saves() -> Array[Dictionary]:
@@ -36,7 +36,7 @@ func write_slot(slot: int, data: Dictionary) -> bool:
 		last_error = "Could not write the save. Check available disk space."
 		return false
 	var encoded := JSON.stringify(data)
-	if encoded.to_utf8_buffer().size() > 65536:
+	if encoded.to_utf8_buffer().size() > 98304:
 		file.close()
 		last_error = "This adventure exceeds the save size limit."
 		return false
@@ -53,7 +53,7 @@ func read_slot(slot: int) -> Dictionary:
 	if slot < 0 or slot >= MAX_SLOTS:
 		return {}
 	var file := FileAccess.open(_path(slot), FileAccess.READ)
-	if file == null or file.get_length() > 65536:
+	if file == null or file.get_length() > 98304:
 		return {}
 	var data: Variant = JSON.parse_string(file.get_as_text())
 	return data if data is Dictionary and record_valid(data) else {}
@@ -65,10 +65,11 @@ func _path(slot: int) -> String:
 	return directory.path_join("adventure_%02d.json" % slot)
 
 static func valid(data: Dictionary) -> bool:
-	if data.has("map_exploration"):
-		if not data.map_exploration is String or data.map_exploration.length() != 10120: return false
-		if RegEx.create_from_string("^[A-Za-z0-9+/]{10119}=$").search(data.map_exploration) == null: return false
-		if Marshalls.base64_to_raw(data.map_exploration).size() != 7589: return false
+	if data.has("parrot_rest"):
+		if not data.parrot_rest is Array or data.parrot_rest.size() not in [0, 3]: return false
+		for value: Variant in data.parrot_rest:
+			if not (value is float or value is int) or not is_finite(float(value)) or absf(float(value)) > 1000: return false
+	if data.has("map_exploration") and not MapSaveValidation.valid(data.map_exploration): return false
 	if data.has("tofu_dungeon"):
 		var dungeon: Variant = data.tofu_dungeon
 		if not dungeon is Dictionary: return false
@@ -77,7 +78,14 @@ static func valid(data: Dictionary) -> bool:
 		if not _progress_counter(dungeon.get("stage")) or dungeon.stage > 6: return false
 		if not dungeon.get("completed") is bool or dungeon.completed != (dungeon.stage == 6): return false
 		if dungeon.has("broken_crates") and (not _progress_counter(dungeon.broken_crates) or dungeon.broken_crates > 4095): return false
+		if dungeon.has("rewarded_ids") and not FactorySaveValidation.rewards(dungeon.rewarded_ids): return false
+		if dungeon.has("run_members") and not FactorySaveValidation.members(dungeon.run_members): return false
+		if dungeon.has("reward_ledger") and not FactorySaveValidation.ledger(dungeon.reward_ledger): return false
+		if dungeon.has("puzzle_mode") and not dungeon.puzzle_mode is bool: return false
+		if dungeon.has("puzzle") and not FactorySaveValidation.puzzle(dungeon.puzzle): return false
 	if data.has("active_slot") and (not _progress_counter(data.active_slot) or data.active_slot < 1 or data.active_slot > 2): return false
+	if data.has("produce") and not BarnSaveValidation.produce(data.produce): return false
+	if data.has("barn") and not BarnSaveValidation.valid(data.barn, WORLD_ITEM_LIMITS): return false
 	if data.has("world_items") and not _world_items(data.world_items): return false
 	for field in ["gun_owned", "sotjet_owned"]:
 		if data.has(field) and not data[field] is bool: return false
@@ -90,7 +98,7 @@ static func valid(data: Dictionary) -> bool:
 		if not data.get(field) is Array or data[field].size() != 3:
 			return false
 		for value: Variant in data[field]:
-			if not (value is float or value is int) or not is_finite(float(value)) or absf(float(value)) > 500:
+			if not (value is float or value is int) or not is_finite(float(value)) or absf(float(value)) > 1000:
 				return false
 	for field in ["health", "phase", "beans", "mobs", "props", "experience", "seconds"]:
 		var value: Variant = data.get(field)
@@ -113,6 +121,7 @@ static func valid(data: Dictionary) -> bool:
 			var value: Variant = data.vitals.get(key)
 			var limit := 30.0 if key == "combat_remaining" else 100.0 * pow(1.02, 98)
 			if not (value is int or value is float) or not is_finite(float(value)) or value < 0 or value > limit: return false
+	if data.has("endurance") and not EnduranceSaveValidation.valid(data.endurance): return false
 	if data.health > 100.0 * pow(1.05, 98) or data.phase > 1:
 		return false
 	if not data.get("knife_owned") is bool or not data.get("knife_selected") is bool:
@@ -157,7 +166,7 @@ static func _world_items(value: Variant) -> bool:
 	if not value is Array or value.size() > 128: return false
 	var ids: Array[int] = []
 	for row: Variant in value:
-		if not row is Array or row.size() not in [7, 8]: return false
+		if not row is Array or row.size() not in [7, 8, 9]: return false
 		if not _progress_counter(row[0]) or row[0] < 1 or int(row[0]) in ids: return false
 		ids.append(int(row[0]))
 		if not row[1] is String: return false
@@ -165,9 +174,10 @@ static func _world_items(value: Variant) -> bool:
 		if maximum == null or not _progress_counter(row[2]) or row[2] < 1 or row[2] > maximum: return false
 		for index in range(3, 7):
 			var number: Variant = row[index]
-			if not (number is float or number is int) or not is_finite(float(number)) or absf(number) > (100 if index == 3 else 500): return false
+			if not (number is float or number is int) or not is_finite(float(number)) or absf(number) > (100 if index == 3 else 1000): return false
 		if row[3] < 0: return false
-		if row.size() == 8 and not _backpack_contents(row[7], row[1]): return false
+		if row.size() >= 8 and not _backpack_contents(row[7], row[1]): return false
+		if row.size() == 9 and not BarnSaveValidation.display(row[8]): return false
 	return true
 
 static func _backpack_contents(value: Variant, backpack_id: String) -> bool:

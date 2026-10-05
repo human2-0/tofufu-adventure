@@ -78,7 +78,7 @@ func _check_loot() -> void:
 	check(drops.is_empty(), "doubling quantity preserves existing drop chance")
 
 func _check_swing() -> void:
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	_check_protocol(game)

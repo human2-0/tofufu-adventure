@@ -47,7 +47,7 @@ func run() -> void:
 		viewport.own_world_3d = true
 		viewport.size = Vector2i(960, 540)
 		root.add_child(viewport)
-		var game: Node3D = load("res://game/app/main.tscn").instantiate()
+		var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 		game.play_opening = false
 		viewport.add_child(game)
 		var session := CoopSession.new()
@@ -59,6 +59,8 @@ func run() -> void:
 	await ticks(20)
 	var host: CoopSession = sessions[HOST]
 	var guest: CoopSession = sessions[GUEST]
+	host.game.factory_dungeon.puzzle_enabled = false
+	guest.game.factory_dungeon.puzzle_enabled = false
 	var member: CoopActor = host.roster.party[GUEST]
 	var guest_input := FactoryInput.new()
 	guest.add_child(guest_input)
@@ -73,10 +75,19 @@ func run() -> void:
 	check(host.game.world_items.pool.drops.values().any(func(drop: WorldItemDrop) -> bool: return drop.item_id == "soy_milk"), "host creates soy milk from a marked crate")
 	check(guest.game.world_items.pool.drops.values().any(func(drop: WorldItemDrop) -> bool: return drop.item_id == "soy_milk"), "guest sees the shared soy milk drop")
 	for stage in TofuDungeonState.STATIONS.size():
+		# Isolated station test teleports; physical route is covered by test_factory_route.
+		host.game.factory_dungeon._recovery = DungeonRecovery.new()
+		host.game.factory_dungeon._recovery.seed(GUEST, TofuFactory.recovery_anchor(stage), stage)
 		member.actor.relocate(TofuFactory.CENTERS[stage] + Vector3(0,0.2,4))
 		await ticks(5)
 		check(host.game.factory_dungeon._enemies.size() > 0 or stage == 3, "host creates stage %d wave" % stage)
+		if stage == 5:
+			check(host.game.factory_dungeon._enemies.size() == 1 and host.game.factory_dungeon._enemies[0] is Dofufu, "host spawns Dofufu once")
 		for enemy: FactoryBean in host.game.factory_dungeon._enemies.duplicate(): enemy.target.damage(999)
+		if stage == 5:
+			await ticks(8)
+			check(host.game.factory_dungeon.state.completed and guest.game.factory_dungeon.state.completed, "boss completion replicates")
+			break
 		check(not host.game.factory_dungeon.interact(member.actor), "station rejects distant interactions")
 		for unit in host.game.factory_dungeon.state.required_units():
 			host.game.factory_dungeon.state.step(1.1)

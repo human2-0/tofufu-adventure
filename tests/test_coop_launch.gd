@@ -11,7 +11,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var app: Node = load("res://game/app/launch.tscn").instantiate()
+	var app: Node = load("res://game/app/bootstrap/launch.tscn").instantiate()
 	var directory := "user://coop-launch-%d" % Time.get_ticks_usec()
 	app.store.directory = directory
 	app.preferences.path = directory + ".cfg"
@@ -57,8 +57,9 @@ func _run() -> void:
 	check(app._coop.roster.party[guest_key].health.current == 66, "friend's state restores by identity")
 	check(app._coop.roster.party[guest_key].progression.progress.practice.magic == 37, "friend skills restore from a previous host session")
 	check(app.game.progression.progress.experience == 300, "host character EXP restores independently of adventure totals")
-	check(not app.game.encounters.prop_nodes[0].visible, "harvest state restores")
-	check(app.game.encounters.pickups.size() == 2, "uncollected loot restores")
+	check(app.game.encounters.prop_nodes[0].visible and app.game.encounters.prop_nodes[0].target.current == 0,
+		"harvest state restores as a visible growing soy plant")
+	check(app.game.encounters.pickups.size() == 1 and app.game.encounters.pickups.values()[0].count == 2, "uncollected two-bean stack restores")
 	app._return_title()
 	await process_frame
 	var identities := {host_key: saved.coop.party[host_key]}

@@ -3,7 +3,7 @@ extends SceneTree
 func _initialize() -> void: call_deferred("_run")
 
 func _run() -> void:
-	var game := load("res://game/app/main.tscn").instantiate() as Node3D
+	var game := load("res://game/app/adventure/main.tscn").instantiate() as Node3D
 	game.play_opening = false
 	root.add_child(game)
 	game.player.set_physics_process(false)

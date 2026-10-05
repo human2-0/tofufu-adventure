@@ -36,7 +36,7 @@ func _run() -> void:
 	rules.current = 20
 	motor.step(command, Vector3.ZERO, true, 0.016)
 	check(motor.is_dashing and rules.current == 5, "dash deducts fifteen once")
-	var game := preload("res://game/app/main.tscn").instantiate()
+	var game := preload("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	game.player.set_physics_process(false)

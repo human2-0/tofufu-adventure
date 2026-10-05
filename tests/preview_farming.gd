@@ -4,7 +4,7 @@ func _initialize() -> void:
 	call_deferred("run")
 
 func run() -> void:
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	game.player.position = game.world.ground_point(-5.3, 7.6, 0.1)

@@ -1,0 +1,194 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/linen.svg" id="e1"]
+
+[ext_resource type="Material" path="res://game/world/factory/props/factory_ink.tres" id="e2"]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/cream.svg" id="e3"]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/wood.svg" id="e4"]
+
+[sub_resource type="BoxShape3D" id="r1"]
+size = Vector3(0.62, 0.68, 0.48)
+
+[sub_resource type="SphereMesh" id="r2"]
+radius = 0.3
+height = 0.82
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="r3"]
+albedo_color = Color(0.819608, 0.749020, 0.607843, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="CylinderMesh" id="r4"]
+top_radius = 0.17
+bottom_radius = 0.24
+height = 0.18
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="r5"]
+size = Vector3(0.36, 0.23, 0.025)
+
+[sub_resource type="StandardMaterial3D" id="r6"]
+albedo_color = Color(0.941176, 0.913725, 0.823529, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e3")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="BoxMesh" id="r7"]
+size = Vector3(0.025, 0.36, 0.025)
+
+[sub_resource type="StandardMaterial3D" id="r8"]
+albedo_color = Color(0.407843, 0.305882, 0.239216, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e4")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="BoxMesh" id="r9"]
+size = Vector3(0.025, 0.36, 0.025)
+
+[sub_resource type="SphereMesh" id="r10"]
+radius = 0.06
+height = 0.12
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="r11"]
+albedo_color = Color(0.823529, 0.741176, 0.537255, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e3")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="SphereMesh" id="r12"]
+radius = 0.06
+height = 0.12
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r13"]
+radius = 0.06
+height = 0.12
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r14"]
+radius = 0.06
+height = 0.12
+radial_segments = 12
+rings = 6
+
+[sub_resource type="SphereMesh" id="r15"]
+radius = 0.06
+height = 0.12
+radial_segments = 12
+rings = 6
+
+[node name="MatureSack" type="Node3D"]
+
+[node name="Body" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="Body"]
+position = Vector3(0.0, 0.36, 0.0)
+shape = SubResource("r1")
+
+[node name="StaticVisual" type="Node3D" parent="."]
+
+[node name="MovingParts" type="Node3D" parent="."]
+
+[node name="FilledCanvas" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.36, 0.0)
+mesh = SubResource("r2")
+material_override = SubResource("r3")
+
+[node name="FoldedNeck" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.7, 0.0)
+mesh = SubResource("r4")
+material_override = SubResource("r3")
+
+[node name="HarvestTag" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.42, 0.315)
+mesh = SubResource("r5")
+material_override = SubResource("r6")
+
+[node name="StitchLeft" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(-0.28, 0.35, 0.19)
+mesh = SubResource("r7")
+material_override = SubResource("r8")
+
+[node name="StitchRight" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.28, 0.35, 0.19)
+mesh = SubResource("r9")
+material_override = SubResource("r8")
+
+[node name="Bean1" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(-0.18, 0.82, 0.06)
+mesh = SubResource("r10")
+material_override = SubResource("r11")
+
+[node name="Bean2" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(-0.09, 0.82, 0.06)
+mesh = SubResource("r12")
+material_override = SubResource("r11")
+
+[node name="Bean3" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.82, 0.06)
+mesh = SubResource("r13")
+material_override = SubResource("r11")
+
+[node name="Bean4" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.09, 0.82, 0.06)
+mesh = SubResource("r14")
+material_override = SubResource("r11")
+
+[node name="Bean5" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.18, 0.82, 0.06)
+mesh = SubResource("r15")
+material_override = SubResource("r11")
+
+[node name="TagText" type="Label3D" parent="."]
+double_sided = false
+position = Vector3(0.0, 0.43, 0.36)
+text = "DRY
+PROTEIN"
+font_size = 32
+pixel_size = 0.0017
+billboard = 0
+no_depth_test = false
+modulate = Color(0.152941, 0.231373, 0.231373, 1.0)
+
+[node name="carry_grip" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.75, 0.0)
+
+[node name="interaction" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.5, 0.48)
+
+[node name="input" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.0, 0.0)
+
+[node name="output" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.0, 0.0)

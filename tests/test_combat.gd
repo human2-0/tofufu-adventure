@@ -1,6 +1,6 @@
 extends SceneTree
 
-const FART_CLOUD := preload("res://game/combat/fart_cloud.gd")
+const FART_CLOUD := preload("res://game/combat/abilities/fart_cloud.gd")
 var failures: int = 0
 const DT: float = 1.0 / 60.0
 

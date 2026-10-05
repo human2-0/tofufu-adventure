@@ -21,7 +21,7 @@ func key(code: Key) -> void:
 	root.push_input(event)
 
 func _run() -> void:
-	var app := preload("res://game/app/launch.tscn").instantiate()
+	var app := preload("res://game/app/bootstrap/launch.tscn").instantiate()
 	app.store.directory = "user://test_map"
 	app.preferences.path = "user://test_map.cfg"
 	root.add_child(app)
@@ -31,18 +31,20 @@ func _run() -> void:
 	game.map._process(0)
 	check(game.map.markers().size() == 1, "unvisited NPCs and factory are hidden")
 	check(game.map.exploration.visited(Vector2.ZERO), "spawn area revealed")
-	check(not game.map.exploration.visited(Vector2(25, -25)), "distant area remains hidden")
+	check(not game.map.exploration.visited(Vector2(-55, 45)), "distant area remains hidden")
 	for npc: Node3D in game.world.map_npcs.values():
 		game.map.exploration.reveal(game.map._map_position(npc))
-	check(game.map.markers().size() == 5, "visited NPCs and factory are mapped")
+	check(game.map.markers().size() == game.world.map_npcs.size() + 1, "visited NPCs, Godfufu and factory are mapped")
+	check(game.map.markers().any(func(row: Dictionary) -> bool: return row.label == "Cloud Realm · Godfufu (above jungle)"), "Godfufu's map marker identifies the elevated realm")
 	check(game.map.markers().any(func(row: Dictionary) -> bool: return row.label == "Gigalopolis · Tofu Factory"), "factory appears east of meadow on the map")
+	check(game.map.markers().any(func(row: Dictionary) -> bool: return row.label == "Tideglass Atoll"), "visited atoll lookout is shown on the map")
 	var kaji_label: Label3D = game.world.weapon_merchant.get_node("ResidentTitle")
 	var mayor_label: Label3D = game.world.quest_npc.get_node("ResidentTitle")
-	check(kaji_label.text == "Kaji · Gear", "Kaji's label shows the shop without a placeholder subtitle")
-	check(mayor_label.text == "Mayor Mame", "Mayor Mame's label has no coming-soon subtitle")
+	check(kaji_label.text == "Grandpa Fufu · Gear", "Kaji's label shows the shop without a placeholder subtitle")
+	check(mayor_label.text == "Grandma Fufu · Quests", "Mayor Mame's label has no coming-soon subtitle")
 	game.exploration.restore_places(["Fufufarm Village / Shops coming soon", "Mayor Mame / Quests coming soon"])
-	check(game.exploration.found_places().has("Fufufarm Village / Kaji's gear shop"), "older village discovery name upgrades without rediscovery")
-	check(game.exploration.found_places().has("Mayor Mame / Quests"), "older quest discovery name upgrades without rediscovery")
+	check(game.exploration.found_places().has("Fufufarm Village / Grandpa Fufu's gear shop"), "older village discovery name upgrades without rediscovery")
+	check(game.exploration.found_places().has("Grandma Fufu / Quests"), "older quest discovery name upgrades without rediscovery")
 	var canvas: MapCanvas = game.map.view.full
 	canvas.size = Vector2(800, 400)
 	check(canvas.project_point(canvas.bounds.get_center()).is_equal_approx(Vector2(400, 200)), "center projection preserves aspect ratio")
@@ -81,6 +83,14 @@ func _run() -> void:
 	var focus := canvas.project_point(Vector2(29, 20))
 	canvas.zoom_at(focus, 4)
 	check(canvas.zoom == 4 and canvas.unproject_point(focus).distance_to(Vector2(29, 20)) < 0.01, "zoom preserves point under cursor")
+	for point in [canvas.bounds.position + Vector2(7, 7), Vector2(635, 395)]:
+		canvas.reset_overview()
+		var cursor := canvas.project_point(point)
+		canvas.zoom_at(cursor, 4)
+		check(canvas.unproject_point(cursor).distance_to(point) < 0.01, "cursor zoom remains stable near old-world and expanded-island edges")
+	canvas.center = canvas.bounds.end + Vector2.ONE * 100
+	canvas._clamp_center()
+	check(canvas.center == canvas.bounds.end, "map panning remains bounded after preserving cursor zoom")
 	canvas.zoom = 8
 	canvas.center = Vector2.ZERO
 	var before_drag := canvas.center
@@ -122,11 +132,11 @@ func _run() -> void:
 	friend.position = Vector3(-20, 0, 15)
 	roster.actors = {"me": game.player, "friend": friend}
 	game.map.roster = roster
-	check(game.map.markers().size() == 6, "party has one local marker and friend")
-	friend.position = Vector3(25, 0, -25)
+	check(game.map.markers().size() == game.world.map_npcs.size() + 2, "party has one local marker and friend")
+	friend.position = Vector3(-55, 0, 45)
 	var rows: Array[Dictionary] = game.map.markers()
-	check(not game.map.exploration.visited(Vector2(25, -25)), "friends do not reveal remote terrain")
-	check(rows.back().point == Vector2(25, -25) and rows.back().label == "Sprout", "friend label and replicated movement are live")
+	check(not game.map.exploration.visited(Vector2(-55, 45)), "friends do not reveal remote terrain")
+	check(rows.back().point == Vector2(-55, 45) and rows.back().label == "Sprout", "friend label and replicated movement are live")
 	if "--preview" in OS.get_cmdline_user_args():
 		game.map.restore_exploration("")
 		for x in range(0, 31, 2): game.map.exploration.reveal(Vector2(x, 4))
@@ -155,7 +165,7 @@ func _run() -> void:
 			game.map.exploration.reveal(game.map._map_position(npc))
 	roster.actors.erase("friend")
 	friend.queue_free()
-	check(game.map.markers().size() == 5, "departed friend removed")
+	check(game.map.markers().size() == game.world.map_npcs.size() + 1, "departed friend removed")
 	key(KEY_M)
 	app._input_enabled(false)
 	check(not game.map.expanded and not game.shooting_view.local_input.enabled, "pause closes map without unlocking controls")

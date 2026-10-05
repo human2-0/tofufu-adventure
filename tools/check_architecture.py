@@ -1,10 +1,20 @@
 #!/usr/bin/env python3
 """Small source-level guardrails, not a replacement for Godot's parser."""
 from pathlib import Path
+import os
 import re
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
+
+
+def source_files(folder, suffixes):
+    for directory, children, files in os.walk(folder):
+        children[:] = [name for name in children if name not in {".git", ".godot", "node_modules"}]
+        for name in files:
+            path = Path(directory) / name
+            if path.suffix in suffixes:
+                yield path
 
 
 def main():
@@ -38,14 +48,22 @@ def main():
         if path.name == "player_motor.gd" and re.search(r"\b(Input|Node|Node3D|CharacterBody3D|Sprite3D|FileAccess|get_tree|get_node|load|preload)\b", code):
             errors.append(f"{relative}: movement rules depend on an external system")
         if len(text.splitlines()) > 200:
-            print(f"REVIEW: {relative} exceeds 200 lines; consider responsibility boundaries")
+            errors.append(f"{relative}: runtime script exceeds 200 lines; extract a coherent responsibility")
 
-    sources = [ROOT / "project.godot"]
-    sources += list((ROOT / "game").rglob("*.gd"))
-    sources += list((ROOT / "game").rglob("*.tscn"))
-    sources += list((ROOT / "game").rglob("*.tres"))
+    # Runtime adapters share the size budget, but not game feature dependencies.
+    for path in source_files(ROOT / "networking", {".gd"}):
+        if len(path.read_text().splitlines()) > 200:
+            errors.append(f"{path.relative_to(ROOT)}: runtime script exceeds 200 lines")
+
+    sources = [ROOT / "project.godot", ROOT / "export_presets.cfg"]
+    for folder in ("game", "networking", "tests", "tools", "deploy", ".github"):
+        sources.extend(source_files(ROOT / folder, {".gd", ".gdshader", ".tscn", ".tres", ".py", ".service", ".sh", ".yml", ".yaml"}))
     for path in sources:
-        for resource in re.findall(r'res://([^"\s)]+)', path.read_text()):
+        pattern = "res:" + r"//([^\s\"']+)" if path.suffix == ".service" else r"[\"']res://([^\"'\n]+)[\"']"
+        for resource in re.findall(pattern, path.read_text()):
+            # Computed test/export paths are exercised by their own runners.
+            if any(token in resource for token in ("%", "{", "}")):
+                continue
             if not (ROOT / resource).exists():
                 errors.append(f"{path.relative_to(ROOT)}: missing res://{resource}")
 
@@ -54,7 +72,7 @@ def main():
         if path.stat().st_size > budget:
             errors.append(f"{path.relative_to(ROOT)} exceeds instruction budget ({budget} bytes)")
 
-    docs = [ROOT / "README.md", *(ROOT / "docs").rglob("*.md"), ROOT / "networking/README.md"]
+    docs = [ROOT / "README.md", *(ROOT / "docs").rglob("*.md"), ROOT / "networking/README.md", ROOT / "tests/README.md"]
     for path in docs:
         for target in re.findall(r'\]\(([^)]+)\)', path.read_text()):
             if "://" in target or target.startswith("#"):

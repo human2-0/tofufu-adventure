@@ -107,7 +107,7 @@ mkdir -p "$HOME/Library/Application Support/Godot/app_userdata/Tofufu-Adventure"
 cp "$HOME/tofufu-oracle-private/player-1.json" \
   "$HOME/Library/Application Support/Godot/app_userdata/Tofufu-Adventure/oracle-client.json"
 chmod 600 "$HOME/Library/Application Support/Godot/app_userdata/Tofufu-Adventure/oracle-client.json"
-/Applications/Godot.app/Contents/MacOS/Godot --path . res://game/app/oracle_launch.tscn
+/Applications/Godot.app/Contents/MacOS/Godot --path . res://game/app/bootstrap/oracle_launch.tscn
 ```
 
 Choose **Co-op → Connect to Oracle → Join meadow**. Another person needs their own player credential and a connection path. Do not share your VM administration key with testers; use WSS below for the usual friend-testing setup. The existing/default project launcher still uses Holepunch. For a distributable Oracle build, duplicate the project/export configuration and select `oracle_launch.tscn` as its main scene; never embed private credentials in exports.

@@ -57,7 +57,7 @@ def main():
         for run in range(2):
             phase = directory / str(run)
             phase.mkdir()
-            server, log = start(f"server-{run}", ["res://game/app/dedicated_server.tscn"], {
+            server, log = start(f"server-{run}", ["res://game/app/bootstrap/dedicated_server.tscn"], {
                 "TOFUFU_SERVER_CONFIG": str(profiles / "server.json"),
                 "TOFUFU_STATE_DIR": str(state), "TOFUFU_SERVER_PORT": str(port)})
             wait_for(lambda: "ORACLE_READY" in log.read_text(), [server])

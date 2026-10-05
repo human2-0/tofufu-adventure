@@ -11,11 +11,12 @@ func check(ok: bool, message: String) -> void:
 	push_error("FAIL: " + message)
 
 func run() -> void:
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	await physics_frame
 	var dungeon: TofuDungeon = game.factory_dungeon
+	dungeon.puzzle_enabled = false
 	check(game.world.tofu_factory.entrance_marker != null, "factory has an east meadow map marker")
 	check(not game.inventory.refining_unlocked, "refining starts locked")
 	game.inventory.set_slot(6, ItemStack.new(InventoryItem.create_edamame(), 100))
@@ -52,10 +53,18 @@ func run() -> void:
 		check(is_equal_approx(game.health.current, minf(game.health.maximum, before + 50)), "milk heals 50 HP")
 	var experience_before: int = game.progression.progress.experience
 	for stage in TofuDungeonState.STATIONS.size():
+		# Isolated station test teleports; route legality is exercised by test_factory_route.
+		dungeon._recovery = DungeonRecovery.new()
+		dungeon._recovery.seed("solo", TofuFactory.recovery_anchor(stage), stage)
 		game.player.relocate(TofuFactory.CENTERS[stage] + Vector3(0,0.2,4))
 		dungeon._physics_process(0.016)
 		check(dungeon._enemies.size() > 0 or stage == 3, "stage %d has a combat wave" % stage)
+		if stage == 5:
+			check(dungeon._enemies.size() == 1 and dungeon._enemies[0] is Dofufu, "final room has one Dofufu boss")
 		for enemy: FactoryBean in dungeon._enemies.duplicate(): enemy.target.damage(999)
+		if stage == 5:
+			check(dungeon.state.completed, "boss defeat commits completion")
+			break
 		check(not dungeon.interact(game.player), "station rejects distant interactions")
 		for unit in dungeon.state.required_units():
 			dungeon.state.step(1.1)
@@ -73,7 +82,7 @@ func run() -> void:
 		check(dungeon.state.stage == stage + 1, "stage %d advances" % stage)
 		if stage < game.world.tofu_factory.gates.size():
 			check(not game.world.tofu_factory.gates[stage].visible, "stage %d opens the next production gate" % stage)
-	check(game.progression.progress.experience >= experience_before + 21 * 65 + 250, "factory mobs award bonus EXP including warden")
+	check(game.progression.progress.experience >= experience_before + 18 * 65 + 250, "factory mobs and boss award first-clear EXP")
 	check(dungeon.state.completed and game.inventory.refining_unlocked, "all six processes unlock refinement")
 	check(CurrencyExchange.convert(game.inventory, 6, "press_edamame").begins_with("That currency"), "dungeon does not unlock a direct edamame-to-tofu shortcut")
 	check(CurrencyExchange.convert(game.inventory, 6, "edamame").begins_with("Refined"), "100 edamame mature into one bean")

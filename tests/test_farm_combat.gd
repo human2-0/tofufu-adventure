@@ -17,7 +17,7 @@ func check(ok: bool, message: String) -> void:
 		printerr("FAIL: ", message)
 
 func _run() -> void:
-	scene = load("res://game/app/main.tscn").instantiate()
+	scene = load("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	var source := QuietInput.new()
 	scene.get_node("Player").add_child(source)
@@ -33,8 +33,9 @@ func _run() -> void:
 		elif child is PracticeDummy:
 			dummies.append(child)
 	var forest_count := FarmCombatGrounds.FOREST_ARMORED_SPAWNS.size()
-	check(mobs.size() == 15 + forest_count and dummies.size() == 3, "three outdoor packs, six rain reserves, forest snails and village dummies")
-	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9 + forest_count, "camp and forest snails are active in dry weather")
+	var bee_count := FarmCombatGrounds.BEE_SPAWNS.size()
+	check(mobs.size() == 15 + forest_count + bee_count and dummies.size() == 3, "outdoor packs, rain reserves, forest snails, southern bees and village dummies")
+	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9 + forest_count + bee_count, "camp snails, forest snails and bees are active in dry weather")
 	await _practice(dummies[0])
 	await _rewards(mobs[0])
 	await _safe_village(mobs[3])
@@ -87,21 +88,29 @@ func _rewards(mob: TrainingMob) -> void:
 	check(scene.encounters.experience == 50, "earned EXP survives player defeat within session")
 
 func _safe_village(mob: TrainingMob) -> void:
-	mob.position = scene.world.ground_point(25, -21.6, 0.1)
-	mob._home = scene.world.ground_point(25, -27, 0.1)
-	scene.player.position = scene.world.ground_point(25, -20.5, 0.1)
+	mob.position = scene.world.ground_point(36, 3.6, 0.1)
+	mob._home = scene.world.ground_point(36, 10, 0.1)
+	scene.player.position = scene.world.ground_point(36, 2.5, 0.1)
 	scene.player.velocity = Vector3.ZERO
 	var hp: float = scene.health.current
 	mob._windup = 0.01
-	mob._knockback = Vector3(0, 0, 100)
+	mob._knockback = Vector3(0, 0, -100)
 	mob.set_physics_process(true)
 	await ticks(80)
 	check(not mob._protected(mob.global_position), "chase and knockback cannot enter village")
 	check(scene.health.current == hp and not mob._warning.visible, "village entry cancels even a pending attack")
-	mob.position = mob._home + Vector3(-10, 0, 0)
+	mob._home = scene.world.ground_point(38, 8, 0.1)
+	mob.position = scene.world.ground_point(48, 8, 0.1)
+	mob.velocity = Vector3.ZERO
 	scene.player.position = mob.position + Vector3(0, 0, 3)
 	await ticks(130)
 	check(Vector2(mob.position.x - mob._home.x, mob.position.z - mob._home.z).length() < 4, "distant enemies return toward their spawn")
+	mob.position = scene.world.ground_point(34, -58, 0.1)
+	mob._home = scene.world.ground_point(34, -68, 0.1)
+	mob.velocity = Vector3.ZERO
+	scene.player.position = scene.world.ground_point(34, -55, 0.1)
+	await ticks(80)
+	check(not mob._protected(mob.global_position), "snails restored inside expanded village retreat instead of getting stuck")
 	mob.set_physics_process(false)
 
 func _armored_snail(mobs: Array[TrainingMob]) -> void:

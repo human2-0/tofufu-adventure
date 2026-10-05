@@ -96,6 +96,30 @@ func _run() -> void:
 	check(gun.shot_sequence == sequence + 1, "trained attack speed fires again before base cooldown")
 	var bean := gun.get_child(gun.get_child_count() - 1) as SoyProjectile
 	check(is_equal_approx(bean.body_damage, 20 * gun.damage_multiplier) and is_equal_approx(bean.head_damage, 40 * gun.damage_multiplier), "both projectile damage regions scale with skill")
+	var charged_gun := SoyGun.new()
+	charged_gun.actor = actor
+	charged_gun.tuning = CombatTuning.new()
+	charged_gun.tuning.aim_spread_degrees = 0
+	stage.add_child(charged_gun)
+	await ticks(2)
+	charged_gun.selected = true
+	for shot in SoyGun.MAGAZINE_SIZE:
+		charged_gun.cooldown = 0.0
+		charged_gun.step(true, false, Vector2.UP, Vector3(0, 0.65, -5), 0.2)
+	check(charged_gun.magazine == 0 and is_equal_approx(charged_gun.reload_remaining, SoyGun.RELOAD_SECONDS), "soy gun magazine holds nine shots and starts a two-second reload")
+	charged_gun.step(true, false, Vector2.UP, Vector3(0, 0.65, -5), 0.2)
+	check(charged_gun.ricochet_sequence == 1 and charged_gun.get_children().any(func(child: Node) -> bool: return child is SoyProjectile and child.ricochet), "two-second hold launches a distinct ricochet round while reloading")
+	for frame in 8: charged_gun.step(false, false, Vector2.UP, Vector3.ZERO, 0.25)
+	check(charged_gun.magazine == SoyGun.MAGAZINE_SIZE and charged_gun.reload_remaining == 0.0, "infinite reserve refills the magazine after two seconds")
+	var ricochet := SoyProjectile.new()
+	ricochet.ricochet = true
+	stage.add_child(ricochet)
+	await ticks(2)
+	ricochet._bounce(Vector3.ZERO, Vector3.RIGHT)
+	ricochet._bounce(Vector3.ZERO, Vector3.LEFT)
+	check(ricochet.ricochet_bounces == 2 and not ricochet.is_queued_for_deletion(), "ricochet projectile can bounce twice")
+	ricochet._bounce(Vector3.ZERO, Vector3.RIGHT)
+	check(ricochet.ricochet_bounces == SoyProjectile.MAX_RICOCHETS and ricochet.is_queued_for_deletion(), "third ricochet contact removes the projectile")
 	var hip_max := 0.0
 	var aim_max := 0.0
 	for index in 1000:
@@ -112,6 +136,9 @@ func _run() -> void:
 	check(not ExplorationProtocol.valid_input(wire), "nonfinite gun aim rejected")
 	var state := CombatState.capture(combat)
 	check(ExplorationProtocol.combat(state), "gun snapshot schema valid")
+	state.gun_magazine = SoyGun.MAGAZINE_SIZE + 1
+	check(not ExplorationProtocol.combat(state), "over-capacity gun magazine is rejected by the snapshot schema")
+	state.gun_magazine = 1
 	state.shot_velocity = [0, INF, 0]
 	check(not ExplorationProtocol.combat(state), "nonfinite replica velocity rejected")
 	combat.equipment.step(Vector2.UP, false, false, false, false, 2, 0.016)

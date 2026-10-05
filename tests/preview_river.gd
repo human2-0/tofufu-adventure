@@ -5,7 +5,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var world: Meadow = load("res://game/world/meadow.tscn").instantiate()
+	var world: Meadow = load("res://game/world/farm/meadow.tscn").instantiate()
 	root.add_child(world)
 	var cycle: EnvironmentCycle = world.get_node("EnvironmentCycle")
 	cycle.phase = 0.43

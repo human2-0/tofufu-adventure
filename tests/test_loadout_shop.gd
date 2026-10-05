@@ -6,7 +6,7 @@ func check(ok: bool, message: String) -> void:
 		failures += 1
 		printerr("FAIL: ", message)
 func _run() -> void:
-	var game := preload("res://game/app/main.tscn").instantiate()
+	var game := preload("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	await process_frame
@@ -17,16 +17,16 @@ func _run() -> void:
 	check(game.inventory.count_item("mature_bean") == 0, "new character starts without shop tender")
 	game.merchant.purchase(game.player, game.inventory, "sotjet")
 	check(game.inventory.count_item("mature_bean") == 0, "distant purchase cannot spend tender")
-	game.player.position = game.world.ground_point(29, 5.2)
+	game.player.position = game.world.weapon_merchant.global_position + Vector3(0, 0.1, 1.5)
 	await physics_frame
-	check(game.merchant.nearby(game.player), "Kaji can be reached from front of weapon shop")
+	check(game.merchant.nearby(game.player), "Grandpa Fufu can be reached from front of weapon shop")
 	await process_frame
-	check(game.merchant._ring.visible and "Talk to Kaji" in game.merchant._prompt.text, "nearby merchant highlights with interaction prompt")
+	check(game.merchant._ring.visible and "Talk to Grandpa Fufu" in game.merchant._prompt.text, "nearby merchant highlights with interaction prompt")
 	var interact := InputEventAction.new()
 	interact.action = "pickup_weapon"
 	interact.pressed = true
 	game.merchant._unhandled_input(interact)
-	check(game.merchant.window.visible and not game.shooting_view.local_input.enabled, "interaction opens Kaji shop and pauses combat input")
+	check(game.merchant.window.visible and not game.shooting_view.local_input.enabled, "interaction opens Grandpa Fufu shop and pauses combat input")
 	check(game.merchant.window._stock_grid.get_child_count() == WeaponTrade.BUYABLE_IDS.size(), "shop presents all gear and apparel in a stock tile grid")
 	game.merchant.window._first_button.grab_focus()
 	check(game.merchant.window._description.text.contains("close-range blade"), "focused shop item shows its description")
@@ -44,7 +44,7 @@ func _run() -> void:
 	check(game.inventory.get_slot(sotjet_slot).reserve == 37 and not game.combat.sotjet.selected, "unequipping preserves weapon reserve and stops its use")
 	game.merchant.purchase(game.player, game.inventory, "sproutwood_staff")
 	var staff_slot := _slot_of(game.inventory, "sproutwood_staff")
-	check(game.inventory.count_item("mature_bean") == 2 and staff_slot >= 0, "Kaji sells the Sproutwood Staff for zero Mature Beans")
+	check(game.inventory.count_item("mature_bean") == 2 and staff_slot >= 0, "Grandpa Fufu sells the Sproutwood Staff for zero Mature Beans")
 	game.inventory_window.execute_transfer("inventory", staff_slot, "equipment", "combat_2")
 	game.combat.equipment.step(Vector2.UP, false, false, false, false, 2, 0.016)
 	check(game.combat.equipment.staff_selected and game.combat.staff.visible and not game.combat.sword.visible, "equipped staff selects its mesh-backed melee combat mode")
@@ -81,7 +81,7 @@ func _run() -> void:
 		var apparel_id := "bright_leaf_%s" % slot
 		if slot != "helmet": game.merchant.purchase(game.player, game.inventory, apparel_id)
 		var apparel_slot := _slot_of(game.inventory, apparel_id)
-		check(apparel_slot >= 0, "%s is available in Kaji's stock" % apparel_id)
+		check(apparel_slot >= 0, "%s is available in Grandpa Fufu's stock" % apparel_id)
 		game.inventory_window.execute_transfer("inventory", apparel_slot, "equipment", slot)
 		if slot == "helmet":
 			var before: float = game.health.current
@@ -184,7 +184,7 @@ func _run() -> void:
 	game.player.position = Vector3.ZERO
 	game.merchant.sell(game.player, game.inventory, 1, "knife")
 	check(game.inventory.count_item("mature_bean") == 1, "distant sale rejected")
-	game.player.position = game.world.ground_point(29, 5.2)
+	game.player.position = game.world.weapon_merchant.global_position + Vector3(0, 0.1, 1.5)
 	if "--preview" in OS.get_cmdline_user_args():
 		game.inventory.restore(save.inventory)
 		await process_frame

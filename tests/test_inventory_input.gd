@@ -23,10 +23,11 @@ func key(code: Key, echo_event: bool = false) -> void:
 	root.push_input(event)
 
 func _run() -> void:
-	var app := preload("res://game/app/launch.tscn").instantiate()
+	var app := preload("res://game/app/bootstrap/launch.tscn").instantiate()
 	app.store.directory = "user://test_inventory_input"
 	app.preferences.path = "user://test_inventory_input.cfg"
 	root.add_child(app)
+	app.preferences.skip_item_drop_warning = false
 	app._start(0, {"name": "Inventory test", "opening_complete": true})
 	var game: Node3D = app.game
 	await process_frame
@@ -91,7 +92,34 @@ func _run() -> void:
 	game.inventory_window._inv_buttons[0].focus_entered.emit()
 	check(game.inventory_window._description.text.contains("Shop currency"), "focused item shows its description")
 	check(game.inventory_window._inv_buttons[0].tooltip_text.contains("Shop currency"), "hover tooltip includes item description")
+	game.inventory_window.drop_confirmation.skip_future = false
+	var requested_drops: Array = []
+	game.inventory_window.drop_requested.connect(func(source: String, id: Variant) -> void: requested_drops.append([source, id]))
+	game.inventory.add_item(InventoryItem.create_edamame(), 4)
+	var drop_slot := 1
+	game.inventory_window.request_drop("inventory", drop_slot)
+	check(game.inventory_window.drop_confirmation.visible, "first manual drop asks for confirmation")
+	game.inventory_window.drop_confirmation._checkbox.button_pressed = true
+	game.inventory_window.drop_confirmation.confirmed.emit()
+	check(requested_drops.size() == 1 and requested_drops[0] == ["inventory", drop_slot], "approved confirmation requests the selected stack drop")
+	check(app.preferences.skip_item_drop_warning, "Don't ask again persists after approving the drop")
+	var reloaded_preferences := GamePreferences.new()
+	reloaded_preferences.path = app.preferences.path
+	reloaded_preferences.load_preferences()
+	check(reloaded_preferences.skip_item_drop_warning, "drop warning opt-out survives loading preferences")
+	game.inventory_window.request_drop("inventory", drop_slot)
+	check(not game.inventory_window.drop_confirmation.visible and requested_drops.size() == 2, "saved preference skips later drop confirmation")
+	game.inventory_window.drop_confirmation.skip_future = false
+	game.inventory_window._inv_buttons[drop_slot]._active_drag_data = {"source": "inventory", "slot_id": drop_slot}
+	game.inventory_window._inv_buttons[drop_slot]._notification(Control.NOTIFICATION_DRAG_END)
+	check(game.inventory_window.drop_confirmation.visible, "dragging a stack outside the inventory opens the drop confirmation")
+	game.inventory_window.drop_confirmation._cancel()
 	if "--preview" in OS.get_cmdline_user_args():
+		game.inventory_window.request_drop("inventory", drop_slot)
+		await process_frame
+		await RenderingServer.frame_post_draw
+		root.get_texture().get_image().save_png("/tmp/tofufu-drop-confirmation.png")
+		game.inventory_window.drop_confirmation._cancel()
 		game.inventory.add_item(InventoryItem.create_edamame(), 15)
 		game.inventory.add_item(InventoryItem.create_edamame(), 5)
 		game.inventory.add_item(InventoryItem.currency("tofu_white_chunk"), 3)

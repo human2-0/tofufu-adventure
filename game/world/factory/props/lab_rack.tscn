@@ -1,0 +1,257 @@
+[gd_scene load_steps=33 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/iron.svg" id="e1"]
+
+[ext_resource type="Material" path="res://game/world/factory/props/factory_ink.tres" id="e2"]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/wood.svg" id="e3"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_00.tscn" id="e4"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_01.tscn" id="e5"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_02.tscn" id="e6"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_03.tscn" id="e7"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_04.tscn" id="e8"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_05.tscn" id="e9"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_06.tscn" id="e10"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_07.tscn" id="e11"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_08.tscn" id="e12"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_09.tscn" id="e13"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_10.tscn" id="e14"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_11.tscn" id="e15"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_12.tscn" id="e16"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_13.tscn" id="e17"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_14.tscn" id="e18"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_15.tscn" id="e19"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_16.tscn" id="e20"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_17.tscn" id="e21"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_18.tscn" id="e22"]
+
+[ext_resource type="PackedScene" path="res://game/world/factory/props/bottle_19.tscn" id="e23"]
+
+[sub_resource type="BoxShape3D" id="r1"]
+size = Vector3(4.5, 1.85, 0.5)
+
+[sub_resource type="BoxMesh" id="r2"]
+size = Vector3(0.11, 1.88, 0.54)
+
+[sub_resource type="StandardMaterial3D" id="r3"]
+albedo_color = Color(0.376471, 0.474510, 0.462745, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="BoxMesh" id="r4"]
+size = Vector3(0.11, 1.88, 0.54)
+
+[sub_resource type="BoxMesh" id="r5"]
+size = Vector3(0.11, 1.88, 0.54)
+
+[sub_resource type="BoxMesh" id="r6"]
+size = Vector3(4.5, 0.1, 0.55)
+
+[sub_resource type="StandardMaterial3D" id="r7"]
+albedo_color = Color(0.607843, 0.462745, 0.337255, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e3")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="BoxMesh" id="r8"]
+size = Vector3(4.5, 0.1, 0.55)
+
+[sub_resource type="BoxMesh" id="r9"]
+size = Vector3(4.5, 0.1, 0.55)
+
+[node name="LabRack" type="Node3D"]
+
+[node name="Body" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="Body"]
+position = Vector3(0.0, 0.925, 0.0)
+shape = SubResource("r1")
+
+[node name="StaticVisual" type="Node3D" parent="."]
+
+[node name="MovingParts" type="Node3D" parent="."]
+
+[node name="Post-215" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(-2.15, 0.94, 0.0)
+mesh = SubResource("r2")
+material_override = SubResource("r3")
+
+[node name="Post0" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.94, 0.0)
+mesh = SubResource("r4")
+material_override = SubResource("r3")
+
+[node name="Post215" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(2.15, 0.94, 0.0)
+mesh = SubResource("r5")
+material_override = SubResource("r3")
+
+[node name="Shelf8" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.08, 0.0)
+mesh = SubResource("r6")
+material_override = SubResource("r7")
+
+[node name="Shelf92" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.92, 0.0)
+mesh = SubResource("r8")
+material_override = SubResource("r7")
+
+[node name="Shelf176" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 1.76, 0.0)
+mesh = SubResource("r9")
+material_override = SubResource("r7")
+
+[node name="content_00_nigari" type="Marker3D" parent="."]
+position = Vector3(-1.92, 0.12, 0.04)
+
+[node name="Bottle00" parent="." instance=ExtResource("e4")]
+position = Vector3(-1.92, 0.12, 0.04)
+
+[node name="content_01_gypsum" type="Marker3D" parent="."]
+position = Vector3(-1.495, 0.12, 0.04)
+
+[node name="Bottle01" parent="." instance=ExtResource("e5")]
+position = Vector3(-1.495, 0.12, 0.04)
+
+[node name="content_02_citric_acid" type="Marker3D" parent="."]
+position = Vector3(-1.07, 0.12, 0.04)
+
+[node name="Bottle02" parent="." instance=ExtResource("e6")]
+position = Vector3(-1.07, 0.12, 0.04)
+
+[node name="content_03_vinegar" type="Marker3D" parent="."]
+position = Vector3(-0.645, 0.12, 0.04)
+
+[node name="Bottle03" parent="." instance=ExtResource("e7")]
+position = Vector3(-0.645, 0.12, 0.04)
+
+[node name="content_04_lemon_concentrate" type="Marker3D" parent="."]
+position = Vector3(-0.22, 0.12, 0.04)
+
+[node name="Bottle04" parent="." instance=ExtResource("e8")]
+position = Vector3(-0.22, 0.12, 0.04)
+
+[node name="content_05_glucono_delta_lactone" type="Marker3D" parent="."]
+position = Vector3(0.205, 0.12, 0.04)
+
+[node name="Bottle05" parent="." instance=ExtResource("e9")]
+position = Vector3(0.205, 0.12, 0.04)
+
+[node name="content_06_calcium_chloride" type="Marker3D" parent="."]
+position = Vector3(0.63, 0.12, 0.04)
+
+[node name="Bottle06" parent="." instance=ExtResource("e10")]
+position = Vector3(0.63, 0.12, 0.04)
+
+[node name="content_07_table_salt" type="Marker3D" parent="."]
+position = Vector3(1.055, 0.12, 0.04)
+
+[node name="Bottle07" parent="." instance=ExtResource("e11")]
+position = Vector3(1.055, 0.12, 0.04)
+
+[node name="content_08_baking_soda" type="Marker3D" parent="."]
+position = Vector3(1.48, 0.12, 0.04)
+
+[node name="Bottle08" parent="." instance=ExtResource("e12")]
+position = Vector3(1.48, 0.12, 0.04)
+
+[node name="content_09_sodium_carbonate" type="Marker3D" parent="."]
+position = Vector3(1.905, 0.12, 0.04)
+
+[node name="Bottle09" parent="." instance=ExtResource("e13")]
+position = Vector3(1.905, 0.12, 0.04)
+
+[node name="content_10_sugar" type="Marker3D" parent="."]
+position = Vector3(-1.92, 0.96, 0.04)
+
+[node name="Bottle10" parent="." instance=ExtResource("e14")]
+position = Vector3(-1.92, 0.96, 0.04)
+
+[node name="content_11_starch" type="Marker3D" parent="."]
+position = Vector3(-1.495, 0.96, 0.04)
+
+[node name="Bottle11" parent="." instance=ExtResource("e15")]
+position = Vector3(-1.495, 0.96, 0.04)
+
+[node name="content_12_agar" type="Marker3D" parent="."]
+position = Vector3(-1.07, 0.96, 0.04)
+
+[node name="Bottle12" parent="." instance=ExtResource("e16")]
+position = Vector3(-1.07, 0.96, 0.04)
+
+[node name="content_13_gelatin" type="Marker3D" parent="."]
+position = Vector3(-0.645, 0.96, 0.04)
+
+[node name="Bottle13" parent="." instance=ExtResource("e17")]
+position = Vector3(-0.645, 0.96, 0.04)
+
+[node name="content_14_yeast" type="Marker3D" parent="."]
+position = Vector3(-0.22, 0.96, 0.04)
+
+[node name="Bottle14" parent="." instance=ExtResource("e18")]
+position = Vector3(-0.22, 0.96, 0.04)
+
+[node name="content_15_pectin" type="Marker3D" parent="."]
+position = Vector3(0.205, 0.96, 0.04)
+
+[node name="Bottle15" parent="." instance=ExtResource("e19")]
+position = Vector3(0.205, 0.96, 0.04)
+
+[node name="content_16_potassium_citrate" type="Marker3D" parent="."]
+position = Vector3(0.63, 0.96, 0.04)
+
+[node name="Bottle16" parent="." instance=ExtResource("e20")]
+position = Vector3(0.63, 0.96, 0.04)
+
+[node name="content_17_sodium_citrate" type="Marker3D" parent="."]
+position = Vector3(1.055, 0.96, 0.04)
+
+[node name="Bottle17" parent="." instance=ExtResource("e21")]
+position = Vector3(1.055, 0.96, 0.04)
+
+[node name="content_18_distilled_water" type="Marker3D" parent="."]
+position = Vector3(1.48, 0.96, 0.04)
+
+[node name="Bottle18" parent="." instance=ExtResource("e22")]
+position = Vector3(1.48, 0.96, 0.04)
+
+[node name="content_19_mineral_oil" type="Marker3D" parent="."]
+position = Vector3(1.905, 0.96, 0.04)
+
+[node name="Bottle19" parent="." instance=ExtResource("e23")]
+position = Vector3(1.905, 0.96, 0.04)
+
+[node name="interaction" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.9, 0.75)

@@ -5,7 +5,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var world: Node3D = load("res://game/world/meadow.tscn").instantiate()
+	var world: Node3D = load("res://game/world/farm/meadow.tscn").instantiate()
 	root.add_child(world)
 	var camera := Camera3D.new()
 	world.add_child(camera)

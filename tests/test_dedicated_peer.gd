@@ -12,7 +12,7 @@ func _run() -> void:
 	deadline.timeout.connect(func() -> void:
 		push_error("Dedicated client timed out")
 		quit(1))
-	app = load("res://game/app/oracle_launch.tscn").instantiate()
+	app = load("res://game/app/bootstrap/oracle_launch.tscn").instantiate()
 	root.add_child(app)
 	app.room.ended.connect(func(reason: String) -> void:
 		if not closing:

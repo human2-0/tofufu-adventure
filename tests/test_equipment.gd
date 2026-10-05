@@ -12,7 +12,7 @@ func check(condition: bool, message: String) -> void:
 		printerr("FAIL: ", message)
 
 func _run() -> void:
-	scene = load("res://game/app/main.tscn").instantiate()
+	scene = load("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	root.add_child(scene)
 	scene.player.set_physics_process(false)

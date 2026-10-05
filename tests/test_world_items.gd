@@ -16,7 +16,7 @@ func ticks(count: int) -> void:
 		await process_frame
 
 func _run() -> void:
-	var game := preload("res://game/app/main.tscn").instantiate()
+	var game := preload("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	await ticks(2)

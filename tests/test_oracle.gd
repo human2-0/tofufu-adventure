@@ -51,7 +51,7 @@ func _run() -> void:
 	var guest_view := SubViewport.new()
 	guest_view.own_world_3d = true
 	root.add_child(guest_view)
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	guest_view.add_child(game)
 	guest_session = CoopSession.new()

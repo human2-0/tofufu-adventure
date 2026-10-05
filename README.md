@@ -29,7 +29,7 @@ GitHub Actions can run the verification scripts and Godot's headless exports. No
 
 ## Run
 
-Open `project.godot` in Godot 4.7.2 (the locally verified version), then press F6 on `game/app/main.tscn` or F5 for the project. 
+Open `project.godot` in Godot 4.7.2 (the locally verified version), then press F6 on `game/app/adventure/main.tscn` or F5 for the project.
 
 | Control | Action |
 | --- | --- |
@@ -73,7 +73,7 @@ The verifier finds `godot`, `godot4`, or the standard macOS Godot app. Override 
 ## Development entry points
 
 - [AGENTS.md](AGENTS.md): compact Codex working rules.
-- [Agent map](docs/AGENT_MAP.md): directory tree, ownership, and task routing.
+- [Agent map](docs/AGENT_MAP.md): feature directories, entry points, ownership, and task routing.
 - [Architecture](docs/architecture/OVERVIEW.md): implemented boundaries and expansion rules.
 - [Co-op design](docs/architecture/COOP.md): Holepunch transport, host authority, protocol, and implementation milestones.
 - [Validation](tests/README.md): automated coverage and manual gameplay checklist.

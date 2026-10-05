@@ -47,11 +47,11 @@ def main():
         endpoint = json.loads((directory / "player-1.json").read_text())["endpoint"]
         env.update(TOFUFU_SERVER_CONFIG=str(directory / "server.json"),
                    TOFUFU_STATE_DIR=str(state), TOFUFU_SERVER_PORT=endpoint.rsplit(":", 1)[1])
-        command += ["--headless", "--max-fps", "60", "res://game/app/dedicated_server.tscn"]
+        command += ["--headless", "--max-fps", "60", "res://game/app/bootstrap/dedicated_server.tscn"]
         print(f"World saves: {state}. Ctrl-C saves and stops the server.", flush=True)
     else:
         env["TOFUFU_CLIENT_CONFIG"] = str(directory / f"player-{args.player}.json")
-        command += ["res://game/app/oracle_launch.tscn", "--", "--dedicated-lobby"]
+        command += ["res://game/app/bootstrap/oracle_launch.tscn", "--", "--dedicated-lobby"]
         print(f"Player {args.player}: Connect to server, then Join meadow.", flush=True)
     process = subprocess.Popen(command, cwd=ROOT, env=env, start_new_session=True)
     try:

@@ -8,6 +8,9 @@ signal super_dashed
 
 var spend_stamina: Callable
 var walk_multiplier: float = 1.0
+var surface_grip: float = 1.0
+var immersion: float = 0.0
+var endurance := RunEndurance.new()
 var dash_distance_multiplier: float = 1.0
 var jump_launch_multiplier: float = 1.0
 var is_dashing: bool = false
@@ -31,12 +34,14 @@ func step(command: PlayerCommand, velocity: Vector3, grounded: bool, delta: floa
 	_coyote_remaining = _tuning.coyote_time if grounded else maxf(0.0, _coyote_remaining - delta)
 	_jump_buffer_remaining = maxf(0.0, _jump_buffer_remaining - delta)
 	cooldown_remaining = maxf(0.0, cooldown_remaining - delta)
+	endurance.step(command.run_held, command.move.length_squared() > 0.01, not command.cancel_actions and not is_dashing and not is_charging_dash and not command.dash_pressed, delta)
 	if is_dashing:
 		return _step_dash(delta)
 	if is_charging_dash:
 		return _step_dash_charge(command, velocity, delta)
 	velocity = _step_jump(command, velocity, grounded, delta)
-	velocity = _step_walk(command.move, velocity, delta)
+	var speed := _tuning.run_speed if endurance.running else _tuning.walk_speed
+	velocity = PlanarMovement.step(command.move, velocity, speed * walk_multiplier, grounded, surface_grip, _tuning, delta)
 	if command.dash_pressed and cooldown_remaining <= 0.0:
 		if command.dash_held:
 			_start_dash_charge(command.dash_direction)
@@ -47,7 +52,8 @@ func step(command: PlayerCommand, velocity: Vector3, grounded: bool, delta: floa
 func _step_jump(command: PlayerCommand, velocity: Vector3, grounded: bool, delta: float) -> Vector3:
 	if not grounded:
 		var gravity := _tuning.gravity * (_tuning.fall_gravity_multiplier if velocity.y < 0.0 else 1.0)
-		velocity.y -= gravity * delta
+		velocity.y -= gravity * lerpf(1.0, 0.28, immersion) * delta
+		velocity.y *= exp(-1.4 * immersion * delta)
 	elif velocity.y < 0.0:
 		velocity.y = 0.0
 	if command.jump_pressed:
@@ -72,7 +78,7 @@ func _step_jump(command: PlayerCommand, velocity: Vector3, grounded: bool, delta
 			if _buffered_charge > 0.0 and spend_stamina.is_valid() and not spend_stamina.call(25.0 * _buffered_charge):
 				_buffered_charge = 0.0
 			var height_multiplier := lerpf(1.0, _tuning.super_jump_height_multiplier, _buffered_charge)
-			velocity.y = _tuning.jump_velocity * sqrt(height_multiplier) * jump_launch_multiplier
+			velocity.y = _tuning.jump_velocity * sqrt(height_multiplier) * jump_launch_multiplier * lerpf(1.0, 0.60, immersion)
 			cancel_jump()
 			_coyote_remaining = 0.0
 			jumped.emit()
@@ -87,14 +93,6 @@ func cancel_jump() -> void:
 func cancel_dash_charge() -> void:
 	dash_charge = 0.0
 	is_charging_dash = false
-
-func _step_walk(direction: Vector2, velocity: Vector3, delta: float) -> Vector3:
-	var bounded := direction.limit_length()
-	var target := Vector3(bounded.x, 0.0, bounded.y) * _tuning.walk_speed * walk_multiplier
-	var rate := _tuning.acceleration if bounded.length_squared() > 0.01 else _tuning.friction
-	velocity.x = move_toward(velocity.x, target.x, rate * delta)
-	velocity.z = move_toward(velocity.z, target.z, rate * delta)
-	return velocity
 
 func _start_dash_charge(direction: Vector2) -> void:
 	cancel_jump()
@@ -133,5 +131,5 @@ func _step_dash(delta: float) -> Vector3:
 	if dash_remaining <= 0.0:
 		is_dashing = false
 		is_super_dashing = false
-		return _dash_direction * _tuning.walk_speed * walk_multiplier * 1.25
-	return _dash_direction * _tuning.dash_speed * dash_distance_multiplier
+		return _dash_direction * _tuning.walk_speed * walk_multiplier * 1.25 * lerpf(1.0, 0.48, immersion)
+	return _dash_direction * _tuning.dash_speed * dash_distance_multiplier * lerpf(1.0, 0.48, immersion)

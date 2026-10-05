@@ -32,7 +32,7 @@ func _run() -> void:
 		var viewport := SubViewport.new()
 		viewport.own_world_3d = true
 		root.add_child(viewport)
-		var game: Node3D = load("res://game/app/main.tscn").instantiate()
+		var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 		viewport.add_child(game)
 		var session := CoopSession.new()
 		session.game = game

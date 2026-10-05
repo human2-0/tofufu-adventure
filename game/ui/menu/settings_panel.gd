@@ -2,6 +2,7 @@ class_name SettingsPanel
 extends VBoxContainer
 
 signal display_requested(index: int, fullscreen: bool)
+signal rendering_requested(limit: int, scale: float, sync: bool)
 signal deadzone_changed(value: float)
 signal binding_requested(action: String, device: String)
 signal reset_requested
@@ -11,7 +12,7 @@ var message: Label
 var device: String = "keyboard"
 var _rows: VBoxContainer
 
-func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzone: float, actions: Array[String]) -> void:
+func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzone: float, actions: Array[String], frame_limit: int = 120, render_scale: float = 1.0, vsync: bool = false) -> void:
 	MenuStyle.label(self, "Display", 22)
 	var display_row := HBoxContainer.new()
 	add_child(display_row)
@@ -26,6 +27,7 @@ func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzo
 	display_row.add_child(full)
 	MenuStyle.button(display_row, "Apply", func() -> void: display_requested.emit(sizes.selected, full.button_pressed))
 	MenuStyle.paragraph(self, "Window size applies in windowed mode. Fullscreen uses your display’s native resolution.")
+	_render_options(frame_limit, render_scale, vsync)
 	MenuStyle.label(self, "Controls", 22)
 	var devices := OptionButton.new()
 	devices.add_item("Mouse & keyboard")
@@ -65,3 +67,24 @@ func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzo
 	MenuStyle.button(footer, "Reset controls", reset_requested.emit)
 	MenuStyle.button(footer, "Back", back.emit)
 	MenuStyle.focus_later(sizes)
+
+func _render_options(frame_limit: int, render_scale: float, vsync: bool) -> void:
+	MenuStyle.label(self, "Rendering", 22)
+	var row := HBoxContainer.new()
+	add_child(row)
+	var limits: Array[int] = [60, 120, 144, 0]
+	var scales: Array[float] = [0.75, 0.85, 1.0]
+	var fps := OptionButton.new()
+	for limit in limits: fps.add_item("%d FPS" % limit if limit > 0 else "Uncapped")
+	fps.select(maxi(0, limits.find(frame_limit)))
+	row.add_child(fps)
+	var scale := OptionButton.new()
+	for amount in scales: scale.add_item("3D resolution · %d%%" % roundi(amount * 100))
+	scale.select(maxi(0, scales.find(render_scale)))
+	row.add_child(scale)
+	var sync := CheckButton.new()
+	sync.text = "VSync"
+	sync.button_pressed = vsync
+	row.add_child(sync)
+	MenuStyle.button(row, "Apply", func() -> void: rendering_requested.emit(limits[fps.selected], scales[scale.selected], sync.button_pressed))
+	MenuStyle.paragraph(self, "120 FPS is the performance target. 100% renders native 3D; 85% or 75% adds GPU headroom. Text and menus stay sharp. VSync reduces tearing but ties frame pacing to display refresh.")

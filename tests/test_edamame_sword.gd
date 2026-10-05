@@ -73,7 +73,7 @@ func _run() -> void:
 	stage.add_child(replica)
 	var snapshot := CombatState.capture(combat)
 	CombatState.present(replica, snapshot, Vector2.UP)
-	check(replica.sword.pod and replica.equipment.pod_selected, "replica presents supplied pod artwork")
+	check(replica.sword.pod and replica.equipment.pod_selected and replica.sword._model_id == "edamame_sword", "replica presents supplied 3D pod blade")
 	check(targets[0].current == 52, "replica presentation never damages")
 	combat.step(Vector2.UP, false, 3.1)
 	combat.step(Vector2.UP, false, 0.016, Vector2.ZERO, false, true)

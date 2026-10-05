@@ -3,12 +3,15 @@ extends Resource
 ## Shared configuration only. Per-player runtime state belongs in PlayerMotor.
 
 @export_group("Movement")
-@export_range(0.0, 50.0) var walk_speed: float = 6.5
-@export_range(0.0, 200.0) var acceleration: float = 45.0
-@export_range(0.0, 200.0) var friction: float = 35.0
+@export_range(0.0, 50.0) var walk_speed: float = 4.8
+@export_range(0.0, 50.0) var run_speed: float = 7.2
+@export_range(0.0, 200.0) var acceleration: float = 14.0
+@export_range(0.0, 200.0) var friction: float = 18.0
+@export_range(0.0, 200.0) var turn_braking: float = 24.0
+@export_range(0.0, 1.0) var air_control: float = 0.3
 @export_group("Jump")
 @export_range(0.0, 50.0) var jump_velocity: float = 12.0
-@export_range(0.0, 100.0) var gravity: float = 40.0
+@export_range(0.0, 100.0) var gravity: float = 44.0
 @export_range(1.0, 5.0) var fall_gravity_multiplier: float = 1.65
 @export_range(0.0, 1.0) var coyote_time: float = 0.12
 @export_range(0.0, 1.0) var jump_buffer_time: float = 0.12

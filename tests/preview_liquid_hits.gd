@@ -10,7 +10,7 @@ func capture(name: String) -> void:
 
 func _run() -> void:
 	root.size = Vector2i(1280, 720)
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	game.player.set_physics_process(false)

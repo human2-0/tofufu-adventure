@@ -2,6 +2,7 @@ class_name CoopTestInput
 extends PlayerCommandSource
 
 var move: Vector2 = Vector2.ZERO
+var run_held: bool = false
 var aim_point := Vector3.ZERO
 var aim: Vector2 = Vector2.UP
 var jump: bool = false
@@ -16,6 +17,7 @@ var slot: int = 0
 func sample(_position: Vector3) -> PlayerCommand:
 	var command := PlayerCommand.new()
 	command.move = move
+	command.run_held = run_held
 	command.aim = aim
 	command.aim_point = aim_point
 	command.dash_direction = aim

@@ -25,7 +25,7 @@ func run() -> void:
 	check(not crop.plant() and crop.pod_frame() == 11, "harvest animation before replant")
 	crop.step(2)
 	check(crop.plant(), "renewable soil")
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	await physics_frame

@@ -10,7 +10,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var app: Node = load("res://game/app/launch.tscn").instantiate()
+	var app: Node = load("res://game/app/bootstrap/launch.tscn").instantiate()
 	var base := "user://test_frontend_%d" % Time.get_ticks_usec()
 	app.store.directory = base
 	app.preferences.path = base + ".cfg"

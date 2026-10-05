@@ -19,7 +19,7 @@ func check(condition: bool, message: String) -> void:
 		printerr("FAIL: ", message)
 
 func _run() -> void:
-	var scene: Node3D = load("res://game/app/main.tscn").instantiate()
+	var scene: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	var player: Player = scene.get_node("Player")
 	var source := ScriptedInput.new()

@@ -92,7 +92,7 @@ func _changed() -> void:
 				break
 
 func _start(_hosting: bool, _members: Array, _local: String) -> void:
-	game = load("res://game/app/main.tscn").instantiate()
+	game = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = role != "host"
 	root.add_child(game)
 	session = CoopSession.new()

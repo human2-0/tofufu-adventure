@@ -26,7 +26,7 @@ func check(condition: bool, message: String) -> void:
 		printerr("FAIL: ", message)
 
 func _run() -> void:
-	scene = load("res://game/app/main.tscn").instantiate()
+	scene = load("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	player = scene.get_node("Player")
 	source = ScriptedInput.new()
@@ -74,7 +74,9 @@ func _harvest_and_heal() -> void:
 	check(not scene.character_equipment.can_equip("support_1", stack), "currency cannot be equipped or consumed as healing")
 	var prop := plant.get_parent() as HarvestProp
 	prop._physics_process(30)
-	check(prop.visible and plant.current == plant.maximum, "plants regrow for repeat testing")
+	check(prop.visible and plant.current == 0, "soy regrowth stays visible and cannot be harvested halfway through")
+	prop._physics_process(30)
+	check(prop.visible and plant.current == plant.maximum, "plants mature after one minute for repeat harvesting")
 
 func _occlusion_and_sword() -> void:
 	source.command.aim = Vector2.UP
@@ -119,9 +121,7 @@ func _river_and_farm() -> void:
 	player.position = Vector3(7, 0.1, 4)
 	player.velocity = Vector3.ZERO
 	await ticks(10)
-	source.command.move = Vector2.RIGHT
-	await ticks(95)
-	source.command.move = Vector2.ZERO
+	await travel_until(Vector2.RIGHT, func() -> bool: return player.position.x > 15.2)
 	check(player.position.x > 15 and player.position.y > -0.1, "bridge supports an uninterrupted crossing")
 	player.position = Vector3(11, 0, 10)
 	player.velocity = Vector3.ZERO
@@ -132,19 +132,27 @@ func _river_and_farm() -> void:
 	player.position = scene.world.ground_point(-20.5, -10, 0.1)
 	player.velocity = Vector3.ZERO
 	await ticks(30)
-	source.command.move = Vector2.UP
-	await ticks(70)
-	source.command.move = Vector2.ZERO
+	await travel_until(Vector2.UP, func() -> bool: return player.position.z < -16.2)
 	await ticks(20)
 	check(player.position.z < -16 and player.is_on_floor(), "farm lane climbs to seed bank on physical terrain")
 	check(player.position.y > 1.0, "seed bank approach has real elevation")
-	player.position = Vector3(20, 0.1, -3)
+	player.position = scene.world.ground_point(43, -14, 0.1)
 	player.velocity = Vector3.ZERO
 	await ticks(10)
-	source.command.move = Vector2.UP
-	await ticks(50)
+	source.command.move = Vector2.DOWN
+	# Hold long enough to reach the wall even with slower walking/acceleration.
+	await ticks(120)
 	source.command.move = Vector2.ZERO
-	check(player.position.z > -6, "item shop walls block traversal")
+	check(player.position.z < -10.6, "Grandma's brick house walls block traversal")
+
+func travel_until(direction: Vector2, arrived: Callable) -> void:
+	# Check traversal outcomes rather than assuming the previous instantaneous speed.
+	source.command.move = direction
+	for tick in 180:
+		if arrived.call(): break
+		await ticks(1)
+	source.command.move = Vector2.ZERO
+	check(arrived.call(), "walking reaches its endpoint within three seconds")
 
 func _mob_and_respawn() -> void:
 	var mob: TrainingMob
@@ -225,7 +233,7 @@ func _prop_boundaries() -> void:
 	scene.add_child(fixture)
 	fixture.position = Vector3(0, 30, 0)
 	FarmBuildings.cottage(fixture, Vector3.ZERO, "", Color.WHITE, Vector3(6, 3, 4))
-	var tree: Node3D = load("res://game/world/tree.tscn").instantiate()
+	var tree: Node3D = load("res://game/world/common/tree.tscn").instantiate()
 	fixture.add_child(tree)
 	tree.position.x = 10
 	var rail := MeadowGeometry.box(fixture, Vector3(20, 1, 0), Vector3(0.1, 0.2, 4), Color.WHITE, true)

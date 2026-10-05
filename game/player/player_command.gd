@@ -4,6 +4,7 @@ extends RefCounted
 ## Local input creates this now; a validated remote adapter can create it later.
 
 var move: Vector2 = Vector2.ZERO
+var run_held: bool = false
 var face_aim: bool = false
 var aim: Vector2 = Vector2.DOWN
 var aim_point: Vector3 = Vector3.ZERO

@@ -10,7 +10,7 @@ Group=tofufu
 WorkingDirectory=/opt/tofufu/current
 Environment=TOFUFU_STATE_DIR=/var/lib/tofufu
 ExecStartPre=/usr/bin/rm -f /var/lib/tofufu/stop-request
-ExecStart=/opt/tofufu/godot --headless --max-fps 60 --path /opt/tofufu/current --log-file /var/lib/tofufu/server.log res://game/app/dedicated_server.tscn
+ExecStart=/opt/tofufu/godot --headless --max-fps 60 --path /opt/tofufu/current --log-file /var/lib/tofufu/server.log res://game/app/bootstrap/dedicated_server.tscn
 ExecStop=/usr/local/lib/tofufu/stop.sh $MAINPID
 Restart=on-failure
 RestartSec=5

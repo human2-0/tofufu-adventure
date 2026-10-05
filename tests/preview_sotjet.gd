@@ -10,12 +10,14 @@ func capture(name: String) -> void:
 
 func _run() -> void:
 	root.size = Vector2i(1280, 720)
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	game.player.set_physics_process(false)
 	game.player.command_source.enabled = false
 	game.player.position = Vector3(0, 0.05, 2)
+	game.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("sotjet"), 1))
+	game.loadout.select(2)
 	game.camera.set_shoulder(true)
 	game.camera.yaw = 0
 	game.camera._physics_process(0.016)

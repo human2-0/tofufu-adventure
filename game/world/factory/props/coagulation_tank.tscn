@@ -1,0 +1,172 @@
+[gd_scene load_steps=17 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/iron.svg" id="e1"]
+
+[ext_resource type="Material" path="res://game/world/factory/props/factory_ink.tres" id="e2"]
+
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/cream.svg" id="e3"]
+
+[sub_resource type="BoxShape3D" id="r1"]
+size = Vector3(2.3, 1.55, 2.2)
+
+[sub_resource type="CylinderMesh" id="r2"]
+top_radius = 1.05
+bottom_radius = 1.05
+height = 1.4
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="r3"]
+albedo_color = Color(0.376471, 0.474510, 0.462745, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="CylinderMesh" id="r4"]
+top_radius = 0.91
+bottom_radius = 0.91
+height = 0.025
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="r5"]
+albedo_color = Color(0.972549, 0.949020, 0.854902, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e3")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="TorusMesh" id="r6"]
+inner_radius = 1.0
+outer_radius = 1.1
+rings = 16
+ring_segments = 8
+
+[sub_resource type="StandardMaterial3D" id="r7"]
+albedo_color = Color(0.784314, 0.658824, 0.419608, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="CylinderMesh" id="r8"]
+top_radius = 0.09
+bottom_radius = 0.09
+height = 0.5
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="r9"]
+albedo_color = Color(0.741176, 0.780392, 0.733333, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e1")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="BoxMesh" id="r10"]
+size = Vector3(0.28, 0.8, 0.05)
+
+[sub_resource type="StandardMaterial3D" id="r11"]
+albedo_color = Color(0.721569, 0.831373, 0.792157, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e3")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[sub_resource type="SphereMesh" id="r12"]
+radius = 0.46
+height = 0.14
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="r13"]
+albedo_color = Color(0.941176, 0.913725, 0.823529, 1.0)
+next_pass = ExtResource("e2")
+albedo_texture = ExtResource("e3")
+texture_filter = 3
+uv1_triplanar = true
+metallic = 0.0
+roughness = 0.8
+diffuse_mode = 1
+specular_mode = 2
+
+[node name="CoagulationTank" type="Node3D"]
+
+[node name="Body" type="StaticBody3D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="Collision" type="CollisionShape3D" parent="Body"]
+position = Vector3(0.0, 0.775, 0.0)
+shape = SubResource("r1")
+
+[node name="StaticVisual" type="Node3D" parent="."]
+
+[node name="MovingParts" type="Node3D" parent="."]
+
+[node name="Tank" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.81, 0.0)
+mesh = SubResource("r2")
+material_override = SubResource("r3")
+
+[node name="MilkLevel" type="MeshInstance3D" parent="MovingParts"]
+position = Vector3(0.0, 1.59, 0.0)
+mesh = SubResource("r4")
+material_override = SubResource("r5")
+
+[node name="Rim" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 1.64, 0.0)
+mesh = SubResource("r6")
+material_override = SubResource("r7")
+
+[node name="Spout" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(1.15, 1.55, 0.0)
+mesh = SubResource("r8")
+material_override = SubResource("r9")
+rotation = Vector3(0.0, 0.0, 1.57)
+
+[node name="SightGlass" type="MeshInstance3D" parent="StaticVisual"]
+position = Vector3(0.0, 0.96, 1.04)
+mesh = SubResource("r10")
+material_override = SubResource("r11")
+
+[node name="CurdPreview" type="MeshInstance3D" parent="MovingParts"]
+position = Vector3(0.0, 1.68, 0.0)
+mesh = SubResource("r12")
+material_override = SubResource("r13")
+
+[node name="input" type="Marker3D" parent="."]
+position = Vector3(-1.2, 1.55, 0.0)
+
+[node name="output" type="Marker3D" parent="."]
+position = Vector3(1.42, 1.55, 0.0)
+
+[node name="interaction" type="Marker3D" parent="."]
+position = Vector3(0.0, 0.9, 1.5)
+
+[node name="service_access" type="Marker3D" parent="."]
+position = Vector3(-1.2, 0.7, 0.0)
+
+[node name="fluid_in" type="Marker3D" parent="."]
+position = Vector3(-1.2, 1.55, 0.0)
+
+[node name="fluid_out" type="Marker3D" parent="."]
+position = Vector3(1.42, 1.55, 0.0)

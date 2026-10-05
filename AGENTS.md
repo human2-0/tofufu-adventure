@@ -11,8 +11,9 @@
 - Compose small objects with one responsibility. Use typed commands, signals, exported dependencies, and Resources for configuration. Keep mutable actor state per instance.
 - `game/app/` wires features. Movement rules do not read Input, scenes, UI, files, or networking. Views never decide gameplay outcomes.
 - Prefer composition over inheritance; inherit only for a real substitution (e.g. command sources). No global event bus, service locator, catch-all Manager, or speculative framework.
-- Aim for scripts under 200 lines and functions under 40. Split by responsibility when growing; these are review triggers, not reasons to fragment coherent code.
-- Offline play stays functional. Future co-op uses a player as authority and Holepunch behind a transport boundary. No central game service or automatic gameplay relay. Never claim universal NAT connectivity or deterministic cross-machine Godot physics.
+- Keep runtime GDScript files at most 200 lines; the architecture checker enforces this project convention (not an engine limit). Extract a coherent responsibility before the limit, without compressing code to hide size. Aim for functions under 40 lines. Long integration test scenarios may remain together.
+- First-level `game/` directories define dependency boundaries; subdirectories group responsibilities. Follow the map and feature scope when adding files. Keep scenes/shaders/resources beside their owning code and preserve UIDs on moves.
+- Offline play stays functional. Default co-op uses a player as authority and Holepunch behind a transport boundary. The existing dedicated composition is explicit and optional; never add an automatic central-service fallback or gameplay relay. Never claim universal NAT connectivity or deterministic cross-machine Godot physics.
 
 ## Done
 - Run `python3 tools/check_architecture.py` for source/layout changes.

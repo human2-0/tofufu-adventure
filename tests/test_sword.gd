@@ -45,9 +45,10 @@ func _eight_blade_boundaries() -> void:
 		var tip := SwordGeometry.tip(pose, tuning)
 		var guard := pose.origin
 		var center := (tip + guard) * 0.5
+		combat.sword.present(pose, aim, 0)
 		check(SwordGeometry.direction_index(aim) == index, "sword atlas direction %d" % index)
-		check(combat.sword.calibrated_vertex(SwordVisual.GUARDS[index], index).length() < 0.001, "visible guard is physical blade base")
-		check(combat.sword.calibrated_vertex(SwordVisual.TIPS[index], index).distance_to(Vector3.FORWARD * tuning.blade_length) < 0.001, "visible tip is physical blade endpoint")
+		check(combat.sword.model_guard_position().distance_to(guard) < 0.001, "3D model guard is physical blade base")
+		check(combat.sword.model_tip_position().distance_to(tip) < 0.001, "3D model tip is physical blade endpoint")
 		var edge := _target(tip + forward * 0.08)
 		var beyond := _target(tip + forward * 0.14)
 		var lateral := _target(center + side * (tuning.blade_width * 0.5 + 0.14))
@@ -156,13 +157,12 @@ func _hand_attachment() -> void:
 			sprite.present(command, Vector3.ONE, true, false, 0.0)
 			var pose := SwordGeometry.pose(Vector3.ZERO, command.aim, -1, combat.tuning)
 			combat.sword.present(pose, command.aim, 0, false, 1.0)
-			var grip := combat.sword._sprite.global_transform * combat.sword.calibrated_vertex(SwordVisual.GRIPS[index], index)
-			var difference := grip - combat.sword._hand
+			var difference := combat.sword.model_grip_position() - combat.sword._hand
 			check(absf(difference.dot(combat.sword._hand_plane.x)) < 0.001 and absf(difference.dot(combat.sword._hand_plane.y)) < 0.001, "grip follows animated/scaled hand in camera plane")
 			var depth := difference.dot(combat.sword._hand_plane.z)
-			check(depth > 0.03 if index >= 5 else depth < -0.03, "front-facing knife overlaps hand/body; rear-facing body masks the knife")
+			check(depth > 0.03 if index in [0, 1, 6, 7] else depth < -0.03, "front-facing knife overlaps hand/body; rear-facing body masks the knife")
 			combat.sword.present(pose, command.aim, 0, true, 1.0)
-			check(combat.sword._sprite.global_transform.is_equal_approx(pose), "active cutting art stays aligned with physical blade even with attachment requested")
+			check(combat.sword._model_root.global_transform.is_equal_approx(pose), "active 3D blade stays aligned with physical pose during cuts")
 	command.move = Vector2.ZERO
 	command.aim = Vector2(-1, -1)
 	sprite.present(command, Vector3.ZERO, true, false, 0.0)
@@ -171,7 +171,7 @@ func _hand_attachment() -> void:
 	sprite.present(command, Vector3.ZERO, true, false, 0.0)
 	var right := combat.sword._hand - sprite.global_position
 	var plane := combat.sword._hand_plane
-	check(absf(left.dot(plane.x) + right.dot(plane.x)) < 0.001, "NE hand position mirrors NW about the centered body")
+	check(left.dot(plane.x) > 0.1 and right.dot(plane.x) > 0.1, "both rear diagonals retain the anatomical right arm")
 	check(absf(left.dot(plane.y) - right.dot(plane.y)) < 0.001, "mirrored idle hand retains height")
 	sprite.queue_free()
 

@@ -4,7 +4,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var scene: Node = load("res://game/app/launch.tscn").instantiate()
+	var scene: Node = load("res://game/app/bootstrap/launch.tscn").instantiate()
 	root.add_child(scene)
 	await _capture("title")
 	scene.saves.show_new()

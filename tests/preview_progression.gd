@@ -5,7 +5,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var scene: Node3D = load("res://game/app/main.tscn").instantiate()
+	var scene: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	root.add_child(scene)
 	(scene.player.command_source as LocalPlayerInput).enabled = false

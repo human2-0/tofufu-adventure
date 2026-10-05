@@ -11,7 +11,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var scene: Node3D = load("res://game/app/main.tscn").instantiate()
+	var scene: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	var source := ScriptedPunch.new()
 	scene.get_node("Player").add_child(source)

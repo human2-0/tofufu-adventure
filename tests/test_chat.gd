@@ -22,7 +22,7 @@ func _run() -> void:
 	room.send_packet = func(key: String, data: Dictionary) -> void:
 		delivered.append({"key": key, "data": JSON.parse_string(JSON.stringify(data))})
 	root.add_child(room)
-	var game: Node3D = load("res://game/app/main.tscn").instantiate()
+	var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
 	root.add_child(game)
 	var session := CoopSession.new()

@@ -13,7 +13,7 @@ func check(ok: bool, message: String) -> void:
 		printerr("FAIL: ", message)
 
 func _run() -> void:
-	scene = load("res://game/app/main.tscn").instantiate()
+	scene = load("res://game/app/adventure/main.tscn").instantiate()
 	scene.play_opening = false
 	root.add_child(scene)
 	scene.weather.set_physics_process(false)
@@ -25,15 +25,20 @@ func _run() -> void:
 	scene.player.position = scene.world.ground_point(-26, 7, 0.1)
 	scene.camera.position = scene.player.position + scene.camera.offset
 	scene.cycle.phase = 0.4
-	scene.hud.toggle_help()
+	scene.hud._help.hide()
 	scene.hud.announce("")
 	await physics_frame
 	var forest_count := FarmCombatGrounds.FOREST_ARMORED_SPAWNS.size()
-	check(active_count() == 9 + forest_count, "dry population includes camp and forest snails")
+	var bee_count := FarmCombatGrounds.BEE_SPAWNS.size()
+	check(active_count() == 9 + forest_count + bee_count, "dry population includes camp snails, forest snails and southern bees")
 	await capture("clear")
 	scene.weather.set_phase(0.1)
 	check(scene.weather.condition == WeatherCycle.Condition.WINDY, "clock enters a directional windy spell")
 	scene.wind.step(scene.weather.phase, true, 2.0)
+	scene.weather_particles.present_wind(scene.wind.direction, scene.wind.strength)
+	scene.weather_particles._process(2.0)
+	check(scene.weather_particles._leaves.visible, "wind uses world-space leaves")
+	await capture("wind")
 	check(scene.wind.strength > 0.5, "windy spell produces a movement-affecting gust")
 	scene.weather.set_phase(0.0)
 	scene.weather._physics_process(46.0)
@@ -48,6 +53,16 @@ func _run() -> void:
 	scene.weather._physics_process(15.0)
 	check(scene.weather.condition == WeatherCycle.Condition.RAIN, "clock advances into rain")
 	scene.world.rain_effects._process(2.0)
+	scene.weather_particles._process(2.0)
+	check(scene.weather_particles._rain.visible and scene.weather_particles._rain.multimesh.instance_count == 576, "rain uses bounded 3D instancing")
+	var particles: WeatherParticles = scene.weather_particles
+	var sample := particles._rain.multimesh.get_instance_transform(0)
+	var old_cell := particles._center
+	particles._place(old_cell + Vector2i.RIGHT)
+	check(particles._heights.size() == 144, "weather cell cache stays bounded while moving")
+	particles._place(old_cell)
+	check(particles._rain.multimesh.get_instance_transform(0) == sample, "weather retains deterministic world positions after moving")
+	check(scene.weather_view.get_child_count() == 1, "forecast has no screen-space rain or wind rectangles")
 	check(scene.world.rain_effects.is_raining() and scene.world.rain_effects.wetness > 0.9 and scene.world.rain_effects.puddle_count == 15, "rain wets terrain and activates its puddle impacts")
 	check(mob.target.maximum == 90 and mob.target.current == 45, "rain strength preserves injury proportion")
 	scene.weather.set_phase(0.4)
@@ -58,7 +73,7 @@ func _run() -> void:
 		reserve._physics_process(reserve.tuning.rain_respawn - 0.1)
 		check(not reserve.visible, "rain recruits wait for respawn")
 		reserve._physics_process(0.11)
-	check(active_count() == 15 + forest_count, "rain activates six additional camp snails")
+	check(active_count() == 15 + forest_count + bee_count, "rain activates six additional camp snails and preserves bees")
 	var hits: Array[float] = []
 	mob.attacked.connect(func(amount: float, _source: Vector3) -> void: hits.append(amount))
 	mob.position = mob._home
@@ -68,12 +83,17 @@ func _run() -> void:
 	mob._choose_direction(0.02)
 	check(hits == [18.0], "real rain strike emits increased damage")
 	await capture("rain")
+	var camera_pose: Transform3D = scene.camera.global_transform
+	scene.camera.position = scene.player.position + Vector3(0, 1.7, 3.5)
+	scene.camera.look_at(scene.player.position + Vector3.UP * 1.1)
+	await capture("rain-shoulder")
+	scene.camera.global_transform = camera_pose
 	var saved := AdventureSnapshot.capture(scene, "Weather", 10)
 	check(SaveStore.valid(saved), "rainy solo save validates")
 	var snapshot := CoopWorld.capture(scene)
 	check(WorldProtocol.valid(snapshot), "rainy world snapshot validates")
 	var encoded: Dictionary = JSON.parse_string(JSON.stringify(snapshot))
-	var replica: Node3D = load("res://game/app/main.tscn").instantiate()
+	var replica: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 	replica.play_opening = false
 	root.add_child(replica)
 	CoopWorld.disable_simulation(replica)
@@ -81,8 +101,11 @@ func _run() -> void:
 	check(not replica.weather.is_physics_processing(), "guest cannot advance weather")
 	check(replica.weather.condition == WeatherCycle.Condition.RAIN, "guest receives rain")
 	check(replica.encounters.mob_nodes[9].visible and replica.encounters.mob_nodes[0].target.maximum == 90, "guest receives reserves and strength")
+	var chest_changes := [0]
+	replica.seed_storage.chest.changed.connect(func() -> void: chest_changes[0] += 1)
 	var before: float = replica.encounters.mob_nodes[0].target.current
 	CoopWorld.apply(replica, encoded, true)
+	check(chest_changes[0] == 0, "unchanged world snapshot does not rebuild chest UI")
 	check(replica.encounters.mob_nodes[0].target.current == before, "repeated snapshots preserve health")
 	var invalid := encoded.duplicate(true)
 	invalid.weather_phase = "rain"
@@ -93,7 +116,7 @@ func _run() -> void:
 	scene.weather.set_phase(0.8)
 	scene.world.rain_effects._process(2.0)
 	check(not scene.world.rain_effects.is_raining() and scene.world.rain_effects.wetness < 0.1, "clearing rain drains the surface presentation")
-	check(active_count() == 9 + forest_count and mob.target.maximum == 60 and mob.target.current == 30, "dry weather retires reserves and restores normal strength")
+	check(active_count() == 9 + forest_count + bee_count and mob.target.maximum == 60 and mob.target.current == 30, "dry weather retires reserves and restores normal strength")
 	check(scene.encounters.mob_nodes[9].target.current == 0, "retired reserves cannot be damaged for loot")
 	AdventureSnapshot.restore(scene, saved)
 	check(scene.weather.condition == WeatherCycle.Condition.RAIN, "solo load restores rain")
@@ -120,7 +143,7 @@ func active_count() -> int:
 func capture(title: String) -> void:
 	if DisplayServer.get_name() == "headless": return
 	scene.cycle._process(4.0)
-	scene.weather_view._process(3.0)
+	await create_timer(2.0).timeout
 	await process_frame
 	await RenderingServer.frame_post_draw
 	root.get_texture().get_image().save_png("/tmp/tofufu-weather-" + title + ".png")

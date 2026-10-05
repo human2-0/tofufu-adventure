@@ -45,7 +45,7 @@ func _run() -> void:
 		viewport.own_world_3d = true
 		viewport.size = Vector2i(1280, 720)
 		root.add_child(viewport)
-		var game: Node3D = load("res://game/app/main.tscn").instantiate()
+		var game: Node3D = load("res://game/app/adventure/main.tscn").instantiate()
 		game.play_opening = false
 		viewport.add_child(game)
 		var session := CoopSession.new()
@@ -60,6 +60,7 @@ func _run() -> void:
 	await ticks(25)
 	var remote := sessions[0].roster.party[GUEST]
 	var replica := sessions[1].roster.party[GUEST]
+	_check_replica_work(replica)
 	var before := replica.actor.position
 	input.move = Vector2.RIGHT
 	await ticks(2)
@@ -69,6 +70,15 @@ func _run() -> void:
 	await ticks(35)
 	check(replica.actor.position.distance_to(remote.actor.position) < 0.2, "prediction converges after stop with 80ms injected RTT")
 	check(replica.prediction.history.size() < 20, "acknowledged movement history stays bounded")
+	input.run_held = true
+	input.move = Vector2.RIGHT
+	await ticks(90)
+	check(remote.actor.motor.endurance.current < 80, "host spends guest running reserve from held intent")
+	check(absf(replica.actor.motor.endurance.current - remote.actor.motor.endurance.current) < 3.0, "predicted reserve follows authoritative corrections over delayed JSON")
+	check(remote.combat.vitals.current == remote.combat.vitals.maximum, "guest running leaves combat SP untouched")
+	input.run_held = false
+	input.move = Vector2.ZERO
+	await ticks(40)
 	# Gun equipped without aiming must use travel-relative directional art.
 	var game: Node3D = sessions[0].game
 	game.camera.set_shoulder(true)
@@ -150,3 +160,37 @@ func _run() -> void:
 	await process_frame
 	print("Co-op response: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
+
+func _check_replica_work(replica: CoopActor) -> void:
+	var progress_changes := [0]
+	var on_progress := func() -> void: progress_changes[0] += 1
+	replica.progression.progress.changed.connect(on_progress)
+	var state := replica.target_state.duplicate(true)
+	for i in 20: replica.accept_view(state.duplicate(true))
+	check(progress_changes[0] == 0, "unchanged peer progression does not refresh stats")
+	replica.progression.progress.changed.disconnect(on_progress)
+	var gun := replica.combat.gun.visual
+	gun.visible = true
+	gun.facing = Vector2.RIGHT
+	gun.refresh()
+	var atlas_changes := [0]
+	var on_atlas := func() -> void: atlas_changes[0] += 1
+	gun._atlas.changed.connect(on_atlas)
+	for i in 30: gun.refresh()
+	check(atlas_changes[0] == 0, "steady weapon pose does not rebuild atlas every frame")
+	gun._atlas.changed.disconnect(on_atlas)
+	var command := PlayerCommand.new()
+	command.aim = Vector2.LEFT
+	command.face_aim = true
+	replica.prediction.command = command
+	replica._process(0.016)
+	check(gun.facing == Vector2.LEFT, "peer weapon uses immediate local look instead of stale host facing")
+	check(replica.process_priority < gun.process_priority, "replica pose precedes weapon refresh")
+	command.face_aim = false
+	command.attack_held = true
+	command.move = Vector2.RIGHT
+	replica.target_state = state.duplicate(true)
+	replica.target_state.combat.gun = true
+	replica._process(0.016)
+	check(replica.actor.visuals.attack_facing == command.aim and gun.facing == command.aim, "peer firing keeps hand and gun facing together while moving")
+	replica.target_state = state

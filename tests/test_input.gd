@@ -63,6 +63,10 @@ func _run() -> void:
 	button(JOY_BUTTON_A, false)
 	button(JOY_BUTTON_B, false)
 	button(JOY_BUTTON_X, false)
+	button(JOY_BUTTON_LEFT_STICK, true)
+	check(source.sample(Vector3.ZERO).run_held, "L3 holds running intent independently of dash")
+	button(JOY_BUTTON_LEFT_STICK, false)
+	check(not source.sample(Vector3.ZERO).run_held, "releasing L3 stops running intent")
 	check(not source.sample(Vector3.ZERO).attack_held, "release ends charge")
 	var mouse := InputEventMouseButton.new()
 	mouse.button_index = MOUSE_BUTTON_RIGHT
@@ -81,7 +85,7 @@ func _run() -> void:
 	var touch := TouchControls.new()
 	touch.force_visible = true
 	root.add_child(touch)
-	check(touch.visible and touch._buttons.size() == 9, "mobile controls compose")
+	check(touch.visible and touch._buttons.size() == 10 and touch._buttons[9].action == "run", "mobile controls include a separate running button")
 	await process_frame
 	for index in [1, 4, 6]:
 		var event := InputEventScreenTouch.new()

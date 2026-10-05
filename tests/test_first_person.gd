@@ -8,7 +8,7 @@ func check(ok: bool, message: String) -> void:
 		push_error("FAIL: " + message)
 
 func _run() -> void:
-	var game := load("res://game/app/main.tscn").instantiate() as Node3D
+	var game := load("res://game/app/adventure/main.tscn").instantiate() as Node3D
 	game.play_opening = false
 	root.add_child(game)
 	await process_frame
@@ -34,6 +34,21 @@ func _run() -> void:
 		game.combat.equipment.step(Vector2.UP, false, false, false, false, slot, 0.016)
 		await process_frame
 		check(view.weapon_view.visible, "weapon overlay available for slot %d" % slot)
+	for id in ["nori_katana", "edamame_sword", "knife"]:
+		game.combat.sword.set_nori(id == "nori_katana")
+		game.combat.sword.set_pod(id == "edamame_sword")
+		for mesh in view._local_geometry:
+			check(is_instance_valid(mesh) and mesh.layers == 0, "replacement blade and gripping hand stay hidden in first person")
+		view.set_inventory_inspection(true)
+		for mesh in view._local_geometry:
+			check(mesh.layers != 0, "inventory inspection restores current blade and hand layers")
+		view.set_inventory_inspection(false)
+	view.set_inventory_inspection(true)
+	game.combat.sword.set_nori(true)
+	for mesh in view._local_geometry:
+		check(is_instance_valid(mesh) and mesh.layers != 0, "swapping blade during inspection stays visible")
+	view.set_inventory_inspection(false)
+	game.combat.sword.set_nori(false)
 	var staff_view := view.weapon_view._staff
 	staff_view.show_charge(1.0)
 	check(not staff_view._meshes.is_empty() and staff_view._meshes[0].material_overlay != null, "loaded staff glows in first person")
@@ -46,11 +61,13 @@ func _run() -> void:
 			view.weapon_view._process(1.0)
 			game.camera.fov = 42.0 if ads else 70.0
 			var overlay := view.weapon_view
-			var sprite: Sprite3D = overlay._jet if jet else overlay._gun
-			var cell := Vector2(SotjetVisual.ATLAS.get_size()) / Vector2(5, 2) if jet else SoyGunVisual.REAR_REGIONS[0].size
-			var uv := SotjetVisual.MUZZLES[5] if jet else Vector2(0.5, 0.48)
-			var landmark := sprite.to_global(Vector3((uv.x - 0.5) * cell.x, (0.5 - uv.y) * cell.y, 0) * sprite.pixel_size)
-			var expected := overlay._viewport.get_camera_3d().unproject_position(landmark) / Vector2(overlay._viewport.size)
+			var visible_muzzle: Vector3
+			if jet:
+				visible_muzzle = overlay._jet.muzzle_position()
+			else:
+				var cell := SoyGunVisual.REAR_REGIONS[0].size
+				visible_muzzle = overlay._gun.to_global(Vector3(0, cell.y * 0.02, 0) * overlay._gun.pixel_size)
+			var expected := overlay._viewport.get_camera_3d().unproject_position(visible_muzzle) / Vector2(overlay._viewport.size)
 			var muzzle: Vector3 = view._jet_muzzle() if jet else view._gun_muzzle()
 			var actual: Vector2 = game.camera.unproject_position(muzzle) / root.get_visible_rect().size
 			check(actual.distance_to(expected) < 0.001, "first-person muzzle matches visible barrel through ADS and camera rotation")
