@@ -1,53 +1,49 @@
 class_name ParrotArt
 extends Node3D
-## Scarlet macaw with a hooked beak, rainbow flight feathers and long tail.
+## Textured manga macaw: four shared draws, continuous heading and soft wing transitions.
 
 var wings: Array[Node3D] = []
 var _time: float = 0.0
 var airborne: bool = false
 var heading := Vector3.FORWARD
+var _flap: float = 1.12
+var _tail: Node3D
 
 func _ready() -> void:
-	_oval(self, Vector3(0, 0.65, 0), Vector3(0.95, 1.25, 1.55), Color("e64b47"))
-	_oval(self, Vector3(0, 0.55, -0.42), Vector3(0.7, 0.85, 0.6), Color("ffb85e"))
-	_oval(self, Vector3(0, 1.28, -0.62), Vector3.ONE * 0.85, Color("f75b4e"))
-	_oval(self, Vector3(0, 1.12, -1.03), Vector3(0.35, 0.5, 0.5), Color("edcf8d"))
-	_oval(self, Vector3(0, 0.94, -1.18), Vector3(0.25, 0.32, 0.28), Color("334b51"))
+	process_priority = -7
+	_view(self, ParrotPlumage.body())
 	for side in [-1.0, 1.0]:
-		_oval(self, Vector3(side * 0.37, 1.29, -0.76), Vector3(0.08, 0.38, 0.38), Color("fff3dd"))
-		_oval(self, Vector3(side * 0.42, 1.32, -0.81), Vector3.ONE * 0.10, Color("263f47"))
-		_oval(self, Vector3(side * 0.26, 0.07, -0.1), Vector3(0.17, 0.16, 0.5), Color("4b6267"))
 		var wing := Node3D.new()
-		wing.position = Vector3(side * 0.32, 0.93, 0.04)
+		wing.position = Vector3(side * 0.33, 0.93, 0.02)
 		add_child(wing)
 		wings.append(wing)
-		_oval(wing, Vector3(side * 0.55, 0, 0), Vector3(1.25, 0.22, 0.85), Color("f1cb45"))
-		for feather in 5:
-			_oval(wing, Vector3(side * (1.0 + feather * 0.18), -0.02, 0.12 + feather * 0.14), Vector3(0.85, 0.14, 0.34), Color("31b997") if feather < 2 else Color("3588de"))
-	for feather in 3:
-		var tail := _oval(self, Vector3((feather - 1) * 0.19, 0.38, 1.32), Vector3(0.23, 0.16, 1.7), Color("268bc8") if feather != 1 else Color("ef6454"))
-		tail.rotation.x = 0.28
-	# Saddle cushions provide a clear place for billboard Fufu to sit.
-	_oval(self, Vector3(0, 1.02, 0.22), Vector3(0.8, 0.16, 0.7), Color("674c72"))
+		_view(wing, ParrotPlumage.wing()).scale.x = side
+	_tail = Node3D.new()
+	_tail.position = Vector3(0, 0.44, 0.65)
+	add_child(_tail)
+	_view(_tail, ParrotPlumage.tail())
 
 func _process(delta: float) -> void:
+	var camera := get_viewport().get_camera_3d()
+	if camera != null and camera.global_position.distance_squared_to(global_position) > 14400: return
 	_time += delta
-	if Vector2(heading.x, heading.z).length_squared() > 0.01:
-		rotation.y = atan2(-heading.x, -heading.z)
-	var flap := sin(_time * 16.0) * 0.6 if airborne else 1.12
-	wings[0].rotation.z = flap
-	wings[1].rotation.z = -flap
+	var turn := 0.0
+	if Vector2(heading.x, heading.z).length_squared() > 0.25:
+		var desired := atan2(-heading.x, -heading.z)
+		turn = angle_difference(rotation.y, desired)
+		rotation.y = lerp_angle(rotation.y, desired, 1.0 - exp(-9.0 * delta))
+	rotation.z = lerp_angle(rotation.z, clampf(-turn * 0.2, -0.18, 0.18) if airborne else 0.0, 1.0 - exp(-5.0 * delta))
+	var target := sin(_time * TAU * 1.8) * 0.55 if airborne else 1.12
+	_flap = lerpf(_flap, target, 1.0 - exp(-18.0 * delta))
+	# Mirrored wing bases share one surface and the same local hinge angle.
+	wings[0].rotation.z = _flap
+	wings[1].rotation.z = -_flap
+	_tail.rotation.x = (0.06 if airborne else 0.20) + sin(_time * 3.0) * 0.035
 
-func _oval(parent: Node3D, at: Vector3, size: Vector3, color: Color) -> MeshInstance3D:
-	var mesh := SphereMesh.new()
-	mesh.radius = 0.5
-	mesh.height = 1.0
-	mesh.radial_segments = 12
-	mesh.rings = 6
-	mesh.material = MeadowGeometry.material(color)
-	var part := MeshInstance3D.new()
-	part.mesh = mesh
-	part.position = at
-	part.scale = size
-	parent.add_child(part)
-	return part
+func _view(parent: Node3D, mesh: Mesh) -> MeshInstance3D:
+	var view := MeshInstance3D.new()
+	view.mesh = mesh
+	view.visibility_range_end = 120.0
+	view.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	parent.add_child(view)
+	return view

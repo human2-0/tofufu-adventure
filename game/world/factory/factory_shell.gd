@@ -17,4 +17,5 @@ static func build(parent: Node3D, cutaway_meshes: Array[MeshInstance3D]) -> void
 
 static func _add(parent: Node3D, cutaway_meshes: Array[MeshInstance3D], at: Vector3, size: Vector3, color: Color) -> void:
 	var visual := MeadowGeometry.box(parent, at, size, color, true)
+	FactorySurfaceMaterials.apply_to(visual, "roof" if size.y < 1.0 else "plaster", color)
 	cutaway_meshes.append(visual)

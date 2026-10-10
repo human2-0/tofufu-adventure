@@ -15,10 +15,38 @@ func _run() -> void:
 	var view: ShootingView = game.shooting_view
 	var source := game.player.command_source as LocalPlayerInput
 	var original_layers: int = game.player.visuals.layers
+	var click := InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_MIDDLE
+	click.pressed = true
+	check(click.is_action_pressed("camera_direction"), "middle click maps to direction switch")
+	for heading in 4:
+		view._unhandled_input(click)
+		game.camera._follow(10.0)
+		var expected: Vector2 = [Vector2.RIGHT, Vector2.DOWN, Vector2.LEFT, Vector2.UP][heading]
+		Input.action_press("move_up")
+		var travel := source.sample(game.player.position)
+		Input.action_release("move_up")
+		check(travel.move.distance_to(expected) < 0.001, "overhead travel follows cardinal screen-up")
+		check(game.camera.overhead_direction == (heading + 1) % 4, "cardinal camera cycles and wraps")
+	source.chat_blocked = true
+	view._unhandled_input(click)
+	check(game.camera.overhead_direction == 0, "chat blocks camera switch")
+	source.chat_blocked = false
 	view.cycle_mode()
 	check(view.shoulder and not view.first_person, "first cycle enters shoulder")
+	var right_boom: Vector3 = game.camera._boom_offset()
+	view._unhandled_input(click)
+	game.camera._follow_shoulder(10.0)
+	var left_boom: Vector3 = game.camera._boom_offset()
+	check(game.camera.shoulder_side == -1.0 and right_boom.distance_to(left_boom) > 1.09, "middle click mirrors shoulder boom")
+	view.set_inventory_inspection(true)
+	view._unhandled_input(click)
+	check(game.camera.shoulder_side == -1.0, "inventory inspection blocks direction switch")
+	view.set_inventory_inspection(false)
 	view.cycle_mode()
 	check(view.first_person and game.camera.first_person, "second cycle enters first person")
+	view._unhandled_input(click)
+	check(game.camera.shoulder_side == -1.0, "first person preserves shoulder choice")
 	check(game.player.visuals.layers == 0, "local body hidden")
 	game.camera.yaw = PI * 0.5
 	game.camera.pitch = -0.3

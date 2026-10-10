@@ -74,8 +74,11 @@ func _ready() -> void:
 	cloud_realm = CloudRealm.new()
 	add_child(cloud_realm)
 	map_npcs["Cloud Realm · Godfufu (above jungle)"] = cloud_realm.godfufu
+	map_npcs["Nimbus · Cloud Royal Gear Shop"] = cloud_realm.court.merchant
+	map_npcs["Tofufu Goddess · Cloud Court"] = cloud_realm.court.goddess
 	RiverPlants.populate(self, ground_point)
 	add_child(RiverWildlife.new())
+	StaticDecorationBatch.build(self)
 
 func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
 	if volcanic != null and VolcanicTerrain.contains(Vector2(x, z)): return volcanic.point(x, z, lift)
@@ -88,6 +91,7 @@ func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
 
 func is_water(at: Vector3) -> bool:
 	if at.y >= CloudTerrain.ALTITUDE - 2.0 and CloudTerrain.contains(Vector2(at.x, at.z)): return false
+	if jungle != null and JungleCoast.is_water(at, jungle.desert): return true
 	if volcanic != null and volcanic.is_water(at): return true
 	if ocean != null and ocean.is_water(at): return true
 	if desert != null and desert.is_water(at): return true

@@ -7,7 +7,8 @@ const TENDER_ID := "mature_bean"
 const BUYABLE_IDS: Array[String] = [
 	"knife", "nori_katana", "edamame_sword", "soy_gun", "sotjet", "sproutwood_staff", "traveler_backpack",
 	"bright_leaf_helmet", "bright_leaf_armor", "bright_leaf_legs", "bright_leaf_boots",
-	"dark_leaf_helmet", "dark_leaf_armor", "dark_leaf_legs", "dark_leaf_boots"
+	"dark_leaf_helmet", "dark_leaf_armor", "dark_leaf_legs", "dark_leaf_boots",
+	"celestial_helmet", "celestial_armor", "celestial_legs", "celestial_boots", "celestial_sword", "celestial_staff", "soy_raygun"
 ]
 
 static func purchase(inventory: PlayerInventory, item_id: String) -> String:

@@ -201,6 +201,8 @@ func _run() -> void:
 	stage.add_child(camera_wall)
 	camera_wall.position = Vector3(0, 1, 2.5)
 	await ticks(2)
+	# Physics is disabled for this fixture; sample the new collision phase explicitly.
+	camera._physics_process(0.016)
 	camera._follow_shoulder(0.016)
 	check(camera.position.z < 2.5, "shoulder camera retracts before a world wall")
 	camera.set_shoulder(false)

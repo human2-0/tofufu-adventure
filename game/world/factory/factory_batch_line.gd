@@ -25,7 +25,13 @@ func _ready() -> void:
 	_drum = get_parent().get_node("intake_tofu/StaticVisual/GrindingDrum")
 	present(false)
 
-func present(produced: bool) -> void:
+func present(produced: bool, restored: bool = false) -> void:
+	if restored:
+		_flow = produced
+		_clock = TRANSFORM_SECONDS + PULSE_SECONDS + _path_length() / FLOW_SPEED if produced else 0.0
+		delivered = produced
+		_update()
+		return
 	if produced == _flow: return
 	_flow = produced
 	_clock = 0.0
@@ -41,7 +47,7 @@ func _update() -> void:
 	if _soaked != null:
 		_soaked.visible = _flow and _clock < 1.0
 		_pulp.visible = _flow and _clock >= 2.0 and _clock < 3.5
-		if _flow and _clock >= 1.0 and _clock < 2.0: _drum.rotation.z = _clock * 9.0
+		if _flow and _clock >= 1.0 and _clock < 3.0: _drum.rotation.z = _clock * 9.0
 	var length: float = _path_length()
 	var head: float = (_clock - TRANSFORM_SECONDS) * FLOW_SPEED
 	var tail: float = head - PULSE_SECONDS * FLOW_SPEED

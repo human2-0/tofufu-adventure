@@ -31,7 +31,8 @@ func _ready() -> void:
 	_collect_geometry(game.combat.gun.visual)
 	_collect_geometry(game.combat.sotjet.visual)
 	_collect_geometry(game.combat._trail)
-	game.combat.sword.model_changed.connect(_refresh_blade_geometry)
+	game.combat.sword.model_changed.connect(_refresh_weapon_geometry)
+	game.combat.staff.model_changed.connect(_refresh_weapon_geometry)
 	reticle = GunReticle.new()
 	game.hud.add_child(reticle)
 
@@ -95,6 +96,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("camera_mode") and not event.is_echo():
 		cycle_mode()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("camera_direction") and not event.is_echo():
+		if _inventory_inspection: return
+		var label: String = game.camera.switch_direction()
+		if not label.is_empty(): game.hud.announce(label + " · MMB: switch view")
+		get_viewport().set_input_as_handled()
 	elif shoulder and event is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		game.camera.orbit(event.relative)
 
@@ -120,7 +126,7 @@ func cycle_mode() -> void:
 	if not shoulder: _update_run_pose(0.0, false)
 	for index in _local_geometry.size():
 		_local_geometry[index].layers = 0 if first_person else _layers[index]
-	var label := "First person / Mouse: look · RMB: aim / guard · C: overhead" if first_person else ("Behind Fufu / Mouse: orbit · C: first person" if shoulder else "Overhead / Mouse: aim · C: behind Fufu")
+	var label := "First person / Mouse: look · RMB: aim / guard · C: overhead" if first_person else ("Behind Fufu / Mouse: orbit · MMB: switch shoulder · C: first person" if shoulder else "Overhead / Mouse: aim · MMB: rotate · C: behind Fufu")
 	game.hud.announce(label)
 
 func set_inventory_inspection(active: bool) -> void:
@@ -142,13 +148,14 @@ func _collect_geometry(node: Node) -> void:
 		if first_person and not _inventory_inspection: node.layers = 0
 	for child in node.get_children(): _collect_geometry(child)
 
-func _refresh_blade_geometry() -> void:
+func _refresh_weapon_geometry() -> void:
 	# Replacing a blade frees its meshes; retain live hand/debug layers and add art.
 	for index in range(_local_geometry.size() - 1, -1, -1):
 		if not is_instance_valid(_local_geometry[index]):
 			_local_geometry.remove_at(index)
 			_layers.remove_at(index)
 	_collect_geometry(game.combat.sword)
+	_collect_geometry(game.combat.staff)
 
 func _gun_muzzle() -> Vector3:
 	return weapon_view.muzzle_position(game.camera, false) if first_person else game.combat.gun.visual.muzzle_position()

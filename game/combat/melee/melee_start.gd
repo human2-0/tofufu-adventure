@@ -9,12 +9,13 @@ static func strike(combat: PlayerCombat, aim: Vector2, strength: float, airborne
 	combat.active = true
 	combat.attack_aim = SwordGeometry.direction(aim)
 	combat._strength = bounded
-	combat.attack_style = KnifeAttack.select(combat._strength, combat.combo.can_stab(), airborne, combat.tuning)
+	combat.attack_style = KnifeAttack.select(combat._strength, combat.combo.can_stab(), airborne, combat.tuning, combat.combo.chain)
 	combat._set_melee_shape()
 	combat.clash.clear()
 	combat._attack_critical_chance = combat.combo.critical_chance()
 	combat.combo.begin_attack()
 	combat._elapsed = 0.0
+	combat._previous_elapsed = 0.0
 	combat._hit_targets.clear()
 	combat._trained = false
 	combat._previous_at = combat.actor.global_position
@@ -34,6 +35,7 @@ static func tornado(combat: PlayerCombat, aim: Vector2) -> void:
 	combat.combo.begin_attack()
 	combat._set_melee_shape()
 	combat._elapsed = 0.0
+	combat._previous_elapsed = 0.0
 	combat._hit_targets.clear()
 	combat._trained = false
 	combat._previous_at = combat.actor.global_position

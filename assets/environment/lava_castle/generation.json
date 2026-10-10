@@ -1,0 +1,25 @@
+{
+  "mode": "built-in imagegen",
+  "date": "2026-10-07",
+  "usage": "Original generated opaque albedo textures; world-projected shared castle materials.",
+  "assets": [
+    {
+      "key": "basalt-masonry",
+      "prompt": "Use case: game texture. Create ONE square seamless tileable albedo texture for ancient volcanic castle walls in a polished stylized fantasy 2.5D game. Orthographic straight-on surface only, no scene, no perspective. Four horizontal courses of chunky hand-cut basalt ashlar blocks, staggered joints, varied sizes; charcoal slate and warm smoky gray with subtle mauve mineral veins and old rust staining. Readable narrow dark recessed mortar, lightly chipped rounded bevels, fine porous volcanic stone, small cracks and soot concentrated in joints. Hand-painted PBR-inspired game-art finish, broad clean readable shapes with restrained fine detail. Flat neutral diffuse illumination, absolutely no directional cast shadows or baked specular reflections, no glow. Seamless matching left/right and top/bottom boundaries for repetition. Fill the entire image edge to edge. No text, no border, no vines, no objects, no logos. Output just the texture.",
+      "source": "/Users/mat-dwor/.codex/generated_images/01a108a6-198d-7f93-8954-ab70ce77fe44/exec-aacf20c6-c77d-4cb3-81e5-9c49c534ad7b.png",
+      "file": "basalt-masonry.png"
+    },
+    {
+      "key": "ash-flagstones",
+      "prompt": "Use case: game texture. Create ONE square seamless tileable albedo texture for worn castle floor flagstones in a polished stylized fantasy 2.5D game. Orthographic top-down surface only, no scene or perspective. Broad irregular rectangular and polygonal interlocking stone pavers, 3 to 4 large stones across the image, with narrow dark grout. Muted warm ash-gray, weathered taupe and dusty slate tones, subtle variation per stone, chipped softly beveled edges, minute scratches, volcanic mineral specks and a little soot in the grout. Hand-painted PBR-inspired fantasy game-art finish; readable at an overhead camera with broad uncluttered shapes and restrained fine details. Flat neutral diffuse illumination, no directional shadows, no specular highlight, no glow. Left/right and top/bottom tile boundaries seamlessly match. Fill the image edge to edge. No central motif, no text, no border, no grass, no objects, no logos. Output just the texture.",
+      "source": "/Users/mat-dwor/.codex/generated_images/01a108a6-198d-7f93-8954-ab70ce77fe44/exec-190f5379-41c8-492c-848e-3811e8910160.png",
+      "file": "ash-flagstones.png"
+    },
+    {
+      "key": "royal-crimson-weave",
+      "prompt": "Use case: game texture. Create ONE square seamless tileable albedo texture for a royal crimson tapestry and carpet in a polished stylized volcanic fantasy castle. Orthographic straight-on textile surface only, no scene, no hanging cloth or perspective. Deep wine-red and crimson woven wool, fine visible fibers, worn velvet variation, restrained repeating antique-gold embroidered small diamond shapes and tiny flame-like leaf flourishes in a balanced medieval heraldic lattice. Keep the gold motif sparse and the red dominant, so it reads as rich cloth rather than bright noisy wallpaper. Hand-painted fantasy game texture, flat neutral diffuse illumination, no baked shadows, no sheen highlights. Seamless matching opposite edges for tiling, full bleed edge to edge. No letters, no words, no watermark, no border, no emblem, no objects. Output only the texture.",
+      "source": "/Users/mat-dwor/.codex/generated_images/01a108a6-198d-7f93-8954-ab70ce77fe44/exec-b28caef3-6a83-475e-ac86-e1090103e08d.png",
+      "file": "royal-crimson-weave.png"
+    }
+  ]
+}

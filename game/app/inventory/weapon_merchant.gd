@@ -26,27 +26,36 @@ func _ready() -> void:
 	_prompt.modulate = Color("ffdc79")
 	_prompt.pixel_size = 0.009
 	_prompt.no_depth_test = true
+	_prompt.ignore_occlusion_culling = true
 	_prompt.render_priority = 127
 	game.world.weapon_merchant.add_child(_prompt)
 	_build_highlight()
 
 func nearby(actor: Node3D) -> bool:
-	var target: Vector3 = game.world.weapon_merchant.global_position + Vector3(0, 0.6, 0.65)
-	if actor.global_position.distance_to(target) > 3.0: return false
-	var body: StaticBody3D = game.world.weapon_merchant.get_node("ResidentBody")
-	var ray := PhysicsRayQueryParameters3D.create(actor.global_position + Vector3.UP * 0.6, target, 1, [body.get_rid()])
-	return actor.get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
+	return MerchantLocations.nearest(game.world, actor) != null
+
+func focus_position(actor: Node3D) -> Vector3:
+	var npc := MerchantLocations.nearest(game.world, actor)
+	return npc.global_position + Vector3(0, 1.5, 0.65) if npc != null else Vector3.INF
 
 func _process(_delta: float) -> void:
 	var source: LocalPlayerInput = game.shooting_view.local_input
 	_prompt.visible = source != null and source.enabled and not source.chat_blocked and game.hud.visible and game.world_items.focused_kind == "merchant" and nearby(game.player)
-	_prompt.text = "[%s] Talk to Grandpa Fufu · Gear Shop" % GamePreferences.binding_text("pickup_weapon", "keyboard")
+	var npc := MerchantLocations.nearest(game.world, game.player)
+	if npc != null:
+		_prompt.global_position = npc.global_position + Vector3.UP * 3.3
+		_ring.global_position = npc.global_position + Vector3.UP * 0.08
+		_prompt.text = "[%s] Talk to %s" % [GamePreferences.binding_text("pickup_weapon", "keyboard"), MerchantLocations.title(game.world, npc)]
 	_ring.visible = _prompt.visible
-	for mesh in _meshes: mesh.material_overlay = _highlight if _prompt.visible else null
+	for mesh in _meshes: mesh.material_overlay = _highlight if _prompt.visible and npc == game.world.weapon_merchant else null
+	game.world.cloud_realm.court.merchant.sprite.set_focus_highlight(_prompt.visible and npc == game.world.cloud_realm.court.merchant)
 	if window.visible and not nearby(game.player): window.close()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not _prompt.visible or event.is_echo() or not event.is_action_pressed("pickup_weapon"): return
+	var npc := MerchantLocations.nearest(game.world, game.player)
+	window.set_merchant_name(MerchantLocations.title(game.world, npc))
+	window.set_stock(MerchantLocations.stock(game.world, npc))
 	window.open()
 	game.shooting_view.local_input.enabled = false
 	game.chat.set_menu_open(true)
@@ -70,7 +79,9 @@ func _physics_process(_delta: float) -> void:
 	_pending.clear()
 
 func purchase(actor: Node3D, inventory: PlayerInventory, id: String) -> String:
-	if not nearby(actor): return "Move closer to Grandpa Fufu to trade."
+	var npc := MerchantLocations.nearest(game.world, actor)
+	if npc == null: return "Move closer to a gear merchant to trade."
+	if id not in MerchantLocations.stock(game.world, npc): return "Nimbus stocks celestial equipment in the Cloud Realm."
 	return WeaponTrade.purchase(inventory, id)
 
 func _request_sale(slot: int, id: String) -> void:
@@ -78,7 +89,7 @@ func _request_sale(slot: int, id: String) -> void:
 	elif _pending.size() < 8: _pending.append({"slot": slot, "id": id})
 
 func sell(actor: Node3D, inventory: PlayerInventory, slot: int, id: String) -> String:
-	if not nearby(actor): return "Move closer to Grandpa Fufu to trade."
+	if not nearby(actor): return "Move closer to a gear merchant to trade."
 	return WeaponTrade.sell(inventory, slot, id)
 
 func _build_highlight() -> void:

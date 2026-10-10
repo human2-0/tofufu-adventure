@@ -10,7 +10,10 @@ static func process(items: WorldItems, _delta: float) -> void:
 	var source: LocalPlayerInput = items.game.shooting_view.local_input if items.game.shooting_view != null else null
 	if source != null and source.enabled and not source.chat_blocked and items.game.hud.visible and not items.get_tree().paused:
 		select_focus(items, source)
-	if source != null: source.pickup_target = items.focused_id
+	if source != null:
+		source.pickup_target = items.focused_id
+		source.castle_action = items.focused_plot if items.focused_kind == "castle" else -1
+		source.castle_revision = items.game.castle_adventure.state.revision if items.game.castle_adventure != null else 0
 	if items.pool.drops.has(previous): items.pool.drops[previous].set_focus(false, "")
 	if not items.pool.drops.has(items.focused_id): return
 	var drop := items.pool.drops[items.focused_id]
@@ -41,7 +44,7 @@ static func select_focus(items: WorldItems, source: LocalPlayerInput, pointer: V
 	if items.game.quest_giver != null and items.game.quest_giver.nearby(items.game.player):
 		best = consider(items, "quest", items.game.world.quest_npc.global_position + Vector3(0, 1.5, 0.65), origin, source, camera, pointer, best)
 	if items.game.merchant != null and items.game.merchant.nearby(items.game.player):
-		best = consider(items, "merchant", items.game.world.weapon_merchant.global_position + Vector3(0, 1.5, 0.65), origin, source, camera, pointer, best)
+		best = consider(items, "merchant", items.game.merchant.focus_position(items.game.player), origin, source, camera, pointer, best)
 	if items.game.seed_storage != null and items.game.seed_storage.nearby(items.game.player):
 		best = consider(items, "storage", items.game.seed_storage.focus_position(items.game.player), origin, source, camera, pointer, best)
 	if items.game.parrot_travel != null and items.game.parrot_travel.available(items.game.player):
@@ -68,6 +71,17 @@ static func select_focus(items: WorldItems, source: LocalPlayerInput, pointer: V
 				items.focused_kind = "apple_tree"
 				items.focused_id = 0
 				items.focused_plot = -1
+
+	if items.game.castle_adventure != null:
+		var castle: CastleAdventure = items.game.castle_adventure
+		for action in 25:
+			if not castle.reachable(items.game.player, action): continue
+			var score := items._focus_score(castle.focus_position(action), origin, source, camera, pointer)
+			if score < best:
+				best = score
+				items.focused_kind = "castle"
+				items.focused_id = 0
+				items.focused_plot = action
 
 static func consider(items: WorldItems, kind: String, at: Vector3, origin: Vector3, source: LocalPlayerInput, camera: Camera3D, pointer: Vector2, best: float) -> float:
 	var score := items._focus_score(at, origin, source, camera, pointer)

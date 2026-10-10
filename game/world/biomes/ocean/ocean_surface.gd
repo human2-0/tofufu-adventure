@@ -17,10 +17,10 @@ func build(farm: FarmTerrain, cached_grid: TerrainGrid = null) -> void:
 				surface.set_uv(Vector2(px, pz))
 				surface.add_vertex(Vector3(px, OceanTerrain.WATER_LEVEL, pz))
 	surface.generate_normals()
+	surface.index()
 	mesh = surface.commit()
-	var material := ShaderMaterial.new()
-	material.shader = preload("res://game/world/biomes/ocean/ocean_water.gdshader")
-	material_override = material
+	material_override = OceanMaterial.create()
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	# Water is presentation; collision remains on the continuous sandy floor.
 	custom_aabb = mesh.get_aabb().grow(0.5)
+	TerrainChunks.split_visual(self, false, 64.0)

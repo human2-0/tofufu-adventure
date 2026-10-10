@@ -21,18 +21,24 @@ var _quitting: bool = false
 var _coop: CoopSession
 var _menu_layer: CanvasLayer
 var _input_flow := LaunchInput.new()
+var loader := AdventureLoader.new()
+var readiness := LoadingReadiness.new()
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().auto_accept_quit = false
 	preferences.load_preferences()
-	preferences.apply_rendering(get_viewport(), preferences.frame_limit, preferences.render_scale, preferences.vsync)
+	RenderBudget.install(self, preferences, func() -> bool: return is_instance_valid(game) and not get_tree().paused)
 	store.extra_validator = CoopCheckpoint.valid
 	_menu_layer = CanvasLayer.new()
 	_menu_layer.layer = 20
 	add_child(_menu_layer)
 	menu = LaunchMenu.new()
 	_menu_layer.add_child(menu)
+	loader.view = LoadingView.new()
+	_menu_layer.add_child(loader.view)
+	loader.view.back_requested.connect(_loading_back)
+	add_child(loader)
 	menu.new_game.connect(saves.show_new)
 	menu.continue_game.connect(saves.show_saves)
 	menu.coop.connect(lobby.show_lobby)
@@ -41,29 +47,7 @@ func _ready() -> void:
 	menu.save_game.connect(_save)
 	menu.return_title.connect(_return_title)
 	menu.quit_game.connect(_quit)
-	saves.store = store
-	saves.menu = menu
-	saves.go_back = _home
-	saves.start_requested.connect(_start)
-	add_child(saves)
-	settings.preferences = preferences
-	settings.menu = menu
-	settings.go_back = _home
-	add_child(settings)
-	room.started.connect(_start_coop)
-	room.ended.connect(_coop_ended)
-	add_child(room)
-	connection.room = room
-	connection.transport = transport
-	add_child(connection)
-	lobby.store = store
-	lobby.menu = menu
-	lobby.room = room
-	lobby.connection = connection
-	lobby.peer_transport = transport if transport.can_host() else null
-	lobby.server_transport = server_transport if server_transport != null else transport as OracleTransport
-	lobby.go_back = _home
-	add_child(lobby)
+	LaunchFlows.connect_flows(self)
 	if "--dedicated-lobby" in OS.get_cmdline_user_args() and not transport.can_host(): lobby.show_lobby()
 
 func _home() -> void:
@@ -71,7 +55,7 @@ func _home() -> void:
 	if _online: menu.note.text = "Co-op keeps running · The host saves shared progress · Esc / Start to return"
 
 func _start(slot: int, data: Dictionary) -> void:
-	if slot < 0 or is_instance_valid(game): return
+	if slot < 0 or is_instance_valid(game) or loader.busy or loader.view.visible: return
 	if not DungeonSnapshotValidation.adventure(data):
 		menu.note.text = "The saved factory checkpoint is malformed."
 		return
@@ -79,18 +63,18 @@ func _start(slot: int, data: Dictionary) -> void:
 		if lobby.peer_transport != null: await connection.select_transport(lobby.peer_transport)
 		lobby.show_lobby()
 		lobby.panel.select_adventure(slot)
-		lobby.panel.status.text = "Shared adventure selected. Discover your friends, then open the meadow to continue."
+		lobby.panel.status.text = "Shared adventure selected. Choose Host world to continue with friends."
 		return
 	_slot = slot
 	_title = data.name
 	_seconds = float(data.get("seconds", 0))
 	_online = false
-	game = preload("res://game/app/adventure/main.tscn").instantiate()
+	menu.hide()
+	var loaded := await loader.open(self, preferences, data, false)
+	if loaded == null: return
+	game = loaded
+	loader.finish()
 	game.process_mode = Node.PROCESS_MODE_PAUSABLE
-	game.play_opening = not data.get("opening_complete", false)
-	add_child(game)
-	game.map.configure_preferences(preferences)
-	if data.has("version"): AdventureSnapshot.restore(game, data)
 	_resume()
 	_save()
 
@@ -111,6 +95,7 @@ func _save() -> bool:
 	return success
 
 func _resume() -> void:
+	if loader.busy or loader.view.visible: return
 	menu.hide()
 	if is_instance_valid(game): _input_enabled(true)
 	get_tree().paused = false
@@ -125,6 +110,7 @@ func _return_title() -> void:
 	_home()
 
 func _clear_game() -> void:
+	loader.cancel()
 	get_tree().paused = false
 	if is_instance_valid(game):
 		remove_child(game)
@@ -148,7 +134,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		get_viewport().set_input_as_handled()
 
 func _process(delta: float) -> void:
-	if is_instance_valid(game) and not get_tree().paused and (not _online or _coop.authority):
+	if is_instance_valid(game) and not loader.busy and not get_tree().paused and (not _online or _coop.authority):
 		_seconds += delta
 		_autosave += delta
 		if _autosave >= 60: _save()
@@ -160,34 +146,41 @@ func _quit() -> void:
 	if _quitting: return
 	if not _save(): return
 	_quitting = true
+	loader.cancel()
 	if is_instance_valid(game): game.process_mode = Node.PROCESS_MODE_DISABLED
 	await connection.shutdown()
 	get_tree().quit()
 
 func _start_coop(hosting: bool, _members: Array, _key: String) -> void:
+	if loader.busy or loader.view.visible or is_instance_valid(game): return
 	_online = true
 	var data := lobby.save_data if hosting else {}
 	_slot = lobby.save_slot if hosting else -1
-	_title = str(data.get("name", "Our meadow"))
+	_title = str(data.get("name", "Our world"))
 	_seconds = float(data.get("seconds", 0))
-	game = preload("res://game/app/adventure/main.tscn").instantiate()
-	game.play_opening = not data.get("opening_complete", false)
-	game.process_mode = Node.PROCESS_MODE_PAUSABLE
-	add_child(game)
-	game.map.configure_preferences(preferences)
-	if hosting and data.has("version"): AdventureSnapshot.restore(game, data)
+	menu.hide()
+	var loaded := await loader.open(self, preferences, data, true)
+	if loaded == null:
+		if loader.view.visible:
+			_online = false
+			connection.disconnect_session()
+		return
+	game = loaded
 	_coop = CoopSession.new()
 	_coop.game = game
 	_coop.room = room
 	if hosting and data.has("coop"): _coop.checkpoint = data.coop
 	game.add_child(_coop)
+	readiness.replay(_coop)
+	loader.finish()
+	game.process_mode = Node.PROCESS_MODE_PAUSABLE
 	_resume()
 	if hosting: _save()
 
 func _coop_ended(reason: String) -> void:
 	if not _online or _quitting: return
 	if is_instance_valid(_coop) and _coop.authority: _coop.duel.session_ended()
-	if _coop.authority and not _save(): return
+	if is_instance_valid(_coop) and _coop.authority and not _save(): return
 	_online = false
 	_clear_game()
 	lobby.show_lobby()
@@ -195,3 +188,12 @@ func _coop_ended(reason: String) -> void:
 
 func _input_enabled(enabled: bool) -> void:
 	_input_flow.set_enabled(game, preferences, _online, _coop, enabled)
+
+func _loading_back() -> void:
+	if _online:
+		_online = false
+		connection.disconnect_session()
+	loader.cancel()
+	_slot = -1
+	menu.show()
+	_home()

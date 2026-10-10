@@ -23,6 +23,7 @@ var _pending: Dictionary = {}
 var _synchronized: bool = false
 var _ping_clock: float = 0
 var latency_ms: int = 0
+var _world_changes := ReplicaWorldChanges.new()
 
 func _ready() -> void:
 	process_physics_priority = 10
@@ -38,6 +39,8 @@ func _ready() -> void:
 	duel = CoopDuel.new()
 	duel.session = self
 	add_child(duel)
+	game.castle_adventure.configure_party(roster.party, authority)
+	roster.changed.connect(game.castle_adventure.sync_party)
 	game.factory_dungeon.configure_party(roster.party, authority)
 	game.factory_dungeon.puzzle_command_requested.connect(_send_puzzle_command)
 	roster.changed.connect(game.factory_dungeon._sync_unlock)
@@ -86,7 +89,7 @@ func _physics_process(delta: float) -> void:
 			_publish()
 	else:
 		_silence += delta
-		if _silence > 10:
+		if _silence > (10.0 if _synchronized else 60.0):
 			room.leave("The host stopped sending the adventure. Please rejoin their meadow.")
 			return
 		if not _pending.is_empty():
@@ -148,11 +151,12 @@ func _publish() -> void:
 		snapshot.world = CoopWorld.capture(game)
 		_world_clock = 0
 	for key: String in room.members:
-		if key != room.local_key and _ready_peers.has(key): room.send_game(key, snapshot.duplicate(true))
+		# Room adds only the epoch; immutable nested records need no per-peer deep copy.
+		if key != room.local_key and _ready_peers.has(key): room.send_game(key, snapshot.duplicate())
 
 func _apply(data: Dictionary) -> void:
 	if data.has("world"):
-		CoopWorld.apply(game, data.world, true)
+		CoopWorld.apply(game, data.world, true, _world_changes)
 		if not _synchronized: game.hud.announce("Connected / The host saves our shared adventure.")
 		_synchronized = true
 	opening.apply(data.opening)

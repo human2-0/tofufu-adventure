@@ -33,7 +33,7 @@ func _ready() -> void:
 func _setup_level_header() -> void:
 	_level.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_level.add_theme_font_size_override("font_size", 12)
-	_level.add_theme_color_override("font_color", Color("f5dfac"))
+	_level.add_theme_color_override("font_color", Color("f4c75d"))
 	add_child(_level)
 
 	_level_bar.custom_minimum_size = Vector2(0, 5)
@@ -41,7 +41,7 @@ func _setup_level_header() -> void:
 	_level_bar.show_percentage = false
 	_level_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color("f5dfac")
+	fill.bg_color = Color("f4c75d")
 	fill.set_corner_radius_all(2)
 	var bg := StyleBoxFlat.new()
 	bg.bg_color = Color(0.18, 0.25, 0.28, 0.6)

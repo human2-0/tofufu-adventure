@@ -19,13 +19,10 @@ func build(grid: VolcanicGroundGrid) -> void:
 	surface.generate_normals()
 	surface.index()
 	mesh = surface.commit()
-	var material := ShaderMaterial.new()
-	material.shader = preload("res://game/world/biomes/volcanic/coastal_water_fast.gdshader")
-	material.set_shader_parameter("color_shallow", Color("328e9d"))
-	material.set_shader_parameter("color_deep", Color("07344e"))
-	material_override = material
+	material_override = OceanMaterial.create(Vector2(128, -64), Color("328e9d"), Color("07344e"))
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	custom_aabb = mesh.get_aabb().grow(0.6)
+	TerrainChunks.split_visual(self, false, 64.0)
 
 func _outer_water(surface: SurfaceTool) -> void:
 	# Scenery extends beyond traversal bounds so the sea reaches the horizon.

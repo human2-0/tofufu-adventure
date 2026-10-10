@@ -28,6 +28,9 @@ var _knockback: Vector3 = Vector3.ZERO
 var _rng := RandomNumberGenerator.new()
 var _collider: CollisionShape3D
 var spawn_clearance: Callable
+var _view_visibility := MobVisibility.new()
+var _floor_contact := MobRest.new()
+var reaction := EnemyHitReaction.new()
 
 func _ready() -> void:
 	collision_layer = 2
@@ -45,18 +48,9 @@ func _ready() -> void:
 	collider.position.y = 0.5
 	add_child(collider)
 	_create_visual()
-	_warning = Label3D.new()
-	_warning.text = "!"
-	_warning.font_size = 72
-	_warning.pixel_size = 0.012
-	_warning.modulate = Color("ffca78")
-	_warning.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_warning.no_depth_test = true
-	_warning.render_priority = 127
+	_warning = MobLabels.make(self, "!", 72, 0.012, Color("ffca78"), _nameplate_height() + 0.55)
 	_warning.visible = false
-	add_child(_warning)
 	_create_nameplate()
-	_warning.position.y = _nameplate_height() + 0.55
 	target = Damageable.new()
 	target.maximum = tuning.dry_health
 	target.headshot_height = 0.72
@@ -65,6 +59,7 @@ func _ready() -> void:
 	add_child(target)
 	target.hit.connect(_hit)
 	target.depleted.connect(_die)
+	_view_visibility.build(self)
 
 func _physics_process(delta: float) -> void:
 	if not available: return
@@ -79,14 +74,19 @@ func _physics_process(delta: float) -> void:
 			collision_layer = 2
 			target.restore()
 		return
+	if reaction.step(delta): return
 	_rest = maxf(0.0, _rest - delta)
-	var direction := _choose_direction(delta)
+	var direction := Vector3.ZERO if reaction.stagger > 0.0 or (not is_on_floor() and velocity.y != 0.0) else _choose_direction(delta)
+	if _floor_contact.can_rest(self, direction, _knockback):
+		velocity = Vector3.ZERO
+		return
 	velocity.x = direction.x + _knockback.x
 	velocity.z = direction.z + _knockback.z
 	velocity.y -= 25.0 * delta
 	_knockback = _knockback.move_toward(Vector3.ZERO, 25.0 * delta)
 	var previous_position := position
 	move_and_slide()
+	_floor_contact.remember(self)
 	if _protected(global_position):
 		# Loaded actors inside an expanded village may retreat; outsiders cannot enter.
 		if not _protected(previous_position): position = previous_position
@@ -99,22 +99,20 @@ func _physics_process(delta: float) -> void:
 		velocity = Vector3.ZERO
 
 func _home_is_clear() -> bool:
-	var query := PhysicsShapeQueryParameters3D.new()
-	query.shape = _collider.shape
-	query.collision_mask = 3
-	query.exclude = [get_rid()]
-	var spawn_transform := transform
-	spawn_transform.origin = _home
-	query.transform = get_parent_node_3d().global_transform * spawn_transform * _collider.transform
-	if spawn_clearance.is_valid() and not spawn_clearance.call(query.shape, query.transform): return false
-	return get_world_3d().direct_space_state.intersect_shape(query, 1).is_empty()
+	return MobSpawnClearance.clear(self)
 
 func _process(delta: float) -> void:
 	if not visible: return
+	delta = _view_visibility.render_delta(delta)
+	if delta <= 0.0: return
 	var aim := quarry.global_position - global_position if is_instance_valid(quarry) else Vector3.ZERO
 	# Replicas retain their last travel facing; their quarry is not authoritative.
 	if not is_physics_processing(): aim = Vector3.ZERO
 	_present_visual(aim, delta)
+	reaction.present(_reaction_visual(), delta)
+
+func _reaction_visual() -> Node3D:
+	return _sprite
 
 func _create_visual() -> void:
 	_sprite = SnailVisuals.new()
@@ -128,19 +126,11 @@ func _flash_visual() -> void:
 
 func flash_hit() -> void:
 	_flash_visual()
+	reaction.flash(velocity)
 
 func _create_nameplate() -> void:
-	_nameplate = Label3D.new()
-	_nameplate.text = _nameplate_text()
-	_nameplate.font_size = 28
-	_nameplate.pixel_size = 0.008
-	_nameplate.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	_nameplate.modulate = Color("f2f4d0")
-	_nameplate.position.y = _nameplate_height()
+	_nameplate = MobLabels.make(self, _nameplate_text(), 28, 0.008, Color("f2f4d0"), _nameplate_height())
 	_nameplate.outline_size = 6
-	_nameplate.no_depth_test = true
-	_nameplate.render_priority = 127
-	add_child(_nameplate)
 
 func _nameplate_text() -> String:
 	return "SNAIL · LV 1"
@@ -158,8 +148,10 @@ func _can_reach_quarry() -> bool:
 	return SnailSteering.can_reach_quarry(self)
 
 func _hit(_amount: float, direction: Vector3) -> void:
+	reaction.receive(direction, target.last_hit_kind)
 	_knockback = Vector3(direction.x, 0, direction.z)
 	if direction.y > 0.0: velocity.y = maxf(velocity.y, direction.y)
+	elif direction.y < 0.0: velocity.y = minf(velocity.y, direction.y)
 	_flash_visual()
 	_windup = 0.0
 	_warning.visible = false
@@ -176,6 +168,7 @@ func _die() -> void:
 	_respawn = tuning.dry_respawn
 	velocity = Vector3.ZERO
 	_knockback = Vector3.ZERO
+	reaction.clear()
 
 func set_rain(wet: bool) -> void:
 	if raining != wet:

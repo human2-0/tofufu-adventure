@@ -16,7 +16,7 @@ static func height_at(x: float, z: float, desert: DesertWorld) -> float:
 	var basin := Vector2((x + 40.0) / 14.0, (z - 314.0) / 10.0).length()
 	hills = lerpf(1.30, hills, smoothstep(0.75, 1.10, basin))
 	hills += WorldContours.rim(x, z, HALF_WIDTH, SOUTH_START, SOUTH_END, desert.farm.noise.seed, true)
-	return lerpf(desert.point(x, minf(z, SOUTH_START)).y, hills, blend)
+	return JungleCoast.height_at(x, z, lerpf(desert.point(x, minf(z, SOUTH_START)).y, hills, blend), desert.farm.noise.seed)
 
 static func trail_distance(x: float, z: float) -> float:
 	var main := absf(x - (sin((z - SOUTH_START) * 0.15) * 3.0))
@@ -24,15 +24,16 @@ static func trail_distance(x: float, z: float) -> float:
 	return minf(main, loop)
 
 static func build(parent: Node3D, desert: DesertWorld) -> void:
-	var grid := TerrainGrid.new(Rect2i(-int(HALF_WIDTH), int(SOUTH_START), int(HALF_WIDTH * 2), int(SOUTH_END - SOUTH_START)), func(x: float, z: float) -> float: return height_at(x, z, desert), desert.farm.noise.seed)
+	var grid := TerrainGrid.new(Rect2i(-int(HALF_WIDTH), int(SOUTH_START), int(HALF_WIDTH + JungleCoast.SEA_EDGE), int(SOUTH_END - SOUTH_START)), func(x: float, z: float) -> float: return height_at(x, z, desert), desert.farm.noise.seed)
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for z in range(int(SOUTH_START), int(SOUTH_END)):
-		for x in range(-int(HALF_WIDTH), int(HALF_WIDTH)):
+		for x in range(-int(HALF_WIDTH), int(JungleCoast.SEA_EDGE)):
 			for corner in [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)]:
 				var px: float = x + corner.x
 				var pz: float = z + corner.y
 				var color := grid.color(px, pz)
+				color = JungleCoast.color_at(Vector2(px, pz), grid.height(px, pz), color)
 				color = color.lerp(Color("bdac72"), 1.0 - smoothstep(1.0, 2.3, trail_distance(px, pz)))
 				surface.set_color(color.srgb_to_linear())
 				surface.add_vertex(Vector3(px, grid.height(px, pz), pz))
@@ -40,9 +41,10 @@ static func build(parent: Node3D, desert: DesertWorld) -> void:
 	var ground := MeshInstance3D.new()
 	ground.name = "JungleGround"
 	ground.mesh = surface.commit()
-	var material := MeadowGeometry.material(Color.WHITE)
-	material.vertex_color_use_as_albedo = true
+	var material := ShaderMaterial.new()
+	material.shader = preload("res://game/world/biomes/jungle/jungle_ground.gdshader")
 	ground.material_override = material
 	parent.add_child(ground)
 	ground.create_trimesh_collision()
+	TerrainSupport.mark_permanent(ground)
 	TerrainChunks.split_visual(ground)

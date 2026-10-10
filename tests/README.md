@@ -19,6 +19,8 @@ Parrot transport: `test_parrot_travel.gd` covers steering, altitude, menu hover,
 
 Cloud Realm: `test_cloud_realm.gd` covers an actual flight from jungle to the realm at Y≈58, cloud landing and walking, connected satellite islands, Godfufu's placeholder greeting, landed save/load and elevated remounting. The co-op parrot scenario also checks authoritative cloud landing, guest prediction recovery and disconnect persistence. `preview_cloud_realm.gd` renders `/tmp/tofufu-cloud-{overview,godfufu,landing}.png` in Godot.
 
+Celestial armory: `test_celestial.gd` covers real Nimbus-only purchases, level requirements, the complete four-piece outfit and partial armor, 50% protection across all hit kinds, 25% melee/fist/ranged damage and attack rates including Soyjet tick cadence, real lucky shell rolls and per-actor host loot rules, bounded aura activation and first-person masking, all 248 source frames and wrist/foot bounds, JSON equipment and combat restoration, replica variants, invalid variant rejection, authoritative raygun shots and world pickups. `preview_celestial.gd` renders all eight directions and animation phases; add `-- --weapons` for held weapon sheets. `preview_celestial_game.gd` renders the Cloud Realm shop and the real first-person equipment rig. Previews save under `.codex/visualizations/2026/10/08/celestial/`; hardware FPS and internet connectivity remain separate checks.
+
 Additional visual checks:
 
 - Hold the left mouse button until the sword and meter turn gold, release toward a nearby target, and check the 2D sword slash, hit feedback and knockback.
@@ -40,6 +42,9 @@ Physical-device checks still required: controller connect/disconnect, mouse/cont
 Jump coverage checks grounded charging, proportional release, roughly doubled apex, no midair boost, dash/ledge cancellation, per-actor charge, all ten animation phases and ground-contact landing. Run `godot --path . --script res://tests/preview_jump.gd --fixed-fps 60` for real physics/render snapshots at `/tmp/tofufu-jump-*.png`. The supplied jump art is front-facing only.
 
 Equipment coverage: real front/rear incoming damage, guard cone, charge cancellation, committed slash restrictions, knife drop/recovery range, punch cooldown, punches in both slots, height and wall misses. RMB press/release is synthesized through the input map. `godot --path . --script res://tests/preview_equipment.gd` renders guard, block sparks, dropped knife and punches to `/tmp/tofufu-{guard,block,drop,punch}.png`.
+
+
+Melee flow coverage: `test_melee_flow.gd` checks eight-facing trajectory continuity, the repeating four-move chain beyond the critical cap, real swept contacts, one hit per target, frozen impact poses, buffered release aim, misses, wall occlusion, physical launch/landing, shell immunity/breaking, factory recoil, player interruption and bounded co-op fields. `preview_melee_flow.gd --fixed-fps 60` renders `/tmp/tofufu-melee-trajectories.png` and live enemy launch/combo snapshots. First-person timing is also exercised by the weapon preview/tests; human rhythm/balance and cross-device co-op remain separate checks.
 
 Opening quest coverage: early/wrong/held directional input, isolated quest state, four alternating timed pushes, short/overheld charge retries, authored drop and landing, seam release, restored world/camera/movement, and combat suppression while confined. `test_pod_escape.gd` runs in the main verifier. Other sandbox tests explicitly set `play_opening = false` before entering the tree.
 
@@ -72,6 +77,11 @@ Inventory coverage: `test_inventory.gd` checks stacking, equipment restrictions,
 `test_currency.gd` checks 100-item stacks, the 100:1 / 1:1 / 100:1 / 100:1 refinement path, shortcut/replay rejection, shop tender, save limits, high-quality thumbnails, transparent 5+ art and non-overlapping sprite-sheet crop dividers. Run `godot --path . --script res://tests/preview_currency.gd` with a display for `/tmp/tofufu-currency-crops.png`, showing every stack in real backpack slots. `test_farming.gd` and `test_world_items.gd` cover compact ground beans and backpacks, full-bag retention and recovery.
 
 World drops: `test_world_items.gd` covers swept wall/floor collision, occluded pickup, cross-actor ownership, duplicate claims, guns, reservoir-preserving swaps, focus, bag drops and save schemas. Run it without `--headless` with `-- --preview` for `/tmp/tofufu-world-items.png` and `/tmp/tofufu-ground-backpack.png`. `test_depot_focus.gd` checks both chest rows, separate mouse targets for desk items and chest lids, directional pickup priority, stale prompts, owner protection and pickup followed by opening storage. Run with `-- --preview` and a display for `/tmp/tofufu-depot-{chest,item}-{0,10}.png`. Co-op gameplay tests also exercise another player collecting a host drop with authoritative removal on both peers.
+
+`test_meadow_meshes.gd` checks texture-aware static batching, fixed projection scale,
+shared enemy geometry, individual damage/warning materials, shell bounds, wing motion
+and triangle budgets. `preview_meadow_meshes.gd` uses the actual renderer to save
+`/tmp/meadow-textured-{enemies,enemies-reverse,house,depot,machinery,units,well}.png`.
 
 `test_loadout_shop.gd` covers two combat slots, four support slots, Mature Bean purchases, merchant range, full bags, equipment transfers, Soyjet reserve and save restoration. Run with `-- --preview` to render equipment and shop previews. Co-op gameplay tests also check authoritative purchases and replicated currency inventories.
 
@@ -133,6 +143,8 @@ renders the atoll, lagoon, meadow/dunes and dunes/jungle crossings plus the map 
 
 `test_volcanic.gd` verifies the separate ocean channel, actual parrot crossing/landing, all 149 royal-route chamber passages, every physical switchback ascent, retained collision under cutaway, local/host lava burns and guest exclusion, King greeting, expanded map round trips and original-mask migration. `preview_volcanic.gd` captures the actual Godot continent, ocean, castle, maze and king to `/tmp/tofufu-volcanic-*.png`.
 
+`test_castle_challenge.gd` checks twelve connected dead-end chests, atomic/replayed/full-bag grants, legacy saves, memory press feedback, compact task-panel bounds, actual guardian strafing/dashing/lunge contact, shield flanking, and fast king chunks stopped by cover or applying burning on an exposed hit. `test_coop_castle.gd` sends real JSON-wire chest/puzzle intent between local fake peers and verifies inventory entitlement, visible acknowledgements, guardian spell/stance replication, fast chunk bursts and host-only outcomes. `preview_castle_challenge.gd` captures the actual shoulder and FPP cameras on all puzzle decks, additional north/east/west approaches, remembered/wrong glyph feedback, closed/opening/open treasure and king chunk VFX to `/tmp/tofufu-castle-challenge-*.png`. Human difficulty tuning and remote-device play remain separate checks.
+
 `test_volcanic_expansion.gd` walks a player-size capsule across every outdoor lava bridge and both ramps, sweeps the complete ash circuit for supported dry terrain, lava protection and obstacle clearance, and checks eastern-coast co-op records plus finite coordinate bounds. Volcanic tests also retain both older exploration masks and eastern-coast saves. The preview includes all five authored districts and the enlarged central volcano.
 
 `test_lava_king_art.gd` orbits a real camera through eight directions, checks the
@@ -141,3 +153,22 @@ anchors, authored rotation, retained collider and greeting state. Run
 `preview_lava_king.gd` with a display for the five-view plate and eight camera views
 at `/tmp/tofufu-lava-king-*.png`. Original art and exact generation prompts remain
 under `assets/characters/lava_king/`.
+
+Perspective performance: `benchmark_perspectives.gd` measures overhead, shoulder and
+first-person cameras at village, grass, reef, castle and clouds.
+`benchmark_coop_rendering.gd -- --perspectives` covers four moving/firing actors;
+add `--adaptive` for the 120 FPS local profile or `--guest` for the deliberate
+two-world guest stress harness. All rendering benchmarks use a fixed 2560 × 1440
+SubViewport through `rendering_viewport.gd` and record actual texture dimensions.
+The co-op fixture protects actors from defeat, checks relocation and rejects
+location changes so a respawn cannot turn a reef sample into a meadow sample.
+Run them separately from the verifier and other Godot processes. Use explicit
+matching baselines with `tools/check_render_budget.py`; historical JSON without
+render dimensions is not valid 1440p evidence. See [performance policy](../docs/PERFORMANCE.md).
+
+`test_occlusion.gd` checks inset opaque blockers, cutaway visibility, retained
+collision and one-sided cloud floors. `test_scenery_batch.gd` checks exact leaf
+positions, material/layer separation, named controls, scaled/mirrored normals, UVs
+and ink extrusion. `preview_occlusion.gd` captures paired culling-off/on views at
+buildings, cutaways, openings and below clouds. `preview_scenery_batch.gd` compares
+authored and baked props at native 1440p. Headless passes do not establish FPS.

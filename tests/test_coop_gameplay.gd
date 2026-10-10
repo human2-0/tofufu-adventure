@@ -500,7 +500,7 @@ func _run() -> void:
 	host.leave()
 	check(not guest.playing and not observer.playing, "host departure ends the session for all other players")
 	for child in root.get_children(): child.queue_free()
-	await process_frame
+	for frame in 4: await process_frame
 	print("Co-op gameplay: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
 

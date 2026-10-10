@@ -11,6 +11,14 @@ func _ready() -> void:
 	game.encounters.experience_awarded.connect(_award_experience)
 	game.encounters.party_hurt = _hurt
 	game.encounters.party_collect = _collect
+	game.encounters.loot_chance = _loot_chance
+
+func _loot_chance(base: float, at: Vector3) -> float:
+	var actor := _nearest(at, false)
+	for member: CoopActor in party.values():
+		if member.actor == actor:
+			return ApparelSetBonus.drop_chance(member.character_equipment.complete_set(), base)
+	return clampf(base, 0.0, 1.0)
 
 func _physics_process(_delta: float) -> void:
 	for mob: TrainingMob in game.encounters.mob_nodes:

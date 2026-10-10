@@ -21,6 +21,7 @@ func _run() -> void:
 	game.cycle.world_environment.environment.fog_density = 0.00025
 	game.player.set_physics_process(false)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.camera.far = 1200
 	print("CAMERA near/far: ", game.camera.near, "/", game.camera.far)
 	game.player.global_position = game.world.volcanic.point(235, 318, 0.1)

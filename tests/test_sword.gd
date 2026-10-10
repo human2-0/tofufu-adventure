@@ -94,7 +94,7 @@ func _slash_crosses_front() -> void:
 	for tick in 4:
 		combat.step(Vector2.DOWN, false, 1.0 / 60.0)
 	check(early.current == 100 and late.current == 100, "wind-up is harmless")
-	for tick in 24:
+	for tick in ceili((combat.tuning.swing_seconds + combat.tuning.light_hit_pause) * 60.0):
 		combat.step(Vector2.DOWN, false, 1.0 / 60.0)
 	check(early.current == 100 - combat.tuning.light_damage and late.current == 100 - combat.tuning.light_damage, "slash cuts across both sides of the forward arc exactly once")
 	check(not combat.active, "slash completes recovery")

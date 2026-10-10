@@ -32,7 +32,7 @@ func _ready() -> void:
 	chapter.offset_top = 28
 	chapter.add_theme_font_size_override("font_size", 17)
 	chapter.add_theme_color_override("font_color", Color("fff0c2"))
-	chapter.add_theme_color_override("font_shadow_color", Color("293e50"))
+	chapter.add_theme_color_override("font_shadow_color", Color("183b37"))
 	chapter.add_theme_constant_override("shadow_offset_y", 2)
 	canvas.add_child(chapter)
 	_panel = PanelContainer.new()
@@ -44,8 +44,8 @@ func _ready() -> void:
 	_panel.offset_bottom = -28
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("173632f5")
-	style.border_color = Color("a6db92")
+	style.bg_color = Color("183b37f2")
+	style.border_color = Color("fff9e9")
 	style.set_border_width_all(3)
 	style.set_corner_radius_all(20)
 	style.set_content_margin_all(18)

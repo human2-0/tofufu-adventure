@@ -158,6 +158,7 @@ func _pack(command: TofuPuzzleCommand, actor_id: int) -> Dictionary:
 	var slot: int = int(command.target_id) if command.target_id.is_valid_int() else -1
 	match command.action:
 		TofuPuzzleCommand.Action.PICK_UP: outcome = pack.reserve(slab, actor_id, command.expected_revision)
+		TofuPuzzleCommand.Action.RETURN_PROP: outcome = pack.return_slab(slab, actor_id, command.expected_revision)
 		TofuPuzzleCommand.Action.PLACE_SLAB: outcome = pack.place(slab, slot, actor_id, command.expected_revision)
 		TofuPuzzleCommand.Action.SEAL_SLOT: outcome = pack.seal(slot, command.expected_revision)
 	if outcome == TofuPackRules.Outcome.BOSS_READY:

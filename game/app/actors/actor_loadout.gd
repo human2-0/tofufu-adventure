@@ -41,7 +41,7 @@ func refresh(show_feedback: bool = true) -> void:
 		var completed := not full_set.is_empty() and actor.visuals.worn_set != full_set
 		actor.visuals.set_worn_set(full_set, show_feedback)
 		if completed and show_feedback and hud != null:
-			var accent := Color("a6ec72") if full_set == ApparelSetBonus.SOYPOD else Color("8bd6c2")
+			var accent := Color("f3d28c") if full_set == ApparelSetBonus.CELESTIAL else (Color("a6ec72") if full_set == ApparelSetBonus.SOYPOD else Color("8bd6c2"))
 			OutfitCelebration.spawn(hud, ApparelSetBonus.name_for(full_set), ApparelSetBonus.celebration_text(full_set), accent)
 	if combat != null and combat.owner_health != null:
 		combat.owner_health.armor_multiplier = equipment.damage_multiplier()
@@ -52,20 +52,21 @@ func refresh(show_feedback: bool = true) -> void:
 	_active = equipment.get_slot("combat_%d" % active_slot)
 	combat.reset()
 	var id := _active.item.id if _active != null and equipment.can_equip("combat_%d" % active_slot, _active) else ""
+	CelestialCombat.apply(combat, CelestialCombat.ITEMS.find(id) if id in CelestialCombat.ITEMS else 0)
 	combat.equipment.nori_selected = id == "nori_katana"
 	combat.sword.set_nori(combat.equipment.nori_selected)
 	combat.equipment.pod_selected = id == "edamame_sword"
 	combat.sword.set_pod(combat.equipment.pod_selected)
-	combat.equipment.knife_owned = has_equipped("knife") or has_equipped("edamame_sword") or has_equipped("nori_katana")
-	combat.equipment.gun_owned = has_equipped("soy_gun")
+	combat.equipment.knife_owned = has_equipped("knife") or has_equipped("edamame_sword") or has_equipped("nori_katana") or has_equipped("celestial_sword")
+	combat.equipment.gun_owned = has_equipped("soy_gun") or has_equipped("soy_raygun")
 	combat.equipment.sotjet_owned = has_equipped("sotjet")
-	combat.equipment.staff_owned = has_equipped("sproutwood_staff")
-	combat.equipment.knife_selected = id in ["knife", "edamame_sword", "nori_katana"]
-	combat.equipment.staff_selected = id == "sproutwood_staff"
-	combat.gun.selected = id == "soy_gun"
+	combat.equipment.staff_owned = has_equipped("sproutwood_staff") or has_equipped("celestial_staff")
+	combat.equipment.knife_selected = id in ["knife", "edamame_sword", "nori_katana", "celestial_sword"]
+	combat.equipment.staff_selected = id in ["sproutwood_staff", "celestial_staff"]
+	combat.gun.selected = id in ["soy_gun", "soy_raygun"]
 	combat.sotjet.selected = id == "sotjet"
-	combat.sword.visible = id in ["knife", "edamame_sword", "nori_katana"]
-	combat.staff.visible = id == "sproutwood_staff"
+	combat.sword.visible = combat.equipment.knife_selected
+	combat.staff.visible = combat.equipment.staff_selected
 	if id == "sotjet": combat.sotjet.milk = _active.reserve
 
 func stow_ineligible_apparel() -> void:

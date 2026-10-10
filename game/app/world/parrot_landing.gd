@@ -41,6 +41,8 @@ static func safe_position(game: AdventureGame, at: Vector3) -> bool:
 static func height(game: AdventureGame, at: Vector3) -> float:
 	var local := game.world.to_local(at)
 	var ground := game.world.ground_point(local.x, local.z).y
+	if game.world.jungle != null and JungleCoast.is_water(Vector3(local.x, ground, local.z), game.world.jungle.desert):
+		ground = maxf(ground, JungleCoast.WATER_LEVEL)
 	if VolcanicTerrain.contains(Vector2(local.x, local.z)):
 		ground = maxf(ground, VolcanicTerrain.WATER_LEVEL)
 	if local.z <= OceanTerrain.NORTH_START and local.z >= OceanTerrain.NORTH_END:

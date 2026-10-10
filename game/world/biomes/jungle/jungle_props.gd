@@ -19,9 +19,11 @@ static func leaf(parent: Node3D, at: Vector3, direction: Vector3, length: float,
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for vertex in [at, middle + side, middle + Vector3.UP * 0.2, at, middle + Vector3.UP * 0.2, middle - side, middle + side, tip, middle + Vector3.UP * 0.2, middle + Vector3.UP * 0.2, tip, middle - side]:
-		surface.add_vertex(vertex)
+		surface.add_vertex(vertex - at)
 	surface.generate_normals()
 	var mesh := MeshInstance3D.new()
+	mesh.position = at
+	mesh.set_meta("static_ornament_mesh", true)
 	mesh.mesh = surface.commit()
 	var material := MeadowGeometry.material(color)
 	material.cull_mode = BaseMaterial3D.CULL_DISABLED

@@ -12,8 +12,8 @@ func _ready() -> void:
 	_label.size = Vector2(490, 45)
 	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_label.add_theme_font_size_override("font_size", 14)
-	_label.add_theme_color_override("font_color", Color("e2f0ec"))
-	_label.add_theme_color_override("font_shadow_color", Color("233a49"))
+	_label.add_theme_color_override("font_color", Color("fff9e9"))
+	_label.add_theme_color_override("font_shadow_color", Color("183b37"))
 	_label.add_theme_constant_override("shadow_offset_x", 1)
 	_label.add_theme_constant_override("shadow_offset_y", 1)
 	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE

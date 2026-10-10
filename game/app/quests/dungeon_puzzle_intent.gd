@@ -18,6 +18,7 @@ static func build(flow: DungeonPuzzleFlow, dungeon: TofuDungeon, actor: Player, 
 		TofuPuzzleContract.Stage.SORT: command.expected_revision = dungeon.puzzle.sorting.revision
 		TofuPuzzleContract.Stage.LAB: command.expected_revision = dungeon.puzzle.lab.revision
 		TofuPuzzleContract.Stage.PACK: command.expected_revision = dungeon.puzzle.pack.revision
+	if action == TofuPuzzleCommand.Action.OPEN_STASH: command.expected_revision = dungeon.stashes.revision
 	if actor == dungeon.game.player and dungeon.puzzle_views != null:
 		dungeon.puzzle_views.set_sequence_floor(sequence)
 	return command

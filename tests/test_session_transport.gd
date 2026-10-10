@@ -114,10 +114,10 @@ func check_launch_injection() -> void:
 	root.add_child(app)
 	check(alternate.starts == 0, "injected backend stays stopped during offline startup")
 	app.lobby.show_lobby()
-	check(alternate.starts == 0, "opening lobby does not start backend")
+	check(alternate.starts == 1, "opening lobby starts the selected friends backend")
 	check(app.lobby.panel.discovery_description == alternate.discovery_description(), "lobby receives backend description through contract")
-	app.lobby.panel.discover.emit("Tester")
-	check(alternate.starts == 1 and app.room.local_key == alternate.key, "launch discovers using injected backend")
+	app.lobby.show_lobby()
+	check(alternate.starts == 1 and app.room.local_key == alternate.key, "rebuilding lobby preserves discovery through injected backend")
 	app.lobby.panel.back.emit()
 	check(app.room.local_key.is_empty() and not alternate.active, "back to title closes injected backend")
 	await app.connection.shutdown()
@@ -136,6 +136,7 @@ func check_launch_injection() -> void:
 	app.room.create_room()
 	check(app.room.members == [alternate.key] and not app.room.dedicated, "switching back restores a participating player host")
 	await app.connection.shutdown()
+	DirAccess.remove_absolute(app.preferences.path)
 	app.free()
 
 func check_join_recovery() -> void:

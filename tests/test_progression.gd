@@ -54,7 +54,7 @@ func _initialize() -> void:
 	check(SaveStore.progression(legacy) and ExplorationProtocol.progression(legacy), "old five-skill saves remain valid")
 	other.restore(legacy)
 	check(other.skill("shooting") == 1, "old saves begin shooting at rank one")
-	check(is_equal_approx(CombatTuning.new().punch_cooldown, CombatTuning.new().swing_seconds), "basic fist cadence matches sword swing")
+	check(CombatTuning.new().punch_cooldown < CombatTuning.new().swing_seconds, "bare fists retain their cadence while the blade has heavier recovery")
 	var saved := progress.capture()
 	other.restore(JSON.parse_string(JSON.stringify(saved)))
 	check(other.stat_points == progress.stat_points and other._granted_level == progress._granted_level, "stat points survive JSON round trip")

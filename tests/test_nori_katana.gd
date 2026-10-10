@@ -54,7 +54,7 @@ func _run() -> void:
 	combat.combo.begin_attack()
 	combat.combo.confirm_hit()
 	combat.strike(Vector2.DOWN, 0.0)
-	check(combat.attack_style == KnifeAttack.Style.STAB, "confirmed hit chains combo")
+	check(combat.attack_style == KnifeAttack.Style.REVERSE_SLASH, "confirmed hit chains a reverse slash")
 	combat.reset()
 	combat.sword_damage_multiplier = 1.5
 	for at in [Vector3(0, 0.6, -2), Vector3(0, 0.6, 4), Vector3(2, 0.6, 0)]:

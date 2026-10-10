@@ -41,4 +41,5 @@ static func build(parent: Node3D, ocean: OceanWorld) -> void:
 	ground.material_override = material
 	parent.add_child(ground)
 	ground.create_trimesh_collision()
+	TerrainSupport.mark_permanent(ground)
 	TerrainChunks.split_visual(ground)

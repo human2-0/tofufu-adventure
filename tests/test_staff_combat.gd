@@ -32,7 +32,7 @@ func _run() -> void:
 	combat.combo.begin_attack()
 	combat.combo.confirm_hit()
 	combat.strike(Vector2.UP, 0.0)
-	check(combat.attack_style == KnifeAttack.Style.STAB and is_equal_approx(combat._melee_damage(), 7.5), "staff earns the same quick combo stab at half knife damage")
+	check(combat.attack_style == KnifeAttack.Style.REVERSE_SLASH and is_equal_approx(combat._melee_damage(), 5.0), "staff earns a reverse combo slash at half knife damage")
 	combat.reset()
 	combat.strike(Vector2.UP, 1.0)
 	check(combat.attack_style == KnifeAttack.Style.HEAVY and is_equal_approx(combat._melee_damage(), combat.tuning.heavy_damage * 0.5), "loaded staff follows knife power attack at half damage")

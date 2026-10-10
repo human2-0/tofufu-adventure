@@ -30,7 +30,7 @@ func _ready() -> void:
 	_panel.mouse_filter = MOUSE_FILTER_IGNORE
 	_panel.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.1, 0.16, 0.22, 0.75)
+	style.bg_color = Color("183b37ef")
 	style.set_corner_radius_all(16)
 	style.set_content_margin_all(10)
 	style.border_color = Color("ffe082")

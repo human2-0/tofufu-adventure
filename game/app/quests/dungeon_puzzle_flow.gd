@@ -9,6 +9,7 @@ var anchors := DungeonPuzzleAnchors.new()
 
 func advance(dungeon: TofuDungeon) -> void:
 	DungeonCrateSupply.ensure(dungeon)
+	DungeonStashes.present(dungeon)
 	DungeonTrialLifecycle.step(dungeon)
 	dungeon.puzzle.poll(dungeon.puzzle_clock)
 	if dungeon.cooperative: DungeonSpectators.step(dungeon)
@@ -30,7 +31,7 @@ func submit(dungeon: TofuDungeon, command: TofuPuzzleCommand, actor: Player) -> 
 			return {"accepted": true, "pending": true}
 		return {"accepted": false}
 	var now: float = dungeon.puzzle_clock
-	var result: Dictionary = dungeon.puzzle_runtime.submit(command, actor, now)
+	var result: Dictionary = DungeonStashes.submit(dungeon, command, actor) if command != null and command.action == TofuPuzzleCommand.Action.OPEN_STASH else dungeon.puzzle_runtime.submit(command, actor, now)
 	if bool(result.get("accepted", false)):
 		if command.action == TofuPuzzleCommand.Action.INSPECT:
 			observed["%d:%s" % [DungeonMembership.actor_id(dungeon, actor), command.target_id]] = command.target_id
@@ -44,16 +45,7 @@ func submit(dungeon: TofuDungeon, command: TofuPuzzleCommand, actor: Player) -> 
 	return result
 
 func interact(dungeon: TofuDungeon, actor: Player) -> bool:
-	if not dungeon.actor_in_run(actor): return false
-	if dungeon.puzzle.phase != TofuPuzzleContract.Phase.READY and dungeon.puzzle.phase != TofuPuzzleContract.Phase.OPERATING: return false
-	var stage: int = int(dungeon.puzzle.stage)
-	match stage:
-		TofuPuzzleContract.Stage.SORT: return _sort_interact(dungeon, actor)
-		TofuPuzzleContract.Stage.LAB: return _lab_interact(dungeon, actor)
-		TofuPuzzleContract.Stage.PRESS: return _press_interact(dungeon, actor)
-		TofuPuzzleContract.Stage.CUT: return _cut_interact(dungeon, actor)
-		TofuPuzzleContract.Stage.PACK: return _pack_interact(dungeon, actor)
-	return false
+	return DungeonPuzzleInteraction.perform(dungeon, actor)
 
 func encounter_cleared(dungeon: TofuDungeon, encounter_id: String) -> void:
 	if not dungeon.puzzle_runtime.encounter_cleared(encounter_id): return
@@ -82,7 +74,9 @@ func _spawn(dungeon: TofuDungeon) -> void:
 		else: enemy.kind = FactoryBean.Kind.DOFU if spawned_encounter == "lab_curd" else FactoryBean.Kind.SCOUT if index % 2 == 0 else FactoryBean.Kind.BRUISER
 		enemy.health_scale = scale
 		enemy.damage_scale = scale
-		enemy.position = center + Vector3(-3 + index * 2, 0.1, -1)
+		var offset := Vector3(-3 + index * 2, 0.1, -1)
+		if not boss: offset = Vector3((index - (count - 1) * 0.5) * 4.0, 0.1, 1.5)
+		enemy.position = center + offset
 		enemy.quarry = dungeon._nearest_actor(enemy.position)
 		dungeon.game.world.add_child(enemy)
 		if not dungeon.rewards.reward_available(spawned_encounter, index):
@@ -102,93 +96,6 @@ func _clear_enemies(dungeon: TofuDungeon) -> void:
 		enemy.queue_free()
 	dungeon._enemies.clear()
 	dungeon._enemy_reward_ids.clear()
-
-func _sort_interact(dungeon: TofuDungeon, actor: Player) -> bool:
-	var actor_id: int = DungeonMembership.actor_id(dungeon, actor)
-	var carrying: String = ""
-	for sack: String in dungeon.puzzle.sorting.carried_by:
-		if dungeon.puzzle.sorting.carried_by[sack] == actor_id: carrying = sack
-	if not carrying.is_empty():
-		var intake: String = _nearest(actor, TofuPuzzleContract.INTAKE_IDS)
-		if intake.is_empty(): return false
-		if _inspect_first(dungeon, actor, intake): return true
-		return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.LOAD_INTAKE, intake, carrying), actor).get("accepted", false))
-	var sack_id: String = _nearest(actor, TofuPuzzleContract.SACK_IDS)
-	if sack_id.is_empty(): return false
-	if _inspect_first(dungeon, actor, sack_id): return true
-	return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.PICK_UP, sack_id), actor).get("accepted", false))
-
-func _lab_interact(dungeon: TofuDungeon, actor: Player) -> bool:
-	var special: Array[String] = ["shift_note", "lab_terminal", "coagulation_tank"]
-	var selected: String = _nearest(actor, special)
-	if selected == "shift_note":
-		if actor == dungeon.game.player and dungeon.puzzle_views != null:
-			return dungeon.puzzle_views.open_note(anchors.get_anchor(dungeon, selected))
-		return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.INSPECT, selected), actor).get("accepted", false))
-	if selected == "lab_terminal" and actor == dungeon.game.player and dungeon.puzzle_views != null:
-		return dungeon.puzzle_views.open_terminal(anchors.get_anchor(dungeon, selected))
-	if selected == "coagulation_tank" and dungeon.puzzle.lab.carrier_id == DungeonMembership.actor_id(dungeon, actor):
-		return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.POUR, selected, dungeon.puzzle.lab.carried_bottle), actor).get("accepted", false))
-	var containers: Array[String] = []
-	for index in 20: containers.append("container_%02d" % index)
-	var bottle: String = _nearest(actor, containers)
-	if bottle.is_empty(): return false
-	if _inspect_first(dungeon, actor, bottle): return true
-	return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.PICK_UP, bottle), actor).get("accepted", false))
-
-func _press_interact(dungeon: TofuDungeon, actor: Player) -> bool:
-	if actor != dungeon.game.player or dungeon.puzzle_views == null: return false
-	var selected: String = _nearest(actor, ["traditional_press", "modern_press"])
-	if selected.is_empty(): return false
-	return dungeon.puzzle_views.open_press(anchors.get_anchor(dungeon, selected), selected == "modern_press")
-
-func _cut_interact(dungeon: TofuDungeon, actor: Player) -> bool:
-	if _nearest(actor, ["cutter"]) != "cutter": return false
-	if actor == dungeon.game.player and dungeon.puzzle_views != null:
-		return dungeon.puzzle_views.open_cutter(anchors.get_anchor(dungeon, "cutter"))
-	return false
-
-func _pack_interact(dungeon: TofuDungeon, actor: Player) -> bool:
-	var slab_ids: Array[String] = []
-	var package_ids: Array[String] = []
-	for index in 6:
-		slab_ids.append("slab_%d" % index)
-		package_ids.append("package_%d" % index)
-	var slab: String = _nearest(actor, slab_ids)
-	if not slab.is_empty():
-		return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.PICK_UP, "", slab.trim_prefix("slab_")), actor).get("accepted", false))
-	var package: String = _nearest(actor, package_ids)
-	if package.is_empty(): return false
-	var slot: int = int(package.trim_prefix("package_"))
-	if dungeon.puzzle.pack.slot_slabs[slot] >= 0:
-		return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.SEAL_SLOT, str(slot)), actor).get("accepted", false))
-	for index in 6:
-		if dungeon.puzzle.pack.owners[index] == DungeonMembership.actor_id(dungeon, actor):
-			return bool(submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.PLACE_SLAB, str(slot), str(index)), actor).get("accepted", false))
-	return false
-
-func _nearest(actor: Player, ids: Array[String]) -> String:
-	var chosen: String = ""
-	var distance: float = 2.8
-	for identity: String in ids:
-		var at: Vector3 = TofuFactory.object_position(identity)
-		if not at.is_finite(): continue
-		var candidate: float = actor.global_position.distance_to(at)
-		if candidate < distance:
-			distance = candidate
-			chosen = identity
-	return chosen
-
-func _inspect_first(dungeon: TofuDungeon, actor: Player, identity: String) -> bool:
-	var key: String = "%d:%s" % [DungeonMembership.actor_id(dungeon, actor), identity]
-	if observed.has(key): return false
-	submit(dungeon, _command(dungeon, actor, TofuPuzzleCommand.Action.INSPECT, identity), actor)
-	observed[key] = identity
-	if actor == dungeon.game.player:
-		dungeon.journal.hint_text = DungeonRunActions.hint(dungeon)
-		dungeon.journal.open(TofuPuzzleClues.describe(identity, dungeon.puzzle), false)
-	else: dungeon.game.hud.announce(TofuPuzzleClues.describe(identity, dungeon.puzzle))
-	return true
 
 func _command(dungeon: TofuDungeon, actor: Player, action: TofuPuzzleCommand.Action, target: String, object_id: String = "") -> TofuPuzzleCommand:
 	return DungeonPuzzleIntent.build(self, dungeon, actor, action, target, object_id)

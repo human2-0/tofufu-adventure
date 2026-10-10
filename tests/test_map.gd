@@ -25,7 +25,7 @@ func _run() -> void:
 	app.store.directory = "user://test_map"
 	app.preferences.path = "user://test_map.cfg"
 	root.add_child(app)
-	app._start(0, {"name": "Map test", "opening_complete": true})
+	await app._start(0, {"name": "Map test", "opening_complete": true})
 	var game: Node3D = app.game
 	await process_frame
 	game.map._process(0)

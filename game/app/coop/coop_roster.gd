@@ -130,6 +130,7 @@ func _add(key: String) -> void:
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.position.y = 1.6
 	label.no_depth_test = true
+	label.ignore_occlusion_culling = true
 	label.render_priority = 127
 	actor.add_child(label)
 

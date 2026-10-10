@@ -2,15 +2,23 @@ class_name CastleMazeFloor
 extends Node3D
 ## One 81-chamber maze deck, with distinct stonework and chamber landmarks.
 
+var arrival_gate: CastleGate
+var trial: CastleTrialGeometry
 var layout: CastleMazeLayout
 var floor_index: int
 var walls: Array[MeshInstance3D] = []
 var slabs: Array[MeshInstance3D] = []
+var coping: Node3D
+var chests: Array[CastleTreasureChest] = []
 const COLORS: Array[Color] = [Color("6f5350"), Color("53516a"), Color("62664c")]
 
 func _ready() -> void:
 	name = "MazeFloor%d" % floor_index
 	layout = CastleMazeLayout.new(floor_index)
+	trial = CastleTrialGeometry.new()
+	trial.layout = layout
+	trial.deck = floor_index
+	add_child(trial)
 	var color := COLORS[floor_index]
 	slabs.append(CastleGeometry.solid(self, Vector3(0, -0.25, 0), Vector3(54, 0.5, 54), color.darkened(0.15)))
 	for row in CastleMazeLayout.SIZE:
@@ -23,9 +31,12 @@ func _ready() -> void:
 			if column == 8: _wall(center + Vector3(3, 3.8, 0), Vector3(0.6, 7.6, 6.6), color)
 			if row == 8 and column != 4: _wall(center + Vector3(0, 3.8, 3), Vector3(6.6, 7.6, 0.6), color)
 			_dress(cell, center, color)
+	coping = CastleMazeDetails.build(self, walls, floor_index)
+	chests = CastleTreasureLayout.build(self, layout)
 	CastleGeometry.title(self, Vector3(0, 3.0, 27.35), ["I · EMBER CLOISTER", "II · OBSIDIAN ARCHIVE", "III · CROWN LABYRINTH"][floor_index])
 
 func _wall(at: Vector3, size: Vector3, color: Color) -> void:
+	if trial.shortcut_at.is_finite() and Vector2(at.x, at.z).distance_to(Vector2(trial.shortcut_at.x, trial.shortcut_at.z)) < 0.1: return
 	var wall := CastleGeometry.solid(self, at, size, color)
 	wall.set_meta("full_y", at.y)
 	walls.append(wall)
@@ -33,10 +44,7 @@ func _wall(at: Vector3, size: Vector3, color: Color) -> void:
 func _dress(cell: Vector2i, center: Vector3, color: Color) -> void:
 	var index := CastleMazeLayout.index(cell)
 	if index % 7 == 0:
-		MeadowGeometry.box(self, center + Vector3(0, 0.012, 0), Vector3(4.7, 0.02, 4.7), color.lightened(0.2))
-	if index % 11 == 0:
-		var monument := MeadowGeometry.box(self, center + Vector3(1.8, 0.45, 1.8), Vector3(0.7, 0.9, 0.7), Color("bc9865"))
-		monument.rotation.y = PI * 0.25
+		CastleMaterials.box(self, center + Vector3(0, 0.012, 0), Vector3(4.7, 0.02, 4.7), color.lightened(0.2), true)
 	if index % 13 == 0:
 		var flame := MeadowGeometry.box(self, center + Vector3(-1.8, 1.7, -1.8), Vector3(0.18, 0.45, 0.18), Color("ffbb67"))
 		var material := MeadowGeometry.material(Color("ffb557"))
@@ -46,6 +54,10 @@ func _dress(cell: Vector2i, center: Vector3, color: Color) -> void:
 		flame.material_override = material
 
 func present(cutaway: bool) -> void:
+	coping.position.y = 1.064 if cutaway else 7.6
+	if arrival_gate != null: arrival_gate.present(cutaway)
+	trial.gate.present(cutaway)
+	if trial.shortcut != null: trial.shortcut.present(cutaway)
 	for wall in walls:
 		wall.scale.y = 0.14 if cutaway else 1.0
 		wall.position.y = 0.532 if cutaway else float(wall.get_meta("full_y"))

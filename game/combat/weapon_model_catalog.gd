@@ -6,20 +6,24 @@ const KNIFE: PackedScene = preload("res://assets/weapons/sword/source/Knife_simp
 const NORI: PackedScene = preload("res://assets/weapons/nori/source/Nori_katana_texture.glb")
 const SOYJET: PackedScene = preload("res://assets/weapons/sotjet/source/Soyjet_gun_texture.glb")
 const SOYPOD: PackedScene = preload("res://assets/weapons/edamame/source/Soypod_blade_texture.glb")
+const CELESTIAL: PackedScene = preload("res://game/combat/models/celestial_sword.tscn")
 
 const TIPS: Dictionary = {
+	"celestial_sword": Vector3(0, 1, 0),
 	"knife": Vector3(-0.94835, 0.0, 0.0),
 	"nori_katana": Vector3(0.0, 0.947337, 0.0),
 	"edamame_sword": Vector3(0.0, 0.943018, 0.0),
 	"sotjet": Vector3(-0.951424, 0.0, 0.0),
 }
 const GUARDS: Dictionary = {
+	"celestial_sword": Vector3.ZERO,
 	"knife": Vector3(0.16, 0.0, 0.0),
 	"nori_katana": Vector3(0.0, -0.4, 0.0),
 	"edamame_sword": Vector3(0.0, -0.44, 0.0),
 	"sotjet": Vector3(0.42, -0.31, 0.0),
 }
 const GRIPS: Dictionary = {
+	"celestial_sword": Vector3(0, -0.23, 0),
 	"knife": Vector3(0.55, 0.0, 0.0),
 	"nori_katana": Vector3(0.0, -0.67, 0.0),
 	"edamame_sword": Vector3(0.0, -0.72, 0.0),
@@ -28,6 +32,7 @@ const GRIPS: Dictionary = {
 
 static func scene_for(item_id: String) -> PackedScene:
 	match item_id:
+		"celestial_sword": return CELESTIAL
 		"knife": return KNIFE
 		"nori_katana": return NORI
 		"edamame_sword": return SOYPOD

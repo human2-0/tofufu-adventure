@@ -21,6 +21,8 @@ func _ready() -> void:
 	tuning = armored_tuning
 	super()
 	target.damage_filter = _filter_damage
+	target.launch_immune = true
+	target.knockback_multiplier = 0.35
 	target.restored.connect(_restore_shell)
 	_shell_collider = _add_hit_shape(0.62, 0.87, Vector3(0, 0.72, -0.1))
 	_add_hit_shape(0.68, 0.44, Vector3(0, 0.22, 0))
@@ -43,6 +45,13 @@ func _present_visual(_aim: Vector3, delta: float) -> void:
 	_armored_visual.present(velocity, facing, _windup, 0.0, delta)
 	_armored_visual.rotation.y = atan2(facing.x, facing.z)
 
+func _reaction_visual() -> Node3D:
+	return _armored_visual
+
+func _hit(amount: float, direction: Vector3) -> void:
+	_cancel_rush()
+	super(amount, direction)
+
 func _flash_visual() -> void:
 	_armored_visual.flash()
 
@@ -63,6 +72,7 @@ func _filter_damage(amount: float, direction: Vector3, _kind: Damageable.HitKind
 		target.hit_absorbed = true
 		var point := target.impact_point if target.impact_point.is_finite() else global_position + Vector3.UP * 0.8 - incoming * 0.45
 		set_shell_health(maxf(0.0, shell_health - amount), true, point)
+		reaction.flash(direction)
 		return 0.0
 	if shell_health > 0.0 and _defend_cooldown <= 0.0:
 		facing = incoming
@@ -148,6 +158,8 @@ func _add_hit_shape(radius: float, height: float, at: Vector3) -> CollisionShape
 func set_shell_health(value: float, feedback: bool = false, point: Vector3 = Vector3.INF) -> void:
 	var previous := shell_health
 	shell_health = clampf(value, 0.0, SHELL_MAX_HEALTH)
+	target.launch_immune = shell_health > 0.0
+	target.knockback_multiplier = 0.35 if shell_health > 0.0 else 1.0
 	_armored_visual.set_shell_health(shell_health)
 	_nameplate.text = _nameplate_text()
 	_shell_collider.set_deferred("disabled", shell_health <= 0.0)

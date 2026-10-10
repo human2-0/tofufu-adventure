@@ -11,6 +11,7 @@ var walk_multiplier: float = 1.0
 var surface_grip: float = 1.0
 var immersion: float = 0.0
 var endurance := RunEndurance.new()
+var impact := PlayerImpact.new()
 var dash_distance_multiplier: float = 1.0
 var jump_launch_multiplier: float = 1.0
 var is_dashing: bool = false
@@ -31,6 +32,9 @@ func _init(tuning: PlayerTuning) -> void:
 	_tuning = tuning
 
 func step(command: PlayerCommand, velocity: Vector3, grounded: bool, delta: float) -> Vector3:
+	if impact.remaining > 0.0:
+		cooldown_remaining = maxf(0.0, cooldown_remaining - delta)
+		return impact.step(velocity, grounded, _tuning.gravity, delta)
 	_coyote_remaining = _tuning.coyote_time if grounded else maxf(0.0, _coyote_remaining - delta)
 	_jump_buffer_remaining = maxf(0.0, _jump_buffer_remaining - delta)
 	cooldown_remaining = maxf(0.0, cooldown_remaining - delta)

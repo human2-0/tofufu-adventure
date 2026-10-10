@@ -13,6 +13,7 @@ func _run() -> void:
 		push_error("Dedicated client timed out")
 		quit(1))
 	app = load("res://game/app/bootstrap/oracle_launch.tscn").instantiate()
+	app.preferences.path = "user://dedicated-nickname-test-%d.cfg" % Time.get_ticks_usec()
 	root.add_child(app)
 	app.room.ended.connect(func(reason: String) -> void:
 		if not closing:
@@ -21,10 +22,13 @@ func _run() -> void:
 	app.lobby.show_lobby()
 	app.lobby.panel.discover.emit("Process tester")
 	while app.room.peers.is_empty(): await process_frame
+	print("CLIENT_READY")
 	var server_key: String = app.room.peers.keys()[0]
 	while not app.room.peers[server_key].hosting: await process_frame
 	app.lobby.panel.join.emit(server_key)
+	print("CLIENT_JOIN_WORLD")
 	while app._coop == null or not app._coop._synchronized: await physics_frame
+	print("CLIENT_WORLD_SYNCED")
 	while app._coop.roster.party.size() < 2: await physics_frame
 	assert(app.room.dedicated and not app._coop.authority)
 	assert(server_key not in app._coop.roster.party)
@@ -53,6 +57,7 @@ func _run() -> void:
 	app._return_title()
 	assert(app.room.local_key.is_empty() and app.game == null)
 	await app.connection.shutdown()
+	DirAccess.remove_absolute(app.preferences.path)
 	app.queue_free()
 	source.queue_free()
 	await process_frame

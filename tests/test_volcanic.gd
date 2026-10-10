@@ -35,6 +35,12 @@ func _run() -> void:
 	var castle := island.castle
 	var actor := game.player
 	actor.set_physics_process(false)
+	game.castle_adventure.set_physics_process(false)
+	for guard in game.castle_adventure.encounter.guards:
+		guard.set_physics_process(false)
+		guard.collision_layer = 0
+	for floor_node in castle.floors: floor_node.trial.gate.set_open(true)
+	for gate in game.castle_adventure.encounter.entry_gates: gate.set_open(true)
 	var space := actor.get_world_3d().direct_space_state
 	check(VolcanicTerrain.height_at(160, 330) < -7, "channel has no unintended connecting land strip")
 	check(game.world.is_water(Vector3(160, -5, 310)), "wide open ocean separates jungle and volcanic land")
@@ -107,19 +113,12 @@ func _run() -> void:
 		var at := castle.to_global(Vector3(0, deck * 8.0 + 0.05, side * 26.3))
 		check(actor.relocate(at), "stairway foot is clear")
 		await ticks(3)
-		input.move = Vector2(0, side)
-		await ticks(440)
-		input.move = Vector2.ZERO
-		await ticks(5)
-		check(actor.position.y > castle.position.y + deck * 8 + 7.4, "ordinary walking climbs stairway %d, position %s" % [deck, actor.position])
-		check(actor.is_on_floor(), "stairway ascent finishes on a supported landing")
-		# The upper return lane connects to the next maze door.
-		check(actor.relocate(castle.to_global(Vector3(7, (deck + 1) * 8.0 + 0.05, side * 54))), "upper return lane is clear")
-		input.move = Vector2(0, -side)
-		await ticks(420)
-		input.move = Vector2.ZERO
-		await ticks(5)
-		check(absf(actor.position.z - (castle.position.z + side * 27)) < 4, "switchback returns to deck %d door, position %s" % [deck + 1, actor.position])
+		for waypoint in [Vector3(0, deck * 8.0 + 4, side * 53), Vector3(8, deck * 8.0 + 4, side * 53), Vector3(8, deck * 8.0 + 8, side * 30), Vector3(0, deck * 8.0 + 8, side * 30), Vector3(0, deck * 8.0 + 8, side * 24)]:
+			await walk_to(actor, input, castle.to_global(waypoint))
+		check(actor.position.y > castle.position.y + deck * 8 + 7.4 and actor.is_on_floor(), "joined flights reach deck %d without relocation: %s" % [deck + 1, actor.position])
+		for waypoint in [Vector3(0, deck * 8.0 + 8, side * 30), Vector3(8, deck * 8.0 + 8, side * 30), Vector3(8, deck * 8.0 + 4, side * 53), Vector3(0, deck * 8.0 + 4, side * 53), Vector3(0, deck * 8.0, side * 26.3)]:
+			await walk_to(actor, input, castle.to_global(waypoint))
+		check(absf(actor.position.y - castle.position.y - deck * 8) < 0.4, "joined flights descend to their original floor")
 	actor.set_physics_process(false)
 	var bridge := castle.to_global(Vector3(0, 0.05, 38))
 	check(not VolcanicLava.molten(bridge), "stone entry bridge safely crosses the moat")
@@ -152,6 +151,9 @@ func _run() -> void:
 	actor.global_position = castle.king.global_position + Vector3(0, 0.05, -3)
 	visit._process(0)
 	check(castle.king.greeting.visible, "King greets visitors who reach the plaza")
+	for action in [0, 1, 6, 4, 7, 5, 8, 9, 9, 10, 10, 10, 11]: game.castle_adventure.state.operate(action)
+	for guard in game.castle_adventure.encounter.guards: guard.target.damage(1000)
+	game.castle_adventure.present_state()
 	var saved := AdventureSnapshot.capture(game, "Lava royal plaza", 0)
 	check(SaveStore.valid(saved), "expanded exploration and elevated plaza position save normally")
 	var east := VolcanicTerrain.point(VolcanicLandmarks.SITES[3], 0.1)
@@ -201,3 +203,16 @@ func _run() -> void:
 	await ticks(3)
 	print("Volcanic continent: ", "PASS" if failures == 0 else "FAIL", " / royal route chambers: ", total_route)
 	quit(1 if failures else 0)
+
+func walk_to(actor: Player, input: WalkInput, at: Vector3) -> void:
+	var reached := false
+	for tick in 480:
+		var direction := Vector2(at.x - actor.global_position.x, at.z - actor.global_position.z)
+		if direction.length() < 0.25:
+			reached = true
+			break
+		input.move = direction.normalized()
+		await physics_frame
+	input.move = Vector2.ZERO
+	await ticks(3)
+	check(reached, "walkable stair corner %s, reached %s" % [at, actor.global_position])

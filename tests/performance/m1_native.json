@@ -1,0 +1,110 @@
+[
+	{
+		"draws": 796.0,
+		"gpu_ms": null,
+		"median_ms": 6.81,
+		"nodes": 16565.0,
+		"p95_ms": 11.238,
+		"place": "village",
+		"render_cpu_ms": 0.749995832145214,
+		"triangles": 2045854.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 534.0,
+		"gpu_ms": null,
+		"median_ms": 9.264,
+		"nodes": 16565.0,
+		"p95_ms": 13.908,
+		"place": "grass",
+		"render_cpu_ms": 0.577283333490292,
+		"triangles": 1227949.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 196.0,
+		"gpu_ms": null,
+		"median_ms": 6.845,
+		"nodes": 16565.0,
+		"p95_ms": 11.772,
+		"place": "shore",
+		"render_cpu_ms": 0.440391666566332,
+		"triangles": 77437.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 743.0,
+		"gpu_ms": null,
+		"median_ms": 7.275,
+		"nodes": 16565.0,
+		"p95_ms": 11.951,
+		"place": "waterfall",
+		"render_cpu_ms": 0.6882125005126,
+		"triangles": 177140.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 103.0,
+		"gpu_ms": null,
+		"median_ms": 4.409,
+		"nodes": 16565.0,
+		"p95_ms": 9.769,
+		"place": "volcanic",
+		"render_cpu_ms": 0.285662499628961,
+		"triangles": 36276.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 293.0,
+		"gpu_ms": null,
+		"median_ms": 4.557,
+		"nodes": 16565.0,
+		"p95_ms": 9.272,
+		"place": "thermal_gardens",
+		"render_cpu_ms": 0.386562499900659,
+		"triangles": 93293.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 187.0,
+		"gpu_ms": null,
+		"median_ms": 4.125,
+		"nodes": 16565.0,
+		"p95_ms": 9.222,
+		"place": "obsidian_sanctuary",
+		"render_cpu_ms": 0.337125000109275,
+		"triangles": 47339.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 220.0,
+		"gpu_ms": null,
+		"median_ms": 4.35,
+		"nodes": 16565.0,
+		"p95_ms": 9.261,
+		"place": "castle",
+		"render_cpu_ms": 0.354887500032783,
+		"triangles": 36151.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	},
+	{
+		"draws": 1315.0,
+		"gpu_ms": null,
+		"median_ms": 6.464,
+		"nodes": 16565.0,
+		"p95_ms": 11.103,
+		"place": "clouds",
+		"render_cpu_ms": 1.19031249706944,
+		"triangles": 315521.0,
+		"variant": "normal",
+		"video_mb": 833.078125
+	}
+]

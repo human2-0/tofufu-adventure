@@ -49,13 +49,13 @@ class Scene:
         lines += [f"{key} = {value}" for key, value in (props or {}).items()]
         self.nodes.append("\n".join(lines))
 
-    def mat(self, color: str, metallic: float = 0.0, roughness: float = 0.8) -> str:
-        key = (color, metallic, roughness)
+    def mat(self, color: str, metallic: float = 0.0, roughness: float = 0.8, surface: str | None = None) -> str:
+        surface = surface or ("iron" if color in ("iron", "iron_light", "brass", "steel", "ink") else "wood" if color in ("wood", "wood_dark") else "linen" if color == "linen" else "cream")
+        key = (color, metallic, roughness, surface)
         if key not in self.materials:
             c = PALETTE.get(color, color)
             channels = [int(c[i:i+2], 16) / 255.0 for i in (0, 2, 4)]
             encoded = "Color(%s, %s, %s, 1.0)" % tuple(f"{channel:.6f}" for channel in channels)
-            surface = "iron" if color in ("iron", "iron_light", "brass", "steel", "ink") else "wood" if color in ("wood", "wood_dark") else "linen" if color == "linen" else "cream"
             if surface not in self.textures:
                 texture_id = f"e{len(self.ext_resources)+1}"
                 self.ext_resources.append(f'[ext_resource type="Texture2D" path="res://assets/factory/surfaces/{surface}.svg" id="{texture_id}"]')
@@ -67,7 +67,9 @@ class Scene:
                 "albedo_color": encoded,
                 "next_pass": f'ExtResource("{self.outline}")',
                 "albedo_texture": f'ExtResource("{self.textures[surface]}")',
-                "texture_filter": "3", "uv1_triplanar": "true",
+                "texture_filter": "5", "uv1_triplanar": "true",
+                "uv1_scale": "Vector3(1, 1, 1)",
+                "metadata/factory_surface": quote(surface),
                 "metallic": str(metallic), "roughness": str(roughness),
                 "diffuse_mode": "1", "specular_mode": "2",
             })
@@ -87,8 +89,9 @@ class Scene:
                 "bottom_radius": str(size[1]), "height": str(size[2]), "radial_segments": "12"})
         else:
             raise ValueError(kind)
+        surface = "linen" if name == "FilledCanvas" else "grip" if name == "Belt" else None
         props = {"position": v(pos), "mesh": f'SubResource("{mesh}")',
-                 "material_override": f'SubResource("{self.mat(color)}")'}
+                 "material_override": f'SubResource("{self.mat(color, surface=surface)}")'}
         if rot:
             props["rotation"] = v(rot)
         self.node(f'node name="{name}" type="MeshInstance3D" parent="{parent}"', props)
@@ -115,6 +118,7 @@ class Scene:
     def label(self, name: str, text: str, pos, pixel=0.004, billboard=False):
         # Signs are backed by their own plates. Labels are for inspection views.
         self.node(f'node name="{name}" type="Label3D" parent="."', {
+            "double_sided": "false",
             "position": v(pos), "text": quote(text), "font_size": "32",
             "pixel_size": str(pixel), "billboard": "1" if billboard else "0", "no_depth_test": "false",
             "modulate": "Color(0.152941, 0.231373, 0.231373, 1.0)",
@@ -198,7 +202,7 @@ def intake(name, title, kind):
         s.part("CandleMould", "cylinder", (1.2, 0.35, 0.18), (0.13, 0.13, 0.55), "milk")
     s.label("LinePlate", title, (0, 0.86, 0.785), 0.0025)
     caption = {"chilled": "CHILLED INTAKE", "mill": "TOFU MILL", "oil": "OIL MILL"}[kind]
-    s.label("LineCaption", caption, (0, 2.05, 0), 0.004, True)
+    s.label("LineCaption", caption, (0, 2.05, 0), 0.004)
     ports(s, (0, 1.55, 0.3), (0, 0.65, -0.8), (0, 0.8, 1.4), kind == "mill")
     s.save(name.lower() + ".tscn")
 

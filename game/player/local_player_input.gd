@@ -6,6 +6,8 @@ var first_person_view: bool = false
 var shoulder_view: bool = false
 var camera_aim_offset := Vector2.ZERO # Normalized screen offset supplied by app presentation.
 var enabled: bool = true
+var castle_action: int = -1
+var castle_revision: int = 0
 var pickup_target: int = 0
 var focus_point: Vector3 = Vector3.INF
 var chat_blocked: bool = false
@@ -33,6 +35,8 @@ func sample(world_position: Vector3) -> PlayerCommand:
 	command.move = Input.get_vector("move_left", "move_right", "move_up", "move_down")
 	command.run_held = Input.is_action_pressed("run")
 	var stick := Input.get_vector("aim_left", "aim_right", "aim_up", "aim_down")
+	command.move = _screen_direction(command.move)
+	stick = _screen_direction(stick)
 	var vp := get_viewport()
 	var ui_active: bool = vp != null and vp.gui_get_hovered_control() != null
 	if _pointer_aim and not shoulder_view and not ui_active:
@@ -49,10 +53,6 @@ func sample(world_position: Vector3) -> PlayerCommand:
 		resting_point = _shooting_point(world_position, Vector2.ZERO, true)
 	_shot_direction = (resting_point - world_position - Vector3.UP * 0.65).normalized()
 	if shoulder_view:
-		var camera := get_viewport().get_camera_3d()
-		var right := Vector2(camera.global_basis.x.x, camera.global_basis.x.z).normalized()
-		var back := Vector2(camera.global_basis.z.x, camera.global_basis.z.z).normalized()
-		command.move = right * command.move.x + back * command.move.y
 		if _camera_aim_active():
 			var direction := command.aim_point - world_position
 			_aim = Vector2(direction.x, direction.z).normalized()
@@ -68,6 +68,8 @@ func sample(world_position: Vector3) -> PlayerCommand:
 	command.drop_pressed = Input.is_action_just_pressed("drop_weapon")
 	command.pickup_pressed = Input.is_action_just_pressed("pickup_weapon")
 	command.pickup_id = pickup_target
+	command.castle_action = castle_action
+	command.castle_revision = castle_revision
 	command.weapon_slot = 1 if Input.is_action_just_pressed("combat_slot_1") else (2 if Input.is_action_just_pressed("combat_slot_2") else 0)
 	command.use_healing_1 = Input.is_action_just_pressed("use_support_1")
 	command.use_healing_2 = Input.is_action_just_pressed("use_support_2")
@@ -120,3 +122,10 @@ func focus_direction() -> Vector2:
 
 func pointer_focus() -> bool:
 	return _pointer_aim or shoulder_view
+
+func _screen_direction(direction: Vector2) -> Vector2:
+	var camera := get_viewport().get_camera_3d()
+	if camera == null: return direction
+	var right := Vector2(camera.global_basis.x.x, camera.global_basis.x.z).normalized()
+	var back := Vector2(camera.global_basis.z.x, camera.global_basis.z.z).normalized()
+	return right * direction.x + back * direction.y

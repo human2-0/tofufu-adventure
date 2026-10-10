@@ -17,6 +17,7 @@ func _run() -> void:
 	game.cycle.sky_effects.tropical_blend = 1.0
 	game.cycle._process(0)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.camera.fov = 65
 	var falls := game.world.jungle.waterfall
 	game.player.relocate(falls.to_global(Vector3(0, 0.1, -12)))

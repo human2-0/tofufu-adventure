@@ -64,7 +64,7 @@ func _draw() -> void:
 	var radius := minf(s.x, s.y) * 0.5 - 2.0
 	var is_ready := _cooldown_remaining <= 0.001
 	var progress := 1.0 if _cooldown_total <= 0.0 else clampf(1.0 - _cooldown_remaining / _cooldown_total, 0.0, 1.0)
-	var bg_col := Color(0.08, 0.14, 0.18, 0.52)
+	var bg_col := Color("183b37ef")
 	draw_circle(center, radius, bg_col)
 	_draw_dash_icon(center, is_ready)
 	if not is_ready:
@@ -76,14 +76,14 @@ func _draw() -> void:
 		var sweep := progress * TAU
 		if sweep > 0.01:
 			draw_arc(center, radius - 2.0, start_angle, start_angle + sweep, 36, fill_col, 2.5, true)
-	var rim_col := Color("b8f2e2") if is_ready else Color(0.45, 0.65, 0.6, 0.4)
+	var rim_col := Color("fff9e9") if is_ready else Color(0.45, 0.65, 0.6, 0.4)
 	if _ready_flash > 0.0:
 		rim_col = rim_col.lerp(Color("ffffff"), _ready_flash)
 	draw_arc(center, radius, 0.0, TAU, 40, rim_col, 1.5, true)
 	_draw_hotkey_badge(center, s)
 
 func _draw_dash_icon(center: Vector2, is_ready: bool) -> void:
-	var col := Color("baf0e0") if is_ready else Color(0.38, 0.5, 0.52, 0.45)
+	var col := Color("c9efbb") if is_ready else Color(0.38, 0.5, 0.52, 0.45)
 	if _ready_flash > 0.0:
 		col = col.lerp(Color("ffffff"), _ready_flash * 0.8)
 	var points1 := PackedVector2Array([
@@ -101,7 +101,7 @@ func _draw_dash_icon(center: Vector2, is_ready: bool) -> void:
 
 func _draw_hotkey_badge(center: Vector2, s: Vector2) -> void:
 	var badge_rect := Rect2(center.x - 14, s.y - 12, 28, 11)
-	draw_rect(badge_rect, Color(0.06, 0.12, 0.15, 0.7), true)
+	draw_rect(badge_rect, Color("183b37ef"), true)
 	draw_rect(badge_rect, Color(0.6, 0.8, 0.75, 0.35), false, 1.0)
 	var font := ThemeDB.fallback_font
 	if font != null:

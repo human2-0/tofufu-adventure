@@ -28,7 +28,7 @@ func _run() -> void:
 	app.preferences.path = "user://test_inventory_input.cfg"
 	root.add_child(app)
 	app.preferences.skip_item_drop_warning = false
-	app._start(0, {"name": "Inventory test", "opening_complete": true})
+	await app._start(0, {"name": "Inventory test", "opening_complete": true})
 	var game: Node3D = app.game
 	await process_frame
 	# Co-op disables this solo handler; modal controls must survive.

@@ -20,7 +20,7 @@ func _draw() -> void:
 		_draw_reload(center)
 		return
 	var radius := ((4.0 if precise else 18.0) + recoil * 18.0) * spread_multiplier
-	var color := Color("fff5b7") if precise else Color(1, 1, 1, 0.8)
+	var color := Color("f4c75d") if precise else Color(1, 1, 1, 0.8)
 	draw_arc(center, radius, 0, TAU, 40, Color(0.08, 0.12, 0.08, 0.8), 4, true)
 	draw_arc(center, radius, 0, TAU, 40, color, 1.5, true)
 	draw_circle(center, 1.5, color)
@@ -28,7 +28,7 @@ func _draw() -> void:
 		draw_line(center + direction * (radius + 3), center + direction * (radius + 8), color, 2, true)
 
 func _draw_reload(center: Vector2) -> void:
-	var color := Color("ffd078")
+	var color := Color("f4c75d")
 	draw_circle(center, 1.5, color)
 	draw_arc(center, 24.0, 0, TAU, 64, Color(0.08, 0.12, 0.08, 0.85), 6, true)
 	if reload_progress > 0.001:

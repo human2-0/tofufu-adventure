@@ -16,9 +16,10 @@ func show_settings() -> void:
 	var content := menu.clear_page("Make yourself at home", "A comfortable view. Controls that feel like you.")
 	panel = SettingsPanel.new()
 	content.add_child(panel)
-	panel.build(GamePreferences.RESOLUTIONS, preferences.resolution, preferences.fullscreen, preferences.deadzone, GamePreferences.ACTIONS, preferences.frame_limit, preferences.render_scale, preferences.vsync)
+	panel.build(GamePreferences.RESOLUTIONS, preferences.resolution, preferences.fullscreen, preferences.deadzone, GamePreferences.ACTIONS, preferences.frame_limit, preferences.render_scale, preferences.vsync, preferences.adaptive_resolution)
 	panel.display_requested.connect(_preview_display)
-	panel.rendering_requested.connect(func(limit: int, scale: float, sync: bool) -> void:
+	panel.rendering_requested.connect(func(limit: int, scale: float, sync: bool, adaptive: bool) -> void:
+		preferences.adaptive_resolution = adaptive
 		preferences.apply_rendering(get_viewport(), limit, scale, sync)
 		panel.message.text = "Rendering saved." if preferences.save() == OK else "Rendering applied, but could not save preferences.")
 	panel.deadzone_changed.connect(func(value: float) -> void:

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="128" viewBox="0 0 1024 128">
+<rect width="1024" height="128" fill="#f3ecda"/>
+<path d="M0 8H1024 M0 120H1024" stroke="#be9854" stroke-width="6"/>
+<path d="M0 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+<path d="M128 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+<path d="M256 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+<path d="M384 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+<path d="M512 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+<path d="M640 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+<path d="M768 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+<path d="M896 98h110V30h-82v44h54V52h-26" fill="none" stroke="#bb975a" stroke-width="10" stroke-linejoin="miter"/>
+</svg>

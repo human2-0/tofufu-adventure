@@ -5,7 +5,7 @@ extends RefCounted
 static func capture(combat: PlayerCombat) -> Dictionary:
 	var equipment := combat.equipment
 	var drop := equipment.dropped.global_position if is_instance_valid(equipment.dropped) else Vector3.ZERO
-	return {"nori": equipment.nori_selected, "plunging": combat.plunge.active, "plunge_recovery": combat.plunge.recovery, "plunge_sequence": combat.plunge.sequence, "plunge_at": _array(combat.plunge.impact_at), "plunge_cooldown": combat.plunge.cooldown, "vitals": combat.vitals.capture(), "pod": equipment.pod_selected, "podburst": combat.podburst.sequence, "pod_cooldown": combat.podburst.cooldown, "world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
+	return {"celestial": equipment.celestial_weapon, "nori": equipment.nori_selected, "plunging": combat.plunge.active, "plunge_recovery": combat.plunge.recovery, "plunge_sequence": combat.plunge.sequence, "plunge_at": _array(combat.plunge.impact_at), "plunge_cooldown": combat.plunge.cooldown, "vitals": combat.vitals.capture(), "pod": equipment.pod_selected, "podburst": combat.podburst.sequence, "pod_cooldown": combat.podburst.cooldown, "world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
 		"jet_firing": combat.sotjet.firing, "jet_sequence": combat.sotjet.sequence,
 		"jet_origin": _array(combat.sotjet.origin), "jet_velocity": _array(combat.sotjet.velocity), "recoil": combat.gun.recoil.heat, "gun": combat.gun.selected, "ads": combat.gun.aiming, "shot": combat.gun.shot_sequence,
 		"shot_origin": _array(combat.gun.shot_origin), "shot_velocity": _array(combat.gun.shot_velocity), "owned": equipment.knife_owned, "selected": equipment.knife_selected, "guard": equipment.guarding,
@@ -13,13 +13,14 @@ static func capture(combat: PlayerCombat) -> Dictionary:
 		"facing": [equipment.facing.x, equipment.facing.y], "gun_magazine": combat.gun.magazine, "gun_reload": combat.gun.reload_remaining,
 		"gun_charge": combat.gun.charge_elapsed, "ricochet": combat.gun.ricochet_sequence,
 		"ricochet_origin": _array(combat.gun.ricochet_origin), "ricochet_velocity": _array(combat.gun.ricochet_velocity), "charge": combat.rules.charge,
-		"strength": combat._strength, "style": combat.attack_style, "elapsed": combat._elapsed, "punch": equipment._punch_time,
-		"combo": combat.combo.count, "combo_window": combat.combo.window_remaining, "clash": combat.clash.sequence,
+		"strength": combat._strength, "style": combat.attack_style, "elapsed": combat._elapsed, "hit_pause": combat.hit_pause, "punch": equipment._punch_time,
+		"combo": combat.combo.count, "chain": combat.combo.chain, "combo_window": combat.combo.window_remaining, "clash": combat.clash.sequence,
 		"cooldown": combat.rules.cooldown, "drop": [drop.x, drop.y, drop.z]}
 
 static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.reset()
 	combat.vitals.restore(state.get("vitals", {}))
+	CelestialCombat.apply(combat, int(state.get("celestial", 0)))
 	combat.podburst.cooldown = state.get("pod_cooldown", 0.0)
 	combat.equipment.pod_selected = state.get("pod", false)
 	combat.sword.set_pod(combat.equipment.pod_selected)
@@ -45,11 +46,12 @@ static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.equipment._punch_time = state.punch
 	combat.rules.cooldown = state.cooldown
 	combat.attack_style = int(state.get("style", KnifeAttack.Style.HEAVY if state.get("strength", 0.0) >= 1.0 else KnifeAttack.Style.SLASH))
-	combat.combo.restore(int(state.get("combo", 0)), float(state.get("combo_window", 0.0)))
+	combat.combo.restore(int(state.get("combo", 0)), float(state.get("combo_window", 0.0)), int(state.get("chain", -1)))
 	combat.clash.sequence = int(state.get("clash", 0))
 
 static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector2) -> void:
 	combat.vitals.restore(state.get("vitals", {}))
+	CelestialCombat.apply(combat, int(state.get("celestial", 0)))
 	combat.podburst.cooldown = state.get("pod_cooldown", 0.0)
 	combat.equipment.pod_selected = state.get("pod", false)
 	combat.sword.set_pod(combat.equipment.pod_selected)
@@ -80,6 +82,9 @@ static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector
 	combat.rules.cooldown = state.cooldown
 	combat.plunge.recovery = state.get("plunge_recovery", 0.0)
 	combat.active = state.active
+	combat._elapsed = float(state.elapsed)
+	combat._strength = float(state.strength)
+	combat.hit_pause = float(state.get("hit_pause", 0.0))
 	combat.attack_aim = Vector2(state.aim[0], state.aim[1])
 	combat.attack_style = int(state.get("style", KnifeAttack.Style.HEAVY if state.get("strength", 0.0) >= 1.0 else KnifeAttack.Style.SLASH))
 	var equipment := combat.equipment

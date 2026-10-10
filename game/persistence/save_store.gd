@@ -65,6 +65,7 @@ func _path(slot: int) -> String:
 	return directory.path_join("adventure_%02d.json" % slot)
 
 static func valid(data: Dictionary) -> bool:
+	if data.has("castle") and not CastleSaveValidation.valid(data.castle): return false
 	if data.has("parrot_rest"):
 		if not data.parrot_rest is Array or data.parrot_rest.size() not in [0, 3]: return false
 		for value: Variant in data.parrot_rest:
@@ -83,6 +84,7 @@ static func valid(data: Dictionary) -> bool:
 		if dungeon.has("reward_ledger") and not FactorySaveValidation.ledger(dungeon.reward_ledger): return false
 		if dungeon.has("puzzle_mode") and not dungeon.puzzle_mode is bool: return false
 		if dungeon.has("puzzle") and not FactorySaveValidation.puzzle(dungeon.puzzle): return false
+		if dungeon.has("stashes") and not FactorySaveValidation.stashes(dungeon.stashes): return false
 	if data.has("active_slot") and (not _progress_counter(data.active_slot) or data.active_slot < 1 or data.active_slot > 2): return false
 	if data.has("produce") and not BarnSaveValidation.produce(data.produce): return false
 	if data.has("barn") and not BarnSaveValidation.valid(data.barn, WORLD_ITEM_LIMITS): return false

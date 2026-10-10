@@ -14,10 +14,10 @@ var _name: String = ""
 var _active: bool = false
 
 func backend_name() -> String:
-	return "Dedicated meadow"
+	return "Dedicated world"
 
 func discovery_description() -> String:
-	return "Connect to the dedicated meadow, then choose Join meadow. The server keeps the adventure and saves everyone’s progress."
+	return "Connect to the dedicated world, then choose Join world. The server keeps the adventure and saves everyone’s progress."
 
 func start(display_name: String) -> void:
 	close()
@@ -53,7 +53,7 @@ func start(display_name: String) -> void:
 			return
 		var link := OracleSocketLink.new()
 		if link.socket.connect_to_url(endpoint) != OK:
-			_fail("Could not connect to the dedicated meadow.")
+			_fail("Could not connect to the dedicated world.")
 			return
 		_links.append(link)
 		_active = true
@@ -118,7 +118,7 @@ func _authenticate(link: OracleSocketLink, data: Dictionary) -> void:
 		_key = str(data.identity)
 		link.key = str(data.server)
 		event_received.emit({"type": "ready", "key": _key, "name": _name})
-		event_received.emit({"type": "peer", "key": link.key, "name": str(data.get("name", "Oracle meadow")).left(24)})
+		event_received.emit({"type": "peer", "key": link.key, "name": str(data.get("name", "Oracle world")).left(24)})
 
 func send_packet(key: String, data: Dictionary) -> void:
 	for link: OracleSocketLink in _links:
@@ -130,7 +130,7 @@ func _drop(link: OracleSocketLink) -> void:
 	_links.erase(link)
 	link.close()
 	if not server_mode:
-		_fail("Server connection closed. Reconnect to the meadow; an update may be in progress.")
+		_fail("Server connection closed. Reconnect to the world; an update may be in progress.")
 	elif not link.key.is_empty(): event_received.emit({"type": "left", "key": link.key})
 
 func _fail(message: String) -> void:

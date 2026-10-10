@@ -1,21 +1,21 @@
 class_name MenuStyle
 extends RefCounted
 
-const INK := Color("193a37")
-const MUTED := Color("55716b")
+const INK := Color("183b37")
+const MUTED := Color("c1d7cc")
 const CREAM := Color("fff9e9")
 const MINT := Color("c9efbb")
 const SOY_GOLD := Color("f4c75d")
 const LEAF := Color("73b88d")
 const BERRY := Color("f08083")
-const NIGHT := Color("173632")
+const NIGHT := Color("183b37")
 
 static func panel(color: Color, radius: int = 18) -> StyleBoxFlat:
 	var style := StyleBoxFlat.new()
 	style.bg_color = color
 	style.set_corner_radius_all(radius)
 	style.set_content_margin_all(20)
-	style.border_color = Color("80ae91")
+	style.border_color = CREAM
 	style.set_border_width_all(2)
 	style.shadow_color = Color(0.08, 0.18, 0.16, 0.18)
 	style.shadow_size = 8
@@ -32,6 +32,8 @@ static func button_box(state: String) -> StyleBoxFlat:
 	style.shadow_size = 3
 	style.shadow_offset = Vector2(0, 3)
 	match state:
+		"primary":
+			style.bg_color = SOY_GOLD
 		"hover":
 			style.bg_color = Color("e7f5c8")
 			style.border_color = LEAF
@@ -57,27 +59,9 @@ static func button_box(state: String) -> StyleBoxFlat:
 	return style
 
 static func make_theme() -> Theme:
-	var result := Theme.new()
-	result.default_font_size = 18
-	for type in ["Label", "Button", "CheckButton", "OptionButton", "LineEdit", "TabContainer"]:
-		result.set_color("font_color", type, INK)
-	result.set_color("font_hover_color", "Button", INK)
-	result.set_color("font_pressed_color", "Button", INK)
-	result.set_color("font_focus_color", "Button", INK)
-	result.set_color("font_disabled_color", "Button", Color("8c9c8e"))
-	for type in ["Button", "OptionButton", "LineEdit"]:
-		for state in ["normal", "hover", "pressed", "disabled", "focus"]:
-			result.set_stylebox(state, type, button_box(state))
-	for type in ["CheckButton", "HSlider"]:
-		result.set_color("font_hover_color", type, LEAF)
-		result.set_color("font_focus_color", type, SOY_GOLD)
-	result.set_stylebox("panel", "PanelContainer", panel(CREAM))
-	result.set_stylebox("panel", "TabContainer", panel(CREAM, 12))
-	result.set_constant("separation", "VBoxContainer", 12)
-	result.set_constant("separation", "HBoxContainer", 12)
-	return result
+	return preload("res://assets/ui/frontend/tofufu_theme.tres")
 
-static func label(parent: Node, text: String, size: int = 18, color: Color = INK) -> Label:
+static func label(parent: Node, text: String, size: int = 18, color: Color = CREAM) -> Label:
 	var item := Label.new()
 	item.text = text
 	item.add_theme_font_size_override("font_size", size)
@@ -90,14 +74,33 @@ static func paragraph(parent: Node, text: String) -> Label:
 	item.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	return item
 
-static func button(parent: Node, text: String, callback: Callable) -> Button:
+static func button(parent: Node, text: String, callback: Callable, icon: Texture2D = null) -> Button:
 	var item := MangaButton.new()
 	item.text = text
+	item.icon = icon
+	item.add_theme_color_override("icon_normal_color", INK)
+	item.add_theme_color_override("icon_hover_color", INK)
+	item.add_theme_color_override("icon_focus_color", INK)
+	item.add_theme_color_override("icon_pressed_color", INK)
+	item.add_theme_constant_override("icon_max_width", 22)
+	item.add_theme_constant_override("h_separation", 10)
 	item.custom_minimum_size.y = 48
 	item.mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
 	item.pressed.connect(callback)
 	parent.add_child(item)
 	return item
+
+static func section(parent: Node, text: String, icon: Texture2D) -> void:
+	var row := HBoxContainer.new()
+	parent.add_child(row)
+	var symbol := TextureRect.new()
+	symbol.texture = icon
+	symbol.custom_minimum_size = Vector2(24, 24)
+	symbol.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	symbol.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	symbol.self_modulate = CREAM
+	row.add_child(symbol)
+	label(row, text, 20)
 
 static func focus_later(item: Control) -> void:
 	var reference: WeakRef = weakref(item)
@@ -105,3 +108,12 @@ static func focus_later(item: Control) -> void:
 		var target: Control = reference.get_ref()
 		if target != null and target.is_inside_tree(): target.grab_focus()
 	focus.call_deferred()
+
+static func fit_button(item: Button, compact: bool) -> void:
+	item.custom_minimum_size.y = 36 if compact else 48
+	item.add_theme_font_size_override("font_size", 14 if compact else 16)
+	item.add_theme_constant_override("icon_max_width", 18 if compact else 22)
+	for state in ["normal", "hover", "pressed", "focus", "disabled"]:
+		var box := item.get_theme_stylebox(state).duplicate() as StyleBoxFlat
+		box.set_content_margin_all(6 if compact else 12)
+		item.add_theme_stylebox_override(state, box)

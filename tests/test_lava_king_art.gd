@@ -54,6 +54,14 @@ func _run() -> void:
 	king.sprite.update_view(camera)
 	check(king.sprite.current_cell == 0, "authored king rotation turns the rear toward the camera")
 	check(not king.greeting.visible, "directional art retains greeting visibility state")
+	for pose in ["walk", "channel", "release", "hit", "defeat"]:
+		king.sprite.set_pose(pose)
+		for direction in 8:
+			king.sprite.present_direction(direction)
+			var atlas := king.sprite.texture as AtlasTexture
+			check(atlas.atlas == KingCombatFrames.SHEETS[LavaKingArt.CELLS[direction]], "combat pose retains every camera-relative directional view")
+			check(atlas.region.size.x > 0 and atlas.region.size.y > 0 and atlas.region.end.x <= atlas.atlas.get_width() and atlas.region.end.y <= atlas.atlas.get_height(), "full combat silhouette crop stays within its sheet")
+			check(absf((king.sprite.offset.y - atlas.region.size.y * 0.5) * king.sprite.pixel_size - 0.05) < 0.001, "combat pose feet retain the plaza baseline")
 	king.queue_free()
 	camera.queue_free()
 	await process_frame

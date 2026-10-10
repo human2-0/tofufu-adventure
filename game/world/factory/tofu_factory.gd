@@ -125,6 +125,7 @@ func ensure_interior() -> void:
 	for i in [0,5]: MeadowGeometry.box(self, CENTERS[i] + Vector3(-11,2,0), Vector3(0.4,4,20), Color("58766e"), true)
 	_label(HALL_START + Vector3.UP*2, "EXIT · GIGALOPOLIS", 25)
 	_label(HALL_EXIT + Vector3.UP*2, "DISPATCH EXIT · COMPLETE TO UNLOCK", 25)
+	FactorySurfaceMaterials.apply_building(self)
 
 func open_gate(index: int) -> void:
 	if index < 0 or index >= gates.size(): return

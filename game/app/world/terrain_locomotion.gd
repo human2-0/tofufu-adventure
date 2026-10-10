@@ -17,6 +17,8 @@ static func apply(actor: Player, world: Meadow) -> void:
 		actor.motor.surface_grip = 0.24
 
 static func immersion(at: Vector3, world: Meadow) -> float:
+	if world.jungle != null and JungleCoast.is_water(at, world.jungle.desert):
+		return clampf((JungleCoast.WATER_LEVEL - at.y - 0.25) / 1.1, 0.0, 1.0)
 	if world.volcanic != null and world.volcanic.is_water(at):
 		return clampf((VolcanicTerrain.WATER_LEVEL - at.y - 0.25) / 1.1, 0.0, 1.0)
 	if world.ocean == null or not world.ocean.is_water(at): return 0.0

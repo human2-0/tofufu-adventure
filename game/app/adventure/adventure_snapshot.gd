@@ -29,6 +29,7 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 		"seed_storage": game.seed_storage.barn.banks[0].capture() if game.seed_storage != null else [],
 		"seed_satchel_claimed": game.seed_storage.free_satchel_claimed if game.seed_storage != null else false,
 		"quest": game.quest_giver.quest.capture() if game.quest_giver != null else {},
+		"castle": game.castle_adventure.capture(),
 		"tofu_dungeon": game.factory_dungeon.capture() if game.factory_dungeon != null else {},
 		"equipment": game.character_equipment.capture() if game.character_equipment != null else {}}
 
@@ -80,3 +81,4 @@ static func restore(game: Node3D, data: Dictionary) -> void:
 	if data.has("inventory") and game.inventory != null: game.inventory.restore(data.get("inventory", []))
 	game.inventory.restore_pending(data.get("pending_items", []))
 	game.loadout.stow_ineligible_apparel()
+	if data.has("castle"): game.castle_adventure.restore(data.castle)

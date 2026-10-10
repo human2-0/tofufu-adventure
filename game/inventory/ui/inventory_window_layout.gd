@@ -10,18 +10,18 @@ static func build_ui(window: InventoryWindow) -> void:
 	var eq_box := make_dock(window, root, false, 240)
 	label(window, eq_box, "EQUIPMENT", Color("aee6d0"))
 	build_equipment(window, eq_box)
-	label(window, eq_box, "1–2 Combat · 3–6 Support", Color("829b96"))
+	label(window, eq_box, "1–2 Combat · 3–6 Support", Color("c1d7cc"))
 	var vbox := make_dock(window, root, true, 350)
 	var header := HBoxContainer.new()
 	vbox.add_child(header)
 	var title := Label.new()
 	title.text = "BACKPACK"
 	title.add_theme_font_size_override("font_size", 14)
-	title.add_theme_color_override("font_color", Color("f5dfac"))
+	title.add_theme_color_override("font_color", Color("f4c75d"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	window._currency = Label.new()
-	window._currency.add_theme_color_override("font_color", Color("eacb83"))
+	window._currency.add_theme_color_override("font_color", Color("f4c75d"))
 	window._currency.add_theme_font_size_override("font_size", 12)
 	window._currency.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	vbox.add_child(window._currency)
@@ -68,10 +68,10 @@ static func make_dock(window: InventoryWindow, root: Control, right: bool, width
 	panel.offset_top = -210
 	panel.offset_bottom = 210
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("173632ef")
+	style.bg_color = Color("183b37f2")
 	style.set_corner_radius_all(14)
 	style.set_content_margin_all(14)
-	style.border_color = Color("9bd58c")
+	style.border_color = Color("fff9e9")
 	style.set_border_width_all(2)
 	panel.add_theme_stylebox_override("panel", style)
 	var box := VBoxContainer.new()
@@ -124,11 +124,12 @@ static func build_backpack(window: InventoryWindow, inv_box: VBoxContainer) -> v
 		InventoryWindowDescriptions.watch(window, btn)
 		inv_grid.add_child(btn)
 		window._inv_buttons.append(btn)
-	label(window, inv_box, "Shift-click near the Seed Bank to store. Drag outside to drop.\nI / B / Esc · Close backpack", Color("829b96"))
+	label(window, inv_box, "Shift-click near the Seed Bank to store. Drag outside to drop.\nI / B / Esc · Close backpack", Color("c1d7cc"))
 
 static func label(window: InventoryWindow, parent: Control, text: String, col: Color) -> void:
 	var l := Label.new()
 	l.text = text
+	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.add_theme_font_size_override("font_size", 12)
 	l.add_theme_color_override("font_color", col)
 	parent.add_child(l)

@@ -84,6 +84,7 @@ static func currency(id: String) -> InventoryItem:
 	return item
 
 static func weapon(id: String) -> InventoryItem:
+	if id in ["celestial_sword", "celestial_staff", "soy_raygun"]: return CelestialItems.create(id)
 	if id not in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return null
 	var item := InventoryItem.new()
 	item.id = id
@@ -143,6 +144,7 @@ static func backpack(id: String) -> InventoryItem:
 	return item
 
 static func apparel(id: String) -> InventoryItem:
+	if id in CelestialItems.IDS.slice(0, 4): return CelestialItems.create(id)
 	if not id.begins_with("bright_leaf_") and not id.begins_with("dark_leaf_"): return null
 	var set_id := ApparelSetBonus.SOYPOD if id.begins_with("bright_leaf_") else ApparelSetBonus.NORI
 	var set_name := ApparelSetBonus.name_for(set_id)
@@ -162,6 +164,7 @@ static func apparel(id: String) -> InventoryItem:
 	return item
 
 static func from_id(id: String) -> InventoryItem:
+	if id in CelestialItems.IDS: return CelestialItems.create(id)
 	if id in ["edamame", "mature_bean", "tofu_white_chunk", "toasted_tofu_chunk", "golden_tofu_chunk"]: return currency(id)
 	if id in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return weapon(id)
 	if id in ["factory_backpack", "seed_satchel", "traveler_backpack"]: return backpack(id)

@@ -28,6 +28,7 @@ func _ready() -> void:
 	_prompt.modulate = Color("ffdc79")
 	_prompt.pixel_size = 0.009
 	_prompt.no_depth_test = true
+	_prompt.ignore_occlusion_culling = true
 	_prompt.render_priority = 127
 	game.world.seed_bank.add_child(_prompt)
 

@@ -20,17 +20,11 @@ func _ready() -> void:
 func _set_highlight(active: bool) -> void:
 	_highlighted = active
 	queue_redraw()
-	var target_scale := Vector2(1.025, 1.025) if active else Vector2.ONE
-	var tween := create_tween()
-	tween.tween_property(self, "scale", target_scale, 0.12).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	# Container bounds remain stable when pointer/controller focus changes.
 
 func _draw() -> void:
 	if not _highlighted or disabled:
 		return
-	var ink := MenuStyle.INK
 	var spark := MenuStyle.SOY_GOLD
-	var y := size.y * 0.5
-	draw_line(Vector2(-9, y), Vector2(-2, y), ink, 2.0, true)
-	draw_line(Vector2(size.x + 2, y), Vector2(size.x + 9, y), ink, 2.0, true)
 	draw_circle(Vector2(9, 8), 2.0, spark)
 	draw_circle(Vector2(size.x - 9, size.y - 8), 2.0, spark)

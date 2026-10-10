@@ -12,32 +12,14 @@ static func cutting(progress: float, tuning: CombatTuning) -> bool:
 	return progress >= tuning.cut_start and progress <= tuning.cut_end
 
 static func pose(at: Vector3, aim: Vector2, progress: float, tuning: CombatTuning, heavy: bool = false) -> Transform3D:
-	var facing := direction(aim)
-	var idle_yaw := Vector2(-1.0 if facing.x < -0.1 else 1.0, 0.2).angle()
-	var yaw := idle_yaw
-	var pitch := tuning.idle_pitch_degrees
 	if progress >= 0.0:
-		var half_arc := deg_to_rad(tuning.heavy_arc_degrees if heavy else tuning.light_arc_degrees) * 0.5
-		var start := facing.angle() - half_arc
-		var end := facing.angle() + half_arc
-		if progress < tuning.cut_start:
-			var blend := smoothstep(0.0, tuning.cut_start, progress)
-			yaw = lerp_angle(idle_yaw, start, blend)
-			pitch = lerpf(pitch, 50.0, blend)
-		elif progress <= tuning.cut_end:
-			var blend := inverse_lerp(tuning.cut_start, tuning.cut_end, progress)
-			yaw = lerpf(start, end, blend)
-			pitch = lerpf(50.0, -12.0, blend)
-		else:
-			var blend := smoothstep(tuning.cut_end, 1.0, progress)
-			yaw = lerp_angle(end, idle_yaw, blend)
-			pitch = lerpf(-12.0, pitch, blend)
+		return MeleeArc.pose(at, aim, progress, tuning, KnifeAttack.Style.HEAVY if heavy else KnifeAttack.Style.SLASH)
+	var facing := direction(aim)
+	var yaw := Vector2(-1.0 if facing.x < -0.1 else 1.0, 0.2).angle()
+	var pitch := tuning.idle_pitch_degrees
 	var radial := Vector3(cos(yaw), 0, sin(yaw))
 	var blade := radial * cos(deg_to_rad(pitch)) + Vector3.UP * sin(deg_to_rad(pitch))
-	# Authored 45-degree sprite plane; shared by art and physics, not camera input.
-	var width := blade.cross(Vector3(0, 1, 1).normalized()).normalized()
-	if width.length_squared() < 0.01:
-		width = Vector3.RIGHT
+	var width := Vector3(-sin(yaw), 0, cos(yaw))
 	var basis := Basis(width, -blade.cross(width), -blade)
 	var hand := at + radial * tuning.hand_radius + Vector3.UP * tuning.hand_height
 	return Transform3D(basis, hand + blade * tuning.grip_length)
@@ -50,9 +32,9 @@ static func stab_pose(at: Vector3, aim: Vector2, progress: float, tuning: Combat
 	if progress < tuning.cut_start:
 		extension = lerpf(0.08, 0.32, smoothstep(0.0, tuning.cut_start, progress))
 	elif progress <= tuning.cut_end:
-		extension = lerpf(0.32, 0.92, inverse_lerp(tuning.cut_start, tuning.cut_end, progress))
+		extension = lerpf(0.32, 0.68, MeleeArc.cut_weight(progress, tuning))
 	else:
-		extension = lerpf(0.92, 0.08, smoothstep(tuning.cut_end, 1.0, progress))
+		extension = lerpf(0.68, 0.08, smoothstep(tuning.cut_end, 1.0, progress))
 	var width := blade.cross(Vector3(0, 1, 1).normalized()).normalized()
 	if width.length_squared() < 0.01:
 		width = Vector3.RIGHT

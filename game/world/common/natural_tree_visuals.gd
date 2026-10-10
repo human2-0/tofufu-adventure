@@ -82,5 +82,7 @@ static func _commit(wood: SurfaceTool, leaves: SurfaceTool) -> ArrayMesh:
 	leaves.set_material(foliage)
 	leaves.generate_normals()
 	leaves.index()
-	leaves.commit(mesh)
+	var arrays := leaves.commit_to_arrays()
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {0.01: TreeLeafMesh.distant_indices(arrays)})
+	mesh.surface_set_material(1, foliage)
 	return mesh

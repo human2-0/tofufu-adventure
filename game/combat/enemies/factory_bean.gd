@@ -30,6 +30,7 @@ var _windup: float = 0.0
 var _rest: float = 0.0
 var _knockback: Vector3 = Vector3.ZERO
 var _alive: bool = true
+var reaction := EnemyHitReaction.new()
 
 func _ready() -> void:
 	collision_layer = 2
@@ -66,6 +67,9 @@ func _ready() -> void:
 	add_child(nameplate)
 	target = Damageable.new()
 	target.maximum = HEALTH[kind] * health_scale
+	target.trains_weapons = true
+	target.launch_immune = kind in [Kind.BRUISER, Kind.WARDEN, Kind.DOFUFU]
+	target.knockback_multiplier = 0.35 if target.launch_immune else 1.0
 	target.headshot_height = 0.85
 	target.body = self
 	target.position.y = 0.65
@@ -75,12 +79,15 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not _alive or not is_instance_valid(quarry): return
+	if reaction.step(delta): return
 	_rest = maxf(0.0, _rest - delta)
 	var offset := quarry.global_position - global_position
 	if offset.length() < 9.0: targeting.emit(quarry)
 	offset.y = 0.0
 	var direction := Vector3.ZERO
-	if _windup > 0.0:
+	if reaction.stagger > 0.0 or (not is_on_floor() and velocity.y != 0.0):
+		pass
+	elif _windup > 0.0:
 		_windup -= delta
 		if _windup <= 0.0:
 			_warning.visible = false
@@ -98,13 +105,20 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	_sprite.rotation.z = sin(Time.get_ticks_msec() * 0.006) * 0.06 if direction.length() > 0.1 else 0.0
 
+func _process(delta: float) -> void:
+	if visible: reaction.present(_sprite, delta)
+
 func _clear_attack() -> bool:
 	var from := global_position + Vector3.UP * 0.65
 	var to := quarry.global_position + Vector3.UP * 0.65
 	return get_world_3d().direct_space_state.intersect_ray(PhysicsRayQueryParameters3D.create(from, to, 1)).is_empty()
 
 func _on_hit(_amount: float, direction: Vector3) -> void:
+	reaction.receive(direction, target.last_hit_kind)
 	_knockback = Vector3(direction.x, 0, direction.z).limit_length(5.0)
+	if direction.y > 0.0: velocity.y = maxf(velocity.y, direction.y)
+	elif direction.y < 0.0: velocity.y = minf(velocity.y, direction.y)
+	_rest = 0.3
 	_windup = 0.0
 	_warning.visible = false
 	_sprite.modulate = Color("ff9d79")
@@ -115,4 +129,5 @@ func _on_depleted() -> void:
 	visible = false
 	collision_layer = 0
 	set_physics_process(false)
+	reaction.clear()
 	defeated.emit(global_position)

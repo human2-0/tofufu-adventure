@@ -20,8 +20,9 @@ func _run() -> void:
 	dummy.position = Vector3(0, 0.05, -1)
 	game.camera.set_shoulder(true)
 	game.camera.yaw = 0
-	game.camera._physics_process(0.016)
+	game.camera.reset_follow()
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.hud.announce("")
 	for i in 3: await physics_frame
 	var command := PlayerCommand.new()

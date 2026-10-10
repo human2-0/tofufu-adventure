@@ -2,7 +2,7 @@ class_name TofuPuzzleProtocol
 extends RefCounted
 ## Bounded wire intent. The app converts accepted fields to a quest command.
 
-const ACTION_COUNT: int = 17
+const ACTION_COUNT: int = 18
 const PASSWORD_ACTION: int = 5
 const CUT_ACTION: int = 11
 const MAX_COUNTER: int = 2147483647
@@ -57,6 +57,7 @@ static func _id(value: Variant) -> bool:
 	if not value is String or value.length() > MAX_ID_LENGTH: return false
 	if value.is_empty() or value in STATION_IDS: return true
 	if value in SACK_IDS or value in INTAKE_IDS or value in STONE_IDS: return true
+	if value in ["stash_mill", "stash_press", "stash_pack"]: return true
 	if value.length() == 1 and value in ["0", "1", "2", "3", "4", "5"]: return true
 	if value.begins_with("container_"):
 		var suffix: String = value.trim_prefix("container_")

@@ -24,14 +24,18 @@ var last_command := PlayerCommand.new()
 var target_state: Dictionary = {}
 var prediction: CoopPrediction
 var _view_age: float = 0
+var motion := ReplicaMotion.new()
 var spectating: bool = false
 
 func _ready() -> void:
 	# Resolve replica hands/facing before weapon child render callbacks and overlays.
 	process_priority = -10
 	_configure_combat()
+	combat.replica_view = not authority
 	_configure_loadout()
 	if authority:
+		if not health.hit.is_connected(ActorMeleeImpact.receive.bind(actor, combat, health)): health.hit.connect(ActorMeleeImpact.receive.bind(actor, combat, health))
+		if not health.restored.is_connected(actor.motor.impact.clear): health.restored.connect(actor.motor.impact.clear)
 		if not health.pushed.is_connected(actor.apply_push): health.pushed.connect(actor.apply_push)
 		actor.super_dashed.connect(_on_super_dashed)
 		combat.equipment.projectile_defended.connect(func() -> void: block_count += 1)
@@ -91,6 +95,7 @@ func _configure_loadout() -> void:
 
 func _command(command: PlayerCommand, delta: float) -> void:
 	if spectating: return
+	ActorMeleeImpact.prepare(actor, command)
 	if world_items != null: BarnPeace.prepare(world_items.game, actor, combat, command)
 	last_command = command
 	if command.cancel_actions: combat.reset()
@@ -124,6 +129,7 @@ func die() -> void:
 	if duel_defeated.is_valid():
 		duel_defeated.call(self)
 		return
+	if world_items != null and world_items.game.castle_adventure.party.recover(actor): return
 	if CoopDungeonDeath.defer(self): return
 	if world_items != null and not world_items.game.factory_dungeon.actor_in_run(actor):
 		world_items.drop_on_death(combat)
@@ -135,6 +141,7 @@ func capture() -> Dictionary:
 	var input_ack := (actor.command_source as RemotePlayerInput).consumed_sequence if actor.command_source is RemotePlayerInput else 0
 	return {"parrot_rest": CoopValues.array3(actor.parrot_rest) if actor.parrot_rest.is_finite() else [], "transport": actor.transport_active, "quests": quests.capture(), "spectating": spectating, "input_ack": input_ack, "facing_locked": last_command.face_aim or last_command.attack_held or last_command.guard_held, "hits": health.hit_counts.duplicate(), "clearance": minf(100, actor._ground_clearance()), "position": CoopValues.array3(actor.position), "velocity": CoopValues.array3(actor.velocity),
 		"endurance": actor.motor.endurance.capture(),
+		"impact": actor.motor.impact.capture(),
 		"aim": [last_command.aim.x, last_command.aim.y], "grounded": actor.is_on_floor() and not actor.transport_active,
 		"dashing": actor.motor.is_dashing, "super_dashing": actor.motor.is_super_dashing, "charge": actor.motor.jump_charge, "cooldown": actor.motor.cooldown_remaining,
 		"progression": progression.progress.capture(), "respawns": respawn_count, "blocks": block_count, "health": health.current, "invulnerability": health.invulnerability, "combat": CombatState.capture(combat),
@@ -174,17 +181,11 @@ func _process(delta: float) -> void:
 func _refresh_hud(state: Dictionary) -> void:
 	CoopActorReplica.refresh_hud(self, state)
 
-func _filter_hit(amount: float, direction: Vector3, kind: Damageable.HitKind) -> float:
-	if world_items != null and MeadowBarn.contains(world_items.game.world.seed_bank, actor.global_position): return 0.0
-	if kind == Damageable.HitKind.SLIME: return amount
-	if actor.motor.is_dashing: return 0.0
-	if combat.equipment.defend(actor.global_position - direction, amount):
-		block_count += 1
-		return 0.0
-	return amount * combat.incoming_damage_multiplier
-
 func _physics_process(delta: float) -> void:
 	CoopActorReplica.physics_process(self, delta)
+
+func _filter_hit(amount: float, direction: Vector3, kind: Damageable.HitKind) -> float:
+	return CoopEnemyDamage.filter_hit(amount, direction, kind, self)
 
 func _reflect_projectile(incoming: Vector3, point: Vector3, confirmed: bool) -> Vector3:
 	if actor.motor.is_dashing: return Vector3.ZERO

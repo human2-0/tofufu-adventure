@@ -172,7 +172,7 @@ func backend_name() -> String:
 	return "Holepunch"
 
 func discovery_description() -> String:
-	return "Public test meadow · Discover reachable testers through Holepunch after they enable discovery. Some networks may block direct connections. Leaving co-op stops discovery. No account needed."
+	return "Public test world · Discover reachable testers through Holepunch when they open co-op. Some networks may block direct connections. Leaving co-op stops discovery. No account needed."
 
 func _physics_process(delta: float) -> void:
 	_process(delta)

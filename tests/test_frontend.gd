@@ -11,16 +11,22 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var app: Node = load("res://game/app/bootstrap/launch.tscn").instantiate()
+	var fake: SessionTransport = preload("res://tests/lobby_test_transport.gd").inject(app)
 	var base := "user://test_frontend_%d" % Time.get_ticks_usec()
 	app.store.directory = base
 	app.preferences.path = base + ".cfg"
 	root.add_child(app)
 	await process_frame
 	check(app.menu.visible and app.game == null, "launch opens menu without starting gameplay")
-	check(app.transport._child.is_empty(), "offline launch never starts a sidecar")
+	check(fake.starts == 0, "offline launch never starts a sidecar")
 	app.saves.show_saves()
 	app.saves.show_new()
-	app._start(0, {"name": "Test adventure", "opening_complete": true})
+	app._start(0, {"name": "Cancelled load", "opening_complete": true})
+	for frame in 3: await process_frame
+	check(app.loader.busy and app.loader.view.visible, "loading remains visible while world resources prepare")
+	app.loader.view.back_requested.emit()
+	check(app.game == null and app.menu.visible, "loading can be cancelled to title")
+	await app._start(0, {"name": "Test adventure", "opening_complete": true})
 	await physics_frame
 	check(not app.menu.visible and app.game != null, "new game begins from menu")
 	app.game.player.position = Vector3(3, 0.2, 2)
@@ -38,6 +44,14 @@ func _run() -> void:
 	await process_frame
 	check(app.game == null and app.menu.visible, "return to title unloads game")
 	app._start(0, record)
+	var deadline := Time.get_ticks_msec() + 30000
+	while app.loader.busy and app.loader.view.status.text != "Restoring your adventure…" and Time.get_ticks_msec() < deadline:
+		await process_frame
+	check(app.loader.view.status.text == "Restoring your adventure…", "restoration stage is visible before gameplay")
+	app.loader.view.back_requested.emit()
+	for frame in 4: await process_frame
+	check(not app.get_children().any(func(child: Node) -> bool: return child is AdventureGame), "cancel after construction frees the disabled world")
+	await app._start(0, record)
 	await process_frame
 	check(app.game.encounters.experience == 125 and app.game.health.current == 63, "continue restores adventure")
 	check(app.game.progression.progress.level() == 2 and app.game.progression.progress.practice.sword == 27 and app.game.progression.progress.practice.magic == 13, "solo continue restores levels and partial skill practice")
@@ -63,7 +77,7 @@ func _run() -> void:
 	check(not app.preferences.bind_action("jump", key, "keyboard").is_empty(), "Escape remains available")
 	loaded.reset_controls()
 	app.lobby.show_lobby()
-	check(app.lobby.panel != null and app.transport._child.is_empty(), "lobby waits for explicit discovery")
+	check(app.lobby.panel != null and fake.starts == 1, "lobby starts discovery automatically")
 	var input := {"sequence": 1, "ack": 0, "weapon_slot": 0, "move": [1, 0], "aim": [0, 1], "dash": [1, 0], "jump_held": false, "jump_pressed": true, "dash_pressed": false}
 	for field in ExplorationProtocol.INPUT_FLAGS:
 		if not input.has(field): input[field] = false
@@ -85,5 +99,6 @@ func _run() -> void:
 	DirAccess.remove_absolute(app.preferences.path)
 	app.queue_free()
 	await process_frame
+	await create_timer(0.15).timeout
 	print("Frontend tests: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)

@@ -89,5 +89,11 @@ static func _blade() -> ArrayMesh:
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	# Keep the full curved ribbons nearby; distant patches reuse root/tip vertices.
+	var medium := PackedInt32Array()
+	var distant := PackedInt32Array()
+	for blade in BLADES_PER_TUFT:
+		for index in [0, 4, 1, 1, 4, 5, 4, 6, 5]: medium.append(index + blade * 7)
+		for index in [0, 6, 1]: distant.append(index + blade * 7)
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays, [], {0.003: medium, 0.009: distant})
 	return mesh

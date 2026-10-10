@@ -17,6 +17,7 @@ func _run() -> void:
 	game.cycle.phase = 0.4
 	game.cycle._process(0)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	# The elevated overview must include decorations normally culled from play cameras.
 	for patch: GeometryInstance3D in game.world.get_node("WildGrass").get_children():
 		patch.visibility_range_end = 0

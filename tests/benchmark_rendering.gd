@@ -1,6 +1,7 @@
 extends SceneTree
 ## Rendered 1440p benchmark. Run without --headless; -- --ablation isolates costs.
 
+var viewport: SubViewport
 var game: AdventureGame
 var results: Array[Dictionary] = []
 var ablation: bool = false
@@ -16,18 +17,22 @@ func _run() -> void:
 	ablation = "--ablation" in OS.get_cmdline_user_args()
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	root.size = Vector2i(2560, 1440)
+	viewport = preload("res://tests/rendering_viewport.gd").create(root)
+	root.gui_disable_input = true
 	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
 	Engine.max_fps = 0
-	RenderingServer.viewport_set_measure_render_time(root.get_viewport_rid(), true)
+	RenderingServer.viewport_set_measure_render_time(viewport.get_viewport_rid(), true)
 	game = load("res://game/app/adventure/main.tscn").instantiate()
 	game.play_opening = false
-	root.add_child(game)
+	viewport.add_child(game)
+	_block_input(game)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.cycle.set_process(false)
 	game.cycle.phase = 0.43
 	game.cycle._process(0)
 	game.player.set_physics_process(false)
-	print("BENCH device=", RenderingServer.get_video_adapter_name(), " size=", root.size, " scale=", root.scaling_3d_scale)
+	print("BENCH device=", RenderingServer.get_video_adapter_name(), " size=", viewport.size, " scale=", viewport.scaling_3d_scale)
 	var meshes: Array[Dictionary] = []
 	for node in game.world.find_children("*", "MeshInstance3D", true, false):
 		var view := node as MeshInstance3D
@@ -89,14 +94,20 @@ func _run() -> void:
 		sun.shadow_enabled = false
 		await sample(place, "no_shadows")
 		sun.shadow_enabled = true
-		root.scaling_3d_scale = 0.75
+		viewport.scaling_3d_scale = 0.75
 		await sample(place, "scale_75")
-		root.scaling_3d_scale = 1.0
+		viewport.scaling_3d_scale = 1.0
 	var file := FileAccess.open("/tmp/tofufu-benchmark.json", FileAccess.WRITE)
 	file.store_string(JSON.stringify(results, "\t"))
 	game.queue_free()
 	await process_frame
 	quit()
+
+func _block_input(node: Node) -> void:
+	node.set_process_input(false)
+	node.set_process_unhandled_input(false)
+	node.set_process_unhandled_key_input(false)
+	for child in node.get_children(): _block_input(child)
 
 func sample(place: String, variant: String) -> void:
 	for frame in 90: await process_frame
@@ -109,12 +120,13 @@ func sample(place: String, variant: String) -> void:
 		var now := Time.get_ticks_usec()
 		times.append((now - last) / 1000.0)
 		last = now
-		gpu += RenderingServer.viewport_get_measured_render_time_gpu(root.get_viewport_rid())
-		cpu += RenderingServer.viewport_get_measured_render_time_cpu(root.get_viewport_rid())
+		gpu += RenderingServer.viewport_get_measured_render_time_gpu(viewport.get_viewport_rid())
+		cpu += RenderingServer.viewport_get_measured_render_time_cpu(viewport.get_viewport_rid())
 	times.sort()
 	var result := {"place": place, "variant": variant, "median_ms": times[120], "p95_ms": times[228], "gpu_ms": gpu / 240 if gpu > 0 else null, "render_cpu_ms": cpu / 240, "draws": Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME), "triangles": Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME), "nodes": Performance.get_monitor(Performance.OBJECT_NODE_COUNT), "video_mb": Performance.get_monitor(Performance.RENDER_VIDEO_MEM_USED) / 1048576.0}
+	result.merge(preload("res://tests/rendering_viewport.gd").dimensions(viewport))
 	results.append(result)
 	print("BENCH ", JSON.stringify(result))
 	if variant == "normal":
 		await RenderingServer.frame_post_draw
-		root.get_texture().get_image().save_png("/tmp/tofufu-bench-" + place + ".png")
+		viewport.get_texture().get_image().save_png("/tmp/tofufu-bench-" + place + ".png")

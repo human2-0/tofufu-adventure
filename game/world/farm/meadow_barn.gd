@@ -36,9 +36,11 @@ static func build(parent: Node3D, at: Vector3) -> Node3D:
 		label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 		label.pixel_size = 0.006
 		barn.add_child(label)
+		MeadowBuildingDetails.chest(barn, index)
 	for x in [-5.5, -4.0, 4.0, 5.5]:
 		for level in 2:
 			MeadowGeometry.box(barn, Vector3(x, 0.9 + level * 0.8, -13.2), Vector3(1.3, 0.75, 1.0), Color("c4a958"), true)
+	MeadowSurfaces.apply_tree(barn)
 	return barn
 
 static func shell(parent: Node3D, at: Vector3, title: String, size: Vector3, color: Color, doorway: float = 4.0, courtyard_entry: bool = false) -> Node3D:
@@ -46,6 +48,7 @@ static func shell(parent: Node3D, at: Vector3, title: String, size: Vector3, col
 	building.name = title.to_pascal_case() if not title.is_empty() else "FarmRoom"
 	building.position = at
 	building.set_meta("map_footprint", Vector2(size.x, size.z))
+	building.set_meta("weather_roof_height", size.y + 1.4)
 	parent.add_child(building)
 	MeadowGeometry.box(building, Vector3(0, 0.42, 0), Vector3(size.x, 0.16, size.z), Color("a8a493"), true)
 	var walls: Array[MeshInstance3D] = []
@@ -66,10 +69,12 @@ static func shell(parent: Node3D, at: Vector3, title: String, size: Vector3, col
 		roofs.append(roof)
 	building.set_meta("interior_roofs", roofs)
 	building.set_meta("interior_walls", walls)
+	for view in walls + roofs: SolidOcclusion.box(view)
 	var ramp := MeadowGeometry.box(building, Vector3(0, 0.22, size.z / 2 + 0.75), Vector3(doorway, 0.12, 1.8), Color("a8a493"), true)
 	ramp.rotation.x = 0.27
 	if courtyard_entry: _courtyard_entry(building, size, walls)
 	if not title.is_empty(): MeadowGeometry.signpost(building, Vector3(size.x / 2 + 1.7, 0, size.z / 2), title)
+	MeadowBuildingDetails.shell(building, size, color.r > color.b * 1.25, roofs, walls)
 	return building
 
 static func _courtyard_entry(building: Node3D, size: Vector3, walls: Array[MeshInstance3D]) -> void:

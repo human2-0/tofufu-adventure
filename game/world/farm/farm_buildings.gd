@@ -7,12 +7,15 @@ static func cottage(parent: Node3D, at: Vector3, title: String, roof_color: Colo
 	house.name = title.to_pascal_case() if not title.is_empty() else "Cottage"
 	house.position = at
 	house.set_meta("map_footprint", Vector2(size.x, size.z))
+	house.set_meta("weather_roof_height", size.y + 1.4)
 	parent.add_child(house)
 	MeadowGeometry.box(house, Vector3(0, 0.18, 0), Vector3(size.x + 0.4, 0.36, size.z + 0.4), Color("b4a38a"), true)
 	MeadowGeometry.box(house, Vector3(0, size.y * 0.5, 0), size, Color("f5deb0"), true)
 	for x in [-size.x * 0.46, size.x * 0.46]:
 		MeadowGeometry.box(house, Vector3(x, size.y * 0.5, size.z * 0.505), Vector3(0.18, size.y, 0.18), Color("8d694e"))
 	_roof(house, size, roof_color)
+	for node in house.get_children():
+		if node is MeshInstance3D: SolidOcclusion.box(node)
 	var front := size.z * 0.5 + 0.06
 	MeadowGeometry.box(house, Vector3(0, 0.95, front), Vector3(1.1, 1.9, 0.12), Color("725946"))
 	MeadowGeometry.rock(house, Vector3(0.35, 0.95, front + 0.09), Vector3.ONE * 0.06, Color("efd08a"))
@@ -32,6 +35,7 @@ static func seed_bank(parent: Node3D, at: Vector3) -> Node3D:
 	bank.name = "SeedBank"
 	bank.position = at
 	bank.set_meta("map_footprint", Vector2(8.4, 7.0))
+	bank.set_meta("weather_roof_height", 5.1)
 	parent.add_child(bank)
 	# A clear, walkable doorway replaces the old solid cottage volume.
 	MeadowGeometry.box(bank, Vector3(0, 0.16, 0), Vector3(8.8, 0.32, 7.4), Color("b4a38a"), true)

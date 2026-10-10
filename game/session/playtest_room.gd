@@ -18,12 +18,12 @@ var epoch: String = ""
 var hosting: bool = false
 var playing: bool = false
 var dedicated: bool = false # Authority has no player actor in this explicitly selected mode.
-var status: String = "Choose a name, then discover other testers."
+var status: String = "Open co-op to find friends."
 var _pending: String = ""
 var _timeout: float = 0
 var _retry_clock: float = 0
 var _presence_clock: float = 0
-const GAME_VERSION: int = 38
+const GAME_VERSION: int = 47
 
 func receive(event: Dictionary) -> void:
 	var key := str(event.get("key", ""))
@@ -31,8 +31,8 @@ func receive(event: Dictionary) -> void:
 		"ready":
 			local_key = key
 			local_name = str(event.get("name", "Host")).left(24)
-			status = "Searching for testers… You are discoverable while co-op is open."
-		"searching": status = "Discovery active. Waiting for other testers to open co-op."
+			status = "Finding friends… You are discoverable while co-op is open."
+		"searching": status = "Finding friends… Friends appear when they open co-op."
 		"peer":
 			peers[key] = {"name": str(event.get("name", "Fufu")).left(24), "hosting": false, "busy": false}
 			_send_presence(key)
@@ -65,7 +65,7 @@ func create_room() -> void:
 	epoch = Crypto.new().generate_random_bytes(16).hex_encode()
 	members = [] if dedicated else [local_key]
 	names = {local_key: local_name}
-	status = "Your meadow is open · up to 4 testers. Start exploring now; friends can join later."
+	status = "Your world is open · up to 4 friends. Start exploring now; friends can join later."
 	_presence()
 	changed.emit()
 
@@ -94,7 +94,7 @@ func send_game(key: String, data: Dictionary) -> void:
 	data["epoch"] = epoch
 	send_packet.call(key, data)
 
-func leave(reason: String = "You left the meadow.") -> void:
+func leave(reason: String = "You left the world.") -> void:
 	if dedicated and not hosting and not host_key.is_empty():
 		send_packet.call(host_key, {"type": "leave", "epoch": epoch})
 	for key: String in members:
@@ -129,7 +129,7 @@ func _process(delta: float) -> void:
 	_retry_clock += delta
 	if _timeout <= 0:
 		_pending = ""
-		status = "Could not reach your friend. Ask them to keep their meadow open, then try Join meadow again."
+		status = "Could not reach your friend. Ask them to keep their world open, then try Join world again."
 		changed.emit()
 	elif _retry_clock >= 2 and peers.has(_pending) and peers[_pending].hosting:
 		_retry_clock = 0

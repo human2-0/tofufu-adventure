@@ -22,6 +22,8 @@ func show_saves() -> void:
 			text = "%s\n%s  ·  %d min  ·  %d EXP" % [data.name, data.saved_at.replace("T", "  "), int(data.seconds / 60), int(data.experience)]
 		var button := MenuStyle.button(row, text, func() -> void: start_requested.emit(entry.slot, entry.data))
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.clip_text = true
+		button.tooltip_text = text
 		button.disabled = not entry.valid
 		MenuStyle.button(row, "Delete", func() -> void: _delete(entry.slot))
 	MenuStyle.paragraph(content, "Saves keep your progress, equipment and location. Creatures and harvestables regrow when you continue. An unfinished pod escape restarts from the pod.")

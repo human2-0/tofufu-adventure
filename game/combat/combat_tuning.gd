@@ -6,14 +6,19 @@ extends Resource
 @export var charge_seconds: float = 0.85
 @export var light_damage: float = 10.0
 @export var heavy_damage: float = 30.0
-@export var attack_cooldown: float = 0.28
+@export var attack_cooldown: float = 0.34
 @export var soybean_healing: float = 20.0
 
 @export_group("Knife rhythm")
 @export var combo_window_seconds: float = 1.15
 @export var combo_stab_hold_seconds: float = 0.26
 @export var combo_stab_damage: float = 15.0
-@export var combo_stab_seconds: float = 0.3
+@export var combo_stab_seconds: float = 0.40
+@export var combo_reverse_seconds: float = 0.44
+@export var input_buffer_seconds: float = 0.30
+@export var chain_recovery_start: float = 0.88
+@export var light_hit_pause: float = 0.045
+@export var heavy_hit_pause: float = 0.075
 @export_range(1, 10) var combo_max_count: int = 5
 @export_range(0.0, 1.0, 0.01) var combo_critical_chance_per_hit: float = 0.1
 @export_range(0.0, 1.0, 0.01) var combo_critical_chance_cap: float = 0.5
@@ -21,7 +26,8 @@ extends Resource
 @export var air_slash_damage: float = 20.0
 @export var air_slash_seconds: float = 0.34
 @export var launcher_damage: float = 25.0
-@export var launcher_seconds: float = 0.42
+@export var combo_launcher_damage: float = 15.0
+@export var launcher_seconds: float = 0.54
 @export var launcher_lift: float = 8.0
 @export_group("Knife clash")
 @export var clash_margin: float = 0.12
@@ -51,13 +57,13 @@ extends Resource
 @export var nori_speed: float = 1.1
 @export var nori_plunge_radius: float = 2.6
 @export_group("Slash")
-@export var swing_seconds: float = 0.38
-@export var heavy_swing_seconds: float = 0.48
+@export var swing_seconds: float = 0.48
+@export var heavy_swing_seconds: float = 0.62
 @export var light_arc_degrees: float = 130.0
 @export var heavy_arc_degrees: float = 170.0
 @export var idle_pitch_degrees: float = 68.0
-@export var cut_start: float = 0.22
-@export var cut_end: float = 0.78
+@export var cut_start: float = 0.30
+@export var cut_end: float = 0.72
 
 @export_group("Defence and fists")
 @export var guard_half_angle: float = 55.0

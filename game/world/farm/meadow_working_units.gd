@@ -20,6 +20,7 @@ static func build(world: Meadow, at: Vector3) -> void:
 		elif index == 2: _kitchen(room)
 		else:
 			for x in [-1.7, 1.7]: _couch(room, Vector3(x, 0.5, -0.5))
+		MeadowSurfaces.apply_tree(room)
 
 static func _chickens(world: Meadow, room: Node3D) -> void:
 	for i in 7:

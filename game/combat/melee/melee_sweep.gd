@@ -20,6 +20,11 @@ static func sample_sweep(combat: PlayerCombat, progress: float) -> void:
 			var pose := combat._attack_pose(at, combat.attack_aim, sample_progress)
 			combat.clash.record(pose, true)
 			combat._resolve_blade(at, pose)
+			if not combat.active or combat.hit_pause > 0.0:
+				combat._elapsed = sample_progress * combat._attack_duration()
+				combat._previous_at = at
+				combat._previous_progress = sample_progress
+				return
 	combat._previous_at = combat.actor.global_position
 	combat._previous_progress = progress
 
@@ -62,18 +67,22 @@ static func damage(combat: PlayerCombat, target: Damageable, point: Vector3 = Ve
 		impulse = Vector3(outward.x, 0.0, outward.z).normalized() * 5.0
 	var kind := Damageable.HitKind.MELEE if combat.equipment.staff_selected else Damageable.HitKind.KNIFE
 	if target.damage(damage, impulse, kind, point):
+		if point.is_finite(): MeleeContact.flash(combat, point, KnifeAttack.powered(combat.attack_style))
+		if combat._hit_targets.is_empty():
+			combat.hit_pause = combat.tuning.heavy_hit_pause if KnifeAttack.powered(combat.attack_style) else combat.tuning.light_hit_pause
 		combat.vitals.confirmed_hit(not combat.special_attack)
 		combat._hit_targets.append(target)
 		if combat.combo.confirm_hit():
 			combat._emit_combo()
 		if target.trains_weapons and not combat._trained:
 			combat._trained = true
-		combat.weapon_trained.emit("sword")
+			combat.weapon_trained.emit("sword")
 		var text := "CRIT! %d" % int(damage) if critical else str(int(damage))
 		CombatEffects.burst(combat, target.global_position, text, Color("ff8f7f") if critical else Color(1, 0.86, 0.4))
-		combat.struck.emit(combat._strength, 1)
+		combat.struck.emit(1.0 if KnifeAttack.powered(combat.attack_style) else combat._strength, 1)
 
 	elif target.hit_absorbed:
+		if combat._hit_targets.is_empty(): combat.hit_pause = combat.tuning.heavy_hit_pause
 		combat._hit_targets.append(target)
 
 static func critical_roll(combat: PlayerCombat) -> float:

@@ -79,4 +79,5 @@ func build(parent: Node3D) -> void:
 	ground.material_override = ground_material
 	parent.add_child(ground)
 	ground.create_trimesh_collision()
+	TerrainSupport.mark_permanent(ground)
 	TerrainChunks.split_visual(ground)

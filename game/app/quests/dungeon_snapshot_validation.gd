@@ -3,11 +3,13 @@ extends RefCounted
 ## App preflight before any checkpoint or replica mutates the world.
 
 static func adventure(data: Dictionary) -> bool:
+	if data.has("castle") and not CastleProtocol.valid(data.castle): return false
 	if data.has("tofu_dungeon") and not valid(data.tofu_dungeon): return false
 	if data.has("coop") and not CoopCheckpoint.valid(data.coop): return false
 	return true
 
 static func valid(data: Dictionary, live: bool = false) -> bool:
+	if data.has("stashes") and (not data.stashes is Dictionary or not TofuStashRules.new().restore(data.stashes)): return false
 	if data.has("inspections") and not _inspections(data.inspections): return false
 	if data.has("actor_ids") and not DungeonActorIdentity.valid(data.actor_ids): return false
 	if data.has("boss_members"):

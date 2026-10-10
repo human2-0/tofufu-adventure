@@ -14,6 +14,9 @@ var _body: Label
 var _preview: Label
 var _replay: Button
 var _animation: Tween
+var _cargo: Label
+var _return: Button
+var _cargo_name: String = ""
 
 func _ready() -> void:
 	layer = 24
@@ -40,9 +43,19 @@ func _ready() -> void:
 	_hint = MenuStyle.paragraph(column, "")
 	MenuStyle.button(column, "? Optional hint", func() -> void: _hint.text = hint_text)
 	_preview = MenuStyle.paragraph(column, "")
-	MenuStyle.button(column, "Return carried sack / bottle at its dock", return_requested.emit)
+	_cargo = MenuStyle.paragraph(column, "")
+	_return = MenuStyle.button(column, "Return carried prop to its dock", return_requested.emit)
+	set_cargo(_cargo_name)
 	_replay = MenuStyle.button(column, "Replay refinery tutorial", play_unlock)
 	_close = MenuStyle.button(column, "Close / Skip", close)
+
+func set_cargo(cargo_name: String) -> void:
+	_cargo_name = cargo_name
+	if _cargo == null or _return == null: return
+	_cargo.text = "Carrying: " + cargo_name if not cargo_name.is_empty() else ""
+	_cargo.visible = not cargo_name.is_empty()
+	_return.visible = not cargo_name.is_empty()
+	_return.text = "Return %s to its recovery dock" % cargo_name
 
 func open(text: String, unlocked: bool) -> void:
 	if not visible: opened.emit()

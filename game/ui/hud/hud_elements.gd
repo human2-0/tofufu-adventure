@@ -16,10 +16,10 @@ static func make_panel(parent: Control, at: Vector2, dimensions: Vector2, anchor
 	panel.offset_right = at.x + dimensions.x
 	panel.offset_bottom = at.y + dimensions.y
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("143530c9")
+	style.bg_color = Color("183b37ef")
 	style.set_corner_radius_all(14)
 	style.set_content_margin_all(9)
-	style.border_color = Color("91d59688")
+	style.border_color = Color("fff9e9cc")
 	style.set_border_width_all(2)
 	style.shadow_color = Color("07171588")
 	style.shadow_size = 6

@@ -10,10 +10,12 @@ var waterfall: JungleWaterfall
 func _ready() -> void:
 	name = "JungleWorld"
 	JungleTerrain.build(self, desert)
+	JungleCoast.build_water(self, desert)
 	_entrance()
 	_landmarks()
 	_forest()
 	_boundaries()
+	StaticDecorationBatch.build(self)
 
 func point(x: float, z: float, lift: float = 0) -> Vector3:
 	return Vector3(x, JungleTerrain.height_at(x, z, desert) + lift, z)
@@ -68,7 +70,7 @@ func _forest() -> void:
 		var x := rng.randf_range(-74, 74)
 		var z := rng.randf_range(202, 334)
 		if rng.randf() > smoothstep(195.0, 239.0, z + WorldContours.noise(Vector2(x, z) / 29.0, rng.seed) * 12): continue
-		if JungleTerrain.trail_distance(x, z) < 3.5: continue
+		if JungleTerrain.trail_distance(x, z) < 3.5 or x > 53: continue
 		if Vector2(x, z - 286).length() < 24 or Vector2(x + 40, z - 314).length() < 26: continue
 		JungleProps.palm(self, point(x, z), rng.randf_range(6, 12), rng.randf_range(0, TAU))
 		JungleProps.fern(self, point(x + 1, z + 1), rng.randf_range(1.3, 2.5))
@@ -88,5 +90,5 @@ func _boundaries() -> void:
 ACROSS THE SEA · TAKE A PARROT", PI)
 	for i in 22:
 		var z := 228 + i * 5.0
-		for x in [-79.0, 79.0]:
+		for x in [-79.0]:
 			MeadowGeometry.rock(self, point(x, z, 1), Vector3(2.5, 3 + sin(i), 3), Color("517462"))

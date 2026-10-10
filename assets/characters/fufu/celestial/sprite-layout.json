@@ -1,0 +1,4204 @@
+{
+  "charge": {
+    "6": [
+      {
+        "path": "charge-back.png",
+        "region": [
+          34,
+          18,
+          236,
+          267
+        ],
+        "center": 118.0,
+        "feet": 265,
+        "pixel_size": 0.00461823,
+        "hand": [
+          179.36,
+          173.55
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          352,
+          20,
+          227,
+          269
+        ],
+        "center": 113.5,
+        "feet": 267,
+        "pixel_size": 0.00461823,
+        "hand": [
+          172.52,
+          174.85
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          688,
+          18,
+          239,
+          270
+        ],
+        "center": 119.5,
+        "feet": 268,
+        "pixel_size": 0.00461823,
+        "hand": [
+          181.64,
+          175.5
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          1017,
+          18,
+          229,
+          269
+        ],
+        "center": 114.5,
+        "feet": 267,
+        "pixel_size": 0.00461823,
+        "hand": [
+          174.04,
+          174.85
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "charge-back.png",
+        "region": [
+          33,
+          321,
+          233,
+          271
+        ],
+        "center": 116.5,
+        "feet": 269,
+        "pixel_size": 0.00461823,
+        "hand": [
+          181.74,
+          195.12
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          356,
+          321,
+          224,
+          275
+        ],
+        "center": 112.0,
+        "feet": 273,
+        "pixel_size": 0.00461823,
+        "hand": [
+          174.72,
+          198.0
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          667,
+          322,
+          241,
+          274
+        ],
+        "center": 120.5,
+        "feet": 272,
+        "pixel_size": 0.00461823,
+        "hand": [
+          187.98,
+          197.28
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          1010,
+          323,
+          235,
+          275
+        ],
+        "center": 117.5,
+        "feet": 273,
+        "pixel_size": 0.00461823,
+        "hand": [
+          183.3,
+          198.0
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "charge-back.png",
+        "region": [
+          42,
+          626,
+          217,
+          284
+        ],
+        "center": 108.5,
+        "feet": 282,
+        "pixel_size": 0.00461823,
+        "hand": [
+          147.56,
+          213.0
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          349,
+          625,
+          226,
+          288
+        ],
+        "center": 113.0,
+        "feet": 286,
+        "pixel_size": 0.00461823,
+        "hand": [
+          153.68,
+          216.0
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          670,
+          623,
+          239,
+          288
+        ],
+        "center": 119.5,
+        "feet": 286,
+        "pixel_size": 0.00461823,
+        "hand": [
+          162.52,
+          216.0
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          1005,
+          624,
+          231,
+          287
+        ],
+        "center": 115.5,
+        "feet": 285,
+        "pixel_size": 0.00461823,
+        "hand": [
+          157.08,
+          215.25
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "charge-back.png",
+        "region": [
+          27,
+          931,
+          247,
+          283
+        ],
+        "center": 123.5,
+        "feet": 281,
+        "pixel_size": 0.00461823,
+        "hand": [
+          98.8,
+          203.76
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          354,
+          933,
+          243,
+          283
+        ],
+        "center": 121.5,
+        "feet": 281,
+        "pixel_size": 0.00461823,
+        "hand": [
+          97.2,
+          203.76
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          672,
+          939,
+          242,
+          275
+        ],
+        "center": 121.0,
+        "feet": 273,
+        "pixel_size": 0.00461823,
+        "hand": [
+          96.8,
+          198.0
+        ]
+      },
+      {
+        "path": "charge-back.png",
+        "region": [
+          992,
+          936,
+          245,
+          277
+        ],
+        "center": 122.5,
+        "feet": 275,
+        "pixel_size": 0.00461823,
+        "hand": [
+          98.0,
+          199.44
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "charge-front.png",
+        "region": [
+          38,
+          9,
+          244,
+          289
+        ],
+        "center": 122.0,
+        "feet": 287,
+        "pixel_size": 0.00418527,
+        "hand": [
+          78.08,
+          208.08
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          355,
+          25,
+          253,
+          273
+        ],
+        "center": 126.5,
+        "feet": 271,
+        "pixel_size": 0.00418527,
+        "hand": [
+          80.96,
+          196.56
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          677,
+          23,
+          251,
+          276
+        ],
+        "center": 125.5,
+        "feet": 274,
+        "pixel_size": 0.00418527,
+        "hand": [
+          80.32,
+          198.72
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          1001,
+          16,
+          239,
+          286
+        ],
+        "center": 119.5,
+        "feet": 284,
+        "pixel_size": 0.00418527,
+        "hand": [
+          76.48,
+          205.92
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "charge-front.png",
+        "region": [
+          41,
+          331,
+          262,
+          272
+        ],
+        "center": 131.0,
+        "feet": 270,
+        "pixel_size": 0.00418527,
+        "hand": [
+          62.88,
+          198.56
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          354,
+          326,
+          267,
+          281
+        ],
+        "center": 133.5,
+        "feet": 279,
+        "pixel_size": 0.00418527,
+        "hand": [
+          64.08,
+          205.13
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          685,
+          337,
+          258,
+          270
+        ],
+        "center": 129.0,
+        "feet": 268,
+        "pixel_size": 0.00418527,
+        "hand": [
+          61.92,
+          197.1
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          994,
+          330,
+          253,
+          279
+        ],
+        "center": 126.5,
+        "feet": 277,
+        "pixel_size": 0.00418527,
+        "hand": [
+          60.72,
+          203.67
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "charge-front.png",
+        "region": [
+          45,
+          626,
+          248,
+          287
+        ],
+        "center": 124.0,
+        "feet": 285,
+        "pixel_size": 0.00418527,
+        "hand": [
+          69.44,
+          215.25
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          360,
+          626,
+          251,
+          287
+        ],
+        "center": 125.5,
+        "feet": 285,
+        "pixel_size": 0.00418527,
+        "hand": [
+          70.28,
+          215.25
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          693,
+          638,
+          240,
+          279
+        ],
+        "center": 120.0,
+        "feet": 277,
+        "pixel_size": 0.00418527,
+        "hand": [
+          67.2,
+          209.25
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          1002,
+          628,
+          241,
+          289
+        ],
+        "center": 120.5,
+        "feet": 287,
+        "pixel_size": 0.00418527,
+        "hand": [
+          67.48,
+          216.75
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "charge-front.png",
+        "region": [
+          46,
+          938,
+          250,
+          281
+        ],
+        "center": 125.0,
+        "feet": 279,
+        "pixel_size": 0.00418527,
+        "hand": [
+          190.0,
+          196.7
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          370,
+          941,
+          255,
+          283
+        ],
+        "center": 127.5,
+        "feet": 281,
+        "pixel_size": 0.00418527,
+        "hand": [
+          193.8,
+          198.1
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          689,
+          938,
+          262,
+          282
+        ],
+        "center": 131.0,
+        "feet": 280,
+        "pixel_size": 0.00418527,
+        "hand": [
+          199.12,
+          197.4
+        ]
+      },
+      {
+        "path": "charge-front.png",
+        "region": [
+          1001,
+          938,
+          254,
+          286
+        ],
+        "center": 127.0,
+        "feet": 284,
+        "pixel_size": 0.00418527,
+        "hand": [
+          193.04,
+          200.2
+        ]
+      }
+    ]
+  },
+  "windup": {
+    "6": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          45,
+          5,
+          229,
+          294
+        ],
+        "center": 114.5,
+        "feet": 292,
+        "pixel_size": 0.00446429,
+        "hand": [
+          57.25,
+          161.7
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          29,
+          315,
+          253,
+          292
+        ],
+        "center": 126.5,
+        "feet": 290,
+        "pixel_size": 0.00446429,
+        "hand": [
+          50.6,
+          125.56
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          29,
+          616,
+          246,
+          303
+        ],
+        "center": 123.0,
+        "feet": 301,
+        "pixel_size": 0.00446429,
+        "hand": [
+          71.34,
+          133.32
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          37,
+          923,
+          244,
+          296
+        ],
+        "center": 122.0,
+        "feet": 294,
+        "pixel_size": 0.00446429,
+        "hand": [
+          41.48,
+          139.12
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          45,
+          9,
+          255,
+          297
+        ],
+        "center": 127.5,
+        "feet": 295,
+        "pixel_size": 0.00427432,
+        "hand": [
+          35.7,
+          148.5
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          38,
+          320,
+          267,
+          287
+        ],
+        "center": 133.5,
+        "feet": 285,
+        "pixel_size": 0.00427432,
+        "hand": [
+          37.38,
+          120.54
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          18,
+          625,
+          273,
+          296
+        ],
+        "center": 136.5,
+        "feet": 294,
+        "pixel_size": 0.00427432,
+        "hand": [
+          196.56,
+          127.28
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          38,
+          926,
+          264,
+          295
+        ],
+        "center": 132.0,
+        "feet": 293,
+        "pixel_size": 0.00427432,
+        "hand": [
+          39.6,
+          168.15
+        ]
+      }
+    ]
+  },
+  "cut": {
+    "6": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          347,
+          10,
+          256,
+          289
+        ],
+        "center": 128.0,
+        "feet": 287,
+        "pixel_size": 0.00446429,
+        "hand": [
+          220.16,
+          161.84
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          341,
+          324,
+          267,
+          287
+        ],
+        "center": 133.5,
+        "feet": 285,
+        "pixel_size": 0.00446429,
+        "hand": [
+          234.96,
+          154.98
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          346,
+          628,
+          273,
+          295
+        ],
+        "center": 136.5,
+        "feet": 293,
+        "pixel_size": 0.00446429,
+        "hand": [
+          226.59,
+          168.15
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          338,
+          930,
+          292,
+          288
+        ],
+        "center": 146.0,
+        "feet": 286,
+        "pixel_size": 0.00446429,
+        "hand": [
+          248.2,
+          158.4
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          342,
+          11,
+          252,
+          296
+        ],
+        "center": 126.0,
+        "feet": 294,
+        "pixel_size": 0.00427432,
+        "hand": [
+          37.8,
+          165.76
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          342,
+          322,
+          287,
+          285
+        ],
+        "center": 143.5,
+        "feet": 283,
+        "pixel_size": 0.00427432,
+        "hand": [
+          34.44,
+          139.65
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          339,
+          631,
+          275,
+          289
+        ],
+        "center": 137.5,
+        "feet": 287,
+        "pixel_size": 0.00427432,
+        "hand": [
+          27.5,
+          153.17
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          339,
+          924,
+          281,
+          295
+        ],
+        "center": 140.5,
+        "feet": 293,
+        "pixel_size": 0.00427432,
+        "hand": [
+          28.1,
+          168.15
+        ]
+      }
+    ]
+  },
+  "thrust": {
+    "6": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          664,
+          6,
+          270,
+          293
+        ],
+        "center": 135.0,
+        "feet": 291,
+        "pixel_size": 0.00446429,
+        "hand": [
+          240.3,
+          172.87
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          667,
+          322,
+          273,
+          290
+        ],
+        "center": 136.5,
+        "feet": 288,
+        "pixel_size": 0.00446429,
+        "hand": [
+          240.24,
+          171.1
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          656,
+          628,
+          280,
+          300
+        ],
+        "center": 140.0,
+        "feet": 298,
+        "pixel_size": 0.00446429,
+        "hand": [
+          232.4,
+          177.0
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          656,
+          934,
+          281,
+          290
+        ],
+        "center": 140.5,
+        "feet": 288,
+        "pixel_size": 0.00446429,
+        "hand": [
+          244.47,
+          182.7
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          694,
+          11,
+          200,
+          296
+        ],
+        "center": 100.0,
+        "feet": 294,
+        "pixel_size": 0.00427432,
+        "hand": [
+          38.0,
+          189.44
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          657,
+          320,
+          253,
+          289
+        ],
+        "center": 126.5,
+        "feet": 287,
+        "pixel_size": 0.00427432,
+        "hand": [
+          30.36,
+          147.39
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          644,
+          633,
+          274,
+          290
+        ],
+        "center": 137.0,
+        "feet": 288,
+        "pixel_size": 0.00427432,
+        "hand": [
+          30.14,
+          168.2
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          651,
+          926,
+          289,
+          292
+        ],
+        "center": 144.5,
+        "feet": 290,
+        "pixel_size": 0.00427432,
+        "hand": [
+          37.57,
+          157.68
+        ]
+      }
+    ]
+  },
+  "guard": {
+    "6": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          1012,
+          11,
+          216,
+          290
+        ],
+        "center": 108.0,
+        "feet": 288,
+        "pixel_size": 0.00446429,
+        "hand": [
+          168.48,
+          174.0
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          999,
+          322,
+          226,
+          288
+        ],
+        "center": 113.0,
+        "feet": 286,
+        "pixel_size": 0.00446429,
+        "hand": [
+          185.32,
+          184.32
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          1000,
+          628,
+          230,
+          297
+        ],
+        "center": 115.0,
+        "feet": 295,
+        "pixel_size": 0.00446429,
+        "hand": [
+          92.0,
+          193.05
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "combat-back.png",
+        "region": [
+          995,
+          933,
+          230,
+          292
+        ],
+        "center": 115.0,
+        "feet": 290,
+        "pixel_size": 0.00446429,
+        "hand": [
+          103.5,
+          192.72
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          1009,
+          12,
+          238,
+          295
+        ],
+        "center": 119.0,
+        "feet": 293,
+        "pixel_size": 0.00427432,
+        "hand": [
+          61.88,
+          185.85
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          1027,
+          324,
+          221,
+          287
+        ],
+        "center": 110.5,
+        "feet": 285,
+        "pixel_size": 0.00427432,
+        "hand": [
+          55.25,
+          186.55
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          1022,
+          633,
+          226,
+          287
+        ],
+        "center": 113.0,
+        "feet": 285,
+        "pixel_size": 0.00427432,
+        "hand": [
+          67.8,
+          183.68
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "combat-front.png",
+        "region": [
+          1022,
+          928,
+          227,
+          290
+        ],
+        "center": 113.5,
+        "feet": 288,
+        "pixel_size": 0.00427432,
+        "hand": [
+          34.05,
+          203.0
+        ]
+      }
+    ]
+  },
+  "dash": {
+    "6": [
+      {
+        "path": "dash-back.png",
+        "region": [
+          57,
+          12,
+          210,
+          285
+        ],
+        "center": 105.0,
+        "feet": 283,
+        "pixel_size": 0.00409985,
+        "hand": [
+          161.7,
+          188.1
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          350,
+          12,
+          254,
+          277
+        ],
+        "center": 127.0,
+        "feet": 275,
+        "pixel_size": 0.00409985,
+        "hand": [
+          195.58,
+          182.82
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          679,
+          16,
+          232,
+          281
+        ],
+        "center": 116.0,
+        "feet": 279,
+        "pixel_size": 0.00409985,
+        "hand": [
+          178.64,
+          185.46
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          1026,
+          16,
+          198,
+          283
+        ],
+        "center": 99.0,
+        "feet": 281,
+        "pixel_size": 0.00409985,
+        "hand": [
+          152.46,
+          186.78
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "dash-back.png",
+        "region": [
+          25,
+          321,
+          240,
+          282
+        ],
+        "center": 120.0,
+        "feet": 280,
+        "pixel_size": 0.00409985,
+        "hand": [
+          184.8,
+          197.4
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          350,
+          326,
+          268,
+          277
+        ],
+        "center": 134.0,
+        "feet": 275,
+        "pixel_size": 0.00409985,
+        "hand": [
+          206.36,
+          193.9
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          682,
+          329,
+          253,
+          276
+        ],
+        "center": 126.5,
+        "feet": 274,
+        "pixel_size": 0.00409985,
+        "hand": [
+          194.81,
+          193.2
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          1006,
+          322,
+          233,
+          280
+        ],
+        "center": 116.5,
+        "feet": 278,
+        "pixel_size": 0.00409985,
+        "hand": [
+          179.41,
+          196.0
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "dash-back.png",
+        "region": [
+          24,
+          620,
+          246,
+          292
+        ],
+        "center": 123.0,
+        "feet": 290,
+        "pixel_size": 0.00409985,
+        "hand": [
+          179.58,
+          198.56
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          346,
+          625,
+          272,
+          282
+        ],
+        "center": 136.0,
+        "feet": 280,
+        "pixel_size": 0.00409985,
+        "hand": [
+          198.56,
+          191.76
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          681,
+          625,
+          243,
+          285
+        ],
+        "center": 121.5,
+        "feet": 283,
+        "pixel_size": 0.00409985,
+        "hand": [
+          177.39,
+          193.8
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          1018,
+          625,
+          223,
+          285
+        ],
+        "center": 111.5,
+        "feet": 283,
+        "pixel_size": 0.00409985,
+        "hand": [
+          162.79,
+          193.8
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "dash-back.png",
+        "region": [
+          49,
+          929,
+          232,
+          283
+        ],
+        "center": 116.0,
+        "feet": 281,
+        "pixel_size": 0.00409985,
+        "hand": [
+          111.36,
+          189.61
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          348,
+          933,
+          272,
+          284
+        ],
+        "center": 136.0,
+        "feet": 282,
+        "pixel_size": 0.00409985,
+        "hand": [
+          130.56,
+          190.28
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          667,
+          933,
+          257,
+          285
+        ],
+        "center": 128.5,
+        "feet": 283,
+        "pixel_size": 0.00409985,
+        "hand": [
+          123.36,
+          190.95
+        ]
+      },
+      {
+        "path": "dash-back.png",
+        "region": [
+          1016,
+          930,
+          224,
+          279
+        ],
+        "center": 112.0,
+        "feet": 277,
+        "pixel_size": 0.00409985,
+        "hand": [
+          107.52,
+          186.93
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "dash-front.png",
+        "region": [
+          45,
+          16,
+          245,
+          280
+        ],
+        "center": 122.5,
+        "feet": 278,
+        "pixel_size": 0.00390083,
+        "hand": [
+          80.85,
+          193.2
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          353,
+          16,
+          260,
+          291
+        ],
+        "center": 130.0,
+        "feet": 289,
+        "pixel_size": 0.00390083,
+        "hand": [
+          85.8,
+          200.79
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          686,
+          17,
+          241,
+          288
+        ],
+        "center": 120.5,
+        "feet": 286,
+        "pixel_size": 0.00390083,
+        "hand": [
+          79.53,
+          198.72
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          1007,
+          14,
+          239,
+          292
+        ],
+        "center": 119.5,
+        "feet": 290,
+        "pixel_size": 0.00390083,
+        "hand": [
+          78.87,
+          201.48
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "dash-front.png",
+        "region": [
+          48,
+          319,
+          247,
+          276
+        ],
+        "center": 123.5,
+        "feet": 274,
+        "pixel_size": 0.00390083,
+        "hand": [
+          54.34,
+          190.44
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          357,
+          321,
+          279,
+          280
+        ],
+        "center": 139.5,
+        "feet": 278,
+        "pixel_size": 0.00390083,
+        "hand": [
+          61.38,
+          193.2
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          688,
+          321,
+          268,
+          281
+        ],
+        "center": 134.0,
+        "feet": 279,
+        "pixel_size": 0.00390083,
+        "hand": [
+          58.96,
+          193.89
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          1028,
+          320,
+          228,
+          281
+        ],
+        "center": 114.0,
+        "feet": 279,
+        "pixel_size": 0.00390083,
+        "hand": [
+          50.16,
+          193.89
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "dash-front.png",
+        "region": [
+          59,
+          622,
+          237,
+          292
+        ],
+        "center": 118.5,
+        "feet": 290,
+        "pixel_size": 0.00390083,
+        "hand": [
+          66.36,
+          207.32
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          365,
+          626,
+          288,
+          283
+        ],
+        "center": 144.0,
+        "feet": 281,
+        "pixel_size": 0.00390083,
+        "hand": [
+          80.64,
+          200.93
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          690,
+          623,
+          276,
+          283
+        ],
+        "center": 138.0,
+        "feet": 281,
+        "pixel_size": 0.00390083,
+        "hand": [
+          77.28,
+          200.93
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          1048,
+          623,
+          218,
+          292
+        ],
+        "center": 109.0,
+        "feet": 290,
+        "pixel_size": 0.00390083,
+        "hand": [
+          61.04,
+          207.32
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "dash-front.png",
+        "region": [
+          56,
+          922,
+          240,
+          294
+        ],
+        "center": 120.0,
+        "feet": 292,
+        "pixel_size": 0.00390083,
+        "hand": [
+          189.6,
+          202.86
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          373,
+          917,
+          275,
+          296
+        ],
+        "center": 137.5,
+        "feet": 294,
+        "pixel_size": 0.00390083,
+        "hand": [
+          217.25,
+          204.24
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          708,
+          916,
+          264,
+          299
+        ],
+        "center": 132.0,
+        "feet": 297,
+        "pixel_size": 0.00390083,
+        "hand": [
+          208.56,
+          206.31
+        ]
+      },
+      {
+        "path": "dash-front.png",
+        "region": [
+          1040,
+          926,
+          220,
+          296
+        ],
+        "center": 110.0,
+        "feet": 294,
+        "pixel_size": 0.00390083,
+        "hand": [
+          173.8,
+          204.24
+        ]
+      }
+    ]
+  },
+  "idle": {
+    "2": [
+      {
+        "path": "idle.png",
+        "region": [
+          75,
+          11,
+          316,
+          422
+        ],
+        "center": 158.0,
+        "feet": 420,
+        "pixel_size": 0.00297619,
+        "hand": [
+          75.84,
+          291.18
+        ]
+      }
+    ],
+    "6": [
+      {
+        "path": "idle.png",
+        "region": [
+          67,
+          451,
+          321,
+          412
+        ],
+        "center": 160.5,
+        "feet": 410,
+        "pixel_size": 0.00297619,
+        "hand": [
+          247.17,
+          267.8
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "idle.png",
+        "region": [
+          523,
+          15,
+          305,
+          422
+        ],
+        "center": 152.5,
+        "feet": 420,
+        "pixel_size": 0.00297619,
+        "hand": [
+          73.2,
+          299.62
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "idle.png",
+        "region": [
+          512,
+          451,
+          284,
+          410
+        ],
+        "center": 142.0,
+        "feet": 408,
+        "pixel_size": 0.00297619,
+        "hand": [
+          218.68,
+          287.0
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "idle.png",
+        "region": [
+          973,
+          13,
+          260,
+          425
+        ],
+        "center": 130.0,
+        "feet": 423,
+        "pixel_size": 0.00297619,
+        "hand": [
+          80.6,
+          310.25
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "idle.png",
+        "region": [
+          975,
+          451,
+          261,
+          418
+        ],
+        "center": 130.5,
+        "feet": 416,
+        "pixel_size": 0.00297619,
+        "hand": [
+          174.87,
+          300.96
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "idle.png",
+        "region": [
+          1430,
+          13,
+          281,
+          423
+        ],
+        "center": 140.5,
+        "feet": 421,
+        "pixel_size": 0.00297619,
+        "hand": [
+          216.37,
+          296.1
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "idle.png",
+        "region": [
+          1400,
+          451,
+          305,
+          418
+        ],
+        "center": 152.5,
+        "feet": 416,
+        "pixel_size": 0.00297619,
+        "hand": [
+          131.15,
+          292.6
+        ]
+      }
+    ]
+  },
+  "jump": {
+    "0": [
+      {
+        "path": "jump-east.png",
+        "region": [
+          33,
+          67,
+          214,
+          221
+        ],
+        "center": 107.0,
+        "feet": 219,
+        "pixel_size": 0.00478316,
+        "hand": [
+          149.8,
+          152.49
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          309,
+          37,
+          205,
+          248
+        ],
+        "center": 102.5,
+        "feet": 246,
+        "pixel_size": 0.00478316,
+        "hand": [
+          143.5,
+          171.12
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          590,
+          11,
+          202,
+          261
+        ],
+        "center": 101.0,
+        "feet": 259,
+        "pixel_size": 0.00478316,
+        "hand": [
+          149.48,
+          159.21
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          881,
+          1,
+          213,
+          255
+        ],
+        "center": 106.5,
+        "feet": 253,
+        "pixel_size": 0.00478316,
+        "hand": [
+          157.62,
+          155.55
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          1162,
+          35,
+          203,
+          254
+        ],
+        "center": 101.5,
+        "feet": 252,
+        "pixel_size": 0.00478316,
+        "hand": [
+          150.22,
+          154.94
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          30,
+          301,
+          203,
+          273
+        ],
+        "center": 101.5,
+        "feet": 271,
+        "pixel_size": 0.00478316,
+        "hand": [
+          150.22,
+          166.53
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          313,
+          316,
+          207,
+          258
+        ],
+        "center": 103.5,
+        "feet": 256,
+        "pixel_size": 0.00478316,
+        "hand": [
+          144.9,
+          178.02
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          595,
+          382,
+          210,
+          194
+        ],
+        "center": 105.0,
+        "feet": 192,
+        "pixel_size": 0.00478316,
+        "hand": [
+          147.0,
+          133.86
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          889,
+          332,
+          198,
+          242
+        ],
+        "center": 99.0,
+        "feet": 240,
+        "pixel_size": 0.00478316,
+        "hand": [
+          138.6,
+          166.98
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          1187,
+          317,
+          179,
+          258
+        ],
+        "center": 89.5,
+        "feet": 256,
+        "pixel_size": 0.00478316,
+        "hand": [
+          125.3,
+          178.02
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "jump-east.png",
+        "region": [
+          31,
+          634,
+          227,
+          216
+        ],
+        "center": 113.5,
+        "feet": 214,
+        "pixel_size": 0.00478316,
+        "hand": [
+          77.18,
+          138.24
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          322,
+          600,
+          216,
+          252
+        ],
+        "center": 108.0,
+        "feet": 250,
+        "pixel_size": 0.00478316,
+        "hand": [
+          73.44,
+          161.28
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          591,
+          590,
+          219,
+          252
+        ],
+        "center": 109.5,
+        "feet": 250,
+        "pixel_size": 0.00478316,
+        "hand": [
+          59.13,
+          141.12
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          876,
+          580,
+          230,
+          247
+        ],
+        "center": 115.0,
+        "feet": 245,
+        "pixel_size": 0.00478316,
+        "hand": [
+          62.1,
+          138.32
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          1159,
+          597,
+          212,
+          258
+        ],
+        "center": 106.0,
+        "feet": 256,
+        "pixel_size": 0.00478316,
+        "hand": [
+          57.24,
+          144.48
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          30,
+          860,
+          209,
+          247
+        ],
+        "center": 104.5,
+        "feet": 245,
+        "pixel_size": 0.00478316,
+        "hand": [
+          56.43,
+          138.32
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          316,
+          874,
+          216,
+          241
+        ],
+        "center": 108.0,
+        "feet": 239,
+        "pixel_size": 0.00478316,
+        "hand": [
+          73.44,
+          154.24
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          598,
+          926,
+          216,
+          188
+        ],
+        "center": 108.0,
+        "feet": 186,
+        "pixel_size": 0.00478316,
+        "hand": [
+          73.44,
+          120.32
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          893,
+          883,
+          204,
+          233
+        ],
+        "center": 102.0,
+        "feet": 231,
+        "pixel_size": 0.00478316,
+        "hand": [
+          69.36,
+          149.12
+        ]
+      },
+      {
+        "path": "jump-east.png",
+        "region": [
+          1186,
+          871,
+          187,
+          248
+        ],
+        "center": 93.5,
+        "feet": 246,
+        "pixel_size": 0.00478316,
+        "hand": [
+          63.58,
+          158.72
+        ]
+      }
+    ],
+    "6": [
+      {
+        "path": "jump-north.png",
+        "region": [
+          45,
+          76,
+          187,
+          205
+        ],
+        "center": 93.5,
+        "feet": 203,
+        "pixel_size": 0.00489983,
+        "hand": [
+          142.12,
+          131.2
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          311,
+          27,
+          205,
+          255
+        ],
+        "center": 102.5,
+        "feet": 253,
+        "pixel_size": 0.00489983,
+        "hand": [
+          155.8,
+          163.2
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          591,
+          7,
+          221,
+          260
+        ],
+        "center": 110.5,
+        "feet": 258,
+        "pixel_size": 0.00489983,
+        "hand": [
+          176.8,
+          145.6
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          863,
+          6,
+          256,
+          254
+        ],
+        "center": 128.0,
+        "feet": 252,
+        "pixel_size": 0.00489983,
+        "hand": [
+          204.8,
+          142.24
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          1175,
+          41,
+          200,
+          241
+        ],
+        "center": 100.0,
+        "feet": 239,
+        "pixel_size": 0.00489983,
+        "hand": [
+          160.0,
+          134.96
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          25,
+          303,
+          209,
+          263
+        ],
+        "center": 104.5,
+        "feet": 261,
+        "pixel_size": 0.00489983,
+        "hand": [
+          167.2,
+          147.28
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          317,
+          325,
+          198,
+          242
+        ],
+        "center": 99.0,
+        "feet": 240,
+        "pixel_size": 0.00489983,
+        "hand": [
+          150.48,
+          154.88
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          603,
+          387,
+          190,
+          181
+        ],
+        "center": 95.0,
+        "feet": 179,
+        "pixel_size": 0.00489983,
+        "hand": [
+          144.4,
+          115.84
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          888,
+          335,
+          196,
+          233
+        ],
+        "center": 98.0,
+        "feet": 231,
+        "pixel_size": 0.00489983,
+        "hand": [
+          148.96,
+          149.12
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          1182,
+          329,
+          189,
+          239
+        ],
+        "center": 94.5,
+        "feet": 237,
+        "pixel_size": 0.00489983,
+        "hand": [
+          143.64,
+          152.96
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "jump-north.png",
+        "region": [
+          44,
+          647,
+          192,
+          200
+        ],
+        "center": 96.0,
+        "feet": 198,
+        "pixel_size": 0.00489983,
+        "hand": [
+          153.6,
+          130.0
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          315,
+          590,
+          181,
+          263
+        ],
+        "center": 90.5,
+        "feet": 261,
+        "pixel_size": 0.00489983,
+        "hand": [
+          144.8,
+          170.95
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          584,
+          587,
+          208,
+          245
+        ],
+        "center": 104.0,
+        "feet": 243,
+        "pixel_size": 0.00489983,
+        "hand": [
+          174.72,
+          139.65
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          867,
+          581,
+          231,
+          247
+        ],
+        "center": 115.5,
+        "feet": 245,
+        "pixel_size": 0.00489983,
+        "hand": [
+          194.04,
+          140.79
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          1170,
+          594,
+          193,
+          259
+        ],
+        "center": 96.5,
+        "feet": 257,
+        "pixel_size": 0.00489983,
+        "hand": [
+          162.12,
+          147.63
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          31,
+          860,
+          192,
+          254
+        ],
+        "center": 96.0,
+        "feet": 252,
+        "pixel_size": 0.00489983,
+        "hand": [
+          161.28,
+          144.78
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          334,
+          872,
+          195,
+          244
+        ],
+        "center": 97.5,
+        "feet": 242,
+        "pixel_size": 0.00489983,
+        "hand": [
+          156.0,
+          158.6
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          619,
+          939,
+          191,
+          177
+        ],
+        "center": 95.5,
+        "feet": 175,
+        "pixel_size": 0.00489983,
+        "hand": [
+          152.8,
+          115.05
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          908,
+          874,
+          192,
+          242
+        ],
+        "center": 96.0,
+        "feet": 240,
+        "pixel_size": 0.00489983,
+        "hand": [
+          153.6,
+          157.3
+        ]
+      },
+      {
+        "path": "jump-north.png",
+        "region": [
+          1199,
+          873,
+          167,
+          243
+        ],
+        "center": 83.5,
+        "feet": 241,
+        "pixel_size": 0.00489983,
+        "hand": [
+          133.6,
+          157.95
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "jump-south.png",
+        "region": [
+          22,
+          56,
+          216,
+          222
+        ],
+        "center": 108.0,
+        "feet": 220,
+        "pixel_size": 0.00451445,
+        "hand": [
+          49.68,
+          142.08
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          312,
+          32,
+          221,
+          253
+        ],
+        "center": 110.5,
+        "feet": 251,
+        "pixel_size": 0.00451445,
+        "hand": [
+          50.83,
+          161.92
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          594,
+          6,
+          213,
+          255
+        ],
+        "center": 106.5,
+        "feet": 253,
+        "pixel_size": 0.00451445,
+        "hand": [
+          34.08,
+          142.8
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          856,
+          6,
+          246,
+          248
+        ],
+        "center": 123.0,
+        "feet": 246,
+        "pixel_size": 0.00451445,
+        "hand": [
+          39.36,
+          138.88
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          1155,
+          29,
+          213,
+          260
+        ],
+        "center": 106.5,
+        "feet": 258,
+        "pixel_size": 0.00451445,
+        "hand": [
+          34.08,
+          145.6
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          21,
+          290,
+          227,
+          259
+        ],
+        "center": 113.5,
+        "feet": 257,
+        "pixel_size": 0.00451445,
+        "hand": [
+          36.32,
+          145.04
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          332,
+          323,
+          209,
+          232
+        ],
+        "center": 104.5,
+        "feet": 230,
+        "pixel_size": 0.00451445,
+        "hand": [
+          48.07,
+          148.48
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          599,
+          362,
+          222,
+          194
+        ],
+        "center": 111.0,
+        "feet": 192,
+        "pixel_size": 0.00451445,
+        "hand": [
+          51.06,
+          124.16
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          891,
+          305,
+          209,
+          246
+        ],
+        "center": 104.5,
+        "feet": 244,
+        "pixel_size": 0.00451445,
+        "hand": [
+          48.07,
+          157.44
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          1161,
+          306,
+          215,
+          248
+        ],
+        "center": 107.5,
+        "feet": 246,
+        "pixel_size": 0.00451445,
+        "hand": [
+          49.45,
+          158.72
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "jump-south.png",
+        "region": [
+          44,
+          597,
+          222,
+          229
+        ],
+        "center": 111.0,
+        "feet": 227,
+        "pixel_size": 0.00451445,
+        "hand": [
+          44.4,
+          146.56
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          330,
+          569,
+          213,
+          257
+        ],
+        "center": 106.5,
+        "feet": 255,
+        "pixel_size": 0.00451445,
+        "hand": [
+          42.6,
+          164.48
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          602,
+          564,
+          213,
+          253
+        ],
+        "center": 106.5,
+        "feet": 251,
+        "pixel_size": 0.00451445,
+        "hand": [
+          27.69,
+          141.68
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          865,
+          562,
+          243,
+          254
+        ],
+        "center": 121.5,
+        "feet": 252,
+        "pixel_size": 0.00451445,
+        "hand": [
+          31.59,
+          142.24
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          1162,
+          582,
+          222,
+          256
+        ],
+        "center": 111.0,
+        "feet": 254,
+        "pixel_size": 0.00451445,
+        "hand": [
+          28.86,
+          143.36
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          30,
+          833,
+          232,
+          267
+        ],
+        "center": 116.0,
+        "feet": 265,
+        "pixel_size": 0.00451445,
+        "hand": [
+          30.16,
+          149.52
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          335,
+          869,
+          222,
+          233
+        ],
+        "center": 111.0,
+        "feet": 231,
+        "pixel_size": 0.00451445,
+        "hand": [
+          44.4,
+          149.12
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          612,
+          907,
+          221,
+          199
+        ],
+        "center": 110.5,
+        "feet": 197,
+        "pixel_size": 0.00451445,
+        "hand": [
+          44.2,
+          127.36
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          895,
+          844,
+          209,
+          261
+        ],
+        "center": 104.5,
+        "feet": 259,
+        "pixel_size": 0.00451445,
+        "hand": [
+          41.8,
+          167.04
+        ]
+      },
+      {
+        "path": "jump-south.png",
+        "region": [
+          1166,
+          850,
+          216,
+          256
+        ],
+        "center": 108.0,
+        "feet": 254,
+        "pixel_size": 0.00451445,
+        "hand": [
+          43.2,
+          163.84
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "jump-west.png",
+        "region": [
+          38,
+          51,
+          215,
+          227
+        ],
+        "center": 107.5,
+        "feet": 225,
+        "pixel_size": 0.00489983,
+        "hand": [
+          64.5,
+          147.55
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          324,
+          29,
+          220,
+          250
+        ],
+        "center": 110.0,
+        "feet": 248,
+        "pixel_size": 0.00489983,
+        "hand": [
+          66.0,
+          162.5
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          608,
+          8,
+          200,
+          247
+        ],
+        "center": 100.0,
+        "feet": 245,
+        "pixel_size": 0.00489983,
+        "hand": [
+          46.0,
+          140.79
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          869,
+          6,
+          215,
+          250
+        ],
+        "center": 107.5,
+        "feet": 248,
+        "pixel_size": 0.00489983,
+        "hand": [
+          49.45,
+          142.5
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          1170,
+          34,
+          209,
+          258
+        ],
+        "center": 104.5,
+        "feet": 256,
+        "pixel_size": 0.00489983,
+        "hand": [
+          48.07,
+          147.06
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          62,
+          282,
+          205,
+          266
+        ],
+        "center": 102.5,
+        "feet": 264,
+        "pixel_size": 0.00489983,
+        "hand": [
+          47.15,
+          151.62
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          333,
+          313,
+          224,
+          243
+        ],
+        "center": 112.0,
+        "feet": 241,
+        "pixel_size": 0.00489983,
+        "hand": [
+          67.2,
+          157.95
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          592,
+          348,
+          229,
+          207
+        ],
+        "center": 114.5,
+        "feet": 205,
+        "pixel_size": 0.00489983,
+        "hand": [
+          68.7,
+          134.55
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          889,
+          318,
+          215,
+          236
+        ],
+        "center": 107.5,
+        "feet": 234,
+        "pixel_size": 0.00489983,
+        "hand": [
+          64.5,
+          153.4
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          1171,
+          305,
+          173,
+          251
+        ],
+        "center": 86.5,
+        "feet": 249,
+        "pixel_size": 0.00489983,
+        "hand": [
+          51.9,
+          163.15
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "jump-west.png",
+        "region": [
+          46,
+          592,
+          208,
+          227
+        ],
+        "center": 104.0,
+        "feet": 225,
+        "pixel_size": 0.00489983,
+        "hand": [
+          158.08,
+          145.28
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          317,
+          569,
+          236,
+          251
+        ],
+        "center": 118.0,
+        "feet": 249,
+        "pixel_size": 0.00489983,
+        "hand": [
+          179.36,
+          160.64
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          602,
+          559,
+          208,
+          250
+        ],
+        "center": 104.0,
+        "feet": 248,
+        "pixel_size": 0.00489983,
+        "hand": [
+          166.4,
+          140.0
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          863,
+          554,
+          243,
+          260
+        ],
+        "center": 121.5,
+        "feet": 258,
+        "pixel_size": 0.00489983,
+        "hand": [
+          194.4,
+          145.6
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          1169,
+          581,
+          210,
+          254
+        ],
+        "center": 105.0,
+        "feet": 252,
+        "pixel_size": 0.00489983,
+        "hand": [
+          168.0,
+          142.24
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          62,
+          823,
+          206,
+          259
+        ],
+        "center": 103.0,
+        "feet": 257,
+        "pixel_size": 0.00489983,
+        "hand": [
+          164.8,
+          145.04
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          333,
+          851,
+          218,
+          247
+        ],
+        "center": 109.0,
+        "feet": 245,
+        "pixel_size": 0.00489983,
+        "hand": [
+          165.68,
+          158.08
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          591,
+          880,
+          232,
+          219
+        ],
+        "center": 116.0,
+        "feet": 217,
+        "pixel_size": 0.00489983,
+        "hand": [
+          176.32,
+          140.16
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          877,
+          858,
+          229,
+          241
+        ],
+        "center": 114.5,
+        "feet": 239,
+        "pixel_size": 0.00489983,
+        "hand": [
+          174.04,
+          154.24
+        ]
+      },
+      {
+        "path": "jump-west.png",
+        "region": [
+          1171,
+          844,
+          195,
+          257
+        ],
+        "center": 97.5,
+        "feet": 255,
+        "pixel_size": 0.00489983,
+        "hand": [
+          148.2,
+          164.48
+        ]
+      }
+    ]
+  },
+  "aim": {
+    "6": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          37,
+          11,
+          239,
+          282
+        ],
+        "center": 119.5,
+        "feet": 280,
+        "pixel_size": 0.00409985,
+        "hand": [
+          188.81,
+          183.3
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          36,
+          316,
+          263,
+          292
+        ],
+        "center": 131.5,
+        "feet": 290,
+        "pixel_size": 0.00409985,
+        "hand": [
+          223.55,
+          189.8
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          41,
+          629,
+          273,
+          303
+        ],
+        "center": 136.5,
+        "feet": 301,
+        "pixel_size": 0.00409985,
+        "hand": [
+          215.67,
+          196.95
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          30,
+          944,
+          271,
+          292
+        ],
+        "center": 135.5,
+        "feet": 290,
+        "pixel_size": 0.00409985,
+        "hand": [
+          168.02,
+          189.8
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          60,
+          7,
+          229,
+          299
+        ],
+        "center": 114.5,
+        "feet": 297,
+        "pixel_size": 0.00436724,
+        "hand": [
+          57.25,
+          206.31
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          43,
+          319,
+          249,
+          297
+        ],
+        "center": 124.5,
+        "feet": 295,
+        "pixel_size": 0.00436724,
+        "hand": [
+          47.31,
+          193.05
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          46,
+          630,
+          243,
+          297
+        ],
+        "center": 121.5,
+        "feet": 295,
+        "pixel_size": 0.00436724,
+        "hand": [
+          46.17,
+          193.05
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          50,
+          943,
+          246,
+          296
+        ],
+        "center": 123.0,
+        "feet": 294,
+        "pixel_size": 0.00436724,
+        "hand": [
+          209.1,
+          192.4
+        ]
+      }
+    ]
+  },
+  "reload": {
+    "6": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          369,
+          10,
+          210,
+          283
+        ],
+        "center": 105.0,
+        "feet": 281,
+        "pixel_size": 0.00409985,
+        "hand": [
+          163.8,
+          192.44
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          363,
+          318,
+          211,
+          294
+        ],
+        "center": 105.5,
+        "feet": 292,
+        "pixel_size": 0.00409985,
+        "hand": [
+          156.14,
+          211.68
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          375,
+          628,
+          193,
+          303
+        ],
+        "center": 96.5,
+        "feet": 301,
+        "pixel_size": 0.00409985,
+        "hand": [
+          115.8,
+          224.22
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          372,
+          945,
+          195,
+          291
+        ],
+        "center": 97.5,
+        "feet": 289,
+        "pixel_size": 0.00409985,
+        "hand": [
+          85.8,
+          221.16
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          366,
+          12,
+          224,
+          294
+        ],
+        "center": 112.0,
+        "feet": 292,
+        "pixel_size": 0.00436724,
+        "hand": [
+          67.2,
+          217.56
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          384,
+          321,
+          208,
+          295
+        ],
+        "center": 104.0,
+        "feet": 293,
+        "pixel_size": 0.00436724,
+        "hand": [
+          62.4,
+          221.25
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          383,
+          628,
+          211,
+          299
+        ],
+        "center": 105.5,
+        "feet": 297,
+        "pixel_size": 0.00436724,
+        "hand": [
+          80.18,
+          230.23
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          382,
+          939,
+          216,
+          303
+        ],
+        "center": 108.0,
+        "feet": 301,
+        "pixel_size": 0.00436724,
+        "hand": [
+          159.84,
+          218.16
+        ]
+      }
+    ]
+  },
+  "hurt": {
+    "6": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          665,
+          9,
+          226,
+          289
+        ],
+        "center": 113.0,
+        "feet": 287,
+        "pixel_size": 0.00409985,
+        "hand": [
+          171.76,
+          184.96
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          659,
+          317,
+          224,
+          292
+        ],
+        "center": 112.0,
+        "feet": 290,
+        "pixel_size": 0.00409985,
+        "hand": [
+          165.76,
+          189.8
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          672,
+          630,
+          197,
+          301
+        ],
+        "center": 98.5,
+        "feet": 299,
+        "pixel_size": 0.00409985,
+        "hand": [
+          128.05,
+          198.66
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          649,
+          950,
+          225,
+          286
+        ],
+        "center": 112.5,
+        "feet": 284,
+        "pixel_size": 0.00409985,
+        "hand": [
+          90.0,
+          183.04
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          651,
+          18,
+          241,
+          290
+        ],
+        "center": 120.5,
+        "feet": 288,
+        "pixel_size": 0.00436724,
+        "hand": [
+          67.48,
+          185.6
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          683,
+          324,
+          221,
+          296
+        ],
+        "center": 110.5,
+        "feet": 294,
+        "pixel_size": 0.00436724,
+        "hand": [
+          61.88,
+          189.44
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          704,
+          640,
+          189,
+          289
+        ],
+        "center": 94.5,
+        "feet": 287,
+        "pixel_size": 0.00436724,
+        "hand": [
+          56.7,
+          196.52
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          688,
+          950,
+          217,
+          288
+        ],
+        "center": 108.5,
+        "feet": 286,
+        "pixel_size": 0.00436724,
+        "hand": [
+          160.58,
+          184.32
+        ]
+      }
+    ]
+  },
+  "riding": {
+    "6": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          993,
+          9,
+          200,
+          281
+        ],
+        "center": 100.0,
+        "feet": 279,
+        "pixel_size": 0.00409985,
+        "hand": [
+          154.0,
+          177.03
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          982,
+          321,
+          239,
+          277
+        ],
+        "center": 119.5,
+        "feet": 275,
+        "pixel_size": 0.00409985,
+        "hand": [
+          181.64,
+          182.82
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          990,
+          635,
+          250,
+          287
+        ],
+        "center": 125.0,
+        "feet": 285,
+        "pixel_size": 0.00409985,
+        "hand": [
+          160.0,
+          189.42
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "utility-back.png",
+        "region": [
+          992,
+          944,
+          244,
+          284
+        ],
+        "center": 122.0,
+        "feet": 282,
+        "pixel_size": 0.00409985,
+        "hand": [
+          107.36,
+          184.6
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          984,
+          30,
+          245,
+          279
+        ],
+        "center": 122.5,
+        "feet": 277,
+        "pixel_size": 0.00436724,
+        "hand": [
+          71.05,
+          175.77
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          982,
+          339,
+          244,
+          278
+        ],
+        "center": 122.0,
+        "feet": 276,
+        "pixel_size": 0.00436724,
+        "hand": [
+          68.32,
+          180.7
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          980,
+          646,
+          240,
+          279
+        ],
+        "center": 120.0,
+        "feet": 277,
+        "pixel_size": 0.00436724,
+        "hand": [
+          76.8,
+          189.72
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "utility-front.png",
+        "region": [
+          984,
+          954,
+          243,
+          270
+        ],
+        "center": 121.5,
+        "feet": 268,
+        "pixel_size": 0.00436724,
+        "hand": [
+          182.25,
+          172.8
+        ]
+      }
+    ]
+  },
+  "walk": {
+    "6": [
+      {
+        "path": "walk-back.png",
+        "region": [
+          64,
+          10,
+          226,
+          299
+        ],
+        "center": 113.0,
+        "feet": 297,
+        "pixel_size": 0.00414212,
+        "hand": [
+          171.76,
+          191.36
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          381,
+          10,
+          205,
+          297
+        ],
+        "center": 102.5,
+        "feet": 295,
+        "pixel_size": 0.00414212,
+        "hand": [
+          155.8,
+          190.08
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          686,
+          10,
+          223,
+          300
+        ],
+        "center": 111.5,
+        "feet": 298,
+        "pixel_size": 0.00414212,
+        "hand": [
+          169.48,
+          192.0
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          1005,
+          9,
+          202,
+          299
+        ],
+        "center": 101.0,
+        "feet": 297,
+        "pixel_size": 0.00414212,
+        "hand": [
+          153.52,
+          191.36
+        ]
+      }
+    ],
+    "7": [
+      {
+        "path": "walk-back.png",
+        "region": [
+          40,
+          319,
+          225,
+          296
+        ],
+        "center": 112.5,
+        "feet": 294,
+        "pixel_size": 0.00414212,
+        "hand": [
+          173.25,
+          207.2
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          372,
+          316,
+          218,
+          298
+        ],
+        "center": 109.0,
+        "feet": 296,
+        "pixel_size": 0.00414212,
+        "hand": [
+          167.86,
+          208.6
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          667,
+          316,
+          231,
+          297
+        ],
+        "center": 115.5,
+        "feet": 295,
+        "pixel_size": 0.00414212,
+        "hand": [
+          177.87,
+          207.9
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          991,
+          318,
+          226,
+          296
+        ],
+        "center": 113.0,
+        "feet": 294,
+        "pixel_size": 0.00414212,
+        "hand": [
+          174.02,
+          207.2
+        ]
+      }
+    ],
+    "0": [
+      {
+        "path": "walk-back.png",
+        "region": [
+          40,
+          617,
+          217,
+          307
+        ],
+        "center": 108.5,
+        "feet": 305,
+        "pixel_size": 0.00414212,
+        "hand": [
+          147.56,
+          217.97
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          360,
+          617,
+          221,
+          306
+        ],
+        "center": 110.5,
+        "feet": 304,
+        "pixel_size": 0.00414212,
+        "hand": [
+          150.28,
+          217.26
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          674,
+          617,
+          219,
+          305
+        ],
+        "center": 109.5,
+        "feet": 303,
+        "pixel_size": 0.00414212,
+        "hand": [
+          148.92,
+          216.55
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          999,
+          620,
+          208,
+          302
+        ],
+        "center": 104.0,
+        "feet": 300,
+        "pixel_size": 0.00414212,
+        "hand": [
+          141.44,
+          214.42
+        ]
+      }
+    ],
+    "1": [
+      {
+        "path": "walk-back.png",
+        "region": [
+          41,
+          930,
+          234,
+          307
+        ],
+        "center": 117.0,
+        "feet": 305,
+        "pixel_size": 0.00414212,
+        "hand": [
+          107.64,
+          217.97
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          367,
+          926,
+          216,
+          308
+        ],
+        "center": 108.0,
+        "feet": 306,
+        "pixel_size": 0.00414212,
+        "hand": [
+          99.36,
+          218.68
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          657,
+          929,
+          239,
+          301
+        ],
+        "center": 119.5,
+        "feet": 299,
+        "pixel_size": 0.00414212,
+        "hand": [
+          109.94,
+          213.71
+        ]
+      },
+      {
+        "path": "walk-back.png",
+        "region": [
+          990,
+          928,
+          229,
+          298
+        ],
+        "center": 114.5,
+        "feet": 296,
+        "pixel_size": 0.00414212,
+        "hand": [
+          105.34,
+          211.58
+        ]
+      }
+    ],
+    "2": [
+      {
+        "path": "walk-front.png",
+        "region": [
+          51,
+          7,
+          240,
+          304
+        ],
+        "center": 120.0,
+        "feet": 302,
+        "pixel_size": 0.00418527,
+        "hand": [
+          72.0,
+          209.76
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          371,
+          8,
+          237,
+          301
+        ],
+        "center": 118.5,
+        "feet": 299,
+        "pixel_size": 0.00418527,
+        "hand": [
+          71.1,
+          207.69
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          660,
+          7,
+          235,
+          305
+        ],
+        "center": 117.5,
+        "feet": 303,
+        "pixel_size": 0.00418527,
+        "hand": [
+          70.5,
+          210.45
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          983,
+          9,
+          228,
+          302
+        ],
+        "center": 114.0,
+        "feet": 300,
+        "pixel_size": 0.00418527,
+        "hand": [
+          68.4,
+          208.38
+        ]
+      }
+    ],
+    "3": [
+      {
+        "path": "walk-front.png",
+        "region": [
+          58,
+          311,
+          230,
+          304
+        ],
+        "center": 115.0,
+        "feet": 302,
+        "pixel_size": 0.00418527,
+        "hand": [
+          52.9,
+          215.84
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          374,
+          312,
+          226,
+          303
+        ],
+        "center": 113.0,
+        "feet": 301,
+        "pixel_size": 0.00418527,
+        "hand": [
+          51.98,
+          215.13
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          678,
+          317,
+          226,
+          299
+        ],
+        "center": 113.0,
+        "feet": 297,
+        "pixel_size": 0.00418527,
+        "hand": [
+          51.98,
+          212.29
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          996,
+          315,
+          226,
+          301
+        ],
+        "center": 113.0,
+        "feet": 299,
+        "pixel_size": 0.00418527,
+        "hand": [
+          51.98,
+          213.71
+        ]
+      }
+    ],
+    "4": [
+      {
+        "path": "walk-front.png",
+        "region": [
+          59,
+          616,
+          229,
+          299
+        ],
+        "center": 114.5,
+        "feet": 297,
+        "pixel_size": 0.00418527,
+        "hand": [
+          64.12,
+          215.28
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          376,
+          619,
+          214,
+          300
+        ],
+        "center": 107.0,
+        "feet": 298,
+        "pixel_size": 0.00418527,
+        "hand": [
+          59.92,
+          216.0
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          688,
+          619,
+          224,
+          301
+        ],
+        "center": 112.0,
+        "feet": 299,
+        "pixel_size": 0.00418527,
+        "hand": [
+          62.72,
+          216.72
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          1008,
+          620,
+          214,
+          299
+        ],
+        "center": 107.0,
+        "feet": 297,
+        "pixel_size": 0.00418527,
+        "hand": [
+          59.92,
+          215.28
+        ]
+      }
+    ],
+    "5": [
+      {
+        "path": "walk-front.png",
+        "region": [
+          64,
+          915,
+          239,
+          301
+        ],
+        "center": 119.5,
+        "feet": 299,
+        "pixel_size": 0.00418527,
+        "hand": [
+          184.03,
+          210.7
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          393,
+          919,
+          221,
+          301
+        ],
+        "center": 110.5,
+        "feet": 299,
+        "pixel_size": 0.00418527,
+        "hand": [
+          170.17,
+          210.7
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          696,
+          920,
+          218,
+          301
+        ],
+        "center": 109.0,
+        "feet": 299,
+        "pixel_size": 0.00418527,
+        "hand": [
+          167.86,
+          210.7
+        ]
+      },
+      {
+        "path": "walk-front.png",
+        "region": [
+          1011,
+          919,
+          215,
+          301
+        ],
+        "center": 107.5,
+        "feet": 299,
+        "pixel_size": 0.00418527,
+        "hand": [
+          165.55,
+          210.7
+        ]
+      }
+    ]
+  }
+}

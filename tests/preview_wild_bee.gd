@@ -11,6 +11,7 @@ func _run() -> void:
 	game.hud.hide()
 	game.player.set_physics_process(false)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.weather.set_physics_process(false)
 	game.cycle.phase = 0.18
 	game.cycle.set_process(false)

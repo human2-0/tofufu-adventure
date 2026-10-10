@@ -17,6 +17,7 @@ func _run() -> void:
 	game.cycle.phase = 0.43
 	game.cycle._process(0)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.player.set_physics_process(false)
 	game.camera.fov = 60
 	game.player.position = game.world.ground_point(0, -96, 0.1)

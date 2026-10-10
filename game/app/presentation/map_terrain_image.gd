@@ -40,6 +40,10 @@ static func _color(world: Meadow, at: Vector2) -> Color:
 	var seed := world.terrain.noise.seed
 	var height := world.ground_point(at.x, at.y).y
 	var color := BiomePalette.color_at(at, height, seed)
+	if at.y >= JungleTerrain.SOUTH_START and at.y <= JungleTerrain.SOUTH_END and at.x >= 53 and at.x <= JungleCoast.SEA_EDGE:
+		color = JungleCoast.color_at(at, height, color)
+		if height < JungleCoast.WATER_LEVEL: return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -height))
+		return color
 	if at.y <= -84 and at.y >= -220 and height < OceanTerrain.WATER_LEVEL:
 		var depth := OceanTerrain.WATER_LEVEL - height
 		color = Color("83c9be").lerp(Color("245f7b"), smoothstep(0, 7, depth))

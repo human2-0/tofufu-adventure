@@ -12,6 +12,7 @@ var _melee_model: Node3D
 var _melee_item_id: String = ""
 var _staff: StaffVisual
 var _gun: Sprite3D
+var _raygun: Node3D
 var _jet: SotjetVisual
 var _hands: Array[MeshInstance3D] = []
 var _arms := FirstPersonArms.new()
@@ -19,7 +20,6 @@ var _phase: float = 0.0
 var _kick: float = 0.0
 var _shot: int = 0
 var _swing: float = 0.0
-var _was_active: bool = false
 var _aim: float = 0.0
 
 func _ready() -> void:
@@ -51,6 +51,9 @@ func _ready() -> void:
 	_rig.add_child(_staff)
 	_staff.position = Vector3(0.16, 0.11, -0.30)
 	_gun = _sprite(SoyGunVisual.REAR, SoyGunVisual.REAR_REGIONS[0], 0.0018)
+	_raygun = preload("res://game/combat/models/soy_raygun.tscn").instantiate() as Node3D
+	_rig.add_child(_raygun)
+	_raygun.hide()
 	_jet = SotjetVisual.new()
 	_jet.first_person_view = true
 	_jet.visible = false
@@ -104,28 +107,36 @@ func _process(delta: float) -> void:
 		_shot = combat.gun.shot_sequence
 		_kick = 1.0
 	_kick = move_toward(_kick, 0.0, delta * 9.0)
-	if combat.active and not _was_active: _swing = 0.0
-	_was_active = combat.active
 	var stabbing := combat.active and combat.attack_style == KnifeAttack.Style.STAB
 	var diving := (combat.active and combat.attack_style == KnifeAttack.Style.AIR_SLASH) or combat.plunge.active
 	var swing_seconds := combat._attack_duration()
-	_swing = minf(1.0, _swing + delta / swing_seconds)
+	_swing = clampf(MeleePose.display_elapsed(combat) / swing_seconds, 0.0, 1.0)
 	var cut := sin(_swing * PI) if combat.active else 0.0
 	var bob := Vector3(sin(_phase) * 0.012, absf(cos(_phase)) * 0.009, 0) * minf(moving, 1.0) * (1.0 - _aim)
 	_rig.position = Vector3(lerpf(0.32, 0.0, _aim), lerpf(-0.30, -0.43, _aim), -1.0) + bob
 	_rig.position += Vector3(0, -cut * 0.38, -cut * 0.3) if diving else (Vector3(0, 0, -cut * 0.48) if stabbing else Vector3(-cut * 0.5, cut * 0.12, 0))
 	_rig.position.z += _kick * 0.07
 	_rig.rotation.z = _swing * TAU if combat.active and combat.attack_style == StaffAttack.TORNADO else (cut * -0.5 if diving else (cut * -0.15 if stabbing else cut * 1.1))
+	if combat.active and combat.attack_style == KnifeAttack.Style.REVERSE_SLASH:
+		_rig.position.x += cut
+		_rig.rotation.z *= -1.0
+	if combat.active and combat.attack_style == KnifeAttack.Style.LAUNCHER:
+		var rise := MeleeArc.cut_weight(_swing, combat.tuning)
+		var settle := 1.0 - smoothstep(combat.tuning.cut_end, 1.0, _swing)
+		_rig.position += Vector3(cut * 0.3, (rise * 0.65 - 0.2) * settle, -cut * 0.2)
+		_rig.rotation.z = lerpf(-0.6, 1.0, rise) * settle
 	_rig.rotation.x = -GunRunPose.PITCH * run_lowering
 	_rig.rotation.z += 0.12 * run_lowering
 	_rig.position += Vector3(0.04, -0.07, 0.04) * run_lowering
-	var melee_item := "nori_katana" if combat.equipment.nori_selected else ("edamame_sword" if combat.equipment.pod_selected else "knife")
+	var melee_item := "celestial_sword" if combat.equipment.celestial_weapon == 1 else ("nori_katana" if combat.equipment.nori_selected else ("edamame_sword" if combat.equipment.pod_selected else "knife"))
 	_set_melee_model(melee_item)
 	var melee_visible := combat.equipment.knife_owned and combat.equipment.knife_selected
 	_melee_root.visible = melee_visible
 	_staff.visible = combat.equipment.staff_owned and combat.equipment.staff_selected
+	_staff.set_celestial(combat.equipment.celestial_weapon == 2)
 	_staff.show_charge(combat.rules.charge, combat.active and combat.attack_style == StaffAttack.TORNADO)
-	_gun.visible = combat.gun.selected
+	_gun.visible = combat.gun.selected and not combat.gun.celestial
+	_raygun.visible = combat.gun.selected and combat.gun.celestial
 	_jet.visible = combat.sotjet.selected
 	_melee_model.rotation.z = ( -PI * 0.5 if melee_item == "knife" else 0.0) + (PI if combat.plunge.active or combat.plunge.recovery > 0 else -0.25 - combat.rules.charge * 0.4)
 	if combat.equipment.guarding:
@@ -139,7 +150,7 @@ func _process(delta: float) -> void:
 		_rig.rotation.z += SoyGunReloadPose.roll(remaining)
 		_hands[1].position += Vector3(0.2, 0.24, 0.08) * SoyGunReloadPose.feed(remaining)
 
-	_arms.present(_hands, FufuRightHand.tint((actor as Player).visuals.worn_set) if actor is Player else Color("fff0bd"))
+	_arms.present(_hands, FufuRightHand.tint((actor as Player).visuals.worn_set) if actor is Player else Color("fff0bd"), actor is Player and (actor as Player).visuals.worn_set == "celestial")
 
 func _place_hands(melee_visible: bool) -> void:
 	_hands[1].position = Vector3(-0.13, -0.18, 0.02)
@@ -155,6 +166,9 @@ func _place_hands(melee_visible: bool) -> void:
 	elif _gun.visible:
 		# Same grip landmark as the third-person gun: source x=.5, y=.75.
 		_hands[0].position = _rig.to_local(_gun.to_global(Vector3(0, -SoyGunVisual.REAR_REGIONS[0].size.y * 0.25, 0) * _gun.pixel_size))
+	elif _raygun.visible:
+		_hands[0].position = _raygun.position
+		_hands[1].position = _raygun.position + Vector3(0, 0.05, -0.3)
 	else:
 		_hands[1].visible = true
 		_hands[0].position = Vector3(0.05, 0.0, 0.1)
@@ -164,7 +178,9 @@ func _place_hands(melee_visible: bool) -> void:
 func muzzle_position(world_camera: Camera3D, jet: bool) -> Vector3:
 	var overlay_camera := _viewport.get_camera_3d()
 	var screen_position := _jet.muzzle_position() if jet else _gun.to_global(Vector3(0.0, 0.0, 0.0))
-	if not jet:
+	if not jet and _raygun.visible:
+		screen_position = _raygun.to_global(Vector3(0, 0.1, -0.55))
+	elif not jet:
 		var region := SoyGunVisual.REAR_REGIONS[0].size
 		var point := Vector3(0.0, region.y * 0.02, 0) * _gun.pixel_size
 		screen_position = _gun.to_global(point)

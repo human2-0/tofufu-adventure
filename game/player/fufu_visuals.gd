@@ -28,12 +28,17 @@ var _ghost_timer: float = 0.0
 var jump_animation := FufuJumpAnimation.new()
 var charge_animation := FufuChargeAnimation.new()
 var worn_appearance := FufuWornAppearance.new()
+var celestial_art := CelestialFufuArt.new()
+var celestial_pose: Callable
+var celestial_aura := CelestialAura.new()
 var _using_charge_frame: bool = false
 var _using_jump_frame: bool = false
 var worn_set: String = ""
 var _outfit_tween: Tween
 
 func _ready() -> void:
+	add_child(celestial_aura)
+	celestial_aura.set_active(worn_set == "celestial")
 	alpha_cut = Sprite3D.ALPHA_CUT_DISCARD
 	alpha_scissor_threshold = 0.5
 	shaded = false
@@ -70,11 +75,13 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 		anim_timer = 0.0
 		anim_frame = 0
 		idle_bob_time += delta * 3.5
-	_set_frame(walking)
+	if worn_set != "celestial": _set_frame(walking)
 	jump_animation.step(grounded, velocity.y, jump_charge > 0.0, clearance, delta)
 	_using_charge_frame = false
 	_using_jump_frame = false
-	if worn_set.is_empty() and grounded and jump_charge > 0.0:
+	if worn_set == "celestial":
+		celestial_art.present(self, walking, grounded, dashing, jump_charge, delta, celestial_pose.call() if celestial_pose.is_valid() else {})
+	elif worn_set.is_empty() and grounded and jump_charge > 0.0:
 		_using_charge_frame = charge_animation.apply(self, current_facing, int(anim_timer) % 6 if walking else 0)
 	elif jump_animation.frame >= 0:
 		if worn_set.is_empty():
@@ -102,6 +109,9 @@ func _set_frame(walking: bool) -> void:
 	material_override = null
 	flip_h = false
 	offset = Vector2.ZERO
+	if worn_set == "celestial":
+		celestial_art.apply(self, int(current_facing), "walk" if walking else "idle", anim_frame if walking else 0)
+		return
 	if not worn_set.is_empty():
 		worn_appearance.apply(self, worn_set, int(current_facing), walking, anim_frame)
 		return
@@ -135,13 +145,14 @@ func _set_frame(walking: bool) -> void:
 		frame = row * 4 + anim_frame
 
 func set_worn_set(set_id: String, animate: bool = true) -> void:
-	if set_id not in ["", "bright_leaf", "dark_leaf"]: set_id = ""
+	if set_id not in ["", "bright_leaf", "dark_leaf", "celestial"]: set_id = ""
 	if worn_set == set_id: return
 	if _outfit_tween != null and _outfit_tween.is_valid(): _outfit_tween.kill()
 	modulate.a = 1.0
 	if animate and not set_id.is_empty() and is_inside_tree():
-		OutfitEquipEffect.spawn(self, Color("adf46c") if set_id == "bright_leaf" else Color("85d8c0"))
+		OutfitEquipEffect.spawn(self, Color("e6bb5a") if set_id == "celestial" else (Color("adf46c") if set_id == "bright_leaf" else Color("85d8c0")))
 	worn_set = set_id
+	celestial_aura.set_active(set_id == "celestial")
 	_set_frame(false)
 	if animate and not set_id.is_empty() and is_inside_tree():
 		modulate.a = 0.0

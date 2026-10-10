@@ -54,6 +54,12 @@ func release_actor(actor: int) -> void:
 			owners[index] = 0
 			revision += 1
 
+func return_slab(slab: int, actor: int, expected: int) -> Outcome:
+	if not _valid(slab, expected) or actor < 1 or owners[slab] != actor: return Outcome.INVALID
+	owners[slab] = 0
+	revision += 1
+	return Outcome.RESERVED
+
 func capture(live: bool = false) -> Dictionary:
 	var data: Dictionary = {"revision": revision, "batch_id": batch_id, "slab_slots": slab_slots.duplicate(), "slot_slabs": slot_slabs.duplicate(), "sealed": sealed.duplicate(), "boss_ready": boss_ready}
 

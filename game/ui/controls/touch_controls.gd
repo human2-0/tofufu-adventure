@@ -23,10 +23,10 @@ func _ready() -> void:
 
 func _layout() -> void:
 	var size := get_viewport().get_visible_rect().size
-	var positions: Array[Vector2] = [Vector2(72, -220), Vector2(220, -220),
-		Vector2(146, -294), Vector2(146, -146), Vector2(size.x - 80, -294),
+	var positions: Array[Vector2] = [Vector2(268, -240), Vector2(416, -240),
+		Vector2(342, -314), Vector2(342, -166), Vector2(size.x - 80, -294),
 		Vector2(size.x - 80, -146), Vector2(size.x - 190, -220),
-		Vector2(size.x - 80, -405), Vector2(80, -405), Vector2(size.x - 190, -330)]
+		Vector2(size.x - 80, -405), Vector2(146, -360), Vector2(size.x - 190, -330)]
 	for index in _buttons.size():
 		_buttons[index].position = positions[index] + Vector2(0, size.y)
 
@@ -44,10 +44,10 @@ func _add_button(action: String, caption: String) -> void:
 	for index in 32:
 		points.append(Vector2.from_angle(TAU * index / 32.0) * 35.0)
 	disc.polygon = points
-	disc.color = Color("164b43cc")
+	disc.color = Color("183b37e6")
 	button.add_child(disc)
-	button.pressed.connect(func() -> void: disc.color = Color("f2c45ce6"))
-	button.released.connect(func() -> void: disc.color = Color("164b43cc"))
+	button.pressed.connect(func() -> void: disc.color = Color("f4c75de6"))
+	button.released.connect(func() -> void: disc.color = Color("183b37e6"))
 	var label := Label.new()
 	label.text = caption
 	label.position = Vector2(-35, -14)

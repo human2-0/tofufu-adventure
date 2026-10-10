@@ -19,6 +19,6 @@ static func pose(style: int, at: Vector3, aim: Vector2, progress: float, tuning:
 	var hand := at + radial * tuning.hand_radius + Vector3.UP * tuning.hand_height
 	return Transform3D(basis, hand + radial * tuning.grip_length)
 
-static func damage(style: int, tuning: CombatTuning) -> float:
+static func damage(style: int, tuning: CombatTuning, charged: bool = true) -> float:
 	if style == TORNADO: return tuning.staff_tornado_damage
-	return KnifeAttack.damage(style, tuning) * tuning.staff_power / maxf(tuning.knife_power, 1.0)
+	return KnifeAttack.damage(style, tuning, charged) * tuning.staff_power / maxf(tuning.knife_power, 1.0)

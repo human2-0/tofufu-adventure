@@ -4,7 +4,7 @@ extends RefCounted
 
 const SIZE: float = 24.0
 
-static func split_visual(ground: MeshInstance3D, force: bool = false) -> void:
+static func split_visual(ground: MeshInstance3D, force: bool = false, tile_size: float = SIZE) -> void:
 	if not force and DisplayServer.get_name() == "headless": return
 	var source := ground.mesh
 	var tiles: Dictionary[Vector2i, SurfaceTool] = {}
@@ -15,7 +15,7 @@ static func split_visual(ground: MeshInstance3D, force: bool = false) -> void:
 	for triangle in range(0, count, 3):
 		var first := indices[triangle] if not indices.is_empty() else triangle
 		var at := vertices[first]
-		var key := Vector2i(floori(at.x / SIZE), floori(at.z / SIZE))
+		var key := Vector2i(floori(at.x / tile_size), floori(at.z / tile_size))
 		if not tiles.has(key):
 			var surface := SurfaceTool.new()
 			surface.begin(Mesh.PRIMITIVE_TRIANGLES)

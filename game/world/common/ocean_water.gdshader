@@ -1,13 +1,16 @@
 shader_type spatial;
 render_mode cull_disabled;
 uniform float dive_view = 0.0;
+uniform vec2 bed_encoding = vec2(16.0, -8.0);
+uniform vec3 color_shallow : source_color = vec3(0.20, 0.66, 0.65);
+uniform vec3 color_deep : source_color = vec3(0.025, 0.24, 0.38);
 varying vec3 world;
 varying float bed;
 varying float crest;
 void vertex() {
 	world = VERTEX;
-	bed = COLOR.r * 16.0 - 8.0;
-	float shallow = 1.0 - smoothstep(0.0, 5.0, 1.8 - bed);
+	bed = COLOR.r * bed_encoding.x + bed_encoding.y;
+	float shallow = 1.0 - smoothstep(0.0, 5.0, world.y - bed);
 	float phase = world.z * 0.72 + sin(world.x * 0.09) * 0.8 - TIME * 1.55;
 	crest = sin(phase);
 	float wave = sin(world.z * 0.30 - TIME * 0.9 + world.x * 0.07) * 0.15;
@@ -31,7 +34,7 @@ void fragment() {
 	float foam = (1.0 - smoothstep(0.05, 0.7, depth)) * smoothstep(-0.8, 0.6, lace);
 	foam += smoothstep(0.68, 0.97, crest) * (1.0 - smoothstep(0.8, 3.5, depth)) * 0.62;
 	foam = clamp(foam, 0.0, 1.0);
-	vec3 water = mix(vec3(0.20, 0.66, 0.65), vec3(0.025, 0.24, 0.38), smoothstep(0.0, 7.0, depth));
+	vec3 water = mix(color_shallow, color_deep, smoothstep(0.0, 7.0, depth));
 	ALBEDO = mix(water, vec3(0.92, 0.98, 0.90), foam);
 	METALLIC = mix(0.42, 0.0, foam);
 	SPECULAR = 0.95;

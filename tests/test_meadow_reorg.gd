@@ -58,7 +58,7 @@ func _run() -> void:
 			art.present_direction([6, 7, 0, 1, 2][index])
 			check(art.current_cell == index, "NPC has distinct north through south portraits")
 			var body_height := art.texture.get_height() - 16
-			check(is_equal_approx(body_height * art.pixel_size, 1.9), "NPC apparent height stays stable across views")
+			check(is_equal_approx(body_height * art.pixel_size, 1.65), "NPC apparent height stays stable across views")
 			var feet := (art.texture.get_height() * 0.5 - (art.texture.get_height() - 8) + art.offset.y) * art.pixel_size
 			check(is_equal_approx(feet, 0.05), "NPC directional feet stay planted on the same baseline")
 	game.camera.set_physics_process(false)
@@ -72,6 +72,14 @@ func _run() -> void:
 		check(art.current_direction == 4 and art.flip_h, "NPC turns toward nearby player on the left")
 	game.camera.set_physics_process(true)
 	check(game.world.terrain.is_field(85, -64) and game.world.terrain.is_field(30, 40), "northeast soy and southern wheat fields")
+	for title in ["NortheastSoyFields", "SouthernWheatFields"]:
+		var count := 0
+		for tile: MultiMeshInstance3D in game.world.get_node(title).get_children():
+			count += tile.multimesh.instance_count
+			check(tile.multimesh.instance_count <= SceneryInstances.MAX_BATCH, "scenery batches stay within the shared instance budget")
+			check(tile.multimesh.mesh.get_faces().size() / 3 <= 200, "tiny decorative crops have bounded geometry")
+			check(tile.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, "decorative field shadows cannot multiply triangle work")
+		check(count == 1800, "batching preserves every authored field plant")
 	check(game.world.produce.size() == 36, "food beds and forest mushrooms composed")
 	var locked: Node3D = game.world.get_node("D_WorkingUnits").get_child(1)
 	var door_ray := PhysicsRayQueryParameters3D.create(locked.global_position + Vector3(0, 1, 5), locked.global_position + Vector3(0, 1, 0), 1)

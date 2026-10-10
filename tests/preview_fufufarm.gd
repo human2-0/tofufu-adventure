@@ -16,6 +16,7 @@ func _run() -> void:
 	scene.cycle._process(0)
 	var camera: Camera3D = scene.get_node("Camera3D")
 	camera.set_physics_process(false)
+	camera.set_process(false)
 	var views: Array[Vector3] = [Vector3(0, 0, 0), Vector3(44, 0, -24), Vector3(24, 0, -24), Vector3(-2, 0, -4), Vector3(85, 1, -64), Vector3(46, 0, -13)]
 	var names: Array[String] = ["overview", "village", "seed-bank", "nursery", "fields", "mayor"]
 	for i in views.size():

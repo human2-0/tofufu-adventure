@@ -55,6 +55,17 @@ func _run() -> void:
 		if game.player.transport_active: air_steps += 1)
 	await ticks(70)
 	check(game.player.position.y > origin.y + 5, "mount takes off and hovers above the ground")
+	var view_before := game.player.global_position
+	game.player.presentation.reset()
+	game.player.global_position += Vector3.RIGHT * 0.4
+	game.player.presentation._physics_process(1.0 / 60.0)
+	game.player.presentation.present(0.5)
+	travel.mounts._process(0)
+	var bird: ParrotArt = travel.mounts.riders[game.player]
+	check((bird.global_position + Vector3.UP * travel.SADDLE_HEIGHT).is_equal_approx(game.player.presentation.ground_position), "ridden bird shares its rider interpolation between physics ticks")
+	check(is_equal_approx(game.player.global_position.x, view_before.x + 0.4), "mount presentation never moves the collision body")
+	game.player.global_position = view_before
+	game.player.presentation.reset()
 	var before := game.player.position
 	input.move = Vector2.RIGHT
 	await ticks(35)

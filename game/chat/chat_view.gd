@@ -27,13 +27,13 @@ func _ready() -> void:
 	_panel.offset_bottom = -158
 	add_child(_panel)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("173632c9")
+	style.bg_color = Color("183b37ef")
 	style.set_corner_radius_all(14)
 	style.content_margin_left = 10
 	style.content_margin_right = 10
 	style.content_margin_top = 6
 	style.content_margin_bottom = 6
-	style.border_color = Color("8ed39a88")
+	style.border_color = Color("fff9e9cc")
 	style.set_border_width_all(2)
 	_panel.add_theme_stylebox_override("panel", style)
 

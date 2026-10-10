@@ -15,6 +15,8 @@ var facing: Vector2 = Vector2.DOWN
 var _hand := Vector3.ZERO
 var _front: bool = true
 var _atlas := AtlasTexture.new()
+var celestial: bool = false
+var celestial_view: CelestialRaygunView
 
 func _ready() -> void:
 	add_child(grip)
@@ -25,6 +27,15 @@ func _ready() -> void:
 	texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR
 	texture = _atlas
 	visible = false
+	celestial_view = CelestialRaygunView.new()
+	add_child(celestial_view)
+	celestial_view.hide()
+
+func set_celestial(value: bool) -> void:
+	if celestial == value: return
+	celestial = value
+	texture = null if value else _atlas
+	if celestial_view != null: celestial_view.visible = value
 
 func follow_hand(hand: Vector3, _plane: Basis, _outward: float, in_front: bool) -> void:
 	grip.follow_wrist(hand, _plane, _outward, in_front)
@@ -39,6 +50,10 @@ func refresh() -> void:
 	if not visible: return
 	var camera := get_viewport().get_camera_3d()
 	if camera == null: return
+	if celestial:
+		celestial_view.present(_hand, facing, camera, _front, reload_remaining, run_lowering, kick)
+		grip.present(celestial_view.global_position)
+		return
 	var world := Vector3(facing.x, 0, facing.y)
 	var right := camera.global_basis.x
 	var back := Vector3(camera.global_basis.z.x, 0, camera.global_basis.z.z).normalized()
@@ -69,6 +84,7 @@ func refresh() -> void:
 	grip.present(global_position)
 
 func muzzle_position() -> Vector3:
+	if celestial: return celestial_view.muzzle_position()
 	var camera := get_viewport().get_camera_3d()
 	if camera == null or _atlas.region.size.is_zero_approx(): return global_position
 	var point := _muzzle_pixel

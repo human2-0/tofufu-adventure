@@ -27,7 +27,7 @@ func _run() -> void:
 	interact.pressed = true
 	game.merchant._unhandled_input(interact)
 	check(game.merchant.window.visible and not game.shooting_view.local_input.enabled, "interaction opens Grandpa Fufu shop and pauses combat input")
-	check(game.merchant.window._stock_grid.get_child_count() == WeaponTrade.BUYABLE_IDS.size(), "shop presents all gear and apparel in a stock tile grid")
+	check(game.merchant.window._stock_grid.get_child_count() == WeaponTrade.BUYABLE_IDS.size() - CelestialItems.IDS.size(), "Grandpa's stock excludes Nimbus's celestial equipment")
 	game.merchant.window._first_button.grab_focus()
 	check(game.merchant.window._description.text.contains("close-range blade"), "focused shop item shows its description")
 	game.merchant.window.close()

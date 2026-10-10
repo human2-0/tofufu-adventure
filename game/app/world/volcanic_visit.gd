@@ -14,7 +14,7 @@ func _process(_delta: float) -> void:
 	water.set_shader_parameter("dive_view", TerrainLocomotion.immersion(game.camera.global_position, game.world))
 	var castle := game.world.volcanic.castle
 	castle.present(game.player.global_position, not game.shooting_view.shoulder)
-	castle.king.greeting.visible = game.hud.visible and not game.player.transport_active and game.player.global_position.distance_to(castle.king.global_position) < 7.0
+	castle.king.greeting.visible = game.hud.visible and not game.player.transport_active and castle.king.greeting_enabled and game.player.global_position.distance_to(castle.king.global_position) < 7.0
 
 func _physics_process(delta: float) -> void:
 	burn_clock += delta

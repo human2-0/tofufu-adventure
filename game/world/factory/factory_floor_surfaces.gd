@@ -24,15 +24,11 @@ static func plain_material(mesh: MeshInstance3D) -> void:
 static func _plane(parent: Node3D, title: String, at: Vector3, size: Vector2, color: Color) -> void:
 	var plane := PlaneMesh.new()
 	plane.size = size
-	var material := StandardMaterial3D.new()
-	material.albedo_color = color
-	material.diffuse_mode = BaseMaterial3D.DIFFUSE_TOON
-	material.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
-	material.roughness = 1.0
-	plane.material = material
+	plane.material = FactorySurfaceMaterials.material("floor", color, false)
 	var surface := MeshInstance3D.new()
 	surface.name = title
 	surface.mesh = plane
 	surface.position = at
 	surface.set_meta("factory_floor_surface", true)
+	surface.set_meta("factory_surface", "floor")
 	parent.add_child(surface)

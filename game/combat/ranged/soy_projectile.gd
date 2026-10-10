@@ -12,6 +12,8 @@ var shooter: CollisionObject3D
 var targets: Array[Damageable] = []
 var authoritative: bool = true
 var ricochet: bool = false
+var celestial: bool = false
+var ray_view: CelestialSoyRay
 var ricochet_bounces: int = 0
 var ignored_bodies: Array[CollisionObject3D] = []
 const MAX_RICOCHETS: int = 3
@@ -38,6 +40,10 @@ func _ready() -> void:
 	sprite.top_level = true
 	sprite.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	add_child(sprite)
+	if celestial:
+		sprite.hide()
+		ray_view = CelestialSoyRay.new()
+		add_child(ray_view)
 
 func _physics_process(delta: float) -> void:
 	_previous_position = global_position
@@ -119,6 +125,7 @@ func _hit(body: Object, point: Vector3) -> void:
 
 func _process(_delta: float) -> void:
 	_sprite.global_position = visual_position(Engine.get_physics_interpolation_fraction())
+	if ray_view != null: ray_view.present(_sprite.global_position, velocity)
 
 func visual_position(fraction: float) -> Vector3:
 	var at := _previous_position.lerp(global_position, fraction)

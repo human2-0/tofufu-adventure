@@ -3,6 +3,11 @@ extends RefCounted
 ## Applies peer snapshots and presents one actor; state remains on its owner.
 
 static func accept_view(member: CoopActor, state: Dictionary) -> void:
+	var reset_motion: bool = member.target_state.is_empty() or state.get("respawns", 0) != member.target_state.get("respawns", 0) or state.get("transport", false) != member.target_state.get("transport", false)
+	member.motion.push(CoopValues.vector3(state.position), CoopValues.vector3(state.velocity), Time.get_ticks_usec() / 1000000.0, reset_motion)
+	if member.prediction == null and reset_motion:
+		member.actor.position = CoopValues.vector3(state.position)
+		member.actor.relocated.emit()
 	member.actor.parrot_rest = CoopValues.vector3(state.parrot_rest) if state.get("parrot_rest", []).size() == 3 else Vector3.INF
 	if state.has("quests") and state.quests != member.quests.capture(): member.quests.restore(state.quests)
 	if member.prediction == null: member.actor.transport_active = bool(state.get("transport", false))
@@ -56,7 +61,7 @@ static func process(member: CoopActor, delta: float) -> void:
 	else:
 		member.actor.visuals.present(command, member.actor.velocity, member.actor.is_on_floor() if member.prediction != null else state.grounded, member.actor.motor.is_dashing if member.prediction != null else state.dashing, delta, member.actor.motor.jump_charge if member.prediction != null else state.charge, state.get("clearance", 100.0))
 	var view: Dictionary = state.combat.duplicate()
-	view.elapsed += minf(member._view_age, 0.1) * member.combat.attack_speed_multiplier
+	view.elapsed += maxf(0.0, minf(member._view_age, 0.1) - float(view.get("hit_pause", 0.0))) * member.combat.melee_speed()
 	# One facing for the hand and weapon, including immediate local mouse look.
 	var facing := command.aim if aim_locked or command.attack_held else (command.move if not command.move.is_zero_approx() else command.aim)
 	view.facing = [facing.x, facing.y]
@@ -83,10 +88,8 @@ static func refresh_hud(member: CoopActor, state: Dictionary) -> void:
 	member.hud.show_gun(state.combat.get("gun", false), state.combat.get("ads", false))
 	member.hud.show_gun_status(int(state.combat.get("gun_magazine", SoyGun.MAGAZINE_SIZE)), float(state.combat.get("gun_reload", 0.0)), float(state.combat.get("gun_charge", 0.0)), state.combat.get("gun", false))
 
-static func physics_process(member: CoopActor, delta: float) -> void:
+static func physics_process(member: CoopActor, _delta: float) -> void:
 	if member.authority or member.target_state.is_empty(): return
 	if member.prediction != null and not member.actor.transport_active: return
-	var at := CoopValues.vector3(member.target_state.position)
 	member.actor.velocity = CoopValues.vector3(member.target_state.velocity)
-	at += member.actor.velocity * minf(member._view_age, 0.1)
-	member.actor.position = member.actor.position.lerp(at, 1.0 - exp(-22.0 * delta)) if member.actor.position.distance_to(at) < 5.0 else at
+	member.actor.position = member.motion.sample(Time.get_ticks_usec() / 1000000.0)

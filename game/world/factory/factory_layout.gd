@@ -7,6 +7,7 @@ const INTAKE_IDS: Array[String] = ["intake_chilled", "intake_tofu", "intake_oil"
 const CHEMICAL_IDS: Array[String] = ["nigari", "gypsum", "citric_acid", "vinegar", "lemon_concentrate", "glucono_delta_lactone", "calcium_chloride", "table_salt", "baking_soda", "sodium_carbonate", "sugar", "starch", "agar", "gelatin", "yeast", "pectin", "potassium_citrate", "sodium_citrate", "distilled_water", "mineral_oil"]
 
 static func position_for(object_id: String) -> Vector3:
+	if object_id.begins_with("stash_"): return FactoryHiddenChests.position_for(object_id)
 	var index := SACK_IDS.find(object_id)
 	if index >= 0: return Vector3(294 + index * 6, 0.2, -175)
 	index = INTAKE_IDS.find(object_id)

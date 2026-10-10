@@ -12,6 +12,7 @@ func _ready() -> void:
 	_landmarks()
 	_scatter()
 	_boundaries()
+	StaticDecorationBatch.build(self)
 
 func point(x: float, z: float, lift: float = 0.0) -> Vector3:
 	return Vector3(x, DesertTerrain.height_at(x, z, farm) + lift, z)

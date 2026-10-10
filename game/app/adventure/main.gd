@@ -36,6 +36,7 @@ var quest_giver: QuestGiver
 var world_items: WorldItems
 var inventory_window: InventoryWindow
 var seed_storage: SeedStorage
+var castle_adventure: CastleAdventure
 var factory_dungeon: TofuDungeon
 var meadow_harvest: MeadowHarvest
 var apple_harvest: AppleHarvest
@@ -64,6 +65,7 @@ func _physics_process(_delta: float) -> void:
 	_in_water = in_water
 
 func _on_command(command: PlayerCommand, delta: float) -> void:
+	ActorMeleeImpact.prepare(player, command)
 	BarnPeace.prepare(self, player, combat, command)
 	if command.cancel_actions: combat.reset()
 	var moving := Vector2(player.velocity.x, player.velocity.z).length_squared() > 0.01
@@ -111,6 +113,7 @@ func _respawn() -> void:
 	hud.announce("Back at the nursery / Fresh health. Keep exploring!")
 
 func _on_player_depleted() -> void:
+	if castle_adventure != null and castle_adventure.party.recover(player): return
 	if factory_dungeon != null and factory_dungeon.actor_in_run(player) and factory_dungeon.puzzle_enabled:
 		factory_dungeon.puzzle_runtime.release_actor(player)
 		if factory_dungeon.puzzle.phase == TofuPuzzleContract.Phase.COMBAT:

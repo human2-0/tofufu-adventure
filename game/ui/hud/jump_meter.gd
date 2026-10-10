@@ -18,10 +18,10 @@ func _ready() -> void:
 	bg.set_anchors_and_offsets_preset(PRESET_FULL_RECT)
 	bg.mouse_filter = MOUSE_FILTER_IGNORE
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color(0.08, 0.14, 0.18, 0.55)
+	style.bg_color = Color("183b37ef")
 	style.set_corner_radius_all(10)
 	style.set_content_margin_all(4)
-	style.border_color = Color("91cbb944")
+	style.border_color = Color("fff9e9cc")
 	style.set_border_width_all(1)
 	bg.add_theme_stylebox_override("panel", style)
 	add_child(bg)

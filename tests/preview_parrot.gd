@@ -22,6 +22,7 @@ func _run() -> void:
 	game.weather.set_physics_process(false)
 	game.encounters.process_mode = Node.PROCESS_MODE_DISABLED
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.progression.progress.award_experience(CharacterProgress.threshold(8, true))
 	var station := game.parrot_travel.perches.stations[0].global_position
 	game.player.relocate(station + Vector3(0, 0.1, 3))

@@ -1,6 +1,12 @@
 extends SceneTree
 ## Real collision checks for independent character access and the southern biome crossing.
 
+class CoastInput extends PlayerCommandSource:
+	func sample(_at: Vector3) -> PlayerCommand:
+		var command := PlayerCommand.new()
+		command.move = Vector2.RIGHT
+		return command
+
 var failures: int = 0
 
 func _initialize() -> void:
@@ -43,6 +49,27 @@ func _run() -> void:
 	for at in [Vector3(0, 20, 224), Vector3(20, 20, 270), Vector3(-40, 20, 314)]:
 		var ray := PhysicsRayQueryParameters3D.create(at, at + Vector3.DOWN * 30, 1)
 		check(not actor.get_world_3d().direct_space_state.intersect_ray(ray).is_empty(), "jungle has collision ground")
+	for z in [238.0, 270.0, 300.0, 330.0]:
+		check(is_equal_approx(JungleTerrain.height_at(82, z, scene.world.desert), VolcanicTerrain.height_at(82, z)), "eastern beach and ocean seabed meet exactly")
+		for x in [60.0, 70.0, 79.0, 81.0, 83.0]:
+			var at := Vector3(x, 20, z)
+			var ray := PhysicsRayQueryParameters3D.create(at, at + Vector3.DOWN * 35, 1)
+			var hit := actor.get_world_3d().direct_space_state.intersect_ray(ray)
+			check(not hit.is_empty(), "coast has uninterrupted physical ground")
+			if not hit.is_empty(): check(absf(hit.position.y - scene.world.ground_point(x, z).y) < 0.08, "shore rendering, placement and collision agree")
+		check(MapTerrainImage._color(scene.world, Vector2(81.99, z)).is_equal_approx(MapTerrainImage._color(scene.world, Vector2(82.01, z))), "atlas water colours remain continuous across the eastern seam")
+		var seabed: Vector3 = scene.world.ground_point(80, z, 0.05)
+		check(ParrotLanding.height(scene, seabed) >= JungleCoast.WATER_LEVEL, "parrot hovering respects the new eastern sea level")
+		check(scene.world.is_water(seabed) and TerrainLocomotion.immersion(seabed, scene.world) > 0.9, "jungle sea uses the underwater movement rules")
+	scene.encounters.process_mode = Node.PROCESS_MODE_DISABLED
+	var coast_input := CoastInput.new()
+	actor.add_child(coast_input)
+	actor.command_source = coast_input
+	actor.relocate(scene.world.ground_point(62, 270, 0.1))
+	actor.set_physics_process(true)
+	for tick in 540: await physics_frame
+	check(actor.position.x > 83 and actor.is_on_floor() and actor.position.y < -7, "ordinary walking descends the beach and crosses onto the offshore collision seabed")
+	actor.set_physics_process(false)
 	progress.restore({})
 	check(not actor.test_move(start, Vector3(0, 0, 9)), "restoring lower level keeps test world open")
 	if DisplayServer.get_name() != "headless":

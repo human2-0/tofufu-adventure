@@ -3,6 +3,7 @@ extends Node3D
 ## Permanent floating terrain above Jadewild, reached by flying a parrot.
 
 var godfufu := Godfufu.new()
+var court := CloudCourt.new()
 var motes: Array[MeshInstance3D] = []
 var elapsed: float = 0.0
 
@@ -11,6 +12,10 @@ func _ready() -> void:
 	CloudTerrain.build(self)
 	_cloud_banks()
 	_cloud_garden()
+	CloudKingdom.build(self)
+	StaticDecorationBatch.build(self)
+	add_child(CloudMist.new())
+	add_child(court)
 	godfufu.position = CloudTerrain.point(-8, 270)
 	add_child(godfufu)
 	MeadowGeometry.signpost(self, CloudTerrain.point(-12, 251), "CLOUD REALM · GODFUFU ↑")
@@ -27,6 +32,9 @@ func _cloud_banks() -> void:
 			var angle := i * TAU / 18.0
 			var at := center + Vector2(cos(angle), sin(angle)) * (island.z - 1.5)
 			_puff(point(at.x, at.y, -3.0), Vector3(3.8, 2.6, 3.8), Color("eee8ff").lerp(Color("d3eaf9"), (sin(i * 1.7) + 1.0) * 0.5))
+			for side in [-1, 1]:
+				var lobe: Vector2 = at + Vector2(-sin(angle), cos(angle)) * side * 2.4
+				_puff(point(lobe.x, lobe.y, -3.6), Vector3(2.6, 1.8, 2.6), Color("eeeafa"))
 		_puff(point(center.x, center.y, -4.2), Vector3(island.z * 0.8, 4, island.z * 0.8), Color("b8bde9"))
 	for i in 12:
 		var at := CloudTerrain.CENTER + Vector2(cos(i * 2.1) * 47, sin(i * 2.1) * 38)
@@ -42,6 +50,7 @@ func _cloud_garden() -> void:
 	for i in 18:
 		var at := CloudTerrain.CENTER + Vector2(cos(i * 2.4), sin(i * 2.4)) * (7.0 + i % 3 * 3.0)
 		var mote := MeadowGeometry.box(self, point(at.x, at.y, 2.0 + i % 3), Vector3(0.15, 0.15, 0.15), Color("fff0b0"))
+		mote.name = "CelestialMote_%d" % i
 		mote.set_meta("idle_y", mote.position.y)
 		motes.append(mote)
 	var ring := TorusMesh.new()
@@ -59,9 +68,7 @@ func _puff(at: Vector3, size: Vector3, color: Color) -> void:
 	mesh.rings = 8
 	mesh.radius = 1.0
 	mesh.height = 2.0
-	var material := MeadowGeometry.material(color.darkened(0.12))
-	material.next_pass = null
-	mesh.material = material
+	mesh.material = CloudMaterials.cloud(color.lightened(0.35))
 	var puff := MeshInstance3D.new()
 	puff.mesh = mesh
 	puff.position = at

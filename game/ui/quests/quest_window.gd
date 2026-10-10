@@ -26,8 +26,8 @@ func _ready() -> void:
 	var panel := PanelContainer.new()
 	center.add_child(panel)
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("173632f7")
-	style.border_color = Color("9bd58c")
+	style.bg_color = Color("183b37f2")
+	style.border_color = Color("fff9e9")
 	style.set_border_width_all(3)
 	style.set_corner_radius_all(18)
 	style.set_content_margin_all(22)
@@ -46,7 +46,7 @@ func _ready() -> void:
 	var title := Label.new()
 	title.text = "GRANDMA FUFU · QUESTS"
 	title.add_theme_font_size_override("font_size", 14)
-	title.add_theme_color_override("font_color", Color("f5dfac"))
+	title.add_theme_color_override("font_color", Color("f4c75d"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 
@@ -113,7 +113,7 @@ func _ready() -> void:
 	_rewards_label = Label.new()
 	_rewards_label.text = "Reward: 100 Edamame"
 	_rewards_label.add_theme_font_size_override("font_size", 11)
-	_rewards_label.add_theme_color_override("font_color", Color("eacb83"))
+	_rewards_label.add_theme_color_override("font_color", Color("f4c75d"))
 	box_col.add_child(_rewards_label)
 
 	_action_button = MangaButton.new()

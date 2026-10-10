@@ -4,7 +4,7 @@ extends Node
 
 signal changed(condition: int)
 enum Condition { CLEAR, OVERCAST, RAIN, WINDY }
-@export var cycle_seconds: float = 180.0
+@export var cycle_seconds: float = 420.0
 var phase: float = 0.0
 var condition: Condition = Condition.CLEAR
 
@@ -14,11 +14,11 @@ func _physics_process(delta: float) -> void:
 func set_phase(value: float) -> void:
 	phase = clampf(value, 0.0, 1.0)
 	var next := Condition.CLEAR
-	if phase >= 1.0 / 3.0 and phase < 2.0 / 3.0:
+	if phase >= 0.4 and phase < 0.5:
 		next = Condition.RAIN
 	elif phase >= 0.08 and phase < 0.22:
 		next = Condition.WINDY
-	elif phase >= 0.25 and phase < 0.75:
+	elif phase >= 0.32 and phase < 0.58:
 		next = Condition.OVERCAST
 	if condition != next:
 		condition = next

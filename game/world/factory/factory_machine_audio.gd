@@ -18,7 +18,17 @@ func _ready() -> void:
 	_loop = _player(-16.0)
 	_effect = _player(-10.0)
 
-func present(snapshot: Dictionary, motion: Dictionary) -> void:
+func present(snapshot: Dictionary, motion: Dictionary, baseline: bool = false) -> void:
+	if baseline:
+		_batch_started = (snapshot.get("sorting", {}).get("assignments", {}) as Dictionary).has("sack_mature")
+		var lab: Dictionary = snapshot.get("lab", {})
+		_pouring = bool(lab.get("curd_encounter", false)) or bool(lab.get("complete", false))
+		_rejected = bool(lab.get("combat_locked", false)) and not _pouring
+		_cut_revision = int(snapshot.get("cut", {}).get("revision", 0))
+		_sealed = snapshot.get("pack", {}).get("sealed", []).duplicate()
+		_mill_remaining = 0.0
+		_loop.stop()
+		_effect.stop()
 	match room:
 		0:
 			var sorting: Dictionary = snapshot.get("sorting", {})

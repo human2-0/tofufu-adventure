@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="256" viewBox="0 0 128 256">
+<defs>
+ <linearGradient id="vane"><stop stop-color="#50606a"/><stop offset=".18" stop-color="#ccd5da"/><stop offset=".46" stop-color="#fff"/><stop offset=".54" stop-color="#d3dde2"/><stop offset=".84" stop-color="#edf3f5"/><stop offset="1" stop-color="#556671"/></linearGradient>
+ <linearGradient id="tip" x2="0" y2="1"><stop stop-color="#fff"/><stop offset=".8" stop-color="#fff"/><stop offset="1" stop-color="#657582"/></linearGradient>
+ <pattern id="barbs" width="128" height="18" patternUnits="userSpaceOnUse"><path d="M0 0L64 18L128 0" fill="none" stroke="#53616b" stroke-opacity=".24" stroke-width="2"/><path d="M0 4L64 22L128 4" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1"/></pattern>
+</defs>
+<path fill="url(#vane)" d="M0 0H128V256H0z"/>
+<path fill="url(#tip)" opacity=".2" d="M0 0H128V256H0z"/>
+<path fill="url(#barbs)" d="M0 0H128V256H0z"/>
+<path d="M64 0Q60 100 64 256" stroke="#364958" stroke-opacity=".62" stroke-width="3" fill="none"/>
+<path d="M66 0Q62 100 66 256" stroke="#fff" stroke-opacity=".7" stroke-width="1.2" fill="none"/>
+</svg>

@@ -45,6 +45,9 @@ func _present_visual(aim: Vector3, delta: float) -> void:
 func _flash_visual() -> void:
 	_bee_visual.flash()
 
+func _reaction_visual() -> Node3D:
+	return _bee_visual
+
 func _nameplate_text() -> String:
 	return "WILD BEE · LV %d" % LEVEL
 

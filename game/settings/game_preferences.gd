@@ -2,7 +2,7 @@ class_name GamePreferences
 extends RefCounted
 ## Local settings only. ConfigFile stores primitives, never peer-supplied objects.
 
-const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "run", "attack", "guard", "punch", "drop_weapon", "pickup_weapon", "combat_slot_1", "combat_slot_2", "camera_mode", "toggle_inventory", "toggle_map", "use_support_1", "use_support_2", "use_support_3", "use_support_4", "toggle_help", "return_to_camp", "skip_time"]
+const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "run", "attack", "guard", "punch", "drop_weapon", "pickup_weapon", "combat_slot_1", "combat_slot_2", "camera_mode", "camera_direction", "toggle_inventory", "toggle_map", "use_support_1", "use_support_2", "use_support_3", "use_support_4", "toggle_help", "return_to_camp", "skip_time"]
 const RESOLUTIONS: Array[Vector2i] = [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 var path: String = "user://preferences.cfg"
 var config := ConfigFile.new()
@@ -12,11 +12,15 @@ var fullscreen: bool = true
 var frame_limit: int = 120
 var render_scale: float = 1.0
 var vsync: bool = false
+var adaptive_resolution: bool = true
 var minimap_zoom: float = 1.0
 var skip_item_drop_warning: bool = false
+var nickname: String = ""
 
 func load_preferences() -> void:
 	config.load(path)
+	var stored_name: Variant = config.get_value("profile", "nickname", "")
+	nickname = clean_nickname(stored_name) if stored_name is String else ""
 	var zoom_value: Variant = config.get_value("map", "zoom", 1.0)
 	minimap_zoom = clampf(float(zoom_value), 0.5, 2.5) if (zoom_value is float or zoom_value is int) and is_finite(float(zoom_value)) else 1.0
 	skip_item_drop_warning = bool(config.get_value("inventory", "skip_item_drop_warning", false))
@@ -31,6 +35,7 @@ func load_preferences() -> void:
 				if event != null:
 					_replace(action, event, device)
 	vsync = bool(config.get_value("rendering", "vsync", false))
+	adaptive_resolution = bool(config.get_value("rendering", "adaptive", true))
 	frame_limit = int(config.get_value("rendering", "frame_limit", 120))
 	if frame_limit not in [0, 60, 120, 144]: frame_limit = 120
 	var scale_value: Variant = config.get_value("rendering", "scale", 1.0)
@@ -39,6 +44,7 @@ func load_preferences() -> void:
 	apply_display(resolution, fullscreen)
 
 func save() -> Error:
+	config.set_value("profile", "nickname", nickname)
 	config.set_value("map", "zoom", minimap_zoom)
 	config.set_value("inventory", "skip_item_drop_warning", skip_item_drop_warning)
 	config.set_value("display", "resolution", resolution)
@@ -46,8 +52,21 @@ func save() -> Error:
 	config.set_value("rendering", "frame_limit", frame_limit)
 	config.set_value("rendering", "scale", render_scale)
 	config.set_value("rendering", "vsync", vsync)
+	config.set_value("rendering", "adaptive", adaptive_resolution)
 	config.set_value("controls", "deadzone", deadzone)
 	return config.save(path)
+
+func remember_nickname(value: String) -> Error:
+	nickname = clean_nickname(value)
+	if nickname.is_empty(): nickname = "Fufu %04d" % randi_range(0, 9999)
+	return save()
+
+static func clean_nickname(value: String) -> String:
+	var result := ""
+	for character in value:
+		if character.unicode_at(0) >= 32 and character.unicode_at(0) != 127:
+			result += character
+	return result.strip_edges().left(24)
 
 func remember_item_drop_warning_skip() -> void:
 	skip_item_drop_warning = true

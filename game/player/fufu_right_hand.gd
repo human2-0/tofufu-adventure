@@ -8,6 +8,7 @@ const WALK: Array[Vector2] = [Vector2(112,212), Vector2(112,208), Vector2(112,20
 const DIAGONAL: Array[Vector2] = [Vector2(120,226), Vector2(121,222), Vector2(119,225), Vector2(118,224), Vector2(100,218), Vector2(99,219), Vector2(100,219), Vector2(102,219), Vector2(235,184), Vector2(232,183), Vector2(234,186), Vector2(230,184), Vector2(219,180), Vector2(219,177), Vector2(220,180), Vector2(218,178)]
 
 static func point(sprite: FufuVisuals) -> Vector2:
+	if sprite.worn_set == "celestial": return sprite.celestial_art.hand
 	if not sprite.worn_set.is_empty():
 		return sprite.worn_appearance.hand_point(sprite, sprite.anim_timer > 0.0, sprite._using_jump_frame, sprite.jump_animation.frame, int(sprite.current_facing))
 	if sprite._using_charge_frame:
@@ -19,4 +20,5 @@ static func point(sprite: FufuVisuals) -> Vector2:
 	return DIAGONAL[sprite.frame] if sprite.texture == sprite.diagonal_texture else WALK[sprite.frame]
 
 static func tint(set_id: String) -> Color:
+	if set_id == "celestial": return Color("f5efdf")
 	return Color("fff0bd") if set_id.is_empty() else (Color("91bf38") if set_id == "bright_leaf" else Color("42604b"))

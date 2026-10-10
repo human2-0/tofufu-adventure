@@ -24,6 +24,7 @@ static func build(world: Meadow) -> void:
 	world.map_npcs["Stodoła · Personal chests"] = world.seed_bank
 	MeadowGeometry.signpost(world, world.ground_point(19, 1), "STODOŁA · GRANDMA · GRANDPA ↑")
 	MeadowGeometry.signpost(world, world.ground_point(69, 0), "COUNTRY ROAD · FIELDS")
+	StaticDecorationBatch.build(world)
 	for i in 4:
 		var cat := MeadowAnimal.new()
 		cat.kind = "cat"
@@ -36,17 +37,7 @@ static func build(world: Meadow) -> void:
 static func _house(world: Meadow) -> void:
 	var house := FarmBuildings.cottage(world, world.ground_point(HOUSE.x, HOUSE.y), "A · DOM BABCI", Color("493024"), Vector3(10, 4, 7))
 	house.rotation.y = PI
-	# Recolor the authored shell, then add staggered mortar courses.
-	(house.get_child(1) as MeshInstance3D).material_override = MeadowGeometry.material(Color("a64d39"))
-	for row in 12:
-		for side in [-1.0, 1.0]:
-			MeadowGeometry.box(house, Vector3(side * 5.02, 0.4 + row * 0.29, 0), Vector3(0.025, 0.025, 7), Color("c18a70"))
-		MeadowGeometry.box(house, Vector3(0, 0.4 + row * 0.29, -3.52), Vector3(10, 0.025, 0.025), Color("c18a70"))
-		MeadowGeometry.box(house, Vector3(0, 0.4 + row * 0.29, 3.52), Vector3(10, 0.025, 0.025), Color("c18a70"))
-		for column in 12:
-			var x := -4.8 + column * 0.85 + (0.42 if row % 2 else 0.0)
-			if absf(x) < 0.65 and row < 6: continue
-			MeadowGeometry.box(house, Vector3(x, 0.54 + row * 0.29, 3.53), Vector3(0.025, 0.26, 0.025), Color("c18a70"))
+	MeadowBuildingDetails.house(house)
 	for i in 3:
 		MeadowGeometry.box(house, Vector3(0, 0.08 + i * 0.09, 5.3 - i * 0.48), Vector3(3.0, 0.16 + i * 0.18, 0.48), Color("aaa99f"), true)
 	MeadowGeometry.box(house, Vector3(0, 0.42, 3.95), Vector3(3, 0.2, 0.75), Color("aaa99f"), true)
@@ -55,6 +46,7 @@ static func _house(world: Meadow) -> void:
 	MeadowGeometry.rock(house, Vector3(1.4, 0.58, 4.25), Vector3(0.19, 0.06, 0.19), Color("699cac"))
 	for side in [-1.0, 1.0]:
 		MeadowGeometry.rock(house, Vector3(-0.9 + side * 0.12, 0.59, 4), Vector3(0.10, 0.06, 0.2), Color("493024"))
+	MeadowSurfaces.apply_tree(house)
 
 static func _shed(world: Meadow) -> void:
 	var shed := MeadowBarn.shell(world, world.ground_point(SHED.x, SHED.y), "C · WIATA · MACHINERY", Vector3(13, 3.5, 8), Color("71503a"), 10.0)
@@ -69,6 +61,7 @@ static func _shed(world: Meadow) -> void:
 			for z in [-0.8, 0.8]:
 				MeadowGeometry.rock(tractor, Vector3(side * 0.85, 0.6, z), Vector3(0.28, 0.65 if z < 0 else 0.42, 0.65 if z < 0 else 0.42), Color("303633"), true)
 		MeadowGeometry.box(tractor, Vector3(0, 1.75, 0.65), Vector3(0.12, 1.3, 0.12), Color("343c3d"))
+		MeadowMachineryDetails.build_tractor(tractor)
 	for i in 4:
 		MeadowGeometry.rock(shed, Vector3(5, 0.8 + i * 0.22, -2.5), Vector3(0.6, 0.15, 0.6), Color("353b3a"))
 		var plough := MeadowGeometry.box(shed, Vector3(-5 + i * 0.65, 0.65, 2), Vector3(0.4, 0.6, 0.8), Color("68727a"), true)
@@ -76,6 +69,7 @@ static func _shed(world: Meadow) -> void:
 	MeadowGeometry.box(shed, Vector3(4, 1.05, 2), Vector3(2.2, 0.15, 1), Color("997252"), true)
 	for i in 4:
 		MeadowGeometry.box(shed, Vector3(3.2 + i * 0.5, 1.2, 2), Vector3(0.08, 0.08, 0.8), Color("8a9398"))
+	MeadowSurfaces.apply_tree(shed)
 
 static func resident(parent: Node3D, at: Vector3, title: String, asset: String) -> Node3D:
 	var npc := Node3D.new()

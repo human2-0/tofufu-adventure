@@ -6,6 +6,9 @@ var travel: ParrotTravel
 var riders: Dictionary[Player, ParrotArt] = {}
 var parked: Dictionary[Player, ParrotArt] = {}
 
+func _ready() -> void:
+	process_priority = -8 # After ActorPresentation, before the bird animation.
+
 func _process(_delta: float) -> void:
 	var actors: Array[Player] = [travel.game.player]
 	if travel.session != null: actors.assign(travel.session.roster.actors.values())
@@ -17,6 +20,8 @@ func _process(_delta: float) -> void:
 				actor.add_child(bird)
 				bird.position.y = -travel.SADDLE_HEIGHT
 				riders[actor] = bird
+			var offset := actor.presentation.ground_position - actor.global_position
+			riders[actor].position = actor.global_basis.inverse() * offset - Vector3.UP * travel.SADDLE_HEIGHT
 			riders[actor].airborne = true
 			riders[actor].heading = actor.velocity
 		elif riders.has(actor):

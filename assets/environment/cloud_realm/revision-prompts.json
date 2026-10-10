@@ -1,0 +1,7 @@
+{
+  "mode": "built-in imagegen",
+  "date": "2026-10-08",
+  "prompts": {
+    "cloud_soft_revision": "Edit this production cloud texture. Retain its seamless square repeating all-over cloud surface, but reduce contrast strongly: bring the lavender blue recesses almost up to the white highlights, so the entire image is soft warm pearl ivory with extremely subtle pale lavender shading. Aim for 80 percent less value contrast than the input. Keep visible wispy cotton detail, but no deep sky-blue pockets or dramatic shadows. This will cover a walkable heavenly cloud floor and rounded vapor masses; it should feel like soft airy cotton, never a photographed cloud picture printed on a ball. Flat evenly lit seamless material sample, no horizon or objects. Opaque PNG."
+  }
+}

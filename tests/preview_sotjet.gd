@@ -20,8 +20,9 @@ func _run() -> void:
 	game.loadout.select(2)
 	game.camera.set_shoulder(true)
 	game.camera.yaw = 0
-	game.camera._physics_process(0.016)
+	game.camera.reset_follow()
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.hud.announce("")
 	var command := PlayerCommand.new()
 	command.weapon_slot = 4

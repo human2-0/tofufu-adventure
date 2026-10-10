@@ -18,7 +18,8 @@ func _init() -> void:
 	socket.inbound_buffer_size = 262144
 	socket.outbound_buffer_size = 262144
 	socket.max_queued_packets = 256
-	socket.heartbeat_interval = 5
+	# Application ping/pong below owns liveness, including longer scene construction.
+	socket.heartbeat_interval = 0
 
 func poll() -> bool:
 	socket.poll()

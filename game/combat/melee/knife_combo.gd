@@ -3,6 +3,7 @@ extends RefCounted
 ## Per-attacker timing streak. A confirmed knife hit keeps the next input window open.
 
 var count: int = 0
+var chain: int = 0
 var window_remaining: float = 0.0
 var _hit_this_attack: bool = false
 var _tuning: CombatTuning
@@ -17,6 +18,7 @@ func step(delta: float) -> bool:
 	if window_remaining > 0.0:
 		return false
 	count = 0
+	chain = 0
 	return true
 
 func can_stab() -> bool:
@@ -33,23 +35,28 @@ func confirm_hit() -> bool:
 		return false
 	_hit_this_attack = true
 	count = mini(_tuning.combo_max_count, count + 1)
+	chain = (chain + 1) % 4
 	window_remaining = _tuning.combo_window_seconds
 	return true
 
-func finish_attack() -> bool:
+func finish_attack(finisher: bool = false) -> bool:
 	if _hit_this_attack:
+		if finisher: chain = 0
 		return false
 	var changed := count > 0
 	count = 0
+	chain = 0
 	window_remaining = 0.0
 	return changed
 
 func reset() -> void:
 	count = 0
+	chain = 0
 	window_remaining = 0.0
 	_hit_this_attack = false
 
-func restore(saved_count: int, saved_window: float) -> void:
+func restore(saved_count: int, saved_window: float, saved_chain: int = -1) -> void:
 	count = clampi(saved_count, 0, _tuning.combo_max_count)
 	window_remaining = clampf(saved_window, 0.0, _tuning.combo_window_seconds)
+	chain = clampi(saved_chain, 0, 3) if saved_chain >= 0 else count % 4
 	_hit_this_attack = false

@@ -45,25 +45,22 @@ static func _fields(world: Meadow) -> void:
 	var soy_mesh := SphereMesh.new()
 	soy_mesh.radius = 0.25
 	soy_mesh.height = 0.65
+	soy_mesh.radial_segments = 12
+	soy_mesh.rings = 6
 	soy_mesh.material = MeadowGeometry.material(Color("759f4e"))
 	var wheat_mesh := CylinderMesh.new()
 	wheat_mesh.top_radius = 0.05
 	wheat_mesh.bottom_radius = 0.018
 	wheat_mesh.height = 1.25
+	wheat_mesh.radial_segments = 8
 	wheat_mesh.material = MeadowGeometry.material(Color("d7b963"))
 	for kind in 2:
-		var multi := MultiMesh.new()
-		multi.transform_format = MultiMesh.TRANSFORM_3D
-		multi.mesh = soy_mesh if kind == 0 else wheat_mesh
-		multi.instance_count = 1800
+		var poses: Array[Transform3D] = []
 		for i in 1800:
 			var x := 73.8 + (i % 40) * 0.72 if kind == 0 else 18.4 + (i % 30) * 0.70
 			var z := -77.2 + (i / 40) * 0.63 if kind == 0 else 20.4 + (i / 30) * 0.56
-			multi.set_instance_transform(i, Transform3D(Basis.IDENTITY, world.ground_point(x, z, 0.4 if kind == 0 else 0.63)))
-		var instance := MultiMeshInstance3D.new()
-		instance.name = "NortheastSoyFields" if kind == 0 else "SouthernWheatFields"
-		instance.multimesh = multi
-		world.add_child(instance)
+			poses.append(Transform3D(Basis.IDENTITY, world.ground_point(x, z, 0.4 if kind == 0 else 0.63)))
+		SceneryInstances.build(world, "NortheastSoyFields" if kind == 0 else "SouthernWheatFields", soy_mesh if kind == 0 else wheat_mesh, poses)
 	MeadowGeometry.signpost(world, world.ground_point(74, -46), "NORTHEAST · SOYBEANS")
 	MeadowGeometry.signpost(world, world.ground_point(22, 19), "SOUTH · WHEAT")
 

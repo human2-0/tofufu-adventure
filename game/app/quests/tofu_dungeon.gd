@@ -6,6 +6,7 @@ signal puzzle_command_requested(command: TofuPuzzleCommand)
 var game: Node3D
 var state := TofuDungeonState.new()
 var rewards := TofuRewardLedger.new()
+var stashes := TofuStashRules.new()
 var puzzle := TofuDungeonAttempt.new()
 var puzzle_runtime := DungeonPuzzleRuntime.new()
 var puzzle_flow := DungeonPuzzleFlow.new()

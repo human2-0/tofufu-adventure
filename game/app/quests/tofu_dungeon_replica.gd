@@ -24,6 +24,7 @@ static func capture(dungeon: TofuDungeon) -> Dictionary:
 
 static func apply(dungeon: TofuDungeon, data: Dictionary) -> void:
 	if not DungeonSnapshotValidation.valid(data, true): return
+	if data.has("stashes"): dungeon.stashes.restore(data.stashes)
 	dungeon.actor_ids = data.get("actor_ids", {}).duplicate()
 	dungeon.boss_members.assign(data.get("boss_members", []))
 	dungeon.puzzle_flow.observed = data.get("inspections", {}).duplicate()
@@ -80,6 +81,7 @@ static func _sync_enemies(dungeon: TofuDungeon, rows: Array) -> void:
 			if i < dungeon._replica_enemies.size(): dungeon._replica_enemies[i] = enemy
 			else: dungeon._replica_enemies.append(enemy)
 		enemy.position = Vector3(row[1], row[2], row[3])
+		if float(row[4]) < enemy.target.current: enemy.reaction.flash()
 		enemy.target.current = float(row[4])
 
 static func _sync_crates(dungeon: TofuDungeon, rows: Array) -> void:

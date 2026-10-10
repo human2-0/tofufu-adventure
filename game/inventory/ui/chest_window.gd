@@ -62,7 +62,7 @@ func _build_ui() -> void:
 	panel.offset_top = -265
 	panel.offset_bottom = 265
 	var style := StyleBoxFlat.new()
-	style.bg_color = Color("173632f7")
+	style.bg_color = Color("183b37f2")
 	style.border_color = Color("d9b566")
 	style.set_border_width_all(3)
 	style.set_corner_radius_all(18)
@@ -78,7 +78,7 @@ func _build_ui() -> void:
 	title.text = "STODOŁA · PERSONAL CHEST"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 16)
-	title.add_theme_color_override("font_color", Color("f5dfac"))
+	title.add_theme_color_override("font_color", Color("f4c75d"))
 	header.add_child(title)
 	var close_button := Button.new()
 	close_button.text = "✕"

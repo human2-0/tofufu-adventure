@@ -10,6 +10,7 @@ var _active := false
 var _prior_focus: WeakRef
 var _guides: Array[HSlider] = []
 var _preview: Label
+var _widths: Label
 var _pieces: HBoxContainer
 var _commit: Button
 
@@ -27,6 +28,7 @@ func _ready() -> void:
 	panel.add_child(column)
 	MenuStyle.label(column, "PRECISION CUTTING CARRIAGE", 20)
 	MenuStyle.paragraph(column, "Move all five guides. Preview the positions, then commit the complete plan.")
+	MenuStyle.paragraph(column, "Six pieces must be equal, including both ends. Each width may be 95–105% of one equal piece; 100% below means one sixth of the block.")
 	for index in GUIDE_COUNT:
 		var row := HBoxContainer.new()
 		column.add_child(row)
@@ -47,6 +49,7 @@ func _ready() -> void:
 	_pieces.add_theme_constant_override("separation", 2)
 	column.add_child(_pieces)
 	_preview = MenuStyle.paragraph(column, "")
+	_widths = MenuStyle.paragraph(column, "")
 	var actions := HBoxContainer.new()
 	column.add_child(actions)
 	MenuStyle.button(actions, "Preview cuts", _update_preview)
@@ -111,13 +114,18 @@ func _update_preview() -> void:
 		_pieces.remove_child(child)
 		child.queue_free()
 	var previous: float = 0.0
+	var widths := PackedStringArray()
 	for position: float in guide_positions():
 		if position <= previous:
 			_preview.text = "Guides cross or overlap. Adjust their order before committing."
+			_widths.text = "Six widths are available once the guides are in order."
 			return
 		_add_piece(position - previous)
+		widths.append("%.1f%%" % ((position - previous) * 600.0))
 		previous = position
 	_add_piece(1.0 - previous)
+	widths.append("%.1f%%" % ((1.0 - previous) * 600.0))
+	_widths.text = "Piece widths, left to right: " + ", ".join(widths)
 
 func _add_piece(width: float) -> void:
 	var piece := ColorRect.new()

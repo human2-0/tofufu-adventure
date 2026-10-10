@@ -23,32 +23,33 @@ static func _sorting(parent: Node3D) -> void:
 		_scene(parent, intakes[index], Vector3(x, 0, -5), FactoryLayout.INTAKE_IDS[index])
 		var sack := _scene(parent, sacks[index], Vector3(x, 0, 5), FactoryLayout.SACK_IDS[index])
 		(sack.get_node("Body") as StaticBody3D).collision_layer = 0
-	MeadowGeometry.box(parent, Vector3(0, 0.65, -1), Vector3(3, 1.3, 3), Color("7c9690"), true)
-	MeadowGeometry.box(parent, Vector3(0, 1.5, -1), Vector3(2.4, 0.1, 2.4), Color("e9e1c5"))
+	var wash := _box(parent, Vector3(0, 0.65, -1), Vector3(3, 1.3, 3), Color("7c9690"), true)
+	wash.set_meta("factory_interaction_id", "intake_tofu")
+	_box(parent, Vector3(0, 1.5, -1), Vector3(2.4, 0.1, 2.4), Color("e9e1c5"), false, "linen")
 	_label(parent, Vector3(0, 2.2, -1), "WASH → GRIND → FILTER")
-	var soaked := MeadowGeometry.box(parent, Vector3(0, 1.55, -1), Vector3(1.6, 0.16, 1.6), Color("d2bd89"))
+	var soaked := _box(parent, Vector3(0, 1.55, -1), Vector3(1.6, 0.16, 1.6), Color("d2bd89"), false, "cream")
 	soaked.name = "SoakedBeans"
 	soaked.visible = false
-	var pulp := MeadowGeometry.box(parent, Vector3(0.48, 1.43, -5.61), Vector3(0.6, 0.08, 0.55), Color("c7b080"))
+	var pulp := _box(parent, Vector3(0.48, 1.43, -5.61), Vector3(0.6, 0.08, 0.55), Color("c7b080"), false, "cream")
 	pulp.name = "FilteredPulp"
 	pulp.visible = false
 	var line := FactoryBatchLine.new()
 	line.name = "BatchLine"
 	parent.add_child(line)
-	MeadowGeometry.box(parent, Vector3(24.8, 2.7, -3), Vector3(1.6, 0.8, 1.2), Color("607976"))
+	_box(parent, Vector3(24.8, 2.7, -3), Vector3(1.6, 0.8, 1.2), Color("607976"))
 	_label(parent, Vector3(24.8, 3.35, -3), "UPSTREAM BUFFER")
 	# Sealed secondary lines show their output, with no traversable continuation.
 	for x in [-6.0, 6.0]:
-		MeadowGeometry.box(parent, Vector3(x, 0.8, -7.2), Vector3(1.5, 0.15, 2.2), Color("684e3d"))
-		MeadowGeometry.box(parent, Vector3(x, 1.6, -9.4), Vector3(2.0, 3.2, 0.5), Color("607976"), true)
+		_box(parent, Vector3(x, 0.8, -7.2), Vector3(1.5, 0.15, 2.2), Color("684e3d"), false, "wood")
+		_box(parent, Vector3(x, 1.6, -9.4), Vector3(2.0, 3.2, 0.5), Color("607976"), true)
 		for index in 4:
-			MeadowGeometry.box(parent, Vector3(x, 1.0, -6.5 - index * 0.5), Vector3(0.7, 0.22, 0.25), Color("81a36d") if x < 0 else Color("f0e9d2"))
+			_box(parent, Vector3(x, 1.0, -6.5 - index * 0.5), Vector3(0.7, 0.22, 0.25), Color("81a36d") if x < 0 else Color("f0e9d2"), false, "cream")
 
 static func _laboratory(parent: Node3D) -> void:
 	for index in 20:
 		var x := -8.0 + index % 10 * 1.8
 		var z := -7.0 if index < 10 else 7.0
-		MeadowGeometry.box(parent, Vector3(x, 0.55, z), Vector3(1.2, 1.1, 0.65), Color("9b7656"), true)
+		_box(parent, Vector3(x, 0.55, z), Vector3(1.2, 1.1, 0.65), Color("9b7656"), true, "wood")
 		var bottle := _scene(parent, "bottle_%02d" % index, Vector3(x, 1.1, z), "container_%02d" % index)
 		(bottle.get_node("Body") as StaticBody3D).collision_layer = 0
 		var label: Label3D = bottle.get_node("ContentLabel")
@@ -60,8 +61,8 @@ static func _laboratory(parent: Node3D) -> void:
 	_scene(parent, "lab_terminal", Vector3(-6, 0, -2))
 	_scene(parent, "coagulation_tank", Vector3(5, 0, -3))
 	# The return rack hides the floor note; either end stays capsule-safe.
-	MeadowGeometry.box(parent, Vector3(-4, 0.8, 5.4), Vector3(3.4, 1.6, 0.55), Color("827f69"), true)
-	MeadowGeometry.box(parent, Vector3(-4, 0.08, 7.0), Vector3(1.4, 0.16, 1.2), Color("9b9d8c"), true)
+	_box(parent, Vector3(-4, 0.8, 5.4), Vector3(3.4, 1.6, 0.55), Color("827f69"), true, "wood")
+	_box(parent, Vector3(-4, 0.08, 7.0), Vector3(1.4, 0.16, 1.2), Color("9b9d8c"), true, "grip")
 	_scene(parent, "shift_note", Vector3(-4, 0.16, 7.5))
 
 static func _presses(parent: Node3D) -> void:
@@ -74,29 +75,30 @@ static func _presses(parent: Node3D) -> void:
 static func _cutter(parent: Node3D) -> void:
 	_scene(parent, "cutter", Vector3(0, 0, -7))
 	_label(parent, Vector3(0, 3, -7), "FIVE GUIDES · SIX SLABS")
-	MeadowGeometry.box(parent, Vector3(0, 0.2, 3), Vector3(10, 0.4, 1.5), Color("607976"), true)
+	_box(parent, Vector3(0, 0.2, 3), Vector3(10, 0.4, 1.5), Color("607976"), true)
 
 static func _packer(parent: Node3D) -> void:
-	MeadowGeometry.box(parent, Vector3(0, 0.65, -7), Vector3(16, 1.3, 3), Color("6c897e"), true)
+	var bench := _box(parent, Vector3(0, 0.65, -7), Vector3(16, 1.3, 3), Color("6c897e"), true)
+	bench.set_meta("factory_interaction_ids", ["package_0", "package_1", "package_2", "package_3", "package_4", "package_5"])
 	for index in 6:
 		var x := -6.0 + index * 2.4
-		MeadowGeometry.box(parent, Vector3(x, 1.34, -7), Vector3(1.5, 0.08, 1.5), Color("dbc89d"))
+		_box(parent, Vector3(x, 1.34, -7), Vector3(1.5, 0.08, 1.5), Color("dbc89d"), false, "wood")
 		_label(parent, Vector3(x, 1.9, -7), "SLOT %d" % (index + 1))
 		var dock := Node3D.new()
 		dock.name = "package_%d" % index
 		dock.position = Vector3(x, 1.35, -7)
 		parent.add_child(dock)
-		var contents := MeadowGeometry.box(dock, Vector3(0, 0.14, 0), Vector3(0.6, 0.28, 1.15), Color("f8f2da"))
+		var contents := _box(dock, Vector3(0, 0.14, 0), Vector3(0.6, 0.28, 1.15), Color("f8f2da"), false, "cream")
 		contents.name = "Contents"
 		contents.visible = false
-		var seal := MeadowGeometry.box(dock, Vector3(0, 0.3, 0), Vector3(0.8, 0.04, 1.3), Color("b8d4ca"))
+		var seal := _box(dock, Vector3(0, 0.3, 0), Vector3(0.8, 0.04, 1.3), Color("b8d4ca"), false, "cream")
 		seal.name = "Seal"
 		seal.visible = false
 
 static func _arena(parent: Node3D) -> void:
 	for x in [-7.0, 7.0]:
 		for z in [-7.0, 7.0]:
-			MeadowGeometry.box(parent, Vector3(x, 0.6, z), Vector3(1.2, 1.2, 1.2), Color("536d68"), true)
+			_box(parent, Vector3(x, 0.6, z), Vector3(1.2, 1.2, 1.2), Color("536d68"), true)
 	_label(parent, Vector3(0, 3, 0), "DOFUFU · REFINERY GATE")
 
 static func _label(parent: Node3D, at: Vector3, title: String) -> void:
@@ -108,6 +110,12 @@ static func _label(parent: Node3D, at: Vector3, title: String) -> void:
 	label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
 	label.position = at
 	parent.add_child(label)
+
+static func _box(parent: Node3D, at: Vector3, size: Vector3, color: Color, solid: bool = false, surface: String = "iron") -> MeshInstance3D:
+	var visual := MeadowGeometry.box(parent, at, size, color, solid)
+	FactorySurfaceMaterials.paint_local(visual, surface)
+	visual.set_meta("factory_procedural_surface", true)
+	return visual
 
 static func _scene(parent: Node3D, scene_name: String, at: Vector3, object_id: String = "") -> Node3D:
 	var packed: PackedScene = load("res://game/world/factory/props/%s.tscn" % scene_name)

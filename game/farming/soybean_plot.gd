@@ -45,6 +45,7 @@ func _ready() -> void:
 	prompt.pixel_size = 0.008
 	prompt.position.y = 2.65
 	prompt.no_depth_test = true
+	prompt.ignore_occlusion_culling = true
 	prompt.render_priority = 127
 	add_child(prompt)
 	present(false, "")

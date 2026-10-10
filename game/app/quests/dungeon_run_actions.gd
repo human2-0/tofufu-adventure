@@ -29,6 +29,7 @@ static func toggle_journal(dungeon: TofuDungeon) -> void:
 	if dungeon.puzzle.lab.formula_unlocked: text += "\n\nBatch formula: " + TofuPuzzleClues.CHEMICAL_NOTE
 	var unlocked: bool = dungeon.rewards.refinery_unlocked(DungeonMembership.key_for(dungeon, dungeon.game.player))
 	dungeon.journal.hint_text = hint(dungeon)
+	dungeon.journal.set_cargo(DungeonInteractionTargets.cargo_name(dungeon, dungeon.game.player))
 	var seen: Array[String] = []
 	for identity: Variant in dungeon.puzzle_flow.observed.values():
 		if str(identity) in seen: continue
@@ -63,7 +64,12 @@ static func return_prop(dungeon: TofuDungeon) -> void:
 			if dungeon.puzzle.sorting.carried_by[sack] == actor_id: id = sack
 	elif dungeon.puzzle.stage == TofuPuzzleContract.Stage.LAB and dungeon.puzzle.lab.carrier_id == actor_id:
 		id = dungeon.puzzle.lab.carried_bottle
+	elif dungeon.puzzle.stage == TofuPuzzleContract.Stage.PACK:
+		id = DungeonInteractionTargets.carried_id(dungeon, dungeon.game.player)
 	if id.is_empty(): return
 	var command: TofuPuzzleCommand = dungeon.puzzle_flow._command(dungeon, dungeon.game.player, TofuPuzzleCommand.Action.RETURN_PROP, id)
+	if id.begins_with("slab_"):
+		command.target_id = ""
+		command.object_id = id.trim_prefix("slab_")
 	dungeon._puzzle_view_command(command)
 	dungeon.journal.close()

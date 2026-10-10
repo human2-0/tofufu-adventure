@@ -21,6 +21,7 @@ func _run() -> void:
 	game.chat.view.hide()
 	game.encounters.process_mode = Node.PROCESS_MODE_DISABLED
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.weather.set_physics_process(false)
 	for node in game.get_children():
 		if node is WeatherFlow: node.set_physics_process(false)

@@ -7,6 +7,7 @@ signal model_changed
 var grip := WeaponGripVisual.new()
 var nori: bool = false
 var pod: bool = false
+var celestial: bool = false
 var tuning: CombatTuning
 var debug_visible: bool = false
 var _debug: MeshInstance3D
@@ -56,6 +57,11 @@ func set_nori(value: bool) -> void:
 	nori = value
 	_refresh_model()
 
+func set_celestial(value: bool) -> void:
+	if celestial == value: return
+	celestial = value
+	_refresh_model()
+
 func present(pose: Transform3D, _aim: Vector2, charge: float, cutting: bool = false, attachment: float = 0.0) -> void:
 	_physical_pose = pose
 	_attachment = 0.0 if cutting else clampf(attachment, 0.0, 1.0)
@@ -92,7 +98,7 @@ func model_grip_position() -> Vector3:
 
 func _refresh_model() -> void:
 	if _model_root == null: return
-	var item_id := "nori_katana" if nori else ("edamame_sword" if pod else "knife")
+	var item_id := "celestial_sword" if celestial else ("nori_katana" if nori else ("edamame_sword" if pod else "knife"))
 	if item_id == _model_id: return
 	if _model_instance != null:
 		_model_root.remove_child(_model_instance)

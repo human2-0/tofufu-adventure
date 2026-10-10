@@ -1,0 +1,58 @@
+[
+	{
+		"draws": 1113.0,
+		"far": 4000.0,
+		"median_ms": 9.846,
+		"p95_ms": 13.433,
+		"triangles": 1942974.0,
+		"variant": "overhead"
+	},
+	{
+		"draws": 2857.0,
+		"far": 4000.0,
+		"median_ms": 11.9,
+		"p95_ms": 16.336,
+		"triangles": 3725677.0,
+		"variant": "behind"
+	},
+	{
+		"draws": 2845.0,
+		"far": 4000.0,
+		"median_ms": 11.98,
+		"p95_ms": 16.617,
+		"triangles": 3685287.0,
+		"variant": "behind_no_parrot"
+	},
+	{
+		"draws": 2636.0,
+		"far": 260.0,
+		"median_ms": 11.405,
+		"p95_ms": 15.201,
+		"triangles": 3582011.0,
+		"variant": "behind_far_260"
+	},
+	{
+		"draws": 2892.0,
+		"far": 4000.0,
+		"median_ms": 11.819,
+		"p95_ms": 16.274,
+		"triangles": 3726080.0,
+		"variant": "behind_lod_4"
+	},
+	{
+		"draws": 2881.0,
+		"far": 4000.0,
+		"median_ms": 12.046,
+		"p95_ms": 15.473,
+		"triangles": 3740200.0,
+		"variant": "behind_no_grass"
+	},
+	{
+		"draws": 2506.0,
+		"far": 4000.0,
+		"median_ms": 11.555,
+		"p95_ms": 15.733,
+		"triangles": 2576292.0,
+		"variant": "behind_no_shadows"
+	}
+]

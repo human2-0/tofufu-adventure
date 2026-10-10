@@ -18,6 +18,7 @@ var staff_owned: bool = false
 var staff_selected: bool = false
 var pod_selected: bool = false
 var nori_selected: bool = false
+var celestial_weapon: int = 0
 var drop_item: Callable
 var pickup_item: Callable
 var select_item: Callable

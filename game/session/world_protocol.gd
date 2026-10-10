@@ -2,11 +2,12 @@ class_name WorldProtocol
 extends RefCounted
 ## Fixed-content world schema; no arbitrary resource paths or object deserialization.
 
-const ITEM_LIMITS := {"nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const ITEM_LIMITS := {"celestial_helmet": 1, "celestial_armor": 1, "celestial_legs": 1, "celestial_boots": 1, "celestial_sword": 1, "celestial_staff": 1, "soy_raygun": 1, "nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
 const BACKPACK_CONTENT_LIMIT: int = 20
 const CURRENT_MOB_COUNT: int = 43
 
 static func valid(data: Dictionary) -> bool:
+	if data.has("castle") and not CastleProtocol.valid(data.castle, true): return false
 	if data.has("produce") and not BarnProtocol.produce(data.produce): return false
 	if data.has("barn") and not BarnProtocol.valid(data.barn, ITEM_LIMITS): return false
 	if data.has("farming") and not farming(data.farming): return false
@@ -50,6 +51,7 @@ static func valid(data: Dictionary) -> bool:
 
 static func factory(value: Variant) -> bool:
 	if not value is Dictionary: return false
+	if value.has("stashes") and not FactoryStashProtocol.valid(value.stashes): return false
 	if value.has("puzzle_mode") and not value.puzzle_mode is bool: return false
 	if value.has("puzzle") and not _factory_puzzle(value.puzzle): return false
 	if not ExplorationProtocol.sequence(value.get("stage")) or value.stage > 6: return false
@@ -189,12 +191,4 @@ static func _stack(row: Dictionary) -> bool:
 	return ExplorationProtocol.number(reserve, 100) and reserve >= 0
 
 static func farming(value: Variant) -> bool:
-	if not _rows(value, 4, 4, 4): return false
-	for row: Array in value:
-		if not row[0] is bool: return false
-		if not ExplorationProtocol.number(row[1], 30) or row[1] < 0: return false
-		if not ExplorationProtocol.number(row[2], 1.2) or row[2] < 0: return false
-		if not ExplorationProtocol.sequence(row[3]): return false
-		if row[0] and row[2] != 0: return false
-		if not row[0] and row[1] != 0: return false
-	return true
+	return FarmingProtocol.valid(value)

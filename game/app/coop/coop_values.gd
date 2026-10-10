@@ -10,6 +10,7 @@ static func array3(value: Vector3) -> Array:
 
 static func input(command: PlayerCommand, sequence: int, ack: int) -> Dictionary:
 	var data := {"type": "input", "sequence": sequence, "ack": ack, "pickup_id": command.pickup_id,
+		"castle_action": command.castle_action, "castle_revision": command.castle_revision,
 		"move": [command.move.x, command.move.y], "aim": [command.aim.x, command.aim.y],
 		"aim_point": array3(command.aim_point), "dash": [command.dash_direction.x, command.dash_direction.y], "weapon_slot": command.weapon_slot}
 	for field in ExplorationProtocol.INPUT_FLAGS: data[field] = command.get(field)
@@ -23,5 +24,7 @@ static func command(data: Dictionary) -> PlayerCommand:
 	result.aim_point = vector3(data.get("aim_point", [0, 0, 0]))
 	result.weapon_slot = int(data.weapon_slot)
 	result.pickup_id = int(data.get("pickup_id", -1))
+	result.castle_action = int(data.get("castle_action", -1))
+	result.castle_revision = int(data.get("castle_revision", 0))
 	for field in ExplorationProtocol.INPUT_FLAGS: result.set(field, data.get(field, false))
 	return result

@@ -5,6 +5,7 @@ extends RefCounted
 static func material(color: Color) -> StandardMaterial3D:
 	var result := StandardMaterial3D.new()
 	result.albedo_color = color
+	result.set_meta("static_meadow_ornament", true)
 	result.next_pass = preload("res://game/world/common/ink_outline.tres")
 	result.roughness = 1.0
 	result.diffuse_mode = BaseMaterial3D.DIFFUSE_TOON

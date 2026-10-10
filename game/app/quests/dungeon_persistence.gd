@@ -9,6 +9,7 @@ static func capture(dungeon: TofuDungeon) -> Dictionary:
 	data.boss_members = dungeon.boss_members.duplicate()
 	data.active = dungeon.state.active
 	data.reward_ledger = dungeon.rewards.capture()
+	data.stashes = dungeon.stashes.capture()
 	data.puzzle_mode = dungeon.puzzle_enabled
 	data.puzzle = dungeon.puzzle.capture()
 	return data
@@ -25,6 +26,7 @@ static func restore(dungeon: TofuDungeon, data: Dictionary) -> void:
 	dungeon._crates.clear()
 	dungeon._carrying.clear()
 	dungeon.actor_ids = data.get("actor_ids", {}).duplicate()
+	dungeon.stashes.restore(data.get("stashes", {"opened": 0, "revision": 0}))
 	dungeon.boss_members.assign(data.get("boss_members", []))
 	dungeon.state.restore(data)
 	dungeon.puzzle_enabled = bool(data.get("puzzle_mode", true))

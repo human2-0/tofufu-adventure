@@ -16,6 +16,7 @@ func _run() -> void:
 	game.cycle.phase = 0.43
 	game.cycle._process(0)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.player.set_physics_process(false)
 	game.player.position = game.world.ocean.point(80, -169, 0.1)
 	game.camera.fov = 62

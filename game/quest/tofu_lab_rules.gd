@@ -48,7 +48,7 @@ func apply(command: TofuPuzzleCommand, actor_id: int, authorized: bool, mistakes
 			if command.target_id == NOTE_ID:
 				note_found = true
 				return _changed(command, actor_id, false)
-			if content_at(command.target_id) != "" or command.target_id == TERMINAL_ID:
+			if content_at(command.target_id) != "" or command.target_id in [TERMINAL_ID, TANK_ID]:
 				return _result(true)
 		TofuPuzzleCommand.Action.OPEN_TERMINAL:
 			return _result(opening_cleared and not combat_locked and command.target_id == TERMINAL_ID)

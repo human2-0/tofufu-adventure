@@ -29,6 +29,7 @@ var inventory: PlayerInventory
 var ground_point: Callable
 var shell_drop: Callable
 var shell_drop_roll: Callable = func() -> float: return randf()
+var loot_chance: Callable
 var beans: int = 0
 var mobs: int = 0
 var props: int = 0
@@ -120,7 +121,8 @@ func _mob_defeated(at: Vector3, mob: TrainingMob) -> void:
 	mob_defeated.emit(at)
 	if mob is ArmoredSnail: armored_snail_defeated.emit()
 	_drop(at, 3 if mob is WildBee else (4 if mob is ArmoredSnail else 2))
-	if mob is ArmoredSnail and shell_drop.is_valid() and float(shell_drop_roll.call()) < SHELL_PIECE_DROP_CHANCE:
+	var chance := float(loot_chance.call(SHELL_PIECE_DROP_CHANCE, at)) if loot_chance.is_valid() else SHELL_PIECE_DROP_CHANCE
+	if mob is ArmoredSnail and shell_drop.is_valid() and float(shell_drop_roll.call()) < chance:
 		for index in (2 if mob.shell_health <= 0.0 else 1):
 			shell_drop.call("piece_of_shell", at + Vector3.RIGHT * index * 0.35)
 	CombatEffects.burst(self, at, "+%d EXP" % reward, Color("b0e6cb"))

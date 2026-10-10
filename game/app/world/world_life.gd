@@ -37,18 +37,19 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var outdoor := _outdoor()
+	var submerged := WeatherExposure.submerged(game, game.player.global_position + Vector3.UP * 0.6) or WeatherExposure.submerged(game, game.camera.global_position)
 	particles.snow_context = TerrainLocomotion.winter(game.player.global_position)
 	birds.observers.clear()
 	for actor in game.player.placement_peers:
 		if is_instance_valid(actor) and actor is Player: birds.observers.append(actor)
 	birds.daylight = clampf(sin(game.cycle.phase * TAU - PI * 0.5) * 1.5, 0, 1)
 	birds.raining = game.weather.condition == WeatherCycle.Condition.RAIN
-	audio.enabled = outdoor
+	audio.enabled = outdoor and not submerged
 	audio.present(delta, game.wind.strength, birds.raining and not game.weather_particles.winter, maxf(0.0, RiverCourse.bank_distance(game.player.position.x, game.player.position.z)))
 	game.world.jungle.waterfall.present(delta, game.player.global_position, birds.daylight, birds.raining, outdoor)
 	var tropical := smoothstep(JungleTerrain.SOUTH_START, JungleTerrain.SOUTH_START + 24.0, game.player.global_position.z)
 	game.cycle.sky_effects.tropical_blend = move_toward(game.cycle.sky_effects.tropical_blend, tropical, delta * 0.35)
-	game.weather_particles.sheltered = not outdoor
+	game.weather_particles.sheltered = not outdoor or submerged
 	_skid_timer = maxf(0.0, _skid_timer - delta)
 	_scare_timer = maxf(0.0, _scare_timer - delta)
 	if outdoor and game.combat.active and _scare_timer <= 0.0:
@@ -85,11 +86,7 @@ func _outdoor() -> bool:
 	if not game.player.is_visible_in_tree(): return false
 	if game.opening != null and game.opening.active: return false
 	if game.factory_dungeon != null and game.factory_dungeon.actor_in_run(game.player): return false
-	for building in game.world.interiors:
-		var size: Vector2 = building.get_meta("map_footprint")
-		var at := building.to_local(game.player.global_position)
-		if absf(at.x) < size.x / 2 and absf(at.z) < size.y / 2 and at.y > -0.5: return false
-	return true
+	return not WeatherExposure.covered(game, game.player.global_position)
 
 func _wet() -> bool:
 	return game.player.surface_speed < 0.9 or (birds.raining and not game.weather_particles.winter)

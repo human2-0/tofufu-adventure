@@ -20,6 +20,8 @@ var guard_held: bool = false
 var punch_held: bool = false
 var drop_pressed: bool = false
 var pickup_pressed: bool = false
+var castle_action: int = -1
+var castle_revision: int = 0
 var pickup_id: int = -1
 var weapon_slot: int = 0
 

@@ -19,6 +19,7 @@ static func _bench(world: Meadow, at: Vector3) -> void:
 	for side in [-1.0, 1.0]:
 		MeadowGeometry.box(bench, Vector3(side * 1, 0.33, 0), Vector3(0.14, 0.65, 0.7), Color("485b52"), true)
 		MeadowGeometry.box(bench, Vector3(side * 1.25, 0.87, 0), Vector3(0.10, 0.10, 0.7), Color("665443"))
+	MeadowSurfaces.apply_tree(bench)
 
 static func _well(world: Meadow, at: Vector3) -> void:
 	var well := Node3D.new()
@@ -30,7 +31,7 @@ static func _well(world: Meadow, at: Vector3) -> void:
 	ring.outer_radius = 1.12
 	ring.rings = 24
 	ring.ring_segments = 8
-	ring.material = MeadowGeometry.material(Color("b6b0a2"))
+	ring.material = MeadowSurfaces.material("concrete", Color("dbd2bc"))
 	for layer in 3:
 		_mesh(well, ring, Vector3(0, 0.24 + layer * 0.27, 0))
 		for joint in 14:
@@ -42,6 +43,7 @@ static func _well(world: Meadow, at: Vector3) -> void:
 		MeadowGeometry.box(well, Vector3(side * 1.18, 1.65, 0), Vector3(0.19, 3.3, 0.19), Color("766044"), true)
 		var roof := MeadowGeometry.box(well, Vector3(0, 3.1, side * 0.58), Vector3(3.2, 0.14, 1.45), Color("584738"))
 		roof.rotation.x = side * 0.37
+		MeadowSurfaces.apply(roof, "roof")
 		for plank in 10:
 			MeadowGeometry.box(well, Vector3(-1.44 + plank * 0.32, 3.22, side * 0.68), Vector3(0.025, 0.04, 1.2), Color("80634b")).rotation.x = side * 0.37
 	var windlass := _cylinder(well, Vector3(0, 2.07, 0), 0.14, 2.45, Color("9d7953"))
@@ -59,6 +61,7 @@ static func _well(world: Meadow, at: Vector3) -> void:
 	shape.position.y = 0.45
 	blocker.add_child(shape)
 	well.add_child(blocker)
+	MeadowSurfaces.apply_tree(well)
 
 static func _bucket(well: Node3D, at: Vector3) -> void:
 	var bucket := _cylinder(well, at, 0.22, 0.32, Color("997b55"))
@@ -84,7 +87,7 @@ static func _cylinder(parent: Node3D, at: Vector3, radius: float, height: float,
 	mesh.bottom_radius = radius * 0.85
 	mesh.height = height
 	mesh.radial_segments = 16
-	mesh.material = MeadowGeometry.material(color)
+	mesh.material = MeadowSurfaces.material("timber", Color.WHITE.lerp(color, 0.22))
 	return _mesh(parent, mesh, at)
 
 static func _mesh(parent: Node3D, mesh: Mesh, at: Vector3) -> MeshInstance3D:

@@ -12,6 +12,7 @@ static func burst(parent: Node, at: Vector3, text: String, color: Color) -> void
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.modulate = color
 	label.no_depth_test = true
+	label.ignore_occlusion_culling = true
 	label.render_priority = 127
 	var tween := label.create_tween().set_parallel(true)
 	tween.tween_property(label, "position:y", label.position.y + 1.2, 0.8)
@@ -29,6 +30,7 @@ static func collect(parent: Node, at: Vector3, amount: int) -> void:
 		label.pixel_size = 0.009
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		label.no_depth_test = true
+		label.ignore_occlusion_culling = true
 		label.render_priority = 127
 		label.set_meta("amount", 0)
 		parent.set_meta(META, label)
@@ -94,6 +96,7 @@ static func damage_number(parent: Node, receiver: Damageable, amount: float) -> 
 		label.pixel_size = 0.007
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 		label.no_depth_test = true
+		label.ignore_occlusion_culling = true
 		label.render_priority = 127
 		label.set_meta("amount", 0.0)
 		receiver.set_meta("damage_number", label)

@@ -71,6 +71,8 @@ func _can_submit(command: TofuPuzzleCommand, actor: Player, now_seconds: float) 
 	if attempt.phase != TofuPuzzleContract.Phase.READY and attempt.phase != TofuPuzzleContract.Phase.OPERATING: return false
 	if not _actor_alive(actor): return false
 	var room: int = TofuFactory.room_at(actor.global_position)
+	if command.action == TofuPuzzleCommand.Action.RETURN_PROP and _owns_return(command, actor):
+		return room >= 0 and room <= int(attempt.stage)
 	var permitted_room: bool = room == int(attempt.stage)
 	if attempt.stage == TofuPuzzleContract.Stage.PACK and command.action == TofuPuzzleCommand.Action.PICK_UP:
 		permitted_room = room == TofuPuzzleContract.Stage.CUT
@@ -79,6 +81,15 @@ func _can_submit(command: TofuPuzzleCommand, actor: Player, now_seconds: float) 
 	if not target.is_finite() or TofuFactory.room_at(target) != room: return false
 	if actor.global_position.distance_to(target) > INTERACTION_RANGE: return false
 	return _visible(actor, target)
+
+func _owns_return(command: TofuPuzzleCommand, actor: Player) -> bool:
+	var owner: int = DungeonMembership.actor_id(dungeon, actor)
+	match attempt.stage:
+		TofuPuzzleContract.Stage.SORT: return attempt.sorting.carried_by.get(command.target_id, 0) == owner
+		TofuPuzzleContract.Stage.LAB: return attempt.lab.carrier_id == owner and attempt.lab.carried_bottle == command.target_id
+		TofuPuzzleContract.Stage.PACK:
+			return command.target_id.is_empty() and command.object_id.is_valid_int() and int(command.object_id) in range(6) and attempt.pack.owners[int(command.object_id)] == owner
+	return false
 
 func _actor_alive(actor: Player) -> bool:
 	if not dungeon.cooperative:
@@ -116,10 +127,24 @@ func _target_position(command: TofuPuzzleCommand) -> Vector3:
 func _visible(actor: Player, target: Vector3) -> bool:
 	var eye: Vector3 = actor.global_position + Vector3.UP * 0.8
 	var focus: Vector3 = target + Vector3.UP * 0.8
+	for index in 20:
+		if target.distance_to(TofuFactory.object_position("container_%02d" % index)) < 0.05:
+			focus.y += 0.7
+			break
 	var query := PhysicsRayQueryParameters3D.create(eye, focus, 1, [actor.get_rid()])
 	var hit: Dictionary = actor.get_world_3d().direct_space_state.intersect_ray(query)
-	var clearance: float = 0.15 if target.distance_to(TofuFactory.object_position("shift_note")) < 0.05 else TARGET_CLEARANCE
-	return hit.is_empty() or (hit.position as Vector3).distance_to(focus) <= clearance
+	if hit.is_empty(): return true
+	var collider: Node = hit.get("collider") as Node
+	for depth in 4:
+		if collider == null: break
+		var own_anchor: Vector3 = TofuFactory.object_position(str(collider.get_meta("factory_interaction_id", collider.name)))
+		if own_anchor.is_finite() and own_anchor.distance_to(target) < 0.05:
+			return (hit.position as Vector3).distance_to(focus) <= TARGET_CLEARANCE
+		for identity: String in collider.get_meta("factory_interaction_ids", []):
+			if TofuFactory.object_position(identity).distance_to(target) < 0.05:
+				return (hit.position as Vector3).distance_to(focus) <= TARGET_CLEARANCE
+		collider = collider.get_parent()
+	return false
 
 func _sync_gates() -> void:
 	if dungeon != null and is_instance_valid(dungeon.factory) and attempt != null:

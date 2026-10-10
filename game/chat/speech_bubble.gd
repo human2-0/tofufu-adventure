@@ -16,6 +16,7 @@ func _ready() -> void:
 	autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	# Dialogue must remain readable when the speaker or nearby props fill the view.
 	no_depth_test = true
+	ignore_occlusion_culling = true
 	render_priority = 127
 
 func _process(delta: float) -> void:

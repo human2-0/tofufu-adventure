@@ -17,6 +17,7 @@ static func spawn(source: Sprite3D, tint: Color) -> void:
 	ghost.billboard = source.billboard
 	ghost.shaded = false
 	ghost.no_depth_test = true
+	ghost.ignore_occlusion_culling = true
 	ghost.modulate = source.modulate
 	parent.add_child(ghost)
 	ghost.transform = source.transform

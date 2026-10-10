@@ -46,7 +46,7 @@ func present_direction(direction: int) -> void:
 	flip_h = (direction in [3, 4, 5]) != (current_cell == 3)
 	texture = _frames[current_cell]
 	var height := _bounds()[current_cell].size.y
-	pixel_size = 1.9 / height
+	pixel_size = 1.65 / height
 	offset = Vector2(0, height * 0.5 + 0.05 / pixel_size)
 
 func _bounds() -> Array[Rect2]:

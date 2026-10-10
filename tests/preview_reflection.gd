@@ -11,6 +11,7 @@ func _run() -> void:
 	game.player.command_source.enabled = false
 	game.player.position = Vector3(0, 0.05, 0)
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	var camera := Camera3D.new()
 	game.add_child(camera)
 	camera.position = Vector3(4, 2.8, 3)

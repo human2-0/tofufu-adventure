@@ -8,11 +8,13 @@ signal closed
 var inventory: PlayerInventory
 var status: Label
 var balance: Label
+var _title: Label
 var _description: Label
 var _bag_grid: GridContainer
 var _stock_grid: GridContainer
 var _first_button: Button
 var _bag_buttons: Array[Button] = []
+var stock_ids: Array[String] = WeaponTrade.BUYABLE_IDS.duplicate()
 
 func _ready() -> void:
 	layer = 16
@@ -35,7 +37,7 @@ func _build_ui() -> void:
 	panel_style.bg_color = Color("173632f5")
 	panel_style.set_corner_radius_all(18)
 	panel_style.set_content_margin_all(14)
-	panel_style.border_color = Color("9bd58c")
+	panel_style.border_color = Color("fff9e9")
 	panel_style.set_border_width_all(3)
 	panel_style.shadow_color = Color("07171599")
 	panel_style.shadow_size = 14
@@ -49,13 +51,14 @@ func _build_ui() -> void:
 	var header := HBoxContainer.new()
 	column.add_child(header)
 	var title := Label.new()
-	title.text = "KAJI'S TRADING STALL"
+	_title = title
+	title.text = "GEAR SHOP"
 	title.add_theme_font_size_override("font_size", 18)
-	title.add_theme_color_override("font_color", Color("f5dfac"))
+	title.add_theme_color_override("font_color", Color("f4c75d"))
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	balance = Label.new()
-	balance.add_theme_color_override("font_color", Color("eacb83"))
+	balance.add_theme_color_override("font_color", Color("f4c75d"))
 	header.add_child(balance)
 	var close_button := Button.new()
 	close_button.text = "✕"
@@ -67,7 +70,7 @@ func _build_ui() -> void:
 	body.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_child(body)
 	_bag_grid = _build_section(body, "YOUR BAG")
-	_stock_grid = _build_section(body, "KAJI'S STOCK · FREE")
+	_stock_grid = _build_section(body, "EQUIPMENT & APPAREL · FREE")
 
 	_description = Label.new()
 	_description.custom_minimum_size.y = 30
@@ -115,15 +118,12 @@ func _build_section(parent: HBoxContainer, heading: String) -> GridContainer:
 	return grid
 
 func _build_stock() -> void:
-	for id in WeaponTrade.BUYABLE_IDS:
-		var item := InventoryItem.from_id(id)
-		if item == null: continue
-		var button := ShopItemTile.new()
-		button.setup(item, "0 MATURE BEANS", _tile_size())
-		button.pressed.connect(func() -> void: purchase_requested.emit(item.id))
-		_watch_description(button)
-		_stock_grid.add_child(button)
-		if _first_button == null: _first_button = button
+	ShopStock.fill(self, stock_ids)
+
+func set_stock(ids: Array[String]) -> void:
+	if stock_ids == ids: return
+	stock_ids = ids.duplicate()
+	if _stock_grid != null: _build_stock()
 
 func _refresh_bag() -> void:
 	if _bag_grid == null: return
@@ -149,7 +149,7 @@ func _refresh_bag() -> void:
 			if item.category == "combat":
 				sale_requested.emit(slot, item.id)
 			else:
-				status.text = "Grandpa Fufu only buys combat gear."
+				status.text = "Only combat gear can be sold here."
 		)
 		_watch_description(button)
 		_bag_grid.add_child(button)
@@ -176,6 +176,10 @@ func close() -> void:
 	if not visible: return
 	visible = false
 	closed.emit()
+
+func set_merchant_name(title: String) -> void:
+	_title.text = title.to_upper()
+	status.text = "Browse equipment or sell combat gear from your bag."
 
 func open() -> void:
 	visible = true

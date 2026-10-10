@@ -14,6 +14,7 @@ func _run() -> void:
 	scene.cycle._process(0)
 	var camera: Camera3D = scene.camera
 	camera.set_physics_process(false)
+	camera.set_process(false)
 	camera.position = Vector3(132, 20, 29)
 	camera.look_at(Vector3(158, 3, 6))
 	await _save("/tmp/tofufu-factory-exterior.png")

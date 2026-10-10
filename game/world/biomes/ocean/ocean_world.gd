@@ -21,6 +21,7 @@ func _ready() -> void:
 	wildlife.ocean = self
 	add_child(wildlife)
 	_boundaries()
+	StaticDecorationBatch.build(self)
 
 func point(x: float, z: float, lift: float = 0.0) -> Vector3:
 	return Vector3(x, OceanTerrain.height_at(x, z, farm) + lift, z)

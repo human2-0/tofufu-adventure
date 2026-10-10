@@ -60,7 +60,10 @@ func _consume_pending() -> PlayerCommand:
 	# Commands describe intent, not simulation work to replay on later ticks.
 	# Keep the newest held state and deliver queued one-shot actions once.
 	for earlier: PlayerCommand in pending:
-		if earlier.pickup_pressed and not next.pickup_pressed: next.pickup_id = earlier.pickup_id
+		if earlier.pickup_pressed and not next.pickup_pressed:
+			next.pickup_id = earlier.pickup_id
+			next.castle_action = earlier.castle_action
+			next.castle_revision = earlier.castle_revision
 		for edge: StringName in EDGES:
 			next.set(edge, next.get(edge) or earlier.get(edge))
 		if earlier.cancel_actions: next.cancel_actions = true

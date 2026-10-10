@@ -42,7 +42,7 @@ func can_equip(slot_name: String, stack: ItemStack) -> bool:
 	return category == slot_name
 
 func complete_set() -> String:
-	for set_id in ["bright_leaf", "dark_leaf"]:
+	for set_id in ["bright_leaf", "dark_leaf", "celestial"]:
 		var complete := true
 		for slot_name in APPAREL_SLOTS:
 			var stack := get_slot(slot_name)
@@ -53,6 +53,7 @@ func complete_set() -> String:
 	return ""
 
 func damage_multiplier() -> float:
+	if complete_set() == "celestial": return 0.50
 	if not complete_set().is_empty(): return 0.90
 	var reduction := 0.0
 	for slot_name in APPAREL_SLOTS:

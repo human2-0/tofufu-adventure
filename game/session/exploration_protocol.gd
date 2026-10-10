@@ -12,6 +12,8 @@ static func valid_input(data: Dictionary) -> bool:
 		if Vector2(value[0], value[1]).length_squared() > 1.01: return false
 	for field in INPUT_FLAGS:
 		if not data.get(field, false if field == "run_held" else null) is bool: return false
+	if data.get("castle_action", -1) != -1 and (not sequence(data.castle_action) or data.castle_action > 24): return false
+	if not sequence(data.get("castle_revision", 0)): return false
 	if data.has("pickup_id") and data.pickup_id != -1 and not sequence(data.pickup_id): return false
 	if data.has("aim_point") and not vector(data.aim_point, 3, 1000): return false
 	return sequence(data.get("weapon_slot")) and data.weapon_slot <= 2
@@ -26,6 +28,7 @@ static func valid_snapshot(data: Dictionary, members: Array) -> bool:
 	return data.get("opening") is Dictionary and WorldProtocol.opening(data.opening)
 
 static func actor(state: Dictionary) -> bool:
+	if state.has("impact") and not impact(state.impact): return false
 	if state.has("parrot_rest") and (not state.parrot_rest is Array or (not state.parrot_rest.is_empty() and not vector(state.parrot_rest, 3, 1000))): return false
 	if state.has("endurance") and not endurance(state.endurance): return false
 	if state.has("transport") and not state.transport is bool: return false
@@ -54,6 +57,15 @@ static func actor(state: Dictionary) -> bool:
 	return state.get("combat") is Dictionary and combat(state.combat)
 
 static func combat(data: Dictionary) -> bool:
+	if not sequence(data.get("celestial", 0)) or data.get("celestial", 0) > 3: return false
+	if data.get("celestial", 0) == 1 and (not data.get("selected", false) or data.get("nori", false) or data.get("pod", false)): return false
+	if data.get("celestial", 0) == 2 and not data.get("staff", false): return false
+	if data.get("celestial", 0) == 3 and not data.get("gun", false): return false
+	if not number(data.get("hit_pause", 0.0), 0.075) or data.get("hit_pause", 0.0) < 0: return false
+	if not sequence(data.get("style", 0)) or data.get("style", 0) > 6: return false
+	if not sequence(data.get("combo", 0)) or data.get("combo", 0) > 5: return false
+	if not sequence(data.get("chain", 0)) or data.get("chain", 0) > 3: return false
+	if not number(data.get("combo_window", 0.0), 1.15) or data.get("combo_window", 0.0) < 0: return false
 	if data.has("vitals") and not vitals(data.vitals): return false
 	for field in ["gun_owned", "sotjet_owned", "staff_owned", "world_drops"]:
 		if data.has(field) and not data[field] is bool: return false
@@ -146,6 +158,9 @@ static func vitals(data: Variant) -> bool:
 
 static func endurance(data: Variant) -> bool:
 	return data is Dictionary and number(data.get("current"), 100.0) and data.current >= 0 and number(data.get("rest"), 1.2) and data.rest >= 0 and data.get("exhausted") is bool
+
+static func impact(data: Variant) -> bool:
+	return data is Dictionary and number(data.get("remaining"), 0.24) and data.remaining >= 0 and vector(data.get("push"), 2, 9.0) and Vector2(data.push[0], data.push[1]).length() <= 9.001
 
 static func _character_level(data: Dictionary) -> int:
 	var xp := int(data.get("experience", 0))

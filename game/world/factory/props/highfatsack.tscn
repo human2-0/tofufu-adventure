@@ -1,12 +1,12 @@
 [gd_scene load_steps=20 format=3]
 
-[ext_resource type="Texture2D" path="res://assets/factory/surfaces/wood.svg" id="e1"]
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/linen.svg" id="e1"]
 
 [ext_resource type="Material" path="res://game/world/factory/props/factory_ink.tres" id="e2"]
 
-[ext_resource type="Texture2D" path="res://assets/factory/surfaces/linen.svg" id="e3"]
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/cream.svg" id="e3"]
 
-[ext_resource type="Texture2D" path="res://assets/factory/surfaces/cream.svg" id="e4"]
+[ext_resource type="Texture2D" path="res://assets/factory/surfaces/wood.svg" id="e4"]
 
 [sub_resource type="BoxShape3D" id="r1"]
 size = Vector3(0.62, 0.68, 0.48)
@@ -21,8 +21,10 @@ rings = 6
 albedo_color = Color(0.607843, 0.462745, 0.337255, 1.0)
 next_pass = ExtResource("e2")
 albedo_texture = ExtResource("e1")
-texture_filter = 3
+texture_filter = 5
 uv1_triplanar = true
+uv1_scale = Vector3(1, 1, 1)
+metadata/factory_surface = "linen"
 metallic = 0.0
 roughness = 0.8
 diffuse_mode = 1
@@ -37,9 +39,11 @@ radial_segments = 12
 [sub_resource type="StandardMaterial3D" id="r5"]
 albedo_color = Color(0.819608, 0.749020, 0.607843, 1.0)
 next_pass = ExtResource("e2")
-albedo_texture = ExtResource("e3")
-texture_filter = 3
+albedo_texture = ExtResource("e1")
+texture_filter = 5
 uv1_triplanar = true
+uv1_scale = Vector3(1, 1, 1)
+metadata/factory_surface = "linen"
 metallic = 0.0
 roughness = 0.8
 diffuse_mode = 1
@@ -51,9 +55,11 @@ size = Vector3(0.36, 0.23, 0.025)
 [sub_resource type="StandardMaterial3D" id="r7"]
 albedo_color = Color(0.941176, 0.913725, 0.823529, 1.0)
 next_pass = ExtResource("e2")
-albedo_texture = ExtResource("e4")
-texture_filter = 3
+albedo_texture = ExtResource("e3")
+texture_filter = 5
 uv1_triplanar = true
+uv1_scale = Vector3(1, 1, 1)
+metadata/factory_surface = "cream"
 metallic = 0.0
 roughness = 0.8
 diffuse_mode = 1
@@ -65,9 +71,11 @@ size = Vector3(0.025, 0.36, 0.025)
 [sub_resource type="StandardMaterial3D" id="r9"]
 albedo_color = Color(0.407843, 0.305882, 0.239216, 1.0)
 next_pass = ExtResource("e2")
-albedo_texture = ExtResource("e1")
-texture_filter = 3
+albedo_texture = ExtResource("e4")
+texture_filter = 5
 uv1_triplanar = true
+uv1_scale = Vector3(1, 1, 1)
+metadata/factory_surface = "wood"
 metallic = 0.0
 roughness = 0.8
 diffuse_mode = 1
@@ -85,9 +93,11 @@ rings = 6
 [sub_resource type="StandardMaterial3D" id="r12"]
 albedo_color = Color(0.639216, 0.509804, 0.305882, 1.0)
 next_pass = ExtResource("e2")
-albedo_texture = ExtResource("e4")
-texture_filter = 3
+albedo_texture = ExtResource("e3")
+texture_filter = 5
 uv1_triplanar = true
+uv1_scale = Vector3(1, 1, 1)
+metadata/factory_surface = "cream"
 metallic = 0.0
 roughness = 0.8
 diffuse_mode = 1

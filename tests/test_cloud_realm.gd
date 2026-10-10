@@ -30,12 +30,25 @@ func _run() -> void:
 	game.encounters.process_mode = Node.PROCESS_MODE_DISABLED
 	await ticks(4)
 	game.progression.progress.award_experience(CharacterProgress.threshold(8, true))
+	var court := game.world.cloud_realm.court
+	check(court.residents.size() == 12 and court.angels.size() == 12, "court has the Goddess, six sentries, four servants, a merchant and twelve angels")
+	var cloud_area: int = 0
+	for z in range(236, 364):
+		for x in range(-82, 78):
+			if CloudTerrain.contains(Vector2(x, z)): cloud_area += 1
+	check(cloud_area > 6500, "expanded kingdom has substantially more walkable cloud area")
 	var travel := game.parrot_travel
 	var input := CloudInput.new()
 	game.player.add_child(input)
 	game.player.command_source = input
-	check(game.world.cloud_realm.godfufu.sprite.texture == Godfufu.ART, "Godfufu uses the generated tofu block sprite")
+	check((game.world.cloud_realm.godfufu.sprite.texture as AtlasTexture).atlas == Godfufu.ART, "Godfufu uses the generated directional tofu block atlas")
 	check(game.world.map_npcs.has("Cloud Realm · Godfufu (above jungle)"), "the elevated destination is named on the map")
+	check(game.world.map_npcs.has("Tofufu Goddess · Cloud Court"), "the Goddess appears on the world map")
+	game.player.relocate(court.goddess.global_position + Vector3(0, 0.1, 2))
+	await ticks(10)
+	await process_frame
+	check(court.goddess.greeting.visible, "the Goddess welcomes nearby visitors")
+	check(court.goddess.has_node("ResidentBody"), "the Goddess has shared world collision")
 	game.player.relocate(travel.perches.stations[0].global_position + Vector3(0, 0.1, 3))
 	await ticks(3)
 	var departure := game.player.position
@@ -64,14 +77,26 @@ func _run() -> void:
 	input.move = Vector2.ZERO
 	await ticks(10)
 	check(game.player.position.z > before.z + 4 and game.player.is_on_floor(), "walking crosses the rippled landing ribbon")
-	for at in [Vector2(5, 268), Vector2(19, 271), Vector2(-22, 272), Vector2(-33, 275), Vector2(-4, 284), Vector2(0, 295)]:
+	for at in [Vector2(5, 268), Vector2(19, 271), Vector2(-22, 272), Vector2(-33, 275), Vector2(-4, 284), Vector2(0, 295), Vector2(42, 288), Vector2(-57, 299), Vector2(6, 333), Vector2(-40, 339), Vector2(46, 333)]:
 		check(game.player.relocate(CloudTerrain.point(at.x, at.y, 0.15)), "cloud paths have clearance")
 		await ticks(14)
-		check(game.player.is_on_floor() and game.player.position.y > 57, "satellite islands and bridges support real actor collisions")
+		check(game.player.is_on_floor() and game.player.position.y > 57, "satellite islands and bridges support real actor collisions at %s (actor %s)" % [at, game.player.position])
 	game.player.relocate(game.world.cloud_realm.godfufu.global_position + Vector3(0, 0.1, 3))
 	await ticks(10)
 	await process_frame
-	check(game.world.cloud_realm.godfufu.greeting.visible, "placeholder Godfufu greets visitors locally")
+	check(game.world.cloud_realm.godfufu.greeting.visible, "Godfufu greets visitors locally")
+	var trader := court.merchant
+	game.player.relocate(trader.global_position + Vector3(0, 0.1, 2))
+	await ticks(8)
+	check(game.merchant.nearby(game.player), "royal merchant is reachable on its actual cloud island")
+	check(game.merchant.focus_position(game.player).distance_to(trader.global_position) < 2, "aim focus selects Nimbus in the clouds")
+	var bag := PlayerInventory.new()
+	check(game.merchant.purchase(game.player, bag, "knife").begins_with("Bought") and bag.count_item("knife") == 1, "Nimbus trades equipment using the existing transaction rules")
+	check(game.merchant.sell(game.player, bag, 0, "knife").begins_with("Sold") and bag.count_item("mature_bean") == 1, "royal merchant accepts combat gear sales")
+	game.player.relocate(game.world.ground_point(trader.position.x, trader.position.z, 0.1))
+	await ticks(3)
+	check(not game.merchant.nearby(game.player), "royal trade cannot be accessed from the jungle directly below")
+	check(not game.merchant.purchase(game.player, bag, "knife").begins_with("Bought"), "distant purchase does not grant equipment")
 	AdventureSnapshot.restore(game, landed)
 	await ticks(4)
 	check(travel.available(game.player) and game.player.position.y > 57, "loading a cloud save retains a reachable return bird")

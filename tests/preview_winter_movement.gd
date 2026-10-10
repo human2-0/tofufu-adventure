@@ -20,6 +20,7 @@ func _render() -> void:
 	root.add_child(game)
 	game.encounters.process_mode = Node.PROCESS_MODE_DISABLED
 	game.camera.set_physics_process(false)
+	game.camera.set_process(false)
 	game.cycle.phase = 0.43
 	game.cycle.set_process(false)
 	game.cycle._process(0.0)

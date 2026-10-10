@@ -41,7 +41,7 @@ func setup(value: InventoryItem, footer: String, tile_size: Vector2) -> void:
 	note.text = footer
 	note.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	note.add_theme_font_size_override("font_size", 8)
-	note.add_theme_color_override("font_color", Color("eacb83"))
+	note.add_theme_color_override("font_color", Color("f4c75d"))
 	content.add_child(note)
 	tooltip_text = "%s\n%s" % [item.name, item.description]
 	mouse_entered.connect(_inspect)
@@ -61,7 +61,7 @@ func setup_empty(tile_size: Vector2) -> void:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	label.add_theme_font_size_override("font_size", 10)
-	label.add_theme_color_override("font_color", Color("829b96"))
+	label.add_theme_color_override("font_color", Color("c1d7cc"))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(label)
 
@@ -74,10 +74,11 @@ func _apply_style(empty: bool) -> void:
 	normal.set_border_width_all(1)
 	var hover := normal.duplicate() as StyleBoxFlat
 	hover.bg_color = Color("426d58")
-	hover.border_color = Color("f5dfac")
+	hover.border_color = Color("f4c75d")
 	var focus := hover.duplicate() as StyleBoxFlat
 	focus.set_border_width_all(2)
 	add_theme_stylebox_override("normal", normal)
+	add_theme_stylebox_override("disabled", normal)
 	add_theme_stylebox_override("hover", hover)
 	add_theme_stylebox_override("focus", focus)
 	add_theme_stylebox_override("pressed", hover)

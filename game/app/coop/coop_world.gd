@@ -16,24 +16,27 @@ static func capture(game: Node3D) -> Dictionary:
 	for id: int in encounters.pickups:
 		var bean := encounters.pickups[id]
 		if not bean.is_queued_for_deletion() and not bean._collected: data.pickups.append(EncounterState.pickup(id, bean))
+	data["castle"] = game.castle_adventure.capture(true)
 	return data
 
-static func apply(game: Node3D, data: Dictionary, replica: bool) -> void:
+static func apply(game: Node3D, data: Dictionary, replica: bool, changes: ReplicaWorldChanges = null) -> void:
+	if data.has("castle") and not CastleProtocol.valid(data.castle, true): return
 	if data.get("factory") is Dictionary and not DungeonSnapshotValidation.valid(data.factory, replica): return
 	if data.has("barn") and not BarnProtocol.valid(data.barn, WorldProtocol.ITEM_LIMITS): return
 	if data.has("produce") and not BarnProtocol.produce(data.produce): return
 	var encounters: SandboxEncounters = game.encounters
-	if data.has("farming"): game.farming.restore(data.farming)
+	if data.has("farming") and (changes == null or changes.changed("farming", data.farming)): game.farming.restore(data.farming)
 	if data.has("seed_storage") and data.seed_storage != game.seed_storage.barn.banks[0].capture():
 		game.seed_storage.barn.banks[0].restore(data.seed_storage)
 	if not replica and not data.has("barn") and game.seed_storage.barn.banks[0].occupied_slots() > 0: game.seed_storage.barn.owners[0] = game.seed_storage.barn.key(game.player)
-	if data.has("produce"): game.meadow_harvest.restore(data.produce, replica)
-	if data.has("barn"): game.seed_storage.barn.restore(data.barn)
+	if data.has("produce") and (changes == null or changes.changed("produce", data.produce)): game.meadow_harvest.restore(data.produce, replica)
+	if data.has("barn") and (changes == null or changes.changed("barn", data.barn)): game.seed_storage.barn.restore(data.barn)
 	if data.has("seed_satchel_claimed"): game.seed_storage.free_satchel_claimed = data.seed_satchel_claimed
-	if data.has("world_items"): game.world_items.pool.restore(data.world_items)
-	if data.has("factory"):
+	if data.has("world_items") and (changes == null or changes.changed("world_items", data.world_items)): game.world_items.pool.restore(data.world_items)
+	if data.has("factory") and (changes == null or changes.changed("factory", data.factory)):
 		if replica: game.factory_dungeon.apply_world(data.factory)
 		else: game.factory_dungeon.restore(data.factory)
+	if data.has("castle"): game.castle_adventure.restore(data.castle, true)
 	game.weather.set_phase(float(data.get("weather_phase", 0.0)))
 	for i in data.mobs.size(): EncounterState.apply_mob(encounters.mob_nodes[i], data.mobs[i], replica)
 	for i in encounters.prop_nodes.size(): EncounterState.apply_prop(encounters.prop_nodes[i], data.props[i], replica)
@@ -69,6 +72,8 @@ static func apply(game: Node3D, data: Dictionary, replica: bool) -> void:
 	game.hud.show_experience(encounters.experience)
 
 static func disable_simulation(game: Node3D) -> void:
+	game.castle_adventure.authoritative = false
+	game.castle_adventure.encounter.authority(false)
 	game.meadow_harvest.authoritative = false
 	for plant: MeadowProduce in game.world.produce: plant.set_physics_process(false)
 	game.factory_dungeon.enabled = false

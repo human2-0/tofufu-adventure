@@ -64,11 +64,13 @@ func _build_model() -> void:
 	_shell = Node3D.new()
 	_shell.position = Vector3(0, 0.72, -0.1)
 	_body.add_child(_shell)
-	_sphere(_shell, "Dome", Vector3.ZERO, Vector3(0.62, 0.53, 0.62), SHELL)
-	_torus(_shell, "Lower lip", Vector3(0, -0.18, 0), 0.48, 0.56, SHELL_DARK)
-	_torus(_shell, "Shell band", Vector3(0, 0.18, 0), 0.35, 0.39, SHELL_RIDGE)
-	_torus(_shell, "Shell whorl", Vector3(0, 0.49, 0), 0.13, 0.18, SHELL_RIDGE)
-	_sphere(_shell, "Whorl center", Vector3(0, 0.51, 0), Vector3(0.09, 0.045, 0.09), SHELL_DARK)
+	var armor := MeshInstance3D.new()
+	armor.name = "PlatedSpiralShell"
+	armor.mesh = ArmoredShellMesh.create()
+	var shell_material := _material(SHELL)
+	shell_material.vertex_color_use_as_albedo = true
+	armor.material_override = shell_material
+	_shell.add_child(armor)
 	_head = Node3D.new()
 	_head.position = Vector3(0, 0, 0.45)
 	_body.add_child(_head)
@@ -102,20 +104,6 @@ func _cylinder(parent: Node3D, node_name: String, at: Vector3, radius: float, he
 	mesh.bottom_radius = radius
 	mesh.height = height
 	mesh.radial_segments = 8
-	mesh.material = _material(tint)
-	instance.mesh = mesh
-	instance.position = at
-	parent.add_child(instance)
-	return instance
-
-func _torus(parent: Node3D, node_name: String, at: Vector3, inner: float, outer: float, tint: Color) -> MeshInstance3D:
-	var instance := MeshInstance3D.new()
-	instance.name = node_name
-	var mesh := TorusMesh.new()
-	mesh.inner_radius = inner
-	mesh.outer_radius = outer
-	mesh.rings = 16
-	mesh.ring_segments = 6
 	mesh.material = _material(tint)
 	instance.mesh = mesh
 	instance.position = at

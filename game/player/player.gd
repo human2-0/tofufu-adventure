@@ -22,6 +22,7 @@ var transport_origin := Vector3.ZERO
 var surface_speed: float = 1.0
 var movement_modifier: Callable
 var ability_velocity: Callable
+var presentation: ActorPresentation
 var motor: PlayerMotor
 var placement_peers: Array[CharacterBody3D] = []
 
@@ -29,6 +30,9 @@ func _ready() -> void:
 	assert(command_source != null, "Player requires a command source")
 	motor = PlayerMotor.new(tuning)
 	add_child(PlayerFootsteps.new())
+	presentation = ActorPresentation.new()
+	presentation.actor = self
+	add_child(presentation)
 	motor.jumped.connect(visuals.show_jump)
 	motor.dashed.connect(_on_dashed)
 	motor.super_dashed.connect(_on_super_dashed)
@@ -66,6 +70,7 @@ func _on_super_dashed() -> void:
 
 func relocate(desired: Vector3, preserve_transport: bool = false) -> bool:
 	var placed := PlayerPlacement.relocate(self, $CollisionShape3D, desired, placement_peers)
+	if placed: motor.impact.clear()
 	if placed and not preserve_transport: relocated.emit()
 	return placed
 
@@ -82,3 +87,12 @@ func apply_push(impulse: Vector3) -> void:
 	# Replace planar velocity so sustained streams cannot stack without a bound.
 	velocity.x = impulse.x
 	velocity.z = impulse.z
+
+func apply_melee_hit(impulse: Vector3) -> void:
+	motor.impact.receive(impulse)
+	motor.cancel_jump()
+	motor.cancel_dash_charge()
+	velocity.x = motor.impact.push.x
+	velocity.z = motor.impact.push.y
+	if impulse.y > 0.0: velocity.y = maxf(velocity.y, minf(impulse.y, 8.0))
+	elif impulse.y < 0.0: velocity.y = minf(velocity.y, maxf(impulse.y, -8.0))

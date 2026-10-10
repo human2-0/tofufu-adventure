@@ -5,7 +5,7 @@ extends RefCounted
 const APPAREL_DROP_SPANS: Dictionary = {"helmet": 0.38, "armor": 0.44, "legs": 0.38, "boots": 0.34}
 
 static func build(drop: WorldItemDrop) -> void:
-	if drop.item_id in ["knife", "edamame_sword", "nori_katana"]:
+	if drop.item_id in ["knife", "edamame_sword", "nori_katana", "celestial_sword"]:
 		var reach := 0.48 if drop.item_id == "knife" else (0.72 if drop.item_id == "nori_katana" else 0.64)
 		_add_weapon_model(drop, drop.item_id, reach)
 	elif drop.item_id == "soy_gun":
@@ -19,9 +19,10 @@ static func build(drop: WorldItemDrop) -> void:
 		drop.add_child(sprite)
 	elif drop.item_id == "sotjet":
 		_add_weapon_model(drop, "sotjet", 0.48)
-	elif drop.item_id == "sproutwood_staff":
+	elif drop.item_id in ["sproutwood_staff", "celestial_staff"]:
 		var staff := StaffVisual.new()
 		drop.add_child(staff)
+		staff.set_celestial(drop.item_id == "celestial_staff")
 		staff.rotation.x = -PI * 0.5
 		staff.scale = Vector3.ONE * 0.62
 	elif drop.item_id == "seed_satchel":
@@ -48,6 +49,13 @@ static func build(drop: WorldItemDrop) -> void:
 		var apples := AppleDropVisual.new()
 		apples.drop = drop
 		drop.add_child(apples)
+	elif drop.item_id in CelestialItems.IDS.slice(0, 4):
+		_apparel(drop)
+	elif drop.item_id == "soy_raygun":
+		var raygun := preload("res://game/combat/models/soy_raygun.tscn").instantiate() as Node3D
+		drop.add_child(raygun)
+		raygun.rotation.x = -PI / 2
+		raygun.scale = Vector3.ONE * 0.7
 	elif drop.item_id.begins_with("bright_leaf_") or drop.item_id.begins_with("dark_leaf_"):
 		_apparel(drop)
 	else:

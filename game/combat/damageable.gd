@@ -19,6 +19,8 @@ var hit_counts: Array[int] = [0, 0, 0, 0]
 var impact_point := Vector3.INF
 var hit_absorbed: bool = false
 var damage_filter: Callable
+@export var launch_immune: bool = false
+@export_range(0.0, 1.0) var knockback_multiplier: float = 1.0
 var projectile_guard: Callable
 var armor_multiplier: float = 1.0
 
@@ -49,6 +51,8 @@ func damage(amount: float, direction: Vector3 = Vector3.ZERO, kind: HitKind = Hi
 	hit_counts[kind] += 1
 	current = maxf(0.0, current - amount)
 	changed.emit(current, maximum)
+	direction *= knockback_multiplier
+	if launch_immune: direction.y = minf(0.0, direction.y)
 	hit.emit(amount, direction)
 	if current <= 0.0:
 		depleted.emit()

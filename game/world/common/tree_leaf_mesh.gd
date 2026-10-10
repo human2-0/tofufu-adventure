@@ -30,3 +30,11 @@ static func _triangle(surface: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, 
 	surface.add_vertex(a)
 	surface.add_vertex(b)
 	surface.add_vertex(c)
+
+static func distant_indices(arrays: Array) -> PackedInt32Array:
+	# Flatten each folded four-triangle leaf, preserving its entire silhouette.
+	var original: PackedInt32Array = arrays[Mesh.ARRAY_INDEX]
+	var indices := PackedInt32Array()
+	for start in range(0, original.size(), 12):
+		for corner in [0, 2, 5, 6, 10, 7]: indices.append(original[start + corner])
+	return indices

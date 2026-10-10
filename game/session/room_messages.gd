@@ -19,7 +19,7 @@ static func packet(room: PlaytestRoom, key: String, data: Dictionary) -> void:
 		"reject":
 			if key == room._pending:
 				room._pending = ""
-				room.status = "This meadow is full, unavailable, or running a different game version."
+				room.status = "This world is full, unavailable, or running a different game version."
 		"begin":
 			if key != room.host_key or room.hosting or room.playing or data.get("epoch") != room.epoch: return
 			room.playing = true
@@ -27,7 +27,7 @@ static func packet(room: PlaytestRoom, key: String, data: Dictionary) -> void:
 			room.started.emit(false, room.members.duplicate(), room.local_key)
 		"leave":
 			if data.get("epoch") != room.epoch: return
-			if key == room.host_key and not room.hosting: room._reset_session("The host closed the meadow.")
+			if key == room.host_key and not room.hosting: room._reset_session("The host closed the world.")
 			elif room.hosting and key in room.members:
 				room.members.erase(key)
 				room._broadcast_roster()
@@ -57,7 +57,7 @@ static func _welcome(room: PlaytestRoom, key: String, data: Dictionary) -> void:
 	room.epoch = data.epoch
 	room.members = data.members
 	room._pending = ""
-	room.status = "Connected · %d beans in the meadow. Waiting for the host to start." % room.members.size()
+	room.status = "Connected · %d beans in the world. Waiting for the host to start." % room.members.size()
 	if data.playing and not room.playing:
 		room.playing = true
 		room.started.emit(false, room.members.duplicate(), room.local_key)

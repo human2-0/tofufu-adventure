@@ -1,7 +1,7 @@
 # Factory art sources
 
 `build_prop_scenes.py` is editable source geometry authored for Tofufu Adventure.
-`build_surface_assets.py` supplies original editable SVG brush/grain paths at 1K
+`build_surface_assets.py` supplies eight original editable SVG surface sources at 1K
 and six deterministic synthesized WAV machine sounds. Both preserve the source
 recipe; no external texture or sound samples are used.
 It generates the original Godot scenes in `game/world/factory/props/`; no external
@@ -31,19 +31,33 @@ The textured/outlined/audio revision, with legacy overlays hidden, observed
 This does not establish complete-game frame cost; the process monitor refreshes
 less frequently than the sampled loop and is printed separately.
 
-Current machines are geometric Godot props with original vector brush, wood grain,
-linen weave and surface-scuff texture treatment, soft colors and a shared thin ink
-outline. They use synthesized positional motor, pressure, pour, flush, blade and
+Machines use stronger vector brush, wood grain, canvas weave and brushed-metal
+scuff textures. Sack canvas retains object-space mapping while carried. The
+procedural wash assembly, upstream buffer, bottle/service racks, recovery bench,
+packing bench/docks, slabs, guarded gears and stirring paddle share these surfaces;
+their local paint preserves the original outline and follows cosmetic movement.
+Fluid, whey, drain and interaction-effect meshes retain their authored treatment.
+The building uses metre-scaled ceramic tiles, painted plaster, corrugated roof sheets,
+nonslip ramp tread and textured rails/doors. World-space mapping keeps the two
+decks and touching landing extensions aligned. All eight 3D surface imports
+generate mip levels, paired with anisotropic filtering to limit distant texture
+shimmer. Materials retain soft colors and a shared thin ink outline.
+They use synthesized positional motor, pressure, pour, flush, blade and
 film sounds. Cosmetic blade and film cycles follow confirmed cut/seal snapshots.
 These are authored programmatic assets; no claim is made that an external artist
 has painted or approved final hero-machine art. Human aesthetic/audio review and
 complete-game profiling remain unverified. All source scenes remain editable. 
+
+The October texture/mipmap pass was rendered on Apple M1 / Metal at 1280×720, with
+8.3–8.4 ms render-loop intervals and 80–376 draw calls in these standalone views
+including the concurrent machinery-life presentation revision.
+No complete-game performance conclusion follows from this isolated sample.
 
 Floor presentation uses one outline-free surface for each deck plus a disjoint
 landing extension. Foundation, room-floor and landing collision solids stay
 active but invisible. The ramp retains its existing collision and uses a material
 without an expanded ink pass. Regression checks assert no coplanar visible floor
 rectangles overlap. The native Metal camera sweep samples a fixed exposed floor
-point over 24 moving camera positions; the corrected surface produced zero channel
+tile-face point over 24 moving camera positions; the textured surface produced zero channel
 variation. Machine and sack lettering now uses fixed planes separated from its
 backing; chemical captions sit above caps rather than rotating into the bottle.

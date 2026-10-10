@@ -3,6 +3,7 @@ extends Node3D
 ## Supplied staff mesh, positioned on the same combat pose used for its hit volume.
 
 const MODEL: PackedScene = preload("res://assets/weapons/sproutwood_staff/source/sproutwood_staff.glb")
+signal model_changed
 
 const SOURCE_GRIP := Vector3(-0.08, -0.58, 0.0)
 var grip := WeaponGripVisual.new()
@@ -17,6 +18,7 @@ var _model: Node3D
 var _meshes: Array[MeshInstance3D] = []
 var _charge_glow: StandardMaterial3D
 var _spin_glow: StandardMaterial3D
+var celestial: bool = false
 
 func _ready() -> void:
 	add_child(grip)
@@ -44,7 +46,29 @@ func follow_hand(hand: Vector3, plane: Basis, outward: float, in_front: bool) ->
 	_apply_pose()
 
 func model_grip_position() -> Vector3:
-	return _model.to_global(SOURCE_GRIP)
+	return _model.to_global(_source_grip())
+
+func _source_grip() -> Vector3:
+	return Vector3(0, -0.58, 0) if celestial else SOURCE_GRIP
+
+func set_celestial(value: bool, reach: float = 1.2, handle: float = 0.16) -> void:
+	if celestial == value: return
+	celestial = value
+	if _model == null: return
+	var pose := Transform3D(Basis(Vector3.RIGHT, -PI * 0.5).scaled(Vector3.ONE * 0.72), Vector3(-0.1, -0.29, -0.42))
+	if value:
+		# Match the star tip to the damage reach and put the grip at the real palm.
+		var scale_factor := (reach + handle) / (1.136 - _source_grip().y)
+		var basis := Basis(Vector3.RIGHT, -PI * 0.5).scaled(Vector3.ONE * scale_factor)
+		pose = Transform3D(basis, Vector3(0, 0, handle) - basis * _source_grip())
+	remove_child(_model)
+	_model.free()
+	_meshes.clear()
+	_model = (preload("res://game/combat/models/celestial_staff.tscn") if celestial else MODEL).instantiate() as Node3D
+	add_child(_model)
+	_model.transform = pose
+	_set_shadows(_model)
+	model_changed.emit()
 
 func _apply_pose() -> void:
 	global_transform = _pose
@@ -53,7 +77,7 @@ func _apply_pose() -> void:
 		var width := blade.cross(_plane.z).normalized()
 		var basis := Basis(width, -blade.cross(width), -blade)
 		var contact := _hand + _plane.z * (0.035 if _front else -0.035)
-		var held := Transform3D(basis, contact - basis * (_model.transform * SOURCE_GRIP))
+		var held := Transform3D(basis, contact - basis * (_model.transform * _source_grip()))
 		global_transform = _pose.interpolate_with(held, _attachment)
 	grip.present(model_grip_position())
 

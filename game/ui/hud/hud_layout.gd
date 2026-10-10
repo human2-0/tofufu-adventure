@@ -13,7 +13,7 @@ static func ready(hud: HUD) -> void:
 	canvas.add_child(hud._soy_hit)
 
 	var heading := HUDElements.make_panel(canvas, Vector2(16, 16), Vector2(210, 58), Vector2(0, 0))
-	HUDElements.make_label(heading, "TOFUFU / FUFUFARM", 13, Color("f5dfac"))
+	HUDElements.make_label(heading, "TOFUFU / FUFUFARM", 13, Color("f4c75d"))
 	hud._session = HUDElements.make_label(heading, "Chapter 01 · Tab for guide", 11, Color("baccc0"))
 	hud._clock = HUDElements.make_label(heading, "", 11, Color("b8d7dd"))
 
@@ -35,7 +35,7 @@ static func ready(hud: HUD) -> void:
 	hud._healing_label.visible = false
 
 	var charge := HUDElements.make_panel(canvas, Vector2(-206, -58), Vector2(190, 42), Vector2(1, 1))
-	hud._charge_text = HUDElements.make_label(charge, "HOLD LMB / CHARGE", 11, Color("f5dfac"))
+	hud._charge_text = HUDElements.make_label(charge, "HOLD LMB / CHARGE", 11, Color("f4c75d"))
 	hud._charge_bar = HUDElements.make_bar(charge, Color("efc477"), 170, 6)
 
 	setup_center(hud, canvas)
@@ -80,10 +80,11 @@ static func setup_center(hud: HUD, canvas: Control) -> void:
 	_help_and_notice(hud, canvas)
 
 static func _help_and_notice(hud: HUD, canvas: Control) -> void:
-	var help_box := HUDElements.make_panel(canvas, Vector2(-180, 110), Vector2(360, 220), Vector2(0.5, 0))
+	var help_box := HUDElements.make_panel(canvas, Vector2(-310, 150), Vector2(620, 210), Vector2(0.5, 0))
 	hud._help = help_box.get_parent() as PanelContainer
-	HUDElements.make_label(help_box, "FUFU ADVENTURE GUIDE", 13, Color("f5dfac"))
-	HUDElements.make_label(help_box, "WASD: Walk • Ctrl / L3: Run • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power (25 SP)\nRMB: Knife guard / Staff tornado / Podburst. Nori: hold RMB, steer with WASD, release to plunge (75 SP).\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • Enter: Chat • V: Voice", 10, Color("d1ddd0"))
+	HUDElements.make_label(help_box, "FUFU ADVENTURE GUIDE", 13, Color("f4c75d"))
+	var guide := HUDElements.make_label(help_box, "WASD: Walk • Ctrl / L3: Run • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power (25 SP)\nRMB: Knife guard / Staff tornado / Podburst. Nori: hold RMB, steer with WASD, release to plunge (75 SP).\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • MMB: Rotate overhead / switch shoulder • Enter: Chat • V: Voice", 12, Color("d1ddd0"))
+	guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hud._help.visible = false
 
 	hud._notice = Label.new()

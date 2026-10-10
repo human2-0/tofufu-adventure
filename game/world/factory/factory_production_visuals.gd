@@ -7,8 +7,6 @@ var _props: Node3D
 var _rest: Dictionary = {}
 var _last_shelf: Array = []
 var _slabs: Array[MeshInstance3D] = []
-var _previous_carried: Dictionary = {}
-var _rejections: Dictionary = {}
 var _whey: Array[MeshInstance3D] = []
 var _draining: bool = false
 var _clock: float = 0.0
@@ -21,6 +19,7 @@ var _cut_cycle: float = 0.0
 var _seal_cycles: Dictionary = {}
 var _previous_seals: Array = []
 var _audio: FactoryMachineAudio
+var _effects: FactoryInteractionEffects
 
 func _ready() -> void:
 	_props = get_parent() as Node3D
@@ -30,6 +29,10 @@ func _ready() -> void:
 	_props.add_child(_audio)
 	for child in _props.get_children():
 		if child is Node3D and child != self: _rest[child.name] = child.position
+	_effects = FactoryInteractionEffects.new()
+	_effects.room = room
+	_effects.name = "InteractionEffects"
+	_props.add_child(_effects)
 	if room == 1:
 		_drain = MeadowGeometry.box(_props, Vector3(5, 0.2, -1.5), Vector3(0.16, 0.08, 1.0), Color("dfd6b5"))
 		_drain.visible = false
@@ -41,6 +44,7 @@ func _ready() -> void:
 	if room == 3:
 		for index in 6:
 			var slab := MeadowGeometry.box(_props, Vector3(-4 + index * 1.6, 0.48, 3), Vector3(0.6, 0.28, 1.15), Color("f8f2da"))
+			FactorySurfaceMaterials.paint_local(slab, "cream")
 			slab.name = "slab_%d" % index
 			slab.visible = false
 			_slabs.append(slab)
@@ -51,26 +55,30 @@ static func present_factory(factory: Node3D, snapshot: Dictionary, actors: Dicti
 		if factory.is_ancestor_of(view): (view as FactoryProductionVisuals).present(snapshot, actors, motion)
 
 func present(snapshot: Dictionary, actors: Dictionary, motion: Dictionary) -> void:
-	_audio.present(snapshot, motion)
+	var baseline: bool = _effects.is_baseline(snapshot)
+	if baseline:
+		_cut_revision = -1
+		_previous_seals.clear()
+		_seal_cycles.clear()
+		_cut_cycle = 0.0
+	_audio.present(snapshot, motion, baseline)
 	match room:
-		0: _sorting(snapshot.get("sorting", {}), actors)
+		0: _sorting(snapshot.get("sorting", {}), actors, baseline)
 		1: _laboratory(snapshot, actors)
 		2: _pressing(snapshot.get("press", {}), motion)
 		3: _cutting(snapshot, actors, motion)
 		4: _packing(snapshot.get("pack", {}))
+	_effects.present(snapshot, motion)
 
-func _sorting(data: Dictionary, actors: Dictionary) -> void:
+func _sorting(data: Dictionary, actors: Dictionary, baseline: bool) -> void:
 	var assigned: Dictionary = data.get("assignments", {})
 	var carried: Dictionary = data.get("carried_by", {})
 	for id: String in FactoryLayout.SACK_IDS:
 		var sack: Node3D = _props.get_node(id)
 		sack.visible = not assigned.has(id)
 		_pose(sack, int(carried.get(id, 0)), actors)
-		if bool(data.get("combat_locked", false)) and _previous_carried.has(id) and not carried.has(id) and not assigned.has(id):
-			_rejections[id] = 0.65
-	_previous_carried = carried.duplicate()
 	var line: FactoryBatchLine = _props.get_node("BatchLine")
-	line.present(assigned.has("sack_mature"))
+	line.present(assigned.has("sack_mature"), baseline)
 
 func _laboratory(snapshot: Dictionary, actors: Dictionary) -> void:
 	var data: Dictionary = snapshot.get("lab", {})
@@ -125,6 +133,7 @@ func _cutting(snapshot: Dictionary, actors: Dictionary, motion: Dictionary) -> v
 	var pack: Dictionary = snapshot.get("pack", {})
 	var complete: bool = bool(cut.get("completed", false))
 	var cutter: Node3D = _props.get_node("cutter")
+	if _cut_revision < 0: (cutter.get_node("MovingParts/Blade") as Node3D).position.y = 2.12
 	(cutter.get_node("MovingParts/QuestBlock") as Node3D).visible = not complete and not str(cut.get("block_id", "")).is_empty()
 	var guides: Array = motion.get("cut_guides", [])
 	var length: float = float(cut.get("length", 0.0))
@@ -137,7 +146,7 @@ func _cutting(snapshot: Dictionary, actors: Dictionary, motion: Dictionary) -> v
 	var owners: Array = pack.get("owners", [])
 	var failed: bool = bool(cut.get("rejected", false))
 	var revision: int = int(cut.get("revision", 0))
-	if revision != _cut_revision and (complete or failed): _cut_cycle = 0.6
+	if _cut_revision >= 0 and revision != _cut_revision and (complete or failed): _cut_cycle = 0.6
 	_cut_revision = revision
 	var cursor: float = -1.8
 	for index in _slabs.size():
@@ -155,9 +164,10 @@ func _packing(data: Dictionary) -> void:
 	var sealed: Array = data.get("sealed", [])
 	for index in 6:
 		var dock: Node3D = _props.get_node("package_%d" % index)
+		if _previous_seals.is_empty(): (dock.get_node("Seal") as Node3D).scale.z = 1.0
 		(dock.get_node("Contents") as Node3D).visible = slots.size() == 6 and int(slots[index]) >= 0
 		(dock.get_node("Seal") as Node3D).visible = sealed.size() == 6 and bool(sealed[index])
-		if sealed.size() == 6 and bool(sealed[index]) and (_previous_seals.size() != 6 or not bool(_previous_seals[index])): _seal_cycles[index] = 0.6
+		if sealed.size() == 6 and _previous_seals.size() == 6 and bool(sealed[index]) and not bool(_previous_seals[index]): _seal_cycles[index] = 0.6
 	_previous_seals = sealed.duplicate()
 
 func _pose(prop: Node3D, actor: int, actors: Dictionary) -> void:
@@ -165,8 +175,7 @@ func _pose(prop: Node3D, actor: int, actors: Dictionary) -> void:
 	_carry(prop, actor, actors)
 
 func _carry(prop: Node3D, actor: int, actors: Dictionary) -> void:
-	var at: Variant = actors.get(actor, actors.get(str(actor)))
-	if actor > 0 and at is Vector3: prop.global_position = at + Vector3(0, 0.7, 0.6)
+	FactoryCargoPose.apply(prop, actor, actors, _clock)
 
 func _chemical_name(id: String) -> String:
 	var title: String = id.replace("_", " ").capitalize()
@@ -185,12 +194,6 @@ func _process(delta: float) -> void:
 		(_props.get_node("package_%d/Seal" % slot) as Node3D).scale.z = 1.0 - left / 0.6 * 0.95
 		_seal_cycles[slot] = left
 		if left == 0.0: _seal_cycles.erase(slot)
-	for id: String in _rejections.keys():
-		var remaining: float = maxf(0.0, float(_rejections[id]) - delta)
-		var sack: Node3D = _props.get_node(id)
-		sack.rotation.z = sin(remaining * 24.0) * remaining * 0.25
-		_rejections[id] = remaining
-		if remaining == 0.0: _rejections.erase(id)
 	if not _draining: return
 	for index in _whey.size():
 		var phase: float = fmod(_clock * 1.5 + index * 0.25, 1.0)

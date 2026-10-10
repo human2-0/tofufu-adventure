@@ -19,6 +19,11 @@ func accept(state: Dictionary) -> void:
 	actor.transport_active = riding
 	suspended = riding or float(state.health) <= 0.0 or bool(state.get("spectating", false))
 	silence = 0.0
+	actor.motor.impact.restore(state.get("impact", {}))
+	if actor.motor.impact.remaining > 0.0:
+		actor.velocity = CoopValues.vector3(state.velocity)
+		actor.motor.cancel_jump()
+		actor.motor.cancel_dash_charge()
 	var at := CoopValues.vector3(state.position)
 	var ack := int(state.get("input_ack", -1))
 	var teleported := respawns != int(state.get("respawns", 0))
@@ -30,10 +35,12 @@ func accept(state: Dictionary) -> void:
 		actor.motor.is_super_dashing = false
 		actor.motor.cancel_jump()
 		actor.motor.cancel_dash_charge()
+		if teleported: actor.motor.impact.clear()
 		actor.motor.cooldown_remaining = state.cooldown
 		history.clear()
 		correction = Vector3.ZERO
 		initialized = true
+		actor.relocated.emit()
 	elif riding:
 		actor.velocity = CoopValues.vector3(state.velocity)
 		history.clear()

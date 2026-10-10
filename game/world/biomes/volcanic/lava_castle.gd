@@ -43,6 +43,7 @@ func present(at: Vector3, overhead: bool) -> void:
 	var local := to_local(at)
 	var inside := contains(at) and overhead
 	var deck := clampi(floori((local.y + 0.1) / 8.0), 0, 3)
+	if absf(local.z) > 27 and local.y > 0.1: deck = clampi(ceili((local.y - 0.05) / 8.0), 0, 3)
 	var state := deck if inside else -1
 	if state == _view_state: return
 	_view_state = state

@@ -3,6 +3,7 @@ extends RefCounted
 ## Ordered scene construction; runtime callbacks remain on the composition root.
 
 static func actor(game: AdventureGame) -> void:
+	game.player.relocated.connect(game.camera.reset_follow)
 	game.chat = ProximityChat.new()
 	game.chat.game = game
 	game.add_child(game.chat)
@@ -28,6 +29,8 @@ static func actor(game: AdventureGame) -> void:
 	game.health.changed.connect(game.hud.show_health)
 	game.health.depleted.connect(game._on_player_depleted)
 	game.health.hit.connect(game._on_player_hit)
+	game.health.hit.connect(ActorMeleeImpact.receive.bind(game.player, game.combat, game.health))
+	game.health.restored.connect(game.player.motor.impact.clear)
 	game.health.pushed.connect(game.player.apply_push)
 	game.hud.show_health(game.health.current, game.health.maximum)
 	game.player.command_sampled.connect(game._on_command)
@@ -87,6 +90,7 @@ static func encounters(game: AdventureGame) -> void:
 	game.encounters.health = game.health
 	game.encounters.inventory = game.inventory
 	game.encounters.shell_drop = game.world_items.spawn_mob_loot
+	game.encounters.loot_chance = func(base: float, _at: Vector3) -> float: return ApparelSetBonus.drop_chance(game.character_equipment.complete_set(), base)
 	game.encounters.experience_awarded.connect(game.progression.progress.award_experience)
 	game.encounters.ground_point = game.world.ground_point
 	game.encounters.mob_centers = FarmCombatGrounds.CAMPS
@@ -123,7 +127,7 @@ static func weather(game: AdventureGame) -> void:
 	game.add_child(game.weather_view)
 	game.weather_particles = WeatherParticles.new()
 	game.weather_particles.focus = game.player
-	game.weather_particles.ground_point = game.world.ground_point
+	game.weather_particles.ground_point = WeatherExposure.precipitation_floor.bind(game)
 	game.add_child(game.weather_particles)
 	var weather_flow := WeatherFlow.new()
 	weather_flow.focus = game.player
@@ -167,6 +171,9 @@ static func exploration(game: AdventureGame) -> void:
 	var volcanic_visit := VolcanicVisit.new()
 	volcanic_visit.game = game
 	game.add_child(volcanic_visit)
+	game.castle_adventure = CastleAdventure.new()
+	game.castle_adventure.game = game
+	game.add_child(game.castle_adventure)
 	var cloud_visit := CloudRealmVisit.new()
 	cloud_visit.game = game
 	game.add_child(cloud_visit)

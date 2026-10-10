@@ -20,6 +20,7 @@ var _stance: String = "idle"
 
 func _physics_process(delta: float) -> void:
 	if not _alive or not is_instance_valid(quarry): return
+	if reaction.step(delta): return
 	var offset := quarry.global_position - global_position
 	offset.y = 0.0
 	var distance := offset.length()
@@ -28,7 +29,9 @@ func _physics_process(delta: float) -> void:
 	_knife_wait = maxf(0.0, _knife_wait - delta)
 	_refill = maxf(0.0, _refill - delta)
 	var direction := Vector3.ZERO
-	if _knife_windup > 0.0:
+	if reaction.stagger > 0.0 or (not is_on_floor() and velocity.y != 0.0):
+		_set_stance("stagger")
+	elif _knife_windup > 0.0:
 		_knife_windup -= delta
 		if _knife_windup <= 0.0:
 			_warning.visible = false

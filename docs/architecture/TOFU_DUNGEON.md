@@ -4,7 +4,7 @@ Status: the revised factory is the default playable route. Legacy six-station te
 
 ## Authority and transitions
 
-`TofuPuzzleCommand` carries bounded intent: action, authored target/object IDs, run/attempt IDs, monotonic sequence and expected station revision. Gameplay protocol 27 requires matching peers. Guests open local station views and send typed intent; only the host binds the authenticated sender to an alive run participant and checks stage, ownership, range, world occlusion and revision. IDs are allocated by the host and persisted separately from peer keys, including collision resolution.
+`TofuPuzzleCommand` carries bounded intent: action, authored target/object IDs, run/attempt IDs, monotonic sequence and expected station revision. Gameplay protocol 47 requires matching peers. Guests open local station views and send typed intent; only the host binds the authenticated sender to an alive run participant and checks stage, ownership, range, world occlusion and revision. IDs are allocated by the host and persisted separately from peer keys, including collision resolution.
 
 | Current state | Accepted event | Result |
 | --- | --- | --- |
@@ -33,12 +33,22 @@ Boss participants are recorded when the arena starts; scaling and completion ent
 
 Live snapshots preserve active leases, revisions and clock values. Saved-game restores cancel unfinished trials, return props and retain certificates. App preflight validates nested puzzle/reward data and stage prerequisites before world mutation; malformed records are rejected. Legacy completed saves retain refinery entitlements; incompatible unfinished legacy puzzles restart at safe entry with personal inventory preserved. Local saves are trusted-host data, not tamper-proof currency storage.
 
+## Handling and hidden manufacturing rewards
+
+One state-aware resolver chooses both the nearby prompt and the submitted action. It skips routed/reserved sacks and placed slabs, identifies an owned carried prop, and chooses actual usable package slots. Returning a quest prop works from a legal unlocked room, with ownership checked by the authority. Inspections are displayed only after acceptance; ordinary wall hits cannot satisfy line of sight. Machine colliders explicitly identify their own interaction surfaces. The journal names cargo and only offers its return action when applicable. The cutting ruler reports all six measured widths, including both end pieces.
+
+Production waves spawn in open aisle positions instead of inside the wash assembly. The handling regression checks all nineteen enemy capsules across the five penalty rooms and the legacy curd encounter against fixed world collision before movement.
+
+Three tucked-away manufacturing chests each release one shared Toasted Tofu Chunk, presented as crispy factory offcuts. Their permanent claim mask and revision are checkpointed with the world drop; replay, restart, death and guest commands cannot renew the reward. A full drop pool leaves the chest unclaimed. Older saves default to three unopened chests. Protocol 47 adds bounded OPEN_STASH intent and validated optional stash snapshots.
+
 ## Presentation and evidence
 
 The authored factory includes twenty reachable labelled chemical props, a floor note behind a service rack, connected milk transit, three distinct sack/intake lines, guarded presses, measured cutting pieces and six docks. Editable art/audio sources are under `assets/factory/`; owning scenes are under `game/world/factory/props/`. Inspection clues and optional hints reopen in the recipe journal.
 
+Eight original mipmapped surface textures cover machinery, sacks and the building. Guarded gears, conveyors and paddles move; pooled dust, beans, mist, milk, crumbs and rejection effects follow confirmed state changes. First/restored snapshots establish a silent baseline rather than replaying historical effects. Sack carry poses keep the character visible and restore their dock pose on return.
+
 Decks render once with disjoint surfaces; overlapping foundation and landing collision solids remain active but invisible. Floor materials have no expanded outline pass. Fixed machine and sack lettering clears its backing, and bottle captions sit above their caps. The presentation regression checks these constraints; a 24-position graphical camera sweep also checked the corrected floor.
 
-`test_tofu_dungeon_active.gd` covers the integrated station-to-boss route. `test_tofu_dungeon_active_coop.gd` uses JSON fake peers for guest controls, ownership, replay, leases, death, rejoin, checkpoint restoration and malformed inputs. `test_factory_route.gd` walks the real route and attacks perimeter segments with the real capsule and movement abilities in both cutaway modes. `test_factory_recovery.gd` checks safe correction and retained inventory. Focused rule and view tests cover production boundaries and controller keyboard intents. Graphical Godot previews have been rendered on Metal and inspected.
+`test_tofu_dungeon_active.gd` covers the integrated station-to-boss route. `test_tofu_dungeon_active_coop.gd` uses JSON fake peers for guest controls, ownership, replay, leases, death, rejoin, checkpoint restoration and malformed inputs. `test_factory_route.gd` walks the real route and attacks perimeter segments with the real capsule and movement abilities in both cutaway modes. `test_factory_recovery.gd` checks safe correction and retained inventory. `test_factory_handling.gd` covers real guest inspections, cargo returns, blocked visibility, package ownership and one-time chest rewards. Surface, reactivity and stash tests cover mipmaps, effect baselines and bounded claim schemas. Focused rule and view tests cover production boundaries and controller keyboard intents. Graphical Godot previews have been rendered on Metal and inspected.
 
 Release acceptance still requires a real-controller session, at least three first-time human clears and an informed replay, human art/audio review, and full-game combat/co-op performance measurement. The 12–18 minute first-clear and 7–10 minute replay targets are not yet measured. Automated route execution does not establish human pacing.

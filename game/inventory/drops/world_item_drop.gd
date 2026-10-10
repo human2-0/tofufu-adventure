@@ -31,6 +31,7 @@ func _ready() -> void:
 	label.position.y = 0.6
 	label.outline_size = 7
 	label.no_depth_test = true
+	label.ignore_occlusion_culling = true
 	label.render_priority = 127
 	add_child(label)
 	ring = MeshInstance3D.new()

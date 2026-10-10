@@ -5,7 +5,9 @@ extends RefCounted
 const ALTITUDE: float = 58.0
 const CENTER := Vector2(-8, 266)
 const LANDING := Vector2(-8, 247)
-const ISLANDS: Array[Vector3] = [Vector3(0, 0, 17), Vector3(0, -19, 9), Vector3(27, 5, 11), Vector3(-25, 9, 10), Vector3(8, 29, 12)]
+const HUB := Vector2(0, 7)
+const BOUNDS := Rect2i(-82, 236, 160, 128)
+const ISLANDS: Array[Vector3] = [Vector3(0, 7, 30), Vector3(0, -19, 9), Vector3(50, 22, 22), Vector3(-49, 27, 21), Vector3(12, 67, 27), Vector3(-33, 70, 18), Vector3(52, 65, 18)]
 
 static func contains(at: Vector2) -> bool:
 	return distance_to_edge(at) <= 0.0
@@ -16,8 +18,8 @@ static func distance_to_edge(at: Vector2) -> float:
 	for island in ISLANDS:
 		var center := Vector2(island.x, island.y)
 		distance = minf(distance, local.distance_to(center) - island.z)
-		var closest := Geometry2D.get_closest_point_to_segment(local, Vector2.ZERO, center)
-		distance = minf(distance, local.distance_to(closest) - 3.5)
+		var closest := Geometry2D.get_closest_point_to_segment(local, HUB, center)
+		distance = minf(distance, local.distance_to(closest) - 5.0)
 	return distance + WorldContours.noise(at / 6.0, 4327) * 0.65
 
 static func height_at(x: float, z: float) -> float:
@@ -30,8 +32,8 @@ static func point(x: float, z: float, lift: float = 0.0) -> Vector3:
 static func build(parent: Node3D) -> MeshInstance3D:
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for z in range(238, 309):
-		for x in range(-45, 32):
+	for z in range(BOUNDS.position.y, BOUNDS.end.y):
+		for x in range(BOUNDS.position.x, BOUNDS.end.x):
 			if distance_to_edge(Vector2(x + 0.5, z + 0.5)) > 1.0: continue
 			var at := Vector2(x, z)
 			_triangle(surface, [at, at + Vector2.RIGHT, at + Vector2.DOWN])
@@ -41,12 +43,11 @@ static func build(parent: Node3D) -> MeshInstance3D:
 	ground.name = "WalkableClouds"
 	ground.mesh = surface.commit()
 	# Leave headroom for the world's bright daylight so pastel swirls stay visible.
-	var material := MeadowGeometry.material(Color(0.84, 0.84, 0.84))
-	material.next_pass = null
-	material.vertex_color_use_as_albedo = true
-	ground.material_override = material
+	ground.material_override = CloudMaterials.cloud(Color("e2e1e8"))
 	parent.add_child(ground)
 	ground.create_trimesh_collision()
+	TerrainSupport.mark_permanent(ground)
+	GroundOcclusion.build(ground)
 	return ground
 
 static func _triangle(surface: SurfaceTool, corners: Array[Vector2]) -> void:
@@ -61,7 +62,7 @@ static func _triangle(surface: SurfaceTool, corners: Array[Vector2]) -> void:
 	for i in range(1, polygon.size() - 1):
 		for at: Vector2 in [polygon[0], polygon[i], polygon[i + 1]]:
 			var swirl := sin(at.x * 0.19 + cos(at.y * 0.2) * 2.0) * 0.5 + 0.5
-			var color := Color("c9c5f1").lerp(Color("fff4dd"), swirl)
+			var color := Color("e4e1f4").lerp(Color("fff7e5"), swirl)
 			color = color.lerp(Color("d3f2f5"), (cos(at.y * 0.3) + 1.0) * 0.16)
 			surface.set_color(color)
 			surface.add_vertex(point(at.x, at.y))

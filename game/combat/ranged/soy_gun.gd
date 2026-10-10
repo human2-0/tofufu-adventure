@@ -20,6 +20,7 @@ var friends: Array[Damageable] = []
 var ignored_bodies: Array[CollisionObject3D] = []
 var visual: SoyGunVisual
 var selected: bool = false
+var celestial: bool = false
 var aiming: bool = false
 var cooldown: float = 0.0
 var magazine: int = MAGAZINE_SIZE
@@ -104,6 +105,7 @@ func spread(direction: Vector3, degrees: float) -> Vector3:
 
 func _spawn(authority: bool, ricochet: bool = false) -> void:
 	var bean := SoyProjectile.new()
+	bean.celestial = celestial
 	bean.shooter = actor
 	bean.owner_health = owner_health
 	bean.velocity = shot_velocity
