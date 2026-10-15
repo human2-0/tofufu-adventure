@@ -63,6 +63,8 @@ func sample(world_position: Vector3) -> PlayerCommand:
 	command.time_pressed = Input.is_action_just_pressed("skip_time")
 	command.jump_held = Input.is_action_pressed("jump")
 	command.attack_held = not ui_active and Input.is_action_pressed("attack")
+	command.reload_pressed = not ui_active and Input.is_action_just_pressed("reload_gun")
+	command.reload_held = not ui_active and Input.is_action_pressed("reload_gun")
 	command.guard_held = not ui_active and Input.is_action_pressed("guard")
 	command.punch_held = not ui_active and Input.is_action_pressed("punch")
 	command.drop_pressed = Input.is_action_just_pressed("drop_weapon")

@@ -10,6 +10,7 @@ var _next := Label.new()
 var _stat_points_lbl := Label.new()
 var _defence := Label.new()
 var _skill_rows: Dictionary = {}
+var _last_data: Dictionary = {}
 
 const SKILL_CONFIG: Array = [
 	["fist", "Fist", "f6a282"],
@@ -137,13 +138,14 @@ func _setup_skill_bars() -> void:
 		}
 
 func present(data: Dictionary) -> void:
+	_last_data = data
 	_level.text = "LV. %d  ·  %d EXP" % [data.level, data.experience]
 	_level_bar.value = float(data.get("level_percent", 0))
 	_next.text = "Max Level" if data.level == 99 else "%d EXP to next level" % data.remaining
 
 	var stat_points: int = int(data.get("stat_points", 0))
 	if stat_points > 0:
-		_stat_points_lbl.text = "★ %d STAT POINT%s" % [stat_points, "S" if stat_points > 1 else ""]
+		_stat_points_lbl.text = tr_n("★ %d STAT POINT", "★ %d STAT POINTS", stat_points) % stat_points
 		_stat_points_lbl.add_theme_color_override("font_color", Color("ffd666"))
 	else:
 		_stat_points_lbl.text = "0 Stat Points"
@@ -164,3 +166,6 @@ func present(data: Dictionary) -> void:
 
 	var fist_dmg: int = int(data.get("fist_damage", 12))
 	_defence.text = "Defence %d · Fist: %d DMG" % [data.defence, fist_dmg]
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and not _last_data.is_empty(): present(_last_data)

@@ -7,6 +7,7 @@ signal attacked(amount: float, source: Vector3)
 signal defeated(at: Vector3)
 @export var quarry: Node3D
 @export var protected_area: Rect2
+var excluded_area: Rect2
 @export var leash_radius: float = 8.0
 @export var tuning: SnailTuning = preload("res://game/combat/enemies/default_snail.tres")
 var rain_only: bool = false
@@ -142,7 +143,8 @@ func _choose_direction(delta: float) -> Vector3:
 	return SnailSteering.choose_direction(self, delta)
 
 func _protected(at: Vector3) -> bool:
-	return protected_area.has_area() and protected_area.has_point(Vector2(at.x, at.z))
+	var point := Vector2(at.x, at.z)
+	return (protected_area.has_area() and protected_area.has_point(point)) or (excluded_area.has_area() and excluded_area.has_point(point))
 
 func _can_reach_quarry() -> bool:
 	return SnailSteering.can_reach_quarry(self)

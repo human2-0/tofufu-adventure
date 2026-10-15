@@ -27,6 +27,29 @@ func _run() -> void:
 	var view := game.shooting_view
 	var hud := game.hud
 	await frames()
+	gun.step(false, false, Vector2.UP, Vector3.ZERO, 0.01, true)
+	check(gun.reload_remaining == 0.0, "a full magazine ignores manual reload")
+	gun.magazine = 4
+	var manual := PlayerCommand.new()
+	manual.reload_pressed = true
+	manual.reload_held = true
+	manual.attack_held = true # Square also maps to melee attack.
+	game._on_command(manual, 0.01)
+	var manual_sequence := gun.shot_sequence
+	check(gun.reload_remaining == 2.0 and gun.magazine == 4, "held gun starts manual reload through the actor command")
+	manual.reload_pressed = false
+	game._on_command(manual, 0.5)
+	check(gun.shot_sequence == manual_sequence and gun.reload_remaining == 1.5, "holding Square neither shoots nor restarts reload")
+	gun.step(false, false, Vector2.UP, Vector3.ZERO, 0.25, true)
+	check(gun.reload_remaining == 1.25, "another reload press preserves the active timer")
+	gun.step(false, false, Vector2.UP, Vector3.ZERO, 1.25)
+	check(gun.magazine == 9 and gun.reload_remaining == 0.0, "manual reload refills after two seconds")
+	gun.selected = false
+	gun.magazine = 4
+	gun.reload()
+	check(gun.reload_remaining == 0.0, "melee selection cannot manually reload a stowed gun")
+	gun.selected = true
+	gun.magazine = 9
 	for shot in SoyGun.MAGAZINE_SIZE:
 		gun.cooldown = 0.0
 		gun.step(true, false, Vector2.UP, game.player.position + Vector3(0, 0.7, -20), 0.01)

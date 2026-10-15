@@ -7,7 +7,7 @@ var pending: Array[PlayerCommand] = []
 var _held := PlayerCommand.new()
 var _last_received: int = 0
 var _overflowed: bool = false
-const EDGES: Array[StringName] = [&"jump_pressed", &"dash_pressed", &"drop_pressed", &"pickup_pressed", &"camp_pressed", &"time_pressed", &"use_healing_1", &"use_healing_2", &"use_healing_3", &"use_healing_4"]
+const EDGES: Array[StringName] = [&"reload_pressed", &"jump_pressed", &"dash_pressed", &"drop_pressed", &"pickup_pressed", &"camp_pressed", &"time_pressed", &"use_healing_1", &"use_healing_2", &"use_healing_3", &"use_healing_4"]
 
 func accept(command: PlayerCommand, sequence: int = 0) -> bool:
 	if pending.size() >= 12:
@@ -35,6 +35,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 		_held.dash_held = next.dash_held
 		_held.jump_held = next.jump_held
 		_held.attack_held = next.attack_held
+		_held.reload_held = next.reload_held
 		_held.guard_held = next.guard_held
 		_held.punch_held = next.punch_held
 		_held.cancel_actions = next.cancel_actions
@@ -49,6 +50,7 @@ func sample(_position: Vector3) -> PlayerCommand:
 	command.dash_held = _held.dash_held
 	command.jump_held = _held.jump_held
 	command.attack_held = _held.attack_held
+	command.reload_held = _held.reload_held
 	command.guard_held = _held.guard_held
 	command.punch_held = _held.punch_held
 	command.cancel_actions = _held.cancel_actions

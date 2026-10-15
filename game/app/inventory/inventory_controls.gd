@@ -16,6 +16,7 @@ func _input(event: InputEvent) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_echo() or not event.is_action_pressed("toggle_inventory"): return
+	if game.solo_arena != null and game.solo_arena.active(): return
 	var source: LocalPlayerInput = game.shooting_view.local_input
 	if source == null or not source.enabled or source.chat_blocked or not game.hud.visible: return
 	game.inventory_window.open()

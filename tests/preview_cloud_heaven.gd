@@ -36,6 +36,17 @@ func _run() -> void:
 	at = CloudTerrain.point(-55, 292)
 	await capture(camera, at + Vector3(8, 6, 14), at + Vector3(0, 1, 0), "fountain")
 	await capture(camera, Vector3(104, 47, 387), Vector3(9, 56, 298), "cloudbanks")
+	for practice_at in CloudTrainingCourt.DUMMIES:
+		var dummy := PracticeDummy.new()
+		dummy.maximum_health = 500
+		dummy.title = "CELESTIAL PRACTICE"
+		dummy.figure_builder = CloudTrainingCourt.dummy_figure
+		dummy.position = CloudTerrain.point(practice_at.x, practice_at.y)
+		stage.add_child(dummy)
+	at = CloudTerrain.point(62, 369)
+	await capture(camera, at + Vector3(18, 16, 30), at + Vector3(0, 1, -2), "training")
+	at = CloudTerrain.point(49, 354)
+	await capture(camera, at + Vector3(8, 6, 13), at + Vector3(0, 0.8, 0), "deposit")
 	stage.free()
 	print("Cloud heaven GPU preview: PASS")
 	quit()

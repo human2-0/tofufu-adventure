@@ -77,6 +77,8 @@ func _run() -> void:
 	game.inventory.refining_unlocked = true
 	key(KEY_I)
 	await process_frame
+	for child in game.inventory_window.get_children():
+		if child is CharacterSheet: child.bag_requested.emit()
 	var right_click := InputEventMouseButton.new()
 	right_click.button_index = MOUSE_BUTTON_RIGHT
 	right_click.pressed = true
@@ -90,8 +92,8 @@ func _run() -> void:
 	check(game.inventory_window._refine_menu.get_item_text(0).contains("1 → 1"), "mature bean menu shows the one-for-one rate")
 	game.inventory_window._refine_menu.hide()
 	game.inventory_window._inv_buttons[0].focus_entered.emit()
-	check(game.inventory_window._description.text.contains("Shop currency"), "focused item shows its description")
-	check(game.inventory_window._inv_buttons[0].tooltip_text.contains("Shop currency"), "hover tooltip includes item description")
+	check(game.inventory_window._tooltip._details.text.contains("Shop currency"), "focused item shows its description")
+	check(game.inventory_window._inv_buttons[0].tooltip_text.is_empty(), "native tooltip does not duplicate or bypass the toggle")
 	game.inventory_window.drop_confirmation.skip_future = false
 	var requested_drops: Array = []
 	game.inventory_window.drop_requested.connect(func(source: String, id: Variant) -> void: requested_drops.append([source, id]))

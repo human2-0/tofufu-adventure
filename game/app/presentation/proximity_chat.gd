@@ -86,12 +86,12 @@ func _display(key: String, data: Dictionary) -> void:
 		return
 	var actor: Node3D = game.player if roster == null else roster.actors.get(key)
 	if not is_instance_valid(actor): return
-	var speaker := "You" if room == null or key == room.local_key else ProximityRules.clean(str(room.names.get(key, "Fufu")))
+	var speaker := tr("You") if room == null or key == room.local_key else ProximityRules.clean(str(room.names.get(key, "Fufu")))
 	view.show_message(speaker, data.text, data.yell)
 	if is_instance_valid(_bubbles.get(key)): _bubbles[key].queue_free()
 	var bubble := SpeechBubble.new()
 	bubble.yelled = data.yell
-	bubble.text = ("YELL! " if data.yell else "") + ProximityRules.clean(data.text)
+	bubble.text = (tr("YELL! ") if data.yell else "") + ProximityRules.clean(data.text)
 	bubble.modulate = Color("ffdb8a") if data.yell else Color.WHITE
 	actor.add_child(bubble)
 	_bubbles[key] = bubble

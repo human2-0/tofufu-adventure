@@ -16,6 +16,7 @@ var _dragging: bool = false
 
 func _ready() -> void:
 	clip_contents = true
+	tooltip_auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	_fog.shader = preload("res://game/ui/map/map_fog.gdshader")
 	_background.material = _fog
 	_background.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -91,7 +92,7 @@ func _draw_heading(point: Vector2) -> void:
 
 func _draw_caption(marker: Dictionary, point: Vector2, rect: Rect2) -> void:
 	var font := ThemeDB.fallback_font
-	var caption: String = str(marker.label).left(24)
+	var caption := _caption(marker).left(32)
 	var width := font.get_string_size(caption, HORIZONTAL_ALIGNMENT_LEFT, -1, 14).x
 	var at := point + Vector2(10, -9)
 	if at.x + width > rect.end.x - 4: at.x = point.x - width - 10
@@ -128,5 +129,12 @@ func _clamp_center() -> void:
 
 func _get_tooltip(at: Vector2) -> String:
 	for marker in markers:
-		if project_point(marker.point).distance_to(at) < 12: return str(marker.label)
+		if project_point(marker.point).distance_to(at) < 12: return _caption(marker)
 	return ""
+
+func _caption(marker: Dictionary) -> String:
+	var value := str(marker.label)
+	return value if marker.kind == "player" and not marker.get("local", false) else tr(value)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED: queue_redraw()

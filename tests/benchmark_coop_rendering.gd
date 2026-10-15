@@ -96,7 +96,7 @@ func run() -> void:
 		var index := 0
 		for member: CoopActor in host.roster.party.values():
 			member.health.restore()
-			member.health.invulnerability = 300.0 # Keep the fixture here while enemies still attack.
+			member.health.invulnerability = 90.0 # Protocol permits up to 100; keep enemies attacking without relocation.
 			member.combat.reset()
 			if not member.actor.relocate(host.game.world.ground_point(at.x + (index % 2) * 3, at.y + (index / 2) * 3, 0.1)):
 				printerr("FAIL: benchmark relocation failed at ", place, " for ", index)
@@ -218,6 +218,10 @@ func sample(place: String) -> void:
 	viewport.get_texture().get_image().save_png("/tmp/tofufu-coop-%s-%s-%s.png" % ["guest" if _guest_mode else "host", place, result.camera_mode])
 
 func _fixture_valid(place: String) -> bool:
+	if _guest_mode and not guest._synchronized:
+		printerr("FAIL: benchmark guest never synchronized at ", place)
+		quit(1)
+		return false
 	for member: CoopActor in host.roster.party.values():
 		var at := Vector2(member.actor.position.x, member.actor.position.z)
 		if at.distance_to(_case_point) > 35.0:

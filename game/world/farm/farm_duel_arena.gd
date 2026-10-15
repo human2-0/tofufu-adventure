@@ -8,7 +8,10 @@ const SPAWN_OFFSETS: Array[Vector2] = [Vector2(-15, 0), Vector2(15, 0)]
 const ARENA_HALF_SIZE := Vector2(21, 17)
 const WALL_HEIGHT: float = 3.2
 const WALL_THICKNESS: float = 0.5
-const FIGHTER_INSET: float = 1.0
+const FIGHTER_RADIUS: float = 0.4
+# Tolerate the capsule contact margin instead of treating wall contact as escape.
+const FIGHTER_INSET: float = WALL_THICKNESS + FIGHTER_RADIUS - 0.02
+const AUDIENCE_MOB_MARGIN: float = 6.0
 const AUDIENCE_ROWS: int = 4
 const AUDIENCE_STEP_HEIGHT: float = 0.7
 const AUDIENCE_ROW_SPACING: float = 1.0
@@ -49,6 +52,25 @@ func pad_for(at: Vector3) -> int:
 func contains_arena(at: Vector3) -> bool:
 	return absf(at.x - ARENA_CENTER.x) <= ARENA_HALF_SIZE.x - FIGHTER_INSET and absf(at.z - ARENA_CENTER.y) <= ARENA_HALF_SIZE.y - FIGHTER_INSET
 
+func constrained_position(at: Vector3) -> Vector3:
+	var inset: float = WALL_THICKNESS + FIGHTER_RADIUS + 0.02
+	return Vector3(clampf(at.x, ARENA_CENTER.x - ARENA_HALF_SIZE.x + inset, ARENA_CENTER.x + ARENA_HALF_SIZE.x - inset),
+		maxf(at.y, _point(ARENA_CENTER).y + 0.12),
+		clampf(at.z, ARENA_CENTER.y - ARENA_HALF_SIZE.y + inset, ARENA_CENTER.y + ARENA_HALF_SIZE.y - inset))
+
+static func mob_exclusion() -> Rect2:
+	return Rect2(ARENA_CENTER - ARENA_HALF_SIZE, ARENA_HALF_SIZE * 2).grow(AUDIENCE_MOB_MARGIN)
+
+static func mob_safe_point(at: Vector2) -> Vector2:
+	var area := mob_exclusion()
+	if not area.has_point(at): return at
+	var sides: Array[Vector2] = [Vector2(area.position.x - 1.0, at.y), Vector2(area.end.x + 1.0, at.y),
+		Vector2(at.x, area.position.y - 1.0), Vector2(at.x, area.end.y + 1.0)]
+	var nearest := sides[0]
+	for side in sides:
+		if side.distance_squared_to(at) < nearest.distance_squared_to(at): nearest = side
+	return nearest
+
 func return_position(index: int) -> Vector3:
 	var spawns := spawn_positions()
 	return spawns[clampi(index, 0, spawns.size() - 1)] + Vector3.UP * 0.12
@@ -63,8 +85,10 @@ func _build_pads() -> void:
 	var sign_at := _point(Vector2(41.2, 6.0))
 	MeadowGeometry.signpost(self, sign_at, "DUEL GATE · TWO FUFUS")
 	var note := Label3D.new()
+	note.visibility_range_end = 32.0
+	note.visibility_range_end_margin = 2.0
 	note.double_sided = false
-	note.text = "STAND ON A TILE WITH A FRIEND"
+	note.text = "SOLO: CHALLENGE DOFUFU ON A TILE\nCO-OP: STAND HERE WITH A FRIEND"
 	note.position = _point(Vector2(41.2, 1.8)) + Vector3.UP * 1.25
 	note.font_size = 24
 	note.pixel_size = 0.02
@@ -86,6 +110,8 @@ func _build_battlefield() -> void:
 	_build_cover(center)
 	_build_audience(center)
 	var sign := Label3D.new()
+	sign.visibility_range_end = 32.0
+	sign.visibility_range_end_margin = 2.0
 	sign.double_sided = false
 	sign.text = "FIRST TO 10"
 	sign.position = center + Vector3.UP * (WALL_HEIGHT + 1.0)

@@ -15,7 +15,7 @@ static func height_at(x: float, z: float, desert: DesertWorld) -> float:
 	# A shallow, walkable basin beneath the water, with a continuous dry bank.
 	var basin := Vector2((x + 40.0) / 14.0, (z - 314.0) / 10.0).length()
 	hills = lerpf(1.30, hills, smoothstep(0.75, 1.10, basin))
-	hills += WorldContours.rim(x, z, HALF_WIDTH, SOUTH_START, SOUTH_END, desert.farm.noise.seed, true)
+	hills += WorldContours.rim(x, z, HALF_WIDTH, SOUTH_START, 480.0, desert.farm.noise.seed, true)
 	return JungleCoast.height_at(x, z, lerpf(desert.point(x, minf(z, SOUTH_START)).y, hills, blend), desert.farm.noise.seed)
 
 static func trail_distance(x: float, z: float) -> float:

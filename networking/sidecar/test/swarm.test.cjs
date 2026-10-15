@@ -32,6 +32,10 @@ test('two isolated local Holepunch peers discover, authenticate, exchange and sh
     assert.equal(a.send(bKey, { type: 'join', version: 1 }), true)
     while (!bEvents.some(e => e.type === 'packet') && Date.now() < deadline) await wait(20)
     assert.deepEqual(bEvents.find(e => e.type === 'packet'), { type: 'packet', key: aKey, data: { type: 'join', version: 1 } })
+    const snapshot = { type: 'snapshot_delta', patch: { clutter: Array(80).fill({ item: 'edamame', count: 10, position: [2, 0, 3] }) } }
+    assert.equal(b.send(aKey, snapshot), true)
+    while (!aEvents.some(e => e.type === 'packet' && e.data.type === 'snapshot_delta') && Date.now() < deadline) await wait(20)
+    assert.deepEqual(aEvents.find(e => e.type === 'packet' && e.data.type === 'snapshot_delta'), { type: 'packet', key: bKey, data: snapshot })
     // The old framer killed healthy streamx sockets after its 3-second write deadline.
     await wait(4500)
     assert.equal(aEvents.filter(e => e.type === 'left').length, 0, 'healthy host stream stays connected')

@@ -16,6 +16,7 @@ func save_entry(participants: Array[String], defeated_handler: Callable) -> void
 		member.combat.equipment.drop_item = Callable()
 		member.combat.equipment.pickup_item = Callable()
 		_set_training(member, false)
+		member.duel = session.duel
 		member.duel_defeated = defeated_handler.bind(key)
 		member.health.invulnerability = maxf(member.health.invulnerability, 6.0)
 
@@ -44,10 +45,10 @@ func filter_targets(participants: Array[String]) -> void:
 			if key in participants and foe_key != key: opponents.append(session.roster.party[foe_key].combat)
 		member.combat.clash.opponents = opponents
 
-func start_round(participants: Array[String], spawns: Array[Vector3]) -> void:
+func start_round(participants: Array[String], spawns: Array[Vector3], choices: Array[Dictionary]) -> void:
 	for index in 2:
 		var member: CoopActor = session.roster.party[participants[index]]
-		_apply_equal_loadout(member)
+		CoopDuelAgreement.apply(member, choices[index])
 		_clear_shots(member)
 		member.actor.relocate(spawns[index] + Vector3.UP * 0.12)
 		member.actor.velocity = Vector3.ZERO
@@ -67,7 +68,7 @@ func contain(participants: Array[String]) -> void:
 		if not session.roster.party.has(key): continue
 		var member: CoopActor = session.roster.party[key]
 		if arena.contains_arena(member.actor.global_position): continue
-		var destination := arena.return_position(index)
+		var destination := arena.constrained_position(member.actor.global_position)
 		if not member.actor.relocate(destination): member.actor.global_position = destination
 		member.actor.velocity = Vector3.ZERO
 		member.actor.motor.is_dashing = false
@@ -76,7 +77,7 @@ func contain(participants: Array[String]) -> void:
 		member.actor.motor.cancel_jump()
 		member.actor.motor.cancel_dash_charge()
 		member.actor.ability_velocity = Callable()
-		member.health.invulnerability = maxf(member.health.invulnerability, 0.35)
+		member.respawn_count += 1
 
 func clear_projectiles(participants: Array[String]) -> void:
 	for key in participants:
@@ -137,19 +138,6 @@ func abort(participants: Array[String]) -> void:
 	saved_states.clear()
 	saved_actions.clear()
 
-func _apply_equal_loadout(member: CoopActor) -> void:
-	var base := CharacterProgress.new()
-	member.progression.progress.restore(base.capture())
-	for slot in ["helmet", "armor", "legs", "boots", "accessory", "support_1", "support_2", "support_3", "support_4"]:
-		member.character_equipment.set_slot(slot, null)
-	member.character_equipment.set_slot("combat_1", ItemStack.new(InventoryItem.weapon("knife"), 1))
-	member.character_equipment.set_slot("combat_2", ItemStack.new(InventoryItem.weapon("soy_gun"), 1))
-	member.loadout.active_slot = 2
-	member.loadout.refresh(false)
-	member.combat.gun.magazine = SoyGun.MAGAZINE_SIZE
-	member.combat.gun.reload_remaining = 0.0
-	member.health.armor_multiplier = 1.0
-
 func _clear_shots(member: CoopActor) -> void:
 	for child in member.combat.gun.get_children():
 		if child is SoyProjectile: child.queue_free()
@@ -172,6 +160,9 @@ func _set_saved_exit_position(state: Dictionary, index: int) -> void:
 	state.velocity = [0.0, 0.0, 0.0]
 
 func _restore_actions(member: CoopActor, key: String) -> void:
+	member.duel = null
+	member.combat.gun.projectile_speed_multiplier = 1.0
+	member.combat.sotjet.projectile_speed_multiplier = 1.0
 	if saved_actions.has(key):
 		member.combat.equipment.drop_item = saved_actions[key].drop
 		member.combat.equipment.pickup_item = saved_actions[key].pickup
@@ -179,6 +170,7 @@ func _restore_actions(member: CoopActor, key: String) -> void:
 	_set_training(member, true)
 
 func _set_training(member: CoopActor, connected: bool) -> void:
+	member.progression.care.enabled = connected
 	var progress := member.progression.progress
 	var sources: Array[Signal] = [member.combat.weapon_trained, member.combat.gun.weapon_trained, member.combat.sotjet.weapon_trained]
 	for source in sources:

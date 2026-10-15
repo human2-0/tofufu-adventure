@@ -11,6 +11,7 @@ var tuning: SotjetTuning
 var authoritative: bool = true
 var push_multiplier: float = 1.0
 var damage_multiplier: float = 1.0
+var enhancement_multiplier: float = 1.0
 var attack_cadence_multiplier: float = 1.0
 var parcels: Array[SotjetParcel] = []
 var visual: SotjetStreamVisual
@@ -89,7 +90,7 @@ func _impact(hit: Dictionary, velocity: Vector3, reflected_by: Damageable = null
 		var id := target.get_instance_id()
 		if _hit_until.has(id): return
 		_hit_until[id] = _clock + tuning.damage_interval / maxf(attack_cadence_multiplier, 0.01)
-		var damage := tuning.damage_per_second * tuning.damage_interval * damage_multiplier
+		var damage := tuning.damage_per_second * tuning.damage_interval * damage_multiplier * enhancement_multiplier
 		var impulse := Vector3(velocity.x, 0.0, velocity.z).normalized() * tuning.push_speed * push_multiplier
 		if target.damage(damage, impulse, Damageable.HitKind.SOY, hit.position):
 			if target.current > 0.0 and target.invulnerability <= 0.0: target.pushed.emit(impulse)
@@ -117,7 +118,7 @@ func _resolve(parcel: SotjetParcel, hit: Dictionary) -> bool:
 		if not is_instance_valid(target) or target.body != hit.collider: continue
 		if parcel.reflections >= 4: break
 		var id := target.get_instance_id()
-		var cost := 0.0 if _guard_until.has(id) else tuning.damage_per_second * tuning.damage_interval * damage_multiplier
+		var cost := 0.0 if _guard_until.has(id) else tuning.damage_per_second * tuning.damage_interval * damage_multiplier * enhancement_multiplier
 		var normal := target.reflection_normal(parcel.velocity, hit.position, authoritative, cost)
 		if normal.is_zero_approx(): break
 		if authoritative and cost > 0.0: _guard_until[id] = _clock + tuning.damage_interval / maxf(attack_cadence_multiplier, 0.01)

@@ -16,6 +16,8 @@ static func build(parent: Node3D) -> void:
 	for z in [3.3,8.7]: MeadowGeometry.box(parent, Vector3(144.6,1.8,z), Vector3(0.3,3.6,0.3), Color("e4ba6c"))
 	MeadowGeometry.signpost(parent, Vector3(141,0,10), "TOFU FACTORY · ENTER", -PI / 2.0)
 	var sign := Label3D.new()
+	sign.visibility_range_end = 32.0
+	sign.visibility_range_end_margin = 2.0
 	sign.double_sided = false
 	sign.text = "GIGALOPOLIS\nTOFU FACTORY"
 	sign.position = Vector3(142.8,6,6)

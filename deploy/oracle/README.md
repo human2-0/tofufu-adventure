@@ -2,16 +2,27 @@
 
 This is an optional **dedicated game server**, alongside the existing Holepunch approach. It keeps simulating and saving when everybody disconnects. Four people can join; the server does not occupy a player slot. Offline play and the default Holepunch launcher remain available.
 
-## Your account: inspected 15 September 2026
+The name-only **Public Multiplayer** menu and stripped-pack service use the
+separate [public deployment guide](PUBLIC.md). The instructions below describe
+the private player-file and source-release workflow.
+
+## Account and deployment status: checked 11 October 2026
 
 Safari shows a running Always Free `VM.Standard.E2.1.Micro` in London:
 
 - IP: `79.72.79.130`; SSH user: `opc`.
-- OS: Oracle Linux 9; memory: 1 GB; AMD/x86-64.
+- OS: Oracle Linux 9; AMD/x86-64. Although the shape advertises 1 GB,
+  the running OS reports 503 MiB total memory and about 228 MiB available.
 - Network: `thoughts_blog` — inspect existing workloads before changing its services or ports.
 - The console reports an A1 allowance of **2 OCPUs / 12 GB RAM**. A separate ARM VM within that allowance would be a better game-server candidate, subject to region capacity and your remaining quota.
 
-No Oracle resource, firewall rule, SSH access, GitHub secret or live service has been changed by this implementation. Browser sign-in does not provide the VM's SSH private key. Local tests cover the new code; Oracle provisioning, Linux deployment, TLS and cross-network performance still need acceptance testing.
+Public hosting remains blocked. The existing shared VM could not bring the
+stripped server to readiness during a bounded resource trial; the trial files
+were removed, and the original services remain running. Authenticated launches
+of a separate Always Free A1 VM, including 1 OCPU / 3 GB RAM / 50 GB boot storage,
+returned `Out of host capacity` in AD-1 and AD-2. AD-3 has a zero A1 memory quota.
+No separate game VM, public game route or new firewall rule was created. Linux
+service deployment, real TLS clients and cloud load acceptance remain pending.
 
 Oracle may reclaim idle Always Free instances. There is no availability guarantee here. Confirm the current Always Free label and total allocations in your tenancy before creating resources; do not rely on older 4-CPU/24-GB tutorials. See [Oracle's current limits and reclamation policy](https://docs.oracle.com/en-us/iaas/Content/FreeTier/freetier_topic-Always_Free_Resources.htm).
 
@@ -34,7 +45,10 @@ sudo ss -lntup
 systemctl --type=service --state=running
 ```
 
-The game and validation processes need spare memory. This 1-GB VM is not yet load-tested; validation deliberately leaves the old world running and can need substantially more memory than the server alone. Use a separate larger Always Free VM if this instance already serves your blog or runs out of memory. Substitute that VM's IP/user in the remaining commands.
+The game and validation processes need spare memory. The public installer
+requires at least 2 GiB of OS-reported RAM; provision at least 3 GB for OS
+headroom. Use a separate larger Always Free VM when capacity becomes available.
+Substitute that VM's IP/user in the remaining commands.
 
 ## 2. Prepare credentials and the source release
 
@@ -90,7 +104,7 @@ sudo journalctl -u tofufu -n 80 --no-pager
 
 The release script validates the candidate with the full headless test suite before stopping the running world. It asks the game to save, backs up its checkpoint, switches the source directory, restarts and waits up to 30 seconds for `ORACLE_READY`. Failed startup restores the old source and checkpoint when available. Initial deployment has no old release to restore. A failed candidate remains on disk for diagnosis; retry using a new commit. Updates interrupt connected sessions.
 
-Persistence is in `/var/lib/tofufu/adventure_00.json`, outside release directories. A systemd restart requests a final checkpoint; forced termination/crashes can lose up to 30 seconds since the last autosave. An unreadable/corrupt checkpoint stops startup instead of replacing it with a new world.
+Persistence is in `/var/lib/tofufu/adventure_00.json`, outside release directories. A systemd restart requests a final checkpoint; forced termination/crashes can lose changes since the last completed five-second autosave. An unreadable/corrupt checkpoint stops startup instead of replacing it with a new world.
 
 ## 4. Play through an SSH tunnel
 

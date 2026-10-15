@@ -74,6 +74,16 @@ func add_item(item: InventoryItem, amount: int = 1) -> int:
 		changed.emit()
 	return remaining
 
+func add_stack(stack: ItemStack) -> int:
+	if stack == null or stack.item == null: return 0
+	if stack.item.max_stack > 1: return add_item(stack.item, stack.count)
+	for index in capacity:
+		if slots[index] == null:
+			slots[index] = stack.duplicate_stack()
+			changed.emit()
+			return 0
+	return stack.count
+
 func remove_item(item_id: String, amount: int = 1) -> int:
 	var remaining := amount
 	for i in range(capacity - 1, -1, -1):

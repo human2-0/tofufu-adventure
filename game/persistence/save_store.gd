@@ -3,68 +3,52 @@ extends RefCounted
 ## Versioned value records, bounded reads and atomic slot replacement.
 
 var directory: String = "user://adventures"
+var mode: String = ""
 var extra_validator: Callable
 var last_error: String = ""
+var size_limit: int = 98304
 const MAX_SLOTS: int = 12
-const WORLD_ITEM_LIMITS := {"nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const WORLD_ITEM_LIMITS := {"magical_tofufu_chunk": 50, "celestial_helmet": 1, "celestial_armor": 1, "celestial_legs": 1, "celestial_boots": 1, "celestial_sword": 1, "celestial_staff": 1, "soy_raygun": 1, "nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
 const BACKPACK_CONTENT_LIMIT: int = 20
 
 func list_saves() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 	for slot in MAX_SLOTS:
-		if FileAccess.file_exists(_path(slot)):
+		if not SaveSlotFiles.existing(directory, mode, slot, size_limit).is_empty():
 			var data := read_slot(slot)
 			result.append({"slot": slot, "data": data, "valid": not data.is_empty()})
 	return result
 
 func free_slot() -> int:
 	for slot in MAX_SLOTS:
-		if not FileAccess.file_exists(_path(slot)):
+		if SaveSlotFiles.existing(directory, mode, slot, size_limit).is_empty():
 			return slot
 	return -1
 
 func write_slot(slot: int, data: Dictionary) -> bool:
 	last_error = ""
-	if slot < 0 or slot >= MAX_SLOTS or not record_valid(data):
+	if slot < 0 or slot >= MAX_SLOTS or not SaveSlotFiles.matches(data, mode) or not record_valid(data):
 		last_error = "This adventure could not be saved: invalid state."
 		return false
-	if DirAccess.make_dir_recursive_absolute(directory) != OK:
-		last_error = "Could not create the save folder."
-		return false
-	var file := FileAccess.open(_path(slot) + ".tmp", FileAccess.WRITE)
-	if file == null:
-		last_error = "Could not write the save. Check available disk space."
-		return false
-	var encoded := JSON.stringify(data)
-	if encoded.to_utf8_buffer().size() > 98304:
-		file.close()
-		last_error = "This adventure exceeds the save size limit."
-		return false
-	file.store_string(encoded)
-	file.flush()
-	var error := file.get_error()
-	file.close()
-	if error != OK or DirAccess.rename_absolute(_path(slot) + ".tmp", _path(slot)) != OK:
-		last_error = "Could not finish saving. Your previous save is still available."
-		return false
-	return true
+	last_error = SaveSlotFiles.write(_path(slot), data, size_limit)
+	return last_error.is_empty()
 
 func read_slot(slot: int) -> Dictionary:
 	if slot < 0 or slot >= MAX_SLOTS:
 		return {}
-	var file := FileAccess.open(_path(slot), FileAccess.READ)
-	if file == null or file.get_length() > 98304:
-		return {}
-	var data: Variant = JSON.parse_string(file.get_as_text())
-	return data if data is Dictionary and record_valid(data) else {}
+	var pathname := SaveSlotFiles.existing(directory, mode, slot, size_limit)
+	if pathname.is_empty(): return {}
+	var data := SaveSlotFiles.read(pathname, size_limit)
+	return data if SaveSlotFiles.matches(data, mode) and record_valid(data) else {}
 
 func remove_slot(slot: int) -> bool:
-	return slot >= 0 and slot < MAX_SLOTS and DirAccess.remove_absolute(_path(slot)) == OK
+	return slot >= 0 and slot < MAX_SLOTS and SaveSlotFiles.remove(directory, mode, slot, size_limit)
 
 func _path(slot: int) -> String:
-	return directory.path_join("adventure_%02d.json" % slot)
+	return SaveSlotFiles.path(directory, mode, slot)
 
 static func valid(data: Dictionary) -> bool:
+	if not InventorySaveValidation.valid(data): return false
 	if data.has("castle") and not CastleSaveValidation.valid(data.castle): return false
 	if data.has("parrot_rest"):
 		if not data.parrot_rest is Array or data.parrot_rest.size() not in [0, 3]: return false
@@ -143,7 +127,13 @@ func record_valid(data: Dictionary) -> bool:
 static func progression(value: Variant) -> bool:
 	if not value is Dictionary: return false
 	var ver: Variant = value.get("version")
-	if not _progress_counter(ver) or ver < 1 or ver > 2: return false
+	if not _progress_counter(ver) or ver < 1 or ver > 3: return false
+	if value.has("journey"):
+		var journey: Variant = value.journey
+		if not journey is Dictionary or journey.size() != 3: return false
+		for track in ["trail", "rhythm", "care"]:
+			var bound: int = {"trail": 7500, "rhythm": 750, "care": 2250}[track]
+			if not _progress_counter(journey.get(track)) or journey[track] > bound: return false
 	var xp: Variant = value.get("experience")
 	if not _progress_counter(xp): return false
 	var practice: Variant = value.get("practice")
@@ -151,7 +141,7 @@ static func progression(value: Variant) -> bool:
 	for field in ["fist", "sword", "magic", "attack_speed", "defence"]:
 		if not _progress_counter(practice.get(field)): return false
 	if practice.size() == 6 and not _progress_counter(practice.get("shooting")): return false
-	if ver == 2:
+	if ver >= 2:
 		if value.has("stat_points") and not _progress_counter(value.get("stat_points")): return false
 		if value.has("granted_level") and not _progress_counter(value.get("granted_level")): return false
 		if value.has("stats"):
@@ -179,7 +169,7 @@ static func _world_items(value: Variant) -> bool:
 			if not (number is float or number is int) or not is_finite(float(number)) or absf(number) > (100 if index == 3 else 1000): return false
 		if row[3] < 0: return false
 		if row.size() >= 8 and not _backpack_contents(row[7], row[1]): return false
-		if row.size() == 9 and not BarnSaveValidation.display(row[8]): return false
+		if row.size() == 9 and (not BarnSaveValidation.display(row[8]) or not BarnSaveValidation.enhancement(row[1], row[8].get("enhanced", false))): return false
 	return true
 
 static func _backpack_contents(value: Variant, backpack_id: String) -> bool:
@@ -195,5 +185,6 @@ static func _backpack_stack(row: Dictionary) -> bool:
 	if not row.get("id") is String or not _progress_counter(row.get("count")): return false
 	var maximum: Variant = WORLD_ITEM_LIMITS.get(row.id)
 	if maximum == null or row.count < 1 or row.count > maximum: return false
+	if not BarnSaveValidation.enhancement(row.id, row.get("enhanced", false)): return false
 	var reserve: Variant = row.get("reserve", 100.0)
 	return (reserve is int or reserve is float) and is_finite(float(reserve)) and reserve >= 0 and reserve <= 100

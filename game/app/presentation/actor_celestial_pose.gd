@@ -18,7 +18,10 @@ func context() -> Dictionary:
 	if player != null and player.transport_active: return {"action": "riding"}
 	if _hurt_remaining > 0.0: return {"action": "hurt"}
 	if combat.gun.selected:
-		return {"action": "reload" if combat.gun.reload_remaining > 0.0 else "aim"}
+		if combat.gun.reload_remaining > 0.0: return {"action": "reload"}
+		if combat.gun.aiming or combat.gun.charge_elapsed > 0.0 or combat.gun.cooldown > 0.0:
+			return {"action": "aim"}
+		return {}
 	if combat.equipment.guarding: return {"action": "guard"}
 	if combat.equipment._punch_time > 0.18: return {"action": "thrust"}
 	if combat.active:

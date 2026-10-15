@@ -38,6 +38,8 @@ func _ready() -> void:
 		_box(Vector3(x, 0.18, 0), Vector3(0.38, 0.36, 0.6), Color("4b3840"))
 	_box(Vector3(0, 0.7, 0.44), Vector3(0.12, 0.65, 0.07), Color("ff762b"))
 	warning = Label3D.new()
+	warning.visibility_range_end = 32.0
+	warning.visibility_range_end_margin = 2.0
 	warning.position.y = 2.1
 	warning.font_size = 26
 	warning.pixel_size = 0.008

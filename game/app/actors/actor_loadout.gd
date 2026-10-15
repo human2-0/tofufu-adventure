@@ -12,6 +12,9 @@ var _active: ItemStack
 var _restoring: bool = false
 
 func _ready() -> void:
+	var enhanced_view := ActorEnhancedWeaponView.new()
+	enhanced_view.combat = combat
+	add_child(enhanced_view)
 	combat.equipment.select_item = select
 	equipment.changed.connect(refresh)
 	refresh()
@@ -67,6 +70,7 @@ func refresh(show_feedback: bool = true) -> void:
 	combat.sotjet.selected = id == "sotjet"
 	combat.sword.visible = combat.equipment.knife_selected
 	combat.staff.visible = combat.equipment.staff_selected
+	ActorWeaponEnhancement.apply(combat, _active if not id.is_empty() else null)
 	if id == "sotjet": combat.sotjet.milk = _active.reserve
 
 func stow_ineligible_apparel() -> void:

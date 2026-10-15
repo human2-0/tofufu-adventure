@@ -36,13 +36,14 @@ func _ready() -> void:
 
 func _label(text: String, at: Vector3, size: int) -> Label3D:
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.text = text
 	label.font_size = size
 	label.pixel_size = 0.012
 	label.modulate = Color("fff0c5")
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.position = at
-	label.visibility_range_end = 42
 	add_child(label)
 	return label
 

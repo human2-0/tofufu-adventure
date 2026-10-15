@@ -2,7 +2,7 @@ class_name GamePreferences
 extends RefCounted
 ## Local settings only. ConfigFile stores primitives, never peer-supplied objects.
 
-const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "run", "attack", "guard", "punch", "drop_weapon", "pickup_weapon", "combat_slot_1", "combat_slot_2", "camera_mode", "camera_direction", "toggle_inventory", "toggle_map", "use_support_1", "use_support_2", "use_support_3", "use_support_4", "toggle_help", "return_to_camp", "skip_time"]
+const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "run", "attack", "reload_gun", "guard", "punch", "drop_weapon", "pickup_weapon", "combat_slot_1", "combat_slot_2", "camera_mode", "camera_direction", "toggle_inventory", "toggle_map", "use_support_1", "use_support_2", "use_support_3", "use_support_4", "toggle_help", "return_to_camp", "skip_time"]
 const RESOLUTIONS: Array[Vector2i] = [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 var path: String = "user://preferences.cfg"
 var config := ConfigFile.new()
@@ -16,9 +16,12 @@ var adaptive_resolution: bool = true
 var minimap_zoom: float = 1.0
 var skip_item_drop_warning: bool = false
 var nickname: String = ""
+var language: String = "en"
 
 func load_preferences() -> void:
 	config.load(path)
+	var stored_language: Variant = config.get_value("interface", "language", TranslationServer.get_locale().substr(0, 2))
+	apply_language(stored_language if stored_language is String else "en")
 	var stored_name: Variant = config.get_value("profile", "nickname", "")
 	nickname = clean_nickname(stored_name) if stored_name is String else ""
 	var zoom_value: Variant = config.get_value("map", "zoom", 1.0)
@@ -44,6 +47,7 @@ func load_preferences() -> void:
 	apply_display(resolution, fullscreen)
 
 func save() -> Error:
+	config.set_value("interface", "language", language)
 	config.set_value("profile", "nickname", nickname)
 	config.set_value("map", "zoom", minimap_zoom)
 	config.set_value("inventory", "skip_item_drop_warning", skip_item_drop_warning)
@@ -55,6 +59,18 @@ func save() -> Error:
 	config.set_value("rendering", "adaptive", adaptive_resolution)
 	config.set_value("controls", "deadzone", deadzone)
 	return config.save(path)
+
+func apply_language(value: String) -> void:
+	language = value if value in ["en", "pl"] else "en"
+	TranslationServer.set_locale(language)
+
+static func install_translations(tree: SceneTree) -> void:
+	var translation := preload("res://game/settings/localization/pl.tres")
+	var cleanup := TranslationServer.remove_translation.bind(translation)
+	if tree.root.tree_exiting.is_connected(cleanup): return
+	TranslationServer.add_translation(translation)
+	tree.root.tree_exiting.connect(cleanup)
+	tree.root.propagate_notification(Node.NOTIFICATION_TRANSLATION_CHANGED)
 
 func remember_nickname(value: String) -> Error:
 	nickname = clean_nickname(value)
@@ -105,7 +121,8 @@ func bind_action(action: String, event: InputEvent, device: String) -> String:
 	if event is InputEventJoypadButton and event.button_index == JOY_BUTTON_START:
 		return "Start is reserved for the pause menu."
 	for other in ACTIONS:
-		if other == action:
+		# The west face button serves melee or reload according to held equipment.
+		if other == action or (event is InputEventJoypadButton and action in ["attack", "reload_gun"] and other in ["attack", "reload_gun"]):
 			continue
 		for existing in InputMap.action_get_events(other):
 			if same_device(existing, device) and existing.is_match(event):
@@ -135,8 +152,8 @@ static func binding_text(action: String, device: String) -> String:
 	var names: PackedStringArray = []
 	for event in InputMap.action_get_events(action):
 		if same_device(event, device):
-			names.append(event.as_text().replace(" (Physical)", "").replace(" - Physical", "").replace("Joypad", "Pad"))
-	return " / ".join(names) if not names.is_empty() else "Unassigned"
+			names.append(InputBindingNames.describe(event))
+	return " / ".join(names) if not names.is_empty() else TranslationServer.translate("Unassigned")
 
 func _replace(action: String, event: InputEvent, device: String) -> void:
 	for previous in InputMap.action_get_events(action):

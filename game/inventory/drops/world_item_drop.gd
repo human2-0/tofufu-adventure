@@ -9,6 +9,7 @@ var drop_id: int
 var item_id: String
 var count: int = 1
 var reserve: float = 100.0
+var enhanced: bool = false
 var contents: Array = []
 var authoritative: bool = true
 var label: Label3D
@@ -25,13 +26,15 @@ func _ready() -> void:
 	collider.shape = shape
 	add_child(collider)
 	label = Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.font_size = 30
 	label.pixel_size = 0.006
 	label.position.y = 0.6
 	label.outline_size = 7
-	label.no_depth_test = true
-	label.ignore_occlusion_culling = true
+	label.no_depth_test = false
+	label.ignore_occlusion_culling = false
 	label.render_priority = 127
 	add_child(label)
 	ring = MeshInstance3D.new()
@@ -67,5 +70,8 @@ func set_focus(active: bool, prompt: String) -> void:
 func capture() -> Array:
 	var p := global_position
 	var row: Array = [drop_id, item_id, count, reserve, p.x, p.y, p.z, contents.duplicate(true)]
-	if display_bay >= 0: row.append({"bay": display_bay, "owner": protected_owner})
+	var metadata: Dictionary = {}
+	if display_bay >= 0: metadata = {"bay": display_bay, "owner": protected_owner}
+	if enhanced: metadata["enhanced"] = true
+	if not metadata.is_empty(): row.append(metadata)
 	return row

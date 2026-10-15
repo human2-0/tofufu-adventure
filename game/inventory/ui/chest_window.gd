@@ -1,6 +1,6 @@
 class_name ChestWindow
 extends CanvasLayer
-## Focused modal for moving gathered items into a personal stodoła chest's 24 slots.
+## Focused modal for moving gathered items into a personal stodoła deposit's 24 slots.
 
 signal closed
 
@@ -24,29 +24,32 @@ var chest: ChestInventory:
 var _bag_buttons: Array[InventorySlotButton] = []
 var _chest_buttons: Array[InventorySlotButton] = []
 var _status: Label
-var _description: Label
-var _inspected_button: InventorySlotButton
+var _tooltip: ItemTooltip
 var _selected_source := ""
 var _selected_slot: Variant = null
 
 func _ready() -> void:
 	layer = 16
 	visible = false
+	_tooltip = ItemTooltip.new()
+	_tooltip.window = self
+	add_child(_tooltip)
 	_build_ui()
+	move_child(_tooltip, get_child_count() - 1)
 
 func open() -> void:
 	if visible: return
 	visible = true
 	_selected_source = ""
 	_selected_slot = null
-	_inspected_button = null
-	if _description != null: _description.text = "Hover or focus an item to see its description."
+	_tooltip.clear()
 	refresh()
 	if not _bag_buttons.is_empty(): _bag_buttons[0].call_deferred("grab_focus")
 
 func close() -> void:
 	if not visible: return
 	visible = false
+	_tooltip.clear()
 	_selected_source = ""
 	_selected_slot = null
 	closed.emit()
@@ -75,7 +78,7 @@ func _build_ui() -> void:
 	var header := HBoxContainer.new()
 	content.add_child(header)
 	var title := Label.new()
-	title.text = "STODOŁA · PERSONAL CHEST"
+	title.text = "STODOŁA · PERSONAL DEPOSIT"
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	title.add_theme_font_size_override("font_size", 16)
 	title.add_theme_color_override("font_color", Color("f4c75d"))
@@ -88,18 +91,12 @@ func _build_ui() -> void:
 	body.add_theme_constant_override("separation", 32)
 	content.add_child(body)
 	_build_grid(body, "YOUR BAG · UP TO 20 SLOTS", "inventory", PlayerInventory.MAX_CAPACITY, 5, _bag_buttons)
-	_build_grid(body, "YOUR CHEST · 24 SLOTS", "chest", ChestInventory.CAPACITY, 6, _chest_buttons)
-	_description = Label.new()
-	_description.custom_minimum_size.y = 42
-	_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_description.add_theme_color_override("font_color", Color("e9f4dd"))
-	_description.text = "Hover or focus an item to see its description."
-	content.add_child(_description)
+	_build_grid(body, "YOUR DEPOSIT · 24 SLOTS", "chest", ChestInventory.CAPACITY, 6, _chest_buttons)
 	_status = Label.new()
 	_status.add_theme_color_override("font_color", Color("aee6d0"))
 	content.add_child(_status)
 	var guide := Label.new()
-	guide.text = "Drag items, or Shift-click to move a stack between your bag and the depot. Stored items are saved. Drop bag items in front of your bay to display them; leaving the bay makes them public."
+	guide.text = "R3 / Wheel · Toggle item details. Drag items, or Shift-click to move a stack between your bag and the depot. Every box opens your same saved deposit. Drop bag items in front of your bay to display them; leaving the bay makes them public."
 	guide.add_theme_color_override("font_color", Color("9fb8ac"))
 	guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	content.add_child(guide)
@@ -139,7 +136,6 @@ func refresh() -> void:
 		_chest_buttons[index].present(chest.get_slot(index) if chest != null else null, null, "Chest slot %d" % (index + 1), "", _selected_source == "chest" and _selected_slot == index)
 	if _status != null:
 		_status.text = "%d / %d chest slots in use" % [chest.occupied_slots() if chest != null else 0, ChestInventory.CAPACITY]
-	if _inspected_button != null: InventoryWindowDescriptions.show_for_slot(self, _inspected_button)
 
 func _on_slot_clicked(source: String, slot: int) -> void:
 	if Input.is_key_pressed(KEY_SHIFT): return

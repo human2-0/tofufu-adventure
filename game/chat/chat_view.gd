@@ -62,6 +62,7 @@ func _ready() -> void:
 	header.add_child(_toggle_btn)
 
 	_history = RichTextLabel.new()
+	_history.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	_history.custom_minimum_size.y = 100
 	_history.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_history.bbcode_enabled = false
@@ -156,7 +157,7 @@ func _submit(value: String) -> void:
 	set_editing(false)
 
 func show_message(speaker: String, message: String, shouted: bool) -> void:
-	history.append("%s%s: %s" % [speaker, " [YELL]" if shouted else "", message])
+	history.append("%s%s: %s" % [speaker, tr(" [YELL]") if shouted else "", message])
 	if history.size() > 50: history.pop_front()
 	_history.text = "\n".join(history)
 	if is_compact and not editing:

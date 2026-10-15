@@ -4,6 +4,8 @@ extends RefCounted
 
 static func burst(parent: Node, at: Vector3, text: String, color: Color) -> void:
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	parent.add_child(label)
 	label.global_position = at + Vector3.UP * 1.4
 	label.text = text
@@ -11,8 +13,8 @@ static func burst(parent: Node, at: Vector3, text: String, color: Color) -> void
 	label.pixel_size = 0.009
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.modulate = color
-	label.no_depth_test = true
-	label.ignore_occlusion_culling = true
+	label.no_depth_test = false
+	label.ignore_occlusion_culling = false
 	label.render_priority = 127
 	var tween := label.create_tween().set_parallel(true)
 	tween.tween_property(label, "position:y", label.position.y + 1.2, 0.8)
@@ -25,12 +27,14 @@ static func collect(parent: Node, at: Vector3, amount: int) -> void:
 	var label: Label3D = parent.get_meta(META) if parent.has_meta(META) else null
 	if not is_instance_valid(label):
 		label = Label3D.new()
+		label.visibility_range_end = 32.0
+		label.visibility_range_end_margin = 2.0
 		parent.add_child(label)
 		label.font_size = 42
 		label.pixel_size = 0.009
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		label.no_depth_test = true
-		label.ignore_occlusion_culling = true
+		label.no_depth_test = false
+		label.ignore_occlusion_culling = false
 		label.render_priority = 127
 		label.set_meta("amount", 0)
 		parent.set_meta(META, label)
@@ -91,12 +95,14 @@ static func damage_number(parent: Node, receiver: Damageable, amount: float) -> 
 	var label: Label3D = cached if is_instance_valid(cached) else null
 	if not is_instance_valid(label):
 		label = Label3D.new()
+		label.visibility_range_end = 32.0
+		label.visibility_range_end_margin = 2.0
 		parent.add_child(label)
 		label.font_size = 30
 		label.pixel_size = 0.007
 		label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-		label.no_depth_test = true
-		label.ignore_occlusion_culling = true
+		label.no_depth_test = false
+		label.ignore_occlusion_culling = false
 		label.render_priority = 127
 		label.set_meta("amount", 0.0)
 		receiver.set_meta("damage_number", label)

@@ -22,6 +22,7 @@ var transport_origin := Vector3.ZERO
 var surface_speed: float = 1.0
 var movement_modifier: Callable
 var ability_velocity: Callable
+var command_filter: Callable
 var presentation: ActorPresentation
 var motor: PlayerMotor
 var placement_peers: Array[CharacterBody3D] = []
@@ -39,6 +40,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	var command := command_source.sample(global_position)
+	if command_filter.is_valid(): command_filter.call(command)
 	if transport_active:
 		if transport_step.is_valid(): transport_step.call(command, delta)
 		command = PlayerCommand.new()

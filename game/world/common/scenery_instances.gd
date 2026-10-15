@@ -9,6 +9,7 @@ static func build(parent: Node3D, title: String, mesh: Mesh, poses: Array[Transf
 	var root := Node3D.new()
 	root.name = title
 	parent.add_child(root)
+	if OS.has_feature("dedicated_server"): return root
 	var tiles: Dictionary[Vector2i, Array] = {}
 	for pose: Transform3D in poses:
 		var key := Vector2i(floori(pose.origin.x / TILE_SIZE), floori(pose.origin.z / TILE_SIZE))

@@ -63,6 +63,7 @@ static func inventory(game: AdventureGame) -> void:
 	game.healing.equipment = game.character_equipment
 	game.healing.health = game.health
 	game.healing.vitals = game.combat.vitals
+	game.progression.care.healing = game.healing
 	game.healing.eaten.connect(game._on_healing_eaten)
 	game.healing.cooldown_updated.connect(game._on_healing_cooldown_updated)
 	game.character_equipment.changed.connect(game._update_hud_healing)
@@ -78,6 +79,9 @@ static func inventory(game: AdventureGame) -> void:
 	var inventory_controls := InventoryControls.new()
 	inventory_controls.game = game
 	game.add_child(inventory_controls)
+	var details := CharacterDetailsFlow.new()
+	details.game = game
+	game.add_child(details)
 	game.seed_storage = SeedStorage.new()
 	game.seed_storage.game = game
 	game.add_child(game.seed_storage)
@@ -90,6 +94,7 @@ static func encounters(game: AdventureGame) -> void:
 	game.encounters.health = game.health
 	game.encounters.inventory = game.inventory
 	game.encounters.shell_drop = game.world_items.spawn_mob_loot
+	game.encounters.magic_drop = func(at: Vector3) -> void: MagicalMobLoot.drop(game.world_items, at)
 	game.encounters.loot_chance = func(base: float, _at: Vector3) -> float: return ApparelSetBonus.drop_chance(game.character_equipment.complete_set(), base)
 	game.encounters.experience_awarded.connect(game.progression.progress.award_experience)
 	game.encounters.ground_point = game.world.ground_point
@@ -159,37 +164,16 @@ static func exploration(game: AdventureGame) -> void:
 	game.quest_giver = QuestGiver.new()
 	game.quest_giver.game = game
 	game.add_child(game.quest_giver)
+	game.god_hunt = GodHunt.new()
+	game.god_hunt.game = game
+	game.add_child(game.god_hunt)
 	game.factory_dungeon = TofuDungeon.new()
 	game.factory_dungeon.game = game
 	game.add_child(game.factory_dungeon)
 	game.map = MapFlow.new()
 	game.map.game = game
 	game.add_child(game.map)
-	game.parrot_travel = ParrotTravel.new()
-	game.parrot_travel.game = game
-	game.add_child(game.parrot_travel)
-	var volcanic_visit := VolcanicVisit.new()
-	volcanic_visit.game = game
-	game.add_child(volcanic_visit)
-	game.castle_adventure = CastleAdventure.new()
-	game.castle_adventure.game = game
-	game.add_child(game.castle_adventure)
-	var cloud_visit := CloudRealmVisit.new()
-	cloud_visit.game = game
-	game.add_child(cloud_visit)
-	game.farming = SoybeanFarming.new()
-	game.farming.game = game
-	game.add_child(game.farming)
-	for npc: Node3D in [game.world.quest_npc, game.world.weapon_merchant]:
-		(npc.get_node("DirectionalArt") as MeadowResidentArt).view_focus = game.player
-	var interiors := MeadowInteriorView.new()
-	interiors.actor = game.player
-	interiors.camera = game.camera
-	interiors.buildings = game.world.interiors
-	game.add_child(interiors)
-	game.apple_harvest = AppleHarvest.new()
-	game.apple_harvest.setup(game)
-	game.add_child(game.apple_harvest)
+	AdventureWorldSetup.build(game)
 
 static func _restore_apple_tree(target: Damageable) -> void:
 	target.current = target.maximum

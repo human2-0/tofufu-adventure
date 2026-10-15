@@ -63,7 +63,7 @@ func _ready() -> void:
 	_hotkey.add_theme_color_override("font_color", Color("b6c5be"))
 	add_child(_hotkey)
 
-func present(stack: ItemStack, placeholder: Texture2D, title: String, hotkey: String, selected: bool) -> void:
+func present(stack: ItemStack, placeholder: Texture2D, _title: String, hotkey: String, selected: bool) -> void:
 	current_stack = stack
 	if _image == null: return
 	var occupied := stack != null and stack.item != null
@@ -75,9 +75,9 @@ func present(stack: ItemStack, placeholder: Texture2D, title: String, hotkey: St
 		_display_icon = InventoryIconQuality.for_slot(source_icon)
 	_image.texture = _display_icon
 	_image.modulate = Color.WHITE if occupied else Color(0.72, 0.78, 0.77, 0.65)
-	_quantity.text = str(stack.count) if occupied and stack.count > 1 else ""
+	_quantity.text = "✦" if occupied and stack.enhanced else (str(stack.count) if occupied and stack.count > 1 else "")
 	_hotkey.text = hotkey
-	tooltip_text = "%s ×%d\n%s" % [stack.item.name, stack.count, stack.item.description] if occupied else title + " · Empty"
+	tooltip_text = ""
 	self_modulate = Color("ffe5a3") if selected else Color.WHITE
 	var style := get_theme_stylebox("normal").duplicate() as StyleBoxFlat
 	style.border_color = Color("f4c75d") if selected else (Color("8fc598") if occupied else Color("547e6e"))
@@ -109,6 +109,8 @@ func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
 	var incoming: ItemStack = data.get("stack")
 	if incoming == null:
 		return false
+	if incoming.item.id == MagicalTofufu.ID and current_stack != null and current_stack.item.category == "combat":
+		return not current_stack.enhanced
 	if source == "equipment" and window_ref != null and window_ref.equipment != null:
 		return window_ref.equipment.can_equip(str(slot_id), incoming)
 	elif source == "inventory" and data.get("source") == "equipment" and window_ref != null:

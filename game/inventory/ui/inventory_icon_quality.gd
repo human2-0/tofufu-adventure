@@ -10,12 +10,14 @@ static func for_slot(source: Texture2D) -> Texture2D:
 	if source is AtlasTexture:
 		var atlas := source as AtlasTexture
 		pixels = atlas.atlas.get_image()
+		if pixels == null: return source
 		if pixels.is_compressed(): pixels.decompress()
 		var region := Rect2i(atlas.region).intersection(Rect2i(Vector2i.ZERO, pixels.get_size()))
 		if not region.has_area(): return source
 		pixels = pixels.get_region(region)
 	else:
 		pixels = source.get_image()
+		if pixels == null: return source
 		if pixels.is_compressed(): pixels.decompress()
 	if pixels == null or pixels.is_empty(): return source
 	var used := pixels.get_used_rect()

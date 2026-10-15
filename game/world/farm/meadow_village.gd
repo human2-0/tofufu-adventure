@@ -94,6 +94,8 @@ static func resident(parent: Node3D, at: Vector3, title: String, asset: String) 
 	npc.add_child(body)
 	MeadowGeometry.rock(npc, Vector3(0, 0.02, 0), Vector3(0.35, 0.02, 0.25), Color("637151"))
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.double_sided = false
 	label.name = "ResidentTitle"
 	label.text = title

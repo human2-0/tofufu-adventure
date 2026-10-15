@@ -6,11 +6,11 @@ const CAMPS: Array[Vector2] = [Vector2(-26, 3), Vector2(34, -68), Vector2(27, 12
 const CAMP_ARMORED_SPAWNS: Array[Vector2] = [Vector2(-27.8, 5.5), Vector2(32.2, -65.5), Vector2(25.2, 14.5)]
 const FOREST_ARMORED_SPAWNS: Array[Vector2] = [
 	Vector2(-62, -58), Vector2(-34, -63), Vector2(0, -64), Vector2(44, -70),
-	Vector2(80, -61), Vector2(79, -17), Vector2(66, 25), Vector2(57, 55),
+	Vector2(80, -61), Vector2(79, -17), Vector2(66, 9), Vector2(57, 57),
 	Vector2(22, 63), Vector2(-12, 62), Vector2(-48, 57), Vector2(-68, 23),
 	Vector2(-72, -36), Vector2(-46, -39), Vector2(-10, -40), Vector2(2, -48),
-	Vector2(80, -36), Vector2(74, 1), Vector2(82, 12), Vector2(73, 46),
-	Vector2(46, 35), Vector2(0, 41), Vector2(-31, 38), Vector2(-65, 45),
+	Vector2(80, -36), Vector2(74, 1), Vector2(82, 9), Vector2(73, 57),
+	Vector2(42, 35), Vector2(0, 41), Vector2(-31, 38), Vector2(-65, 45),
 ]
 const DUMMIES: Array[Vector2] = [Vector2(16.8, 12), Vector2(19.3, 12), Vector2(21.8, 12)]
 const BEE_SPAWNS: Array[Vector2] = [Vector2(-8, 70), Vector2(4, 73), Vector2(-7, 86), Vector2(5, 89)]

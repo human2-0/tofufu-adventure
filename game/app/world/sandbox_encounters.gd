@@ -6,6 +6,7 @@ signal progress_changed(beans: int, mobs: int, props: int)
 signal experience_awarded(amount: int)
 signal experience_changed(total: int)
 signal mob_defeated(at: Vector3)
+signal angel_defeated(at: Vector3)
 signal armored_snail_defeated
 var mob_nodes: Array[TrainingMob] = []
 var prop_nodes: Array[HarvestProp] = []
@@ -27,12 +28,16 @@ var combat: PlayerCombat
 var health: Damageable
 var inventory: PlayerInventory
 var ground_point: Callable
+var magic_drop: Callable
 var shell_drop: Callable
 var shell_drop_roll: Callable = func() -> float: return randf()
 var loot_chance: Callable
 var beans: int = 0
 var mobs: int = 0
 var props: int = 0
+
+func _physics_process(_delta: float) -> void:
+	ArenaMobExclusion.apply(self)
 
 func populate() -> void:
 	for row in 4:
@@ -57,16 +62,30 @@ func populate() -> void:
 	# Keep every legacy encounter index; southern bees follow the forest roster.
 	for at: Vector2 in FarmCombatGrounds.BEE_SPAWNS:
 		_add_mob(at, false, false, false, true)
-	for at in dummy_positions:
+	for at: Vector2 in Groatfields.spawns():
+		_add_mob(at, false, false, false, true, true)
+	for at in DofufuCity.GUARDS:
+		_add_mob(at, false, false, false, false, false, true)
+	for at in dummy_positions + CloudTrainingCourt.DUMMIES:
 		var dummy := PracticeDummy.new()
-		dummy.position = ground_point.call(at.x, at.y)
+		if at in CloudTrainingCourt.DUMMIES:
+			dummy.maximum_health = 500.0
+			dummy.recovery_seconds = 6.0
+			dummy.periodic_recovery = true
+			dummy.title = "CELESTIAL PRACTICE"
+			dummy.figure_builder = CloudTrainingCourt.dummy_figure
+			dummy.position = CloudTerrain.point(at.x, at.y)
+		else:
+			dummy.position = ground_point.call(at.x, at.y)
 		add_child(dummy)
 		dummy.target.trains_weapons = true
 		combat.targets.append(dummy.target)
 		dummy_nodes.append(dummy)
 
-func _add_mob(at: Vector2, rain_only: bool = false, armored: bool = false, free_roaming: bool = false, bee: bool = false) -> void:
-	var mob: TrainingMob = WildBee.new() if bee else (ArmoredSnail.new() if armored else TrainingMob.new())
+func _add_mob(at: Vector2, rain_only: bool = false, armored: bool = false, free_roaming: bool = false, bee: bool = false, angel: bool = false, city_guard: bool = false) -> void:
+	at = FarmDuelArena.mob_safe_point(at)
+	var mob: TrainingMob = DofufuCityEncounters.guard() if city_guard else (TofufuArcher.new() if angel else (WildBee.new() if bee else (ArmoredSnail.new() if armored else TrainingMob.new())))
+	mob.excluded_area = FarmDuelArena.mob_exclusion()
 	mob.rain_only = rain_only
 	mob.free_roaming = free_roaming
 	mob.position = ground_point.call(at.x, at.y, 0.1)
@@ -112,13 +131,16 @@ func _harvested(at: Vector3, count: int) -> void:
 	progress_changed.emit(beans, mobs, props)
 
 func _mob_defeated(at: Vector3, mob: TrainingMob) -> void:
+	if magic_drop.is_valid(): magic_drop.call(at)
 	mobs += 1
 	var reward := ARMORED_SNAIL_EXPERIENCE if mob is ArmoredSnail else MOB_EXPERIENCE
 	if mob is WildBee: reward = BEE_EXPERIENCE
+	if mob is TofufuArcher: reward = TofufuArcher.EXPERIENCE
 	experience += reward
 	experience_changed.emit(experience)
 	experience_awarded.emit(reward)
 	mob_defeated.emit(at)
+	if mob is TofufuArcher: angel_defeated.emit(at)
 	if mob is ArmoredSnail: armored_snail_defeated.emit()
 	_drop(at, 3 if mob is WildBee else (4 if mob is ArmoredSnail else 2))
 	var chance := float(loot_chance.call(SHELL_PIECE_DROP_CHANCE, at)) if loot_chance.is_valid() else SHELL_PIECE_DROP_CHANCE
@@ -154,8 +176,9 @@ func _pickup_collected(bean: SoybeanPickup) -> bool:
 	return _collect(bean)
 
 func _mob_attacked(amount: float, source: Vector3, mob: TrainingMob) -> void:
-	if party_hurt.is_valid(): party_hurt.call(mob.quarry, amount, source)
-	else: _hurt_player(amount, source)
+	var kind := Damageable.HitKind.MELEE if mob is DofufuCityGuard else Damageable.HitKind.SLIME
+	if party_hurt.is_valid(): party_hurt.call(mob.quarry, amount, source, kind)
+	else: _hurt_player(amount, source, kind)
 
 func _bee_stung(victim: Node3D, amount: float, source: Vector3, bee: WildBee) -> void:
 	if bee._protected(victim.global_position): return

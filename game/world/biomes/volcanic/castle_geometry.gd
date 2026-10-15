@@ -21,6 +21,8 @@ static func solid(parent: Node3D, at: Vector3, size: Vector3, color: Color, slop
 
 static func title(parent: Node3D, at: Vector3, text: String, size: int = 34) -> Label3D:
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.text = text
 	label.double_sided = false
 	label.billboard = BaseMaterial3D.BILLBOARD_DISABLED

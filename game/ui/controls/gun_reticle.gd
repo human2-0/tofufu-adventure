@@ -34,7 +34,7 @@ func _draw_reload(center: Vector2) -> void:
 	if reload_progress > 0.001:
 		draw_arc(center, 24.0, -PI * 0.5, -PI * 0.5 + TAU * clampf(reload_progress, 0, 1), 64, color, 3, true)
 	var font := ThemeDB.fallback_font
-	var text := "RELOADING %.1fs" % reload_remaining
+	var text := tr("RELOADING %.1fs") % reload_remaining
 	var text_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15)
 	# Keep the countdown on screen even when overhead aim is near an edge.
 	var size := get_viewport_rect().size

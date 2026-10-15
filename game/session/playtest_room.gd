@@ -23,7 +23,7 @@ var _pending: String = ""
 var _timeout: float = 0
 var _retry_clock: float = 0
 var _presence_clock: float = 0
-const GAME_VERSION: int = 47
+const GAME_VERSION: int = 58
 
 func receive(event: Dictionary) -> void:
 	var key := str(event.get("key", ""))
@@ -51,7 +51,7 @@ func receive(event: Dictionary) -> void:
 		"packet":
 			if peers.has(key) and event.get("data") is Dictionary:
 				_packet(key, event.data)
-				if event.data.get("type") in ["input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice", "tofu_puzzle", "tofu_puzzle_result"]: return
+				if event.data.get("type") in ["input", "snapshot", "snapshot_delta", "ready", "ping", "pong", "server_health", "chat_text", "chat_voice", "tofu_puzzle", "tofu_puzzle_result"]: return
 		"error":
 			_reset_session(str(event.get("message", "Connection failed.")))
 			peers.clear()

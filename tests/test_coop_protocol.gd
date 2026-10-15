@@ -11,6 +11,12 @@ func _initialize() -> void:
 	command.move = Vector2.RIGHT
 	command.attack_held = true
 	var packet := CoopValues.input(command, 1, 100)
+	command.reload_pressed = true
+	command.reload_held = true
+	var reload_packet := CoopValues.input(command, 1, 100)
+	check(ExplorationProtocol.valid_input(reload_packet) and CoopValues.command(reload_packet).reload_pressed, "reload survives validated co-op input conversion")
+	reload_packet.reload_pressed = 1
+	check(not ExplorationProtocol.valid_input(reload_packet), "numeric reload intent is rejected")
 	var window := InputWindow.new()
 	check(window.accept("peer", packet, 100), "valid fresh intent accepted")
 	check(not window.accept("peer", packet, 100), "replayed sequence rejected")
@@ -36,6 +42,16 @@ func _initialize() -> void:
 	remote.accept(command)
 	check(remote.sample(Vector3.ZERO).jump_pressed, "edge consumed first time")
 	check(not remote.sample(Vector3.ZERO).jump_pressed, "edge never replayed while holding")
+	var reload_command := PlayerCommand.new()
+	reload_command.reload_pressed = true
+	reload_command.reload_held = true
+	remote.accept(reload_command)
+	var newest := PlayerCommand.new()
+	newest.reload_held = true
+	remote.accept(newest)
+	check(remote.sample(Vector3.ZERO).reload_pressed, "queued reload edge survives coalescing")
+	var held_reload := remote.sample(Vector3.ZERO)
+	check(held_reload.reload_held and not held_reload.reload_pressed, "remote reload edge is consumed once while Square stays held")
 	remote._last_received = Time.get_ticks_msec() - 300
 	var stopped := remote.sample(Vector3.ZERO)
 	check(stopped.move.is_zero_approx() and not stopped.attack_held and stopped.cancel_actions, "silent guest cancels holds without releasing an attack")

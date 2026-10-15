@@ -5,6 +5,7 @@ extends RefCounted
 const TILE_SIZE: float = 16.0
 
 static func build(root: Node3D) -> void:
+	if OS.has_feature("dedicated_server"): return
 	var groups: Dictionary[String, Dictionary] = {}
 	_collect(root, root, groups)
 	for key: String in groups:

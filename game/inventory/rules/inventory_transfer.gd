@@ -16,6 +16,8 @@ static func apply(inventory: PlayerInventory, equipment: CharacterEquipment, src
 	var stack := inventory.get_slot(int(src_id)) if src == "inventory" else equipment.get_slot(str(src_id))
 	if stack == null: return false
 	var other := inventory.get_slot(int(dst_id)) if dst == "inventory" else equipment.get_slot(str(dst_id))
+	if src == "inventory" and stack.item.id == MagicalTofufu.ID and other != null and other.item.category == "combat":
+		return WeaponEnhancement.apply(inventory, equipment, int(src_id), other)
 	if dst == "equipment" and not equipment.can_equip(str(dst_id), stack): return false
 	var replaces_backpack: bool = (src == "equipment" and src_id == "backpack") or (dst == "equipment" and dst_id == "backpack")
 	var equipped_after: ItemStack = equipment.get_slot("backpack")

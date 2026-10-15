@@ -5,6 +5,7 @@ var yelled: bool = false
 var remaining: float = 6.0
 
 func _ready() -> void:
+	auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	position.y = 2.15
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	vertical_alignment = VERTICAL_ALIGNMENT_BOTTOM
@@ -14,9 +15,10 @@ func _ready() -> void:
 	outline_modulate = Color("19312e")
 	width = 340
 	autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	# Dialogue must remain readable when the speaker or nearby props fill the view.
-	no_depth_test = true
-	ignore_occlusion_culling = true
+	visibility_range_end = 32.0
+	visibility_range_end_margin = 2.0
+	no_depth_test = false
+	ignore_occlusion_culling = false
 	render_priority = 127
 
 func _process(delta: float) -> void:

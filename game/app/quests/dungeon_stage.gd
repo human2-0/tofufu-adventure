@@ -81,6 +81,7 @@ static func enemy_spray(dungeon: TofuDungeon, amount: float, source: Vector3, vi
 
 static func enemy_defeated(dungeon: TofuDungeon, _at: Vector3, enemy: FactoryBean) -> void:
 	if enemy not in dungeon._enemies: return
+	if dungeon.enabled: MagicalMobLoot.drop(dungeon.game.world_items, _at)
 	var reward_slot: Array = dungeon._enemy_reward_ids.get(enemy, [])
 	dungeon._enemy_reward_ids.erase(enemy)
 	dungeon._enemies.erase(enemy)

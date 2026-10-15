@@ -9,6 +9,7 @@ const BLADES_PER_TUFT: int = 2
 static func populate(parent: Node3D, terrain: FarmTerrain, rng: RandomNumberGenerator) -> ShaderMaterial:
 	var material := ShaderMaterial.new()
 	material.shader = preload("res://game/world/farm/meadow_grass.gdshader")
+	if OS.has_feature("dedicated_server"): return material
 	var mesh := _blade()
 	mesh.surface_set_material(0, material)
 	var patches: Dictionary[Vector2i, Array] = {}

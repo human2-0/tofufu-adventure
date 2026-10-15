@@ -50,7 +50,7 @@ class PlaytestSwarm {
         socket.destroy(); return
       }
       this.emit({ type: 'packet', key, data: message.data })
-    }, undefined, Writable.drained)
+    }, undefined, Writable.drained, 180, true)
     send({ type: 'hello', version: 2, build: BUILD, name: this.name })
     const timer = setInterval(() => {
       if ((!welcomed && Date.now() - lastSeen > 8000) || Date.now() - lastSeen > 15000) socket.destroy()

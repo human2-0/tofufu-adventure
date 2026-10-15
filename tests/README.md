@@ -2,7 +2,17 @@
 
 Use [the feature routing map](../docs/AGENT_MAP.md#route-a-change) to find a focused scenario. Test/preview entry scripts stay under `tests/` while runtime files are organized within their feature directories; their resource paths must follow runtime moves. Long integration scenarios are exempt from the 200-line runtime budget.
 
-Run `python3 tools/verify.py` from the root. It runs the structural check, a Godot editor import, movement and combat rule tests, the original headless scene test, and sandbox integration tests. No third-party test framework is required.
+Run verification from the root. No third-party test framework is required.
+
+- `python3 tools/verify.py --quick`: structural checks, Godot editor import and the real scene smoke test.
+- `python3 tools/verify.py --tests item_tooltip inventory_input`: structural checks, import and only the named scenarios, for feedback during iteration.
+- `python3 tools/verify.py --quick --tests item_tooltip inventory_input`: add the scene smoke test to focused verification before finishing a local change.
+- `python3 tools/verify.py --list`: show available names and their scripts without running checks. Names follow the existing verifier stages; `motor` runs `test_player_motor.gd`.
+- `python3 tools/verify.py --full` (or no arguments): run all existing scenarios. Use once for broad composition/boundary changes, resource moves, shared save/network schema or project settings changes, and before releases.
+
+Select tests using the feature map and affected callers/contracts. For example, an inventory persistence change also needs save and co-op scenarios. Quick mode alone checks scene integration; it does not prove a new feature works. Documentation-only edits need link/structure checks, and Python tooling changes need their focused Python tests; neither requires running unrelated gameplay scenarios.
+
+Successful Godot output stays in logs; failures are printed and fail verification even if Godot exits zero. Summaries identify the scope, total duration and slowest stages. Add `--verbose` for individual stage timings. Focused runs explicitly report that the full suite was not run. Visual/device/NAT checks remain separate.
 
 Rule coverage: movement bounds, friction, falling gravity, coyote time, jump buffering, cooldown/re-entry, dash end and isolated per-player state. Scene coverage: actual world loading, floor collision, injected command source movement/jump/dash, cooldown HUD, camera target and zero-duration cooldown display.
 

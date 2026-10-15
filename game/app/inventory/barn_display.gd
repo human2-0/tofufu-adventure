@@ -13,7 +13,6 @@ static func spawn(items: WorldItems, combat: PlayerCombat, id: String, count: in
 	var at: Vector3 = items.game.world.seed_bank.to_global(MeadowBarn.table_position(index) + Vector3.UP * 0.48)
 	var drop := items.pool.spawn_at(id, count, reserve, at, contents)
 	if drop == null: return null
-	storage.barn.permitted(index, combat.actor, true)
 	drop.display_bay = index
 	drop.protected_owner = storage.barn.key(combat.actor)
 	return drop

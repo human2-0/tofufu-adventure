@@ -95,6 +95,7 @@ func _run() -> void:
 	check(not remote.sample(Vector3.ZERO).jump_pressed, "remote jump edge consumed once")
 	remote.free()
 	app.store.remove_slot(0)
+	DirAccess.remove_absolute(base.path_join("solo"))
 	DirAccess.remove_absolute(base)
 	DirAccess.remove_absolute(app.preferences.path)
 	app.queue_free()

@@ -26,6 +26,7 @@ static func build(world: Meadow, bounds: Rect2, density: float) -> Texture2D:
 	return texture
 
 static func _color(world: Meadow, at: Vector2) -> Color:
+	if DofufuTerrain.contains(at): return world.dofufu_highlands.terrain.color_at(at)
 	if VolcanicTerrain.contains(at):
 		var height := VolcanicTerrain.height_at(at.x, at.y)
 		if height < VolcanicTerrain.WATER_LEVEL: return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -height))
@@ -36,6 +37,8 @@ static func _color(world: Meadow, at: Vector2) -> Color:
 		return VolcanicTerrain.color_at(at, height)
 	# Expanded atlas areas outside authored terrain are sea scenery or outer void.
 	if at.x > 200: return Color("163b52") if at.y >= 56 else Color("233e49")
+	if at.y >= Groatfields.START and at.y <= Groatfields.END and absf(at.x) <= 80:
+		return Color("e8d6ad") if absf(at.x) < 4 else Color("afa2ba")
 	if at.y > 340: return Color("233e49")
 	var seed := world.terrain.noise.seed
 	var height := world.ground_point(at.x, at.y).y

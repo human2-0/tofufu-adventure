@@ -168,6 +168,8 @@ func show_objective(stage: int, units: int, secured: bool, carrying: bool) -> vo
 
 func _label(at: Vector3, value: String, size: int) -> Label3D:
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.double_sided = false
 	label.text = value
 	label.font_size = size

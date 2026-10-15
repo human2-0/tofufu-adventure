@@ -8,6 +8,9 @@ const SIGHT_RANGE: float = 22.0
 const STING_RANGE: float = 18.0
 const WINDUP: float = 0.7
 const COOLDOWN: float = 2.3
+var shot_height: float = 0.7
+var shot_windup: float = WINDUP
+var shot_cooldown: float = COOLDOWN
 var sting: BeeSting
 var _bee_visual: BeeVisuals
 var _sting_aim := Vector3.ZERO
@@ -15,10 +18,10 @@ var _provoked: float = 0.0
 var facing := Vector3.BACK
 
 func _ready() -> void:
-	tuning = preload("res://game/combat/enemies/default_bee.tres")
+	tuning = _ranged_tuning()
 	leash_radius = 12.0
 	super()
-	sting = BeeSting.new()
+	sting = _create_projectile()
 	add_child(sting)
 	sting.struck.connect(_sting_struck)
 	target.headshot_height = 0.8
@@ -76,13 +79,13 @@ func _choose_direction(delta: float) -> Vector3:
 		_windup = maxf(0.0, _windup - delta)
 		if _windup <= 0.0:
 			_warning.visible = false
-			if _can_reach_quarry(): sting.launch(global_position + Vector3.UP * 0.7, _sting_aim)
-			_rest = COOLDOWN
+			if _can_reach_quarry(): sting.launch(global_position + Vector3.UP * shot_height, _sting_aim)
+			_rest = shot_cooldown
 		return Vector3.ZERO
 	if _rest <= 0.0 and not sting.active and distance <= STING_RANGE and _can_reach_quarry():
 		# Lock aim at the warning, leaving time to sidestep the straight flight.
-		_sting_aim = (quarry.global_position + Vector3.UP * 0.7 - (global_position + Vector3.UP * 0.7)).normalized()
-		_windup = WINDUP
+		_sting_aim = (quarry.global_position + Vector3.UP * 0.7 - (global_position + Vector3.UP * shot_height)).normalized()
+		_windup = shot_windup
 		_warning.visible = true
 		return Vector3.ZERO
 	offset.y = 0.0
@@ -105,3 +108,9 @@ func _cancel_sting() -> void:
 
 func _sting_struck(victim: Node3D, source: Vector3) -> void:
 	stung.emit(victim, tuning.dry_damage, source)
+
+func _ranged_tuning() -> SnailTuning:
+	return preload("res://game/combat/enemies/default_bee.tres")
+
+func _create_projectile() -> BeeSting:
+	return BeeSting.new()

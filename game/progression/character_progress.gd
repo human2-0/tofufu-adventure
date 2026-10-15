@@ -11,6 +11,10 @@ var practice: Dictionary = {"fist": 0, "sword": 0, "shooting": 0, "magic": 0, "a
 var stat_points: int = 0
 var stats: Dictionary = {"fist": 0, "sword": 0, "shooting": 0, "magic": 0, "attack_speed": 0, "defence": 0}
 var _granted_level: int = 1
+var journey := JourneyPractice.new()
+
+func record_journey(track: String, units: int) -> void:
+	if journey.record(track, units): changed.emit()
 
 static func requirement(level: int, character: bool = false) -> int:
 	if character:
@@ -46,7 +50,9 @@ func allocate_stat(name: String) -> bool:
 	return true
 
 func weapon_hit(weapon: String) -> void:
-	if weapon in ["fist", "sword", "shooting"]: _practice(weapon, 1)
+	if weapon in ["fist", "sword", "shooting"]:
+		journey.record("rhythm", 1)
+		_practice(weapon, 1)
 
 func defended() -> void:
 	_practice("defence", 1)
@@ -94,17 +100,18 @@ func effective_defence() -> int:
 	return mini(CAP, skill("defence") + int((level() - 1) / float(TUNING.character_levels_per_defence)))
 
 func incoming_multiplier() -> float:
-	return 1.0 - TUNING.defence_reduction * (effective_defence() - 1)
+	return (1.0 - TUNING.defence_reduction * (effective_defence() - 1)) * (1.0 - TUNING.character_defence * (level() - 1))
 
 func walk_multiplier() -> float:
-	return 1.0 + TUNING.character_walk_speed * (level() - 1)
+	return minf(1.25, 1.0 + TUNING.character_walk_speed * (level() - 1)) * journey.walk_multiplier()
 
 func attack_multiplier() -> float:
-	return 1.0 + TUNING.character_attack_speed * (level() - 1) + TUNING.trained_attack_speed * (skill("attack_speed") - 1)
+	return (1.0 + TUNING.character_attack_speed * (level() - 1) + TUNING.trained_attack_speed * (skill("attack_speed") - 1)) * journey.rhythm_multiplier()
 
 func capture() -> Dictionary:
 	return {
-		"version": 2,
+		"version": 3,
+		"journey": journey.totals.duplicate(),
 		"experience": experience,
 		"practice": practice.duplicate(),
 		"stat_points": stat_points,
@@ -113,6 +120,7 @@ func capture() -> Dictionary:
 	}
 
 func restore(data: Dictionary, legacy_experience: int = 0) -> void:
+	journey.restore(data.get("journey", {}))
 	experience = clampi(int(data.get("experience", legacy_experience)), 0, threshold(CAP, true))
 	var saved: Dictionary = data.get("practice", {})
 	for name in SKILLS: practice[name] = clampi(int(saved.get(name, 0)), 0, threshold(CAP) * practice_cost_multiplier(name))

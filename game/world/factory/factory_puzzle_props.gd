@@ -103,6 +103,8 @@ static func _arena(parent: Node3D) -> void:
 
 static func _label(parent: Node3D, at: Vector3, title: String) -> void:
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.double_sided = false
 	label.text = title
 	label.font_size = 25

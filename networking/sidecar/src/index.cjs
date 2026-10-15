@@ -37,7 +37,7 @@ process.stdin.on('data', chunk => {
       if (message.type === 'send' && /^[0-9a-f]{64}$/.test(message.key) && message.data && typeof message.data === 'object') {
         if (!transport?.send(message.key, message.data)) emit({ type: 'left', key: message.key })
       } else close()
-    }, close)
+    }, close, null, 600)
     bridge.on('close', close)
     bridge.on('connect', async () => {
       clearTimeout(startup)

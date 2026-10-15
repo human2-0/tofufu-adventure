@@ -78,12 +78,14 @@ static func setup_center(hud: HUD, canvas: Control) -> void:
 	hud._popup.offset_bottom = 110
 
 	_help_and_notice(hud, canvas)
+	hud.arena = ArenaHUD.new()
+	canvas.add_child(hud.arena)
 
 static func _help_and_notice(hud: HUD, canvas: Control) -> void:
 	var help_box := HUDElements.make_panel(canvas, Vector2(-310, 150), Vector2(620, 210), Vector2(0.5, 0))
 	hud._help = help_box.get_parent() as PanelContainer
 	HUDElements.make_label(help_box, "FUFU ADVENTURE GUIDE", 13, Color("f4c75d"))
-	var guide := HUDElements.make_label(help_box, "WASD: Walk • Ctrl / L3: Run • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power (25 SP)\nRMB: Knife guard / Staff tornado / Podburst. Nori: hold RMB, steer with WASD, release to plunge (75 SP).\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • MMB: Rotate overhead / switch shoulder • Enter: Chat • V: Voice", 12, Color("d1ddd0"))
+	var guide := HUDElements.make_label(help_box, "WASD: Walk • Ctrl / L3: Run • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power (25 SP)\nRMB: Knife guard / Staff tornado / Podburst. Nori: hold RMB, steer with WASD, release to plunge (75 SP).\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • I / B: Inventory & EQ • 3–6: Support slots\nR / Square: Reload gun • P: Return to initial spot (testing)\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • MMB: Rotate overhead / switch shoulder • Enter: Chat • V: Voice", 12, Color("d1ddd0"))
 	guide.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	hud._help.visible = false
 

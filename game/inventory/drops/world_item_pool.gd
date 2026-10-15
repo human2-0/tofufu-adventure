@@ -96,8 +96,9 @@ func restore(rows: Array) -> void:
 		drop.count = int(row[2])
 		drop.reserve = float(row[3])
 		drop.contents = (row[7] if row.size() > 7 else []).duplicate(true)
-		drop.display_bay = int(row[8].bay) if row.size() == 9 else -1
-		drop.protected_owner = str(row[8].owner) if row.size() == 9 else ""
+		drop.enhanced = bool(row[8].get("enhanced", false)) if row.size() == 9 else false
+		drop.display_bay = int(row[8].get("bay", -1)) if row.size() == 9 else -1
+		drop.protected_owner = str(row[8].get("owner", "")) if row.size() == 9 else ""
 		drop.global_position = at
 		drop.last_safe = at
 		next_id = maxi(next_id, id + 1)

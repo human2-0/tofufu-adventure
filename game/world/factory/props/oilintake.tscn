@@ -184,6 +184,8 @@ mesh = SubResource("r15")
 material_override = SubResource("r16")
 
 [node name="LinePlate" type="Label3D" parent="."]
+visibility_range_end = 32.0
+visibility_range_end_margin = 2.0
 double_sided = false
 position = Vector3(0.0, 0.86, 0.785)
 text = "OIL / WAX"
@@ -194,6 +196,8 @@ no_depth_test = false
 modulate = Color(0.152941, 0.231373, 0.231373, 1.0)
 
 [node name="LineCaption" type="Label3D" parent="."]
+visibility_range_end = 32.0
+visibility_range_end_margin = 2.0
 double_sided = false
 position = Vector3(0.0, 2.05, 0.0)
 text = "OIL MILL"

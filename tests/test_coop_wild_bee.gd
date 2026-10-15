@@ -75,7 +75,8 @@ func _run() -> void:
 	bee.sting.launch(origin + Vector3.UP * 0.7, Vector3.BACK)
 	await ticks(12)
 	check(mirror.sting.active and not mirror.is_physics_processing(), "guest receives active sting presentation without authority")
-	check(mirror.sting.global_position.distance_to(bee.sting.global_position) < 0.01, "replica sting uses host position")
+	var display_offset := mirror.sting.global_position - bee.sting.global_position
+	check(display_offset.length() <= bee.sting.velocity.length() * 0.1001 and display_offset.cross(bee.sting.velocity).length() < 0.01 and display_offset.dot(bee.sting.velocity) >= -0.01, "replica sting follows the host path with at most 100ms cosmetic extrapolation")
 	victim.health.invulnerability = 0.0
 	victim.combat.equipment.guarding = true
 	victim.combat.equipment.facing = Vector2.UP

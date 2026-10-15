@@ -12,6 +12,42 @@ test('frames survive fragmentation and coalescing', () => {
   assert.deepEqual(messages, [{ type: 'one' }, { type: 'two' }])
   stream.end()
 })
+test('compressed gameplay frames preserve exact values with less wire traffic', () => {
+  const stream = new PassThrough()
+  const received = []
+  attach(stream, value => received.push(value))
+  const value = { type: 'packet', data: { actors: Array.from({ length: 4 }, () => ({ position: [21.123456789, 0.001, -2], health: 100, inventory: Array(80).fill({ id: 'edamame', count: 10 }) })) } }
+  const raw = encode(value)
+  const compressed = encode(value, true)
+  assert.ok(compressed.length < raw.length / 4)
+  for (let offset = 0; offset < compressed.length; offset += 7) stream.write(compressed.subarray(offset, offset + 7))
+  assert.deepEqual(received, [value])
+  stream.destroy()
+})
+test('small steady actor deltas also avoid repeated control-envelope overhead', () => {
+  const stream = new PassThrough()
+  const received = []
+  attach(stream, value => received.push(value))
+  const value = { type: 'packet', data: { type: 'snapshot_delta', epoch: 'e'.repeat(32), base: 120, sequence: 121, world_tick: false, patch: [1, { actors: [1, { ['b'.repeat(64)]: [1, { input_ack: [0, 120] }, []] }, []], sequence: [0, 121] }, []] } }
+  const raw = encode(value)
+  const packed = encode(value, true)
+  assert.ok(raw.length >= 256 && raw.length < 512)
+  assert.ok(packed.length < raw.length)
+  stream.write(packed)
+  assert.deepEqual(received, [value])
+  stream.destroy()
+})
+test('compression cannot bypass decoded frame size or JSON validation', () => {
+  const { deflateRawSync } = require('node:zlib')
+  for (const payload of [Buffer.from('x'.repeat(70000)), Buffer.from('{bad'), Buffer.from('[]')]) {
+    const stream = new PassThrough()
+    let failed = false
+    attach(stream, () => assert.fail('must not deliver'), () => { failed = true })
+    stream.write(encode({ type: '__deflate', payload: deflateRawSync(payload).toString('base64') }))
+    assert.equal(failed, true)
+    stream.destroy()
+  }
+})
 for (const [name, data] of [
   ['zero length', Buffer.alloc(4)],
   ['oversized', Buffer.from([0, 1, 0, 1])],
@@ -30,6 +66,18 @@ test('rate bounded', () => {
   attach(stream, () => {}, () => { failed = true })
   for (let i = 0; i < 181; i++) stream.write(encode({ type: 'ping' }))
   assert.equal(failed, true)
+})
+test('loopback admits four-player traffic while retaining its aggregate limit', () => {
+  const stream = new PassThrough()
+  let received = 0
+  let failed = false
+  attach(stream, () => { received++ }, () => { failed = true }, null, 600)
+  for (let i = 0; i < 240; i++) stream.write(encode({ type: 'send' }))
+  assert.equal(failed, false, 'three 60Hz guests plus chat/control traffic stay connected')
+  assert.equal(received, 240)
+  for (let i = 240; i < 601; i++) stream.write(encode({ type: 'send' }))
+  assert.equal(failed, true, 'aggregate IPC flood is still bounded')
+  stream.destroy()
 })
 test('slow writable cannot grow an unbounded queue', () => {
   const { Duplex } = require('node:stream')

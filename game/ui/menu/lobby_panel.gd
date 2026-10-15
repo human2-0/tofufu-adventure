@@ -81,7 +81,7 @@ func update_state(peers: Dictionary, local_key: String, host_key: String, hostin
 	if not leave_was_visible and _leave.visible: MenuStyle.focus_later(_leave)
 	_leave.text = "Cancel joining" if not pending.is_empty() else "Leave world"
 	identity.set_locked(not host_key.is_empty() or not pending.is_empty())
-	var signature := JSON.stringify(peers) + host_key + pending
+	var signature := JSON.stringify(peers) + host_key + pending + TranslationServer.get_locale()
 	if signature == _signature: return
 	_signature = signature
 	for child in _peers.get_children():
@@ -107,7 +107,8 @@ func show_connection(active: bool, failed: bool, connected: bool, pending: bool)
 func _add_peer(key: String, peer: Dictionary, host_key: String, pending: String) -> void:
 	var row := VBoxContainer.new()
 	_peers.add_child(row)
-	var label := MenuStyle.paragraph(row, "%s · %s" % [peer.name, "Exploring" if peer.busy else ("World open" if peer.hosting else "Choosing a world")])
+	var label := MenuStyle.paragraph(row, "%s · %s" % [peer.name, tr("Exploring" if peer.busy else ("World open" if peer.hosting else "Choosing a world"))])
+	label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	label.add_theme_color_override("font_color", MenuStyle.CREAM)
 	var button := MenuStyle.button(row, "Connecting…" if key == pending else "Join world", func() -> void: join.emit(key), MenuIcons.ARROW)
 	button.disabled = not peer.hosting or not host_key.is_empty() or not pending.is_empty()

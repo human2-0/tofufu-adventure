@@ -90,14 +90,14 @@ static func show_gun(hud: HUD, selected: bool, precise: bool) -> void:
 	elif "3 GUN" not in hud._equipment.text:
 		hud._equipment.text += "  3 GUN  4 JET"
 
-static func show_gun_status(hud: HUD, magazine: int, reload_seconds: float, charge_seconds: float) -> void:
+static func show_gun_status(hud: HUD, magazine: int, reload_seconds: float, charge_seconds: float, capacity: int = 9) -> void:
 	if reload_seconds > 0.0:
 		hud._charge_bar.value = clampf(1.0 - reload_seconds / 2.0, 0.0, 1.0) * 100.0
-		hud._charge_text.text = "RELOADING · %.1fs · %d / 9" % [reload_seconds, magazine]
+		hud._charge_text.text = "RELOADING · %.1fs · %d / %d" % [reload_seconds, magazine, capacity]
 		return
 	var charge := clampf(charge_seconds / 2.0, 0.0, 1.0)
 	hud._charge_bar.value = charge * 100.0 if charge > 0 else 100.0
-	hud._charge_text.text = "GUN · %d / 9 · RICOCHET READY" % magazine if charge >= 1.0 else "GUN · %d / 9 · HOLD LMB 2s / RICOCHET" % magazine
+	hud._charge_text.text = "GUN · %d / %d · RICOCHET READY" % [magazine, capacity] if charge >= 1.0 else "GUN · %d / %d · HOLD LMB 2s / RICOCHET" % [magazine, capacity]
 
 static func show_sotjet(hud: HUD, selected: bool, reservoir: float) -> void:
 	if not selected: return

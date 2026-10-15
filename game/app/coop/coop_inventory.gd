@@ -132,7 +132,7 @@ func _physics_process(_delta: float) -> void:
 				continue
 			if data.dst == "shop":
 				var message: String
-				if data.src == "shop": message = session.game.merchant.purchase(member.actor, member.inventory, data.src_id)
+				if data.src == "shop": message = session.game.merchant.purchase(member.actor, member.inventory, data.src_id, member.character_equipment)
 				else: message = session.game.merchant.sell(member.actor, member.inventory, int(data.src_id), data.dst_id)
 				if key == session.room.local_key: session.game.merchant.window.status.text = message
 				else: session.room.send_game(key, {"type": "shop_result", "message": message})

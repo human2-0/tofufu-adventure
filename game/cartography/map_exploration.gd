@@ -2,9 +2,9 @@ class_name MapExploration
 extends RefCounted
 ## Personal visited cells, independent of UI, actors and transport.
 
-const BOUNDS := Rect2(-142, -369, 848, 960)
-const GRID := Vector2i(424, 480)
-const BYTE_COUNT: int = (424 * 480 + 7) / 8
+const BOUNDS := Rect2(-982, -369, 1688, 960)
+const GRID := Vector2i(844, 480)
+const BYTE_COUNT: int = (844 * 480 + 7) / 8
 const RADIUS: float = 10.0
 var _bits := PackedByteArray()
 var _pixels := PackedByteArray()
@@ -53,20 +53,21 @@ func capture() -> String:
 
 func restore(value: Variant) -> void:
 	_bits.fill(0)
-	if value is String and value.length() in [10120, 20468, 33920] and RegEx.create_from_string("^[A-Za-z0-9+/]+={0,2}$").search(value) != null:
+	if value is String and value.length() in [10120, 20468, 33920, 67520] and RegEx.create_from_string("^[A-Za-z0-9+/]+={0,2}$").search(value) != null:
 		var decoded := Marshalls.base64_to_raw(value)
 		if Marshalls.raw_to_base64(decoded) == value:
 			if decoded.size() == BYTE_COUNT: _bits = decoded
+			elif decoded.size() == 25440: _restore_legacy(decoded, Vector2i(424, 480), Vector2(848, 960))
 			elif decoded.size() == 7589: _restore_legacy(decoded, Vector2i(171, 355), Vector2(342, 709))
 			elif decoded.size() == 15350: _restore_legacy(decoded, Vector2i(307, 400), Vector2(614, 800))
 	for index in _pixels.size(): _pixels[index] = 255 if _seen(index) else 0
 	revision += 1
 
 func _restore_legacy(decoded: PackedByteArray, old_grid: Vector2i, old_size: Vector2) -> void:
-	# Both older atlases retain discoveries at their original world cell centers.
+	# Older atlases retain discoveries at their original world cell centers.
 	for index in old_grid.x * old_grid.y:
 		if decoded[index / 8] & (1 << (index % 8)) == 0: continue
-		var point := BOUNDS.position + (Vector2(index % old_grid.x, index / old_grid.x) + Vector2.ONE * 0.5) * old_size / Vector2(old_grid)
+		var point := Vector2(-142, -369) + (Vector2(index % old_grid.x, index / old_grid.x) + Vector2.ONE * 0.5) * old_size / Vector2(old_grid)
 		var cell := _cell(point)
 		var new_index := cell.y * GRID.x + cell.x
 		_bits[new_index / 8] |= 1 << (new_index % 8)

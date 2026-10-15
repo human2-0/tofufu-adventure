@@ -16,6 +16,7 @@ func _run() -> void:
 	game.player.set_physics_process(false)
 	game.encounters.process_mode = Node.PROCESS_MODE_DISABLED
 	game.combat.set_process(false)
+	_raygun_rest(game.combat, game.player.visuals)
 	_geometry()
 	_art(game.player.visuals)
 	game.player.position = game.world.weapon_merchant.global_position + Vector3(0, 0.1, 1.5)
@@ -193,3 +194,24 @@ func _art(sprite: FufuVisuals) -> void:
 	sprite.worn_set = ""
 	sprite.jump_animation.reset()
 	sprite._set_frame(false)
+
+func _raygun_rest(combat: PlayerCombat, sprite: FufuVisuals) -> void:
+	var selected: bool = combat.gun.selected
+	combat.gun.selected = true
+	sprite.worn_set = "celestial"
+	for facing in [FufuVisuals.Facing.UP, FufuVisuals.Facing.UP_LEFT]:
+		sprite.current_facing = facing
+		sprite.celestial_art.present(sprite, false, true, false, 0.0, 0.016, sprite.celestial_pose.call())
+		check(sprite.celestial_art.action == "idle", "resting raygun uses standing art for rear views")
+		check((sprite.texture as AtlasTexture).atlas.resource_path.ends_with("/idle.png"), "resting rear view uses the standing atlas")
+	combat.gun.aiming = true
+	check(sprite.celestial_pose.call().get("action") == "aim", "precise raygun aiming retains the aiming pose")
+	combat.gun.aiming = false
+	combat.gun.charge_elapsed = 0.1
+	check(sprite.celestial_pose.call().get("action") == "aim", "raygun firing retains the aiming pose")
+	combat.gun.charge_elapsed = 0.0
+	combat.gun.reload_remaining = 0.1
+	check(sprite.celestial_pose.call().get("action") == "reload", "raygun reload retains the reload pose")
+	combat.gun.reload_remaining = 0.0
+	combat.gun.selected = selected
+	sprite.worn_set = ""

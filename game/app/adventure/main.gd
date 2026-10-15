@@ -12,6 +12,7 @@ var exploration: ExplorationSites
 var farming: SoybeanFarming
 var map: MapFlow
 var parrot_travel: ParrotTravel
+var solo_arena: SoloArena
 
 @onready var player: Player = $Player
 @onready var hud: HUD = $HUD
@@ -32,6 +33,7 @@ var character_equipment: CharacterEquipment
 var healing: PlayerHealing
 var loadout: ActorLoadout
 var merchant: WeaponMerchant
+var god_hunt: GodHunt
 var quest_giver: QuestGiver
 var world_items: WorldItems
 var inventory_window: InventoryWindow
@@ -43,6 +45,7 @@ var apple_harvest: AppleHarvest
 var apple_tree_targets: Array[Damageable] = []
 
 func _ready() -> void:
+	GamePreferences.install_translations(get_tree())
 	AdventureSetup.actor(self)
 	AdventureSetup.inventory(self)
 	AdventureSetup.encounters(self)
@@ -73,7 +76,7 @@ func _on_command(command: PlayerCommand, delta: float) -> void:
 	player.ability_velocity = combat.plunge.velocity
 	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO, not player.is_on_floor(), command.guard_held)
 	combat.gun.targets = combat.targets
-	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
+	combat.gun.step(command.attack_held and not command.reload_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta, command.reload_pressed and not command.cancel_actions)
 	combat.sotjet.flow.targets = combat.targets
 	combat.sotjet.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
 	player.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
@@ -84,7 +87,7 @@ func _on_command(command: PlayerCommand, delta: float) -> void:
 	if command.use_healing_2: healing.use_slot("support_2")
 	if command.use_healing_3: healing.use_slot("support_3")
 	if command.use_healing_4: healing.use_slot("support_4")
-	healing.step(delta)
+	if solo_arena == null or not solo_arena.active(): healing.step(delta)
 
 func _on_strike(strength: float, hits: int) -> void:
 	if hits > 0:
@@ -113,6 +116,7 @@ func _respawn() -> void:
 	hud.announce("Back at the nursery / Fresh health. Keep exploring!")
 
 func _on_player_depleted() -> void:
+	if solo_arena != null and solo_arena.defeated(): return
 	if castle_adventure != null and castle_adventure.party.recover(player): return
 	if factory_dungeon != null and factory_dungeon.actor_in_run(player) and factory_dungeon.puzzle_enabled:
 		factory_dungeon.puzzle_runtime.release_actor(player)
@@ -129,7 +133,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_echo():
 		return
 	if event.is_action_pressed("return_to_camp"):
-		if factory_dungeon != null and factory_dungeon.puzzle_enabled and factory_dungeon.actor_in_run(player): DungeonRunActions.open_menu(factory_dungeon)
+		if solo_arena != null and solo_arena.active(): solo_arena.finish("CHALLENGE ENDED · Your equipment is restored.")
+		elif factory_dungeon != null and factory_dungeon.puzzle_enabled and factory_dungeon.actor_in_run(player): DungeonRunActions.open_menu(factory_dungeon)
 		else: _respawn()
 	elif event.is_action_pressed("skip_time"):
 		cycle.phase = fposmod(cycle.phase + 0.25, 1.0)

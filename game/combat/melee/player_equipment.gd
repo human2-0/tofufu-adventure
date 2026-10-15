@@ -7,6 +7,7 @@ signal defended
 signal changed(knife_owned: bool, knife_selected: bool, guarding: bool)
 signal punch_cadence_updated(remaining: float, total: float, damage: int, hit_rate: float)
 var combat: PlayerCombat
+var weapon_enhanced: bool = false
 var knife_owned: bool = true
 var knife_selected: bool = true
 var guarding: bool = false

@@ -29,6 +29,8 @@ static func build(parent: Node3D, at: Vector3) -> Node3D:
 		if index != 14:
 			MeadowGeometry.box(barn, bay + Vector3(0, 0.6, 1.22), Vector3(3.3, 1.2, 0.12), Color("84684d"), true)
 		var label := Label3D.new()
+		label.visibility_range_end = 32.0
+		label.visibility_range_end_margin = 2.0
 		label.double_sided = false
 		label.text = "%02d" % (index + 1)
 		label.position = bay + front(index) * 0.65 + Vector3.UP * 1.55

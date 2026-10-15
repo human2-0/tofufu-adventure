@@ -2,7 +2,7 @@ class_name ReplicaMotion
 extends RefCounted
 ## Bounded snapshot interpolation for remote views, including uneven packet arrivals.
 
-const DELAY: float = 0.075
+const DELAY: float = 0.025
 const MAX_SAMPLES: int = 8
 var _samples: Array[Dictionary] = []
 

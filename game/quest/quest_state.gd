@@ -15,6 +15,8 @@ var status: Status = Status.NOT_STARTED
 var reward_edamame: int = 100
 var armored_status: Status = Status.NOT_STARTED
 var armored_count: int = 0
+var god_status: Status = Status.NOT_STARTED
+var god_count: int = 0
 
 func start() -> void:
 	if status == Status.NOT_STARTED:
@@ -41,6 +43,8 @@ func claim_reward() -> bool:
 func capture() -> Dictionary:
 	return {
 		"version": 1,
+		"god_status": int(god_status),
+		"god_count": god_count,
 		"armored_status": int(armored_status),
 		"armored_count": armored_count,
 		"id": id,
@@ -51,6 +55,8 @@ func capture() -> Dictionary:
 func restore(data: Dictionary) -> void:
 	if data.is_empty():
 		return
+	god_status = clampi(int(data.get("god_status", 0)), 0, 3) as Status
+	god_count = clampi(int(data.get("god_count", 0)), 0, 200)
 	armored_status = clampi(int(data.get("armored_status", 0)), 0, 3) as Status
 	armored_count = clampi(int(data.get("armored_count", 0)), 0, 50)
 	id = String(data.get("id", "cull_slimes"))
@@ -72,5 +78,22 @@ func record_armored_kill() -> void:
 func claim_armored(shell_count: int) -> bool:
 	if armored_status != Status.COMPLETED or shell_count < 10: return false
 	armored_status = Status.REWARDED
+	changed.emit()
+	return true
+
+func start_god() -> void:
+	if god_status != Status.NOT_STARTED: return
+	god_status = Status.IN_PROGRESS
+	changed.emit()
+
+func record_angel_kill() -> void:
+	if god_status != Status.IN_PROGRESS: return
+	god_count = mini(200, god_count + 1)
+	if god_count == 200: god_status = Status.COMPLETED
+	changed.emit()
+
+func claim_god() -> bool:
+	if god_status != Status.COMPLETED: return false
+	god_status = Status.REWARDED
 	changed.emit()
 	return true

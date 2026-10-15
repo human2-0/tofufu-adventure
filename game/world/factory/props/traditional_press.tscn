@@ -165,6 +165,8 @@ mesh = SubResource("r14")
 material_override = SubResource("r15")
 
 [node name="CraftCardText" type="Label3D" parent="."]
+visibility_range_end = 32.0
+visibility_range_end_margin = 2.0
 double_sided = false
 position = Vector3(0.0, 2.23, -0.785)
 text = "SOFT: 1 STONE / 3 s

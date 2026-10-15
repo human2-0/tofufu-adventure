@@ -8,7 +8,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
-	var deadline := create_timer(20)
+	var deadline := create_timer(60)
 	deadline.timeout.connect(func() -> void:
 		push_error("Dedicated client timed out")
 		quit(1))

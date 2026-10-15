@@ -8,3 +8,4 @@
 - Preserve `.uid` files on moves; update `res://` references and `project.godot` entry paths. Run the verifier after scene/resource changes.
 - First-level feature directories are dependency boundaries; their child directories organize responsibilities. Only `app/` composes unrelated features and infrastructure. Load the feature scope before editing a child directory.
 - Runtime scripts have a 200-line budget. Use a focused typed helper for layout, snapshot presentation, geometry or message handling; preserve the owner's state and lifecycle. Avoid generic helper buckets and forwarding APIs without real callers.
+- Ship every new or changed player-facing feature in English and Polish. Add exact sources, formatted templates and Polish plural forms to `game/settings/localization/pl.po`; preserve IDs and player-authored text. Verify live language switching and render affected UI in both languages; follow `docs/LOCALIZATION.md`.

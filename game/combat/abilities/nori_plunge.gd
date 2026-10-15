@@ -55,7 +55,7 @@ func step(combat: PlayerCombat, delta: float) -> void:
 	combat.active = false
 	combat.rules.cooldown = 0.45
 	combat.combo.begin_attack()
-	var damage := combat.tuning.light_damage * combat.sword_damage_multiplier * 3.0
+	var damage := combat.tuning.light_damage * combat.sword_damage_multiplier * (1.2 if combat.equipment.weapon_enhanced else 1.0) * 3.0
 	var trained := false
 	for target in combat.targets:
 		if not is_instance_valid(target) or target == combat.owner_health or target.current <= 0: continue

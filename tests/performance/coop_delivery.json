@@ -1,0 +1,34 @@
+{
+  "fixture": "four actors, 81 total item stacks, shared 1 Mbit/s host upload, 20 ms wire RTT",
+  "transport": "ordered JSON with conservative DEFLATE + base64 framing model",
+  "result": {
+    "actor_hz": 60.0568237647521,
+    "actors": 4,
+    "compressed": true,
+    "drops": 81,
+    "queued_ms": 62.026000000003,
+    "raw_upload_kbit_s": 2200.24980302196,
+    "rtt_samples": [
+      45,
+      46,
+      49,
+      50,
+      53,
+      104
+    ],
+    "seconds": 5.994323,
+    "synchronized": true,
+    "unlimited": false,
+    "upload_kbit_s": 948.473413928479,
+    "world_hz": 10.1762951379163
+  },
+  "not_measured": "separate-device Internet RTT, NAT connectivity or FPS",
+  "verification": {
+    "date": "2026-10-14",
+    "full_current_workspace_verifier": "passed",
+    "completed_stages": 125,
+    "sidecar_tests_passed": 15,
+    "rendered_world_text_visibility": "passed; near and opening visible, far and wall zero pixels",
+    "cross_machine_internet_latency": "unmeasured"
+  }
+}

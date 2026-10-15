@@ -17,6 +17,7 @@ static func apply(actor: Player, world: Meadow) -> void:
 		actor.motor.surface_grip = 0.24
 
 static func immersion(at: Vector3, world: Meadow) -> float:
+	if at.z >= Groatfields.START: return 0.0
 	if world.jungle != null and JungleCoast.is_water(at, world.jungle.desert):
 		return clampf((JungleCoast.WATER_LEVEL - at.y - 0.25) / 1.1, 0.0, 1.0)
 	if world.volcanic != null and world.volcanic.is_water(at):
@@ -25,6 +26,9 @@ static func immersion(at: Vector3, world: Meadow) -> float:
 	return clampf((OceanTerrain.WATER_LEVEL - at.y - 0.25) / 1.1, 0.0, 1.0)
 
 static func saved_position(at: Vector3, world: Meadow) -> Vector3:
+	if DofufuTerrain.contains(Vector2(at.x, at.z)):
+		at.y = maxf(at.y, world.ground_point(at.x, at.z, 0.05).y)
+		return at
 	if world.ocean == null or at.z > OceanTerrain.NORTH_START or at.z < OceanTerrain.NORTH_END or absf(at.x) > OceanTerrain.HALF_WIDTH: return at
 	# Older saves may sit below the beach that replaced the shallow seabed.
 	at.y = maxf(at.y, world.ocean.point(at.x, at.z, 0.05).y)

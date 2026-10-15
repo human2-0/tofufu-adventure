@@ -1,0 +1,34 @@
+[Unit]
+Description=Tofufu Public Multiplayer authority
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User=tofufu
+Group=tofufu
+WorkingDirectory=/opt/tofufu/public-current
+Environment=TOFUFU_SERVER_CONFIG=/etc/tofufu-public/server.json
+Environment=TOFUFU_STATE_DIR=/var/lib/tofufu-public
+ExecStartPre=/usr/bin/rm -f /var/lib/tofufu-public/stop-request
+ExecStart=/opt/tofufu/godot --headless --max-fps 60 --main-pack /opt/tofufu/public-current/tofufu.pck res://game/app/bootstrap/dedicated_server.tscn
+ExecStop=/usr/local/lib/tofufu/public-stop.sh $MAINPID
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=30
+UMask=0077
+CPUQuota=100%
+MemoryHigh=1G
+MemoryMax=1536M
+MemorySwapMax=0
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/tofufu-public
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

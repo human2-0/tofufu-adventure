@@ -6,6 +6,7 @@ var game: Node3D
 var roster: CoopRoster
 var view := MapView.new()
 var expanded: bool = false
+var hidden_party: Array[String] = []
 var exploration := MapExploration.new()
 var _preferences: GamePreferences
 var _mask: ImageTexture
@@ -59,6 +60,7 @@ func markers() -> Array[Dictionary]:
 		result.append(_marker(game.parrot_travel.mounts.parked[game.player], "Your parrot", "npc", Color("ff8f79")))
 	if is_instance_valid(roster):
 		for key: String in roster.actors:
+			if key in hidden_party: continue
 			var actor: Player = roster.actors[key]
 			if not is_instance_valid(actor): continue
 			var local := key == roster.room.local_key

@@ -30,6 +30,21 @@ func button(index: int, pressed: bool) -> void:
 func _run() -> void:
 	source = LocalPlayerInput.new()
 	root.add_child(source)
+	for code in [KEY_R, KEY_P]:
+		var key := InputEventKey.new()
+		key.physical_keycode = code
+		key.device = 16
+		key.pressed = true
+		Input.parse_input_event(key)
+		Input.flush_buffered_events()
+		await physics_frame
+		var intent := source.sample(Vector3.ZERO)
+		check(intent.reload_pressed == (code == KEY_R) and intent.camp_pressed == (code == KEY_P), "R reloads and P returns to the initial spot")
+		key = key.duplicate()
+		key.pressed = false
+		Input.parse_input_event(key)
+		Input.flush_buffered_events()
+		await physics_frame
 	axis(JOY_AXIS_LEFT_X, 0.1)
 	check(source.sample(Vector3.ZERO).move.is_zero_approx(), "stick drift filtered")
 	axis(JOY_AXIS_LEFT_X, 0.6)
@@ -54,12 +69,14 @@ func _run() -> void:
 	command = source.sample(Vector3.ZERO)
 	check(command.jump_pressed and command.jump_held and command.dash_pressed and command.attack_held,
 		"controller simultaneous actions and initial edges")
+	check(command.reload_pressed and command.reload_held and not command.camp_pressed, "Square carries reload intent without returning to camp")
 	await physics_frame
 	await process_frame
 	await physics_frame
 	command = source.sample(Vector3.ZERO)
 	check(command.jump_held and not command.jump_pressed and not command.dash_pressed,
 		"held buttons do not retrigger edges")
+	check(command.reload_held and not command.reload_pressed, "held Square does not retrigger reload")
 	button(JOY_BUTTON_A, false)
 	button(JOY_BUTTON_B, false)
 	button(JOY_BUTTON_X, false)

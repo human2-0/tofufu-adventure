@@ -31,6 +31,7 @@ func _ready() -> void:
 	_collect_geometry(game.combat.gun.visual)
 	_collect_geometry(game.combat.sotjet.visual)
 	_collect_geometry(game.combat._trail)
+	_collect_geometry(game.loadout)
 	game.combat.sword.model_changed.connect(_refresh_weapon_geometry)
 	game.combat.staff.model_changed.connect(_refresh_weapon_geometry)
 	reticle = GunReticle.new()
@@ -38,7 +39,8 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if not is_instance_valid(local_input): return
-	var available: bool = local_input.enabled and not local_input.chat_blocked and game.hud.visible and not get_tree().paused
+	var solo_invite: bool = game.solo_arena != null and game.solo_arena.phase == "invite"
+	var available: bool = local_input.enabled and not local_input.chat_blocked and game.hud.visible and not get_tree().paused and not game.hud.arena.setup.is_visible_in_tree() and not solo_invite
 	var capture: bool = shoulder and available
 	var mode := Input.MOUSE_MODE_CAPTURED if capture else Input.MOUSE_MODE_VISIBLE
 	if Input.mouse_mode != mode: Input.mouse_mode = mode
@@ -56,7 +58,7 @@ func _process(delta: float) -> void:
 	reticle.reload_progress = SoyGunReloadPose.progress(reticle.reload_remaining)
 	reticle.queue_redraw()
 	game.hud.show_gun(game.combat.gun.selected, game.combat.gun.aiming)
-	game.hud.show_gun_status(game.combat.gun.magazine, game.combat.gun.reload_remaining, game.combat.gun.charge_elapsed, game.combat.gun.selected)
+	game.hud.show_gun_status(game.combat.gun.magazine, game.combat.gun.reload_remaining, game.combat.gun.charge_elapsed, game.combat.gun.selected, game.combat.gun.magazine_capacity)
 	game.hud.show_sotjet(game.combat.sotjet.selected, game.combat.sotjet.milk / game.combat.sotjet.tuning.capacity)
 	var first: ItemStack = game.character_equipment.get_slot("combat_1")
 	var second: ItemStack = game.character_equipment.get_slot("combat_2")
@@ -87,8 +89,8 @@ func _update_run_pose(delta: float, available: bool) -> void:
 func _item_label(stack: ItemStack) -> String:
 	if stack == null or stack.item == null: return "Unarmed"
 	if stack.item.weapon_level > 0:
-		return "%s L%d P%d" % ["Staff" if stack.item.id == "sproutwood_staff" else stack.item.name, stack.item.weapon_level, stack.item.weapon_power]
-	return stack.item.name
+		return "%s L%d P%d" % ["Staff" if stack.item.id == "sproutwood_staff" else stack.item.name, stack.item.weapon_level, roundi(stack.item.weapon_power * MagicalTofufu.power(stack))]
+	return stack.item.name + (" ✦ +20%" if stack.enhanced else "")
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_instance_valid(local_input): return

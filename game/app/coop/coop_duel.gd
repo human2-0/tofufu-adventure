@@ -16,6 +16,8 @@ var round_number: int = 0
 var winner: String = ""
 var notice: String = ""
 var notice_seq: int = 0
+var match_id: int = 0
+var agreement := CoopDuelAgreement.new()
 var _view: Dictionary = {}
 var _presented_notice: int = -1
 var _waiting_for_departure: bool = false
@@ -26,18 +28,27 @@ var _fighters := CoopDuelFighters.new()
 func _ready() -> void:
 	_pads.session = session
 	_fighters.session = session
+	var controls := CoopDuelControls.new()
+	controls.duel = self
+	add_child(controls)
 
 func step(delta: float) -> void:
 	if not session.authority or session.opening.active(): return
 	if phase in ["fight", "round"]: _fighters.contain(participants)
+	if phase in ["loadout", "entry", "round"]:
+		for key in participants:
+			if session.roster.party.has(key): session.roster.party[key].health.invulnerability = 1.0
 	if phase == "idle":
 		if _waiting_for_departure:
 			if not _pads.contains_pair(participants): _reset_match()
 			return
 		var pair := _pads.pair()
 		if pair.size() == 2: _begin_entry(pair)
-	elif phase == "entry" and not _pads.contains_pair(participants):
+	elif phase in ["loadout", "entry"] and not _pads.contains_pair(participants):
 		_cancel_entry()
+	elif phase == "loadout":
+		agreement.remaining = maxf(0.0, agreement.remaining - delta)
+		if agreement.remaining == 0.0: _abort("DUEL CANCELLED / Loadout selection timed out.")
 	elif phase in ["entry", "round"]:
 		_tick_countdown(delta)
 	elif phase == "complete":
@@ -54,10 +65,10 @@ func status(local_key: String) -> String:
 	return CoopDuelView.status(self, local_key)
 
 func is_participant(key: String) -> bool:
-	return phase in ["entry", "fight", "round"] and key in participants
+	return phase in ["loadout", "entry", "fight", "round"] and key in participants
 
 func members_changed() -> void:
-	if phase not in ["entry", "fight", "round"]: return
+	if phase not in ["loadout", "entry", "fight", "round"]: return
 	for key in participants:
 		if not session.roster.party.has(key):
 			_abort("DUEL CANCELLED / A player left the meadow.")
@@ -68,7 +79,7 @@ func checkpoint_party(current: Dictionary) -> Dictionary:
 	return _fighters.checkpoint_party(current)
 
 func session_ended() -> void:
-	if phase in ["entry", "fight", "round"]:
+	if phase in ["loadout", "entry", "fight", "round"]:
 		_abort("DUEL CANCELLED / The co-op session ended.")
 
 func _begin_entry(pair: Array[String]) -> void:
@@ -80,11 +91,13 @@ func _begin_entry(pair: Array[String]) -> void:
 	_fighters.save_entry(participants, Callable(self, "_defeated"))
 	_fighters.filter_targets(participants)
 	entry_started.emit(participants.duplicate())
-	phase = "entry"
-	countdown = COUNTDOWN_SECONDS
+	phase = "loadout"
+	match_id += 1
+	agreement.reset()
+	countdown = 0.0
 	round_number = 0
 	winner = ""
-	_announce("DUEL / %s VS %s / 5" % [_name(pair[0]), _name(pair[1])])
+	_announce("DUEL / %s VS %s / CHOOSE YOUR LOADOUT" % [_name(pair[0]), _name(pair[1])])
 
 func _tick_countdown(delta: float) -> void:
 	var before := ceili(countdown)
@@ -98,11 +111,11 @@ func _start_round(first: bool) -> void:
 	phase = "fight"
 	countdown = 0.0
 	round_number = 1 if first else round_number + 1
-	_fighters.start_round(participants, session.game.world.duel_arena.spawn_positions())
+	_fighters.start_round(participants, session.game.world.duel_arena.spawn_positions(), agreement.choices)
 	_announce("FIGHT! ROUND %d" % round_number)
 
 func _defeated(_loser: CoopActor, key: String) -> void:
-	if not session.authority or phase == "entry":
+	if not session.authority or phase in ["loadout", "entry"]:
 		_cancel_entry()
 		return
 	if phase != "fight" or participants.find(key) < 0: return

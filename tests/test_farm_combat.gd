@@ -34,8 +34,10 @@ func _run() -> void:
 			dummies.append(child)
 	var forest_count := FarmCombatGrounds.FOREST_ARMORED_SPAWNS.size()
 	var bee_count := FarmCombatGrounds.BEE_SPAWNS.size()
-	check(mobs.size() == 15 + forest_count + bee_count and dummies.size() == 3, "outdoor packs, rain reserves, forest snails, southern bees and village dummies")
-	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9 + forest_count + bee_count, "camp snails, forest snails and bees are active in dry weather")
+	var angel_count := Groatfields.spawns().size()
+	var guard_count := DofufuCity.GUARDS.size()
+	check(mobs.size() == 15 + forest_count + bee_count + angel_count + guard_count and dummies.size() == 3 + CloudTrainingCourt.DUMMIES.size(), "outdoor packs, rain reserves, forest snails, bees, angels, city guards and village/cloud dummies")
+	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9 + forest_count + bee_count + angel_count + guard_count, "camp snails, forest snails, bees, angels and city guards are active in dry weather")
 	await _practice(dummies[0])
 	await _rewards(mobs[0])
 	await _safe_village(mobs[3])
@@ -186,7 +188,10 @@ func _stat_effects(dummy: PracticeDummy) -> void:
 	scene.health.current = 100
 	scene.health.invulnerability = 0
 	scene.encounters._hurt_player(10, scene.player.position + Vector3.BACK)
-	check(is_equal_approx(scene.health.current, 93.43), "defence skill mitigates actual unguarded enemy damage")
+	var tuning := CharacterProgress.TUNING
+	var trained_factor := 1.0 - tuning.defence_reduction * (CharacterProgress.CAP - 1)
+	var level_factor := 1.0 - tuning.character_defence * (CharacterProgress.CAP - 1)
+	check(is_equal_approx(scene.health.current, 100.0 - 10.0 * trained_factor * level_factor), "trained and level defence mitigate actual unguarded enemy damage")
 	scene._respawn()
 	check(progress.level() == 99 and progress.skill("sword") == 99, "respawn retains trained levels and modifiers")
 

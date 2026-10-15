@@ -9,7 +9,7 @@ static func accept_view(member: CoopActor, state: Dictionary) -> void:
 		member.actor.position = CoopValues.vector3(state.position)
 		member.actor.relocated.emit()
 	member.actor.parrot_rest = CoopValues.vector3(state.parrot_rest) if state.get("parrot_rest", []).size() == 3 else Vector3.INF
-	if state.has("quests") and state.quests != member.quests.capture(): member.quests.restore(state.quests)
+	if state.has("quests") and state.quests != member.target_state.get("quests"): member.quests.restore(state.quests)
 	if member.prediction == null: member.actor.transport_active = bool(state.get("transport", false))
 	member.spectating = bool(state.get("spectating", false))
 	member.loadout.active_slot = int(state.get("active_slot", 1))
@@ -17,7 +17,7 @@ static func accept_view(member: CoopActor, state: Dictionary) -> void:
 	if not member.target_state.is_empty() and state.health < member.target_state.health:
 		CombatEffects.burst(member, member.actor.global_position, "-%.1f" % (member.target_state.health - state.health), Color("ff9b8c"))
 
-	if not member.target_state.is_empty() and int(state.get("respawns", 0)) > int(member.target_state.get("respawns", 0)) and member.hud != null:
+	if not member.target_state.is_empty() and int(state.get("respawns", 0)) > int(member.target_state.get("respawns", 0)) and member.hud != null and not member.hud.arena.visible:
 		member.hud.announce("Back at the nursery / Fresh health. Keep exploring together!")
 	if not member.target_state.is_empty() and int(state.get("blocks", 0)) > int(member.target_state.get("blocks", 0)):
 		CombatEffects.sparks(member, member.actor.position + Vector3(state.aim[0] * 0.65, 0.7, state.aim[1] * 0.65))
@@ -26,8 +26,8 @@ static func accept_view(member: CoopActor, state: Dictionary) -> void:
 		var after: Array = state.get("hits", [0, 0, 0])
 		for kind in 3:
 			if after[kind] > before[kind]: member.hud.show_damage_hit(kind)
-	if state.get("equipment") is Dictionary and state.equipment != member.character_equipment.capture(): member.character_equipment.restore(state.equipment)
-	if state.get("inventory") is Array and state.inventory != member.inventory.capture(): member.inventory.restore(state.inventory)
+	if state.get("equipment") is Dictionary and state.equipment != member.target_state.get("equipment"): member.character_equipment.restore(state.equipment)
+	if state.get("inventory") is Array and state.inventory != member.target_state.get("inventory"): member.inventory.restore(state.inventory)
 	if member.target_state.is_empty() or state.get("progression", {}) != member.target_state.get("progression", {}):
 		member.progression.progress.restore(state.get("progression", {}))
 	if state.get("super_dashing", false) and not member.target_state.get("super_dashing", false):
@@ -86,7 +86,7 @@ static func refresh_hud(member: CoopActor, state: Dictionary) -> void:
 	member.hud.show_staff_state(state.combat.get("staff", false), state.combat.get("style", 0) == StaffAttack.TORNADO and state.combat.active, state.combat.cooldown)
 	member.hud.show_pod_state(state.combat.get("pod", false), state.combat.get("pod_cooldown", 0.0))
 	member.hud.show_gun(state.combat.get("gun", false), state.combat.get("ads", false))
-	member.hud.show_gun_status(int(state.combat.get("gun_magazine", SoyGun.MAGAZINE_SIZE)), float(state.combat.get("gun_reload", 0.0)), float(state.combat.get("gun_charge", 0.0)), state.combat.get("gun", false))
+	member.hud.show_gun_status(int(state.combat.get("gun_magazine", SoyGun.MAGAZINE_SIZE)), float(state.combat.get("gun_reload", 0.0)), float(state.combat.get("gun_charge", 0.0)), state.combat.get("gun", false), 14 if state.combat.get("enhanced", false) else 9)
 
 static func physics_process(member: CoopActor, _delta: float) -> void:
 	if member.authority or member.target_state.is_empty(): return

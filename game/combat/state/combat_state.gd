@@ -5,7 +5,7 @@ extends RefCounted
 static func capture(combat: PlayerCombat) -> Dictionary:
 	var equipment := combat.equipment
 	var drop := equipment.dropped.global_position if is_instance_valid(equipment.dropped) else Vector3.ZERO
-	return {"celestial": equipment.celestial_weapon, "nori": equipment.nori_selected, "plunging": combat.plunge.active, "plunge_recovery": combat.plunge.recovery, "plunge_sequence": combat.plunge.sequence, "plunge_at": _array(combat.plunge.impact_at), "plunge_cooldown": combat.plunge.cooldown, "vitals": combat.vitals.capture(), "pod": equipment.pod_selected, "podburst": combat.podburst.sequence, "pod_cooldown": combat.podburst.cooldown, "world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
+	return {"enhanced": combat.equipment.weapon_enhanced, "celestial": equipment.celestial_weapon, "nori": equipment.nori_selected, "plunging": combat.plunge.active, "plunge_recovery": combat.plunge.recovery, "plunge_sequence": combat.plunge.sequence, "plunge_at": _array(combat.plunge.impact_at), "plunge_cooldown": combat.plunge.cooldown, "vitals": combat.vitals.capture(), "pod": equipment.pod_selected, "podburst": combat.podburst.sequence, "pod_cooldown": combat.podburst.cooldown, "world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
 		"jet_firing": combat.sotjet.firing, "jet_sequence": combat.sotjet.sequence,
 		"jet_origin": _array(combat.sotjet.origin), "jet_velocity": _array(combat.sotjet.velocity), "recoil": combat.gun.recoil.heat, "gun": combat.gun.selected, "ads": combat.gun.aiming, "shot": combat.gun.shot_sequence,
 		"shot_origin": _array(combat.gun.shot_origin), "shot_velocity": _array(combat.gun.shot_velocity), "owned": equipment.knife_owned, "selected": equipment.knife_selected, "guard": equipment.guarding,
@@ -18,6 +18,8 @@ static func capture(combat: PlayerCombat) -> Dictionary:
 		"cooldown": combat.rules.cooldown, "drop": [drop.x, drop.y, drop.z]}
 
 static func restore(combat: PlayerCombat, state: Dictionary) -> void:
+	combat.equipment.weapon_enhanced = state.get("enhanced", false)
+	combat.gun.magazine_capacity = SoyGun.MAGAZINE_SIZE + (5 if combat.equipment.weapon_enhanced and state.get("gun", false) else 0)
 	combat.reset()
 	combat.vitals.restore(state.get("vitals", {}))
 	CelestialCombat.apply(combat, int(state.get("celestial", 0)))
@@ -33,6 +35,7 @@ static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.equipment.staff_selected = state.get("staff", false) and combat.equipment.staff_owned
 	combat.gun.selected = state.get("gun", false)
 	combat.sotjet.selected = state.get("jet", false)
+	combat.sotjet.consumption_multiplier = 0.8 if combat.sotjet.selected and combat.equipment.weapon_enhanced else 1.0
 	combat.sotjet.milk = state.get("milk", combat.sotjet.tuning.capacity)
 	combat.gun.shot_sequence = int(state.get("shot", 0))
 	combat.gun.magazine = int(state.get("gun_magazine", SoyGun.MAGAZINE_SIZE))
@@ -50,6 +53,8 @@ static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.clash.sequence = int(state.get("clash", 0))
 
 static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector2) -> void:
+	combat.equipment.weapon_enhanced = state.get("enhanced", false)
+	combat.gun.magazine_capacity = SoyGun.MAGAZINE_SIZE + (5 if combat.equipment.weapon_enhanced and state.get("gun", false) else 0)
 	combat.vitals.restore(state.get("vitals", {}))
 	CelestialCombat.apply(combat, int(state.get("celestial", 0)))
 	combat.podburst.cooldown = state.get("pod_cooldown", 0.0)

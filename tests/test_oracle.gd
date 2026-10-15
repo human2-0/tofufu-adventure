@@ -12,7 +12,8 @@ func _initialize() -> void:
 
 func _run() -> void:
 	_test_capacity()
-	var timer := create_timer(25)
+	# The watchdog includes construction of two complete world scenes.
+	var timer := create_timer(90)
 	timer.timeout.connect(func() -> void:
 		push_error("Oracle test timed out")
 		quit(1))

@@ -115,7 +115,7 @@ func _add(key: String) -> void:
 	if key != room.local_key: DungeonTrialLifecycle.bind(game.factory_dungeon, actor, member.health)
 	game.world_items.register(member.combat, member.inventory, member.loadout)
 	member.combat.targets = game.combat.targets
-	member.time_requested.connect(func() -> void: game.cycle.phase = fposmod(game.cycle.phase + 0.25, 1.0))
+	if not room.dedicated: member.time_requested.connect(func() -> void: game.cycle.phase = fposmod(game.cycle.phase + 0.25, 1.0))
 	if authority and saved_states.has(key): member.restore(saved_states[key], game.encounters.experience)
 	actors[key] = actor
 	party[key] = member
@@ -124,13 +124,17 @@ func _add(key: String) -> void:
 		member.health.current = 0.0
 		CoopDungeonDeath.defer(member)
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
+	if key != room.local_key: label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	label.text = "You" if key == room.local_key else str(room.names.get(key, "Fufu"))
 	label.font_size = 25
 	label.pixel_size = 0.008
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.position.y = 1.6
-	label.no_depth_test = true
-	label.ignore_occlusion_culling = true
+	label.name = "PartyName"
+	label.no_depth_test = false
+	label.ignore_occlusion_culling = false
 	label.render_priority = 127
 	actor.add_child(label)
 

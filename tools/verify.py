@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 """Import and exercise Godot; retain logs and fail even on zero-exit script errors."""
 from pathlib import Path
+import argparse
 import os
 import re
 import shutil
 import subprocess
 import sys
 import tempfile
+import time
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -25,126 +27,202 @@ def find_godot():
     raise RuntimeError("Godot not found. Set GODOT_BIN to the Godot 4.7 executable.")
 
 
-def run_stage(godot, name, args, logs, timeout_seconds=60):
+def run_stage(godot, name, args, logs, timeout_seconds=60, verbose=False):
     command = [godot, "--headless", "--path", str(ROOT), "--log-file", str(logs / f"{name}.engine.log"), *args]
-    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True, timeout=timeout_seconds)
+    timeout_scale = float(os.environ.get("TOFUFU_VERIFY_TIMEOUT_SCALE", "1"))
+    if not 1 <= timeout_scale <= 5:
+        raise RuntimeError("TOFUFU_VERIFY_TIMEOUT_SCALE must be between 1 and 5")
+    started = time.monotonic()
+    try:
+        result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True,
+                                timeout=timeout_seconds * timeout_scale)
+    except subprocess.TimeoutExpired as error:
+        output = "".join(part.decode(errors="replace") if isinstance(part, bytes) else part or ""
+                         for part in (error.stdout, error.stderr))
+        (logs / f"{name}.log").write_text(output)
+        raise RuntimeError(f"{name} timed out; inspect {logs}") from error
     output = result.stdout + result.stderr
     (logs / f"{name}.log").write_text(output)
     failed = result.returncode != 0 or re.search(r"(?:SCRIPT ERROR:|ERROR:|FAIL:)", output)
     if failed:
         print(output)
         raise RuntimeError(f"{name} failed (exit {result.returncode}); inspect {logs}")
-    print(f"{name}: PASS")
+    elapsed = time.monotonic() - started
+    if verbose:
+        print(f"{name}: PASS ({elapsed:.1f}s)", flush=True)
+    return elapsed
 
 
-def main():
+def test_stages():
+    yield "localization", ["--script", "res://tests/test_localization.gd"], 60
+    yield "weapon_enhancement", ["--script", "res://tests/test_weapon_enhancement.gd"], 120
+    yield "item_tooltip", ["--script", "res://tests/test_item_tooltip.gd"], 60
+    yield "save_modes", ["--script", "res://tests/test_save_modes.gd"], 60
+    # Two three-world scenarios include a sustained full-party harvest check.
+    yield "coop_farming", ["--script", "res://tests/test_coop_farming.gd"], 240
+    yield "meadow_reorg", ["--script", "res://tests/test_meadow_reorg.gd"], 60
+    yield "meadow_meshes", ["--script", "res://tests/test_meadow_meshes.gd"], 60
+    yield "farming", ["--script", "res://tests/test_farming.gd"], 60
+    yield "soy_plant", ["--script", "res://tests/test_soy_plant.gd"], 60
+    yield "coop_parrot_travel", ["--script", "res://tests/test_coop_parrot_travel.gd"], 60
+    yield "parrot_travel", ["--script", "res://tests/test_parrot_travel.gd"], 60
+    yield "parrot_art", ["--script", "res://tests/test_parrot_art.gd"], 60
+    yield "cloud_realm", ["--script", "res://tests/test_cloud_realm.gd"], 120
+    yield "cloud_realm_art", ["--script", "res://tests/test_cloud_realm_art.gd"], 60
+    yield "cloud_heaven", ["--script", "res://tests/test_cloud_heaven.gd"], 60
+    yield "celestial", ["--script", "res://tests/test_celestial.gd"], 60
+    yield "lava_king_art", ["--script", "res://tests/test_lava_king_art.gd"], 60
+    yield "volcanic_expansion", ["--script", "res://tests/test_volcanic_expansion.gd"], 120
+    yield "castle_stairs", ["--script", "res://tests/test_castle_stairs.gd"], 150
+    yield "coop_castle", ["--script", "res://tests/test_coop_castle.gd"], 60
+    yield "castle_adventure", ["--script", "res://tests/test_castle_adventure.gd"], 60
+    yield "castle_challenge", ["--script", "res://tests/test_castle_challenge.gd"], 60
+    yield "volcanic", ["--script", "res://tests/test_volcanic.gd"], 180
+    yield "dofufu_city", ["--script", "res://tests/test_dofufu_city.gd"], 180
+    yield "mountain_retreat", ["--script", "res://tests/test_mountain_retreat.gd"], 120
+    yield "groatfields", ["--script", "res://tests/test_groatfields.gd"], 60
+    yield "coop_groatfields", ["--script", "res://tests/test_coop_groatfields.gd"], 120
+    yield "jungle", ["--script", "res://tests/test_jungle.gd"], 60
+    yield "waterfall", ["--script", "res://tests/test_waterfall.gd"], 60
+    yield "northern_biomes", ["--script", "res://tests/test_northern_biomes.gd"], 60
+    yield "personal_map_transfer", ["--script", "res://tests/test_personal_map_transfer.gd"], 60
+    yield "map_exploration", ["--script", "res://tests/test_map_exploration.gd"], 60
+    yield "map", ["--script", "res://tests/test_map.gd"], 60
+    yield "input", ["--script", "res://tests/test_input.gd"], 60
+    yield "motor", ["--script", "res://tests/test_player_motor.gd"], 60
+    yield "heavy_movement", ["--script", "res://tests/test_heavy_movement.gd"], 60
+    yield "render_budget", ["--script", "res://tests/test_render_budget.gd"], 60
+    yield "occlusion", ["--script", "res://tests/test_occlusion.gd"], 60
+    yield "scenery_batch", ["--script", "res://tests/test_scenery_batch.gd"], 60
+    yield "mob_rest", ["--script", "res://tests/test_mob_rest.gd"], 60
+    yield "grass", ["--script", "res://tests/test_grass.gd"], 60
+    yield "world_life", ["--script", "res://tests/test_world_life.gd"], 60
+    yield "apple_trees", ["--script", "res://tests/test_apple_trees.gd"], 60
+    yield "apple_pickup", ["--script", "res://tests/test_apple_pickup.gd"], 60
+    yield "actor_collisions", ["--script", "res://tests/test_actor_collisions.gd"], 60
+    yield "jump", ["--script", "res://tests/test_jump.gd"], 60
+    yield "vitals", ["--script", "res://tests/test_vitals.gd"], 60
+    yield "progression", ["--script", "res://tests/test_progression.gd"], 60
+    yield "character_details", ["--script", "res://tests/test_character_details.gd"], 180
+    yield "combat", ["--script", "res://tests/test_combat.gd"], 60
+    yield "knife_combo", ["--script", "res://tests/test_knife_combo.gd"], 60
+    yield "melee_flow", ["--script", "res://tests/test_melee_flow.gd"], 60
+    yield "melee_clash", ["--script", "res://tests/test_melee_clash.gd"], 60
+    yield "equipment", ["--script", "res://tests/test_equipment.gd"], 60
+    yield "loadout_shop", ["--script", "res://tests/test_loadout_shop.gd"], 60
+    yield "nori_katana", ["--script", "res://tests/test_nori_katana.gd"], 60
+    yield "edamame_sword", ["--script", "res://tests/test_edamame_sword.gd"], 60
+    yield "staff_combat", ["--script", "res://tests/test_staff_combat.gd"], 60
+    yield "backpack", ["--script", "res://tests/test_backpack.gd"], 60
+    yield "world_items", ["--script", "res://tests/test_world_items.gd"], 60
+    yield "depot_focus", ["--script", "res://tests/test_depot_focus.gd"], 60
+    yield "inventory_input", ["--script", "res://tests/test_inventory_input.gd"], 60
+    yield "inventory", ["--script", "res://tests/test_inventory.gd"], 60
+    yield "seed_storage", ["--script", "res://tests/test_seed_storage.gd"], 60
+    yield "coop_storage", ["--script", "res://tests/test_coop_storage.gd"], 60
+    yield "currency", ["--script", "res://tests/test_currency.gd"], 60
+    yield "factory_route", ["--script", "res://tests/test_factory_route.gd"], 240
+    yield "tofu_dungeon", ["--script", "res://tests/test_tofu_dungeon.gd"], 60
+    yield "tofu_dungeon_coop", ["--script", "res://tests/test_tofu_dungeon_coop.gd"], 60
+    for name in ["tofu_boss_coop", "factory_recovery", "factory_presentation", "factory_surfaces", "factory_reactivity", "factory_stashes", "factory_handling", "tofu_production_views", "tofu_sorting_lab_rules", "tofu_production_rules", "tofu_dungeon_attempt", "tofu_reward_ledger", "tofu_puzzle_protocol", "dungeon_puzzle_runtime", "dungeon_ui", "factory_soy_fighter", "dofufu"]:
+        yield name, ["--script", f"res://tests/test_{name}.gd"], 60
+    yield "tofu_dungeon_active", ["--script", "res://tests/test_tofu_dungeon_active.gd"], 60
+    yield "tofu_dungeon_active_coop", ["--script", "res://tests/test_tofu_dungeon_active_coop.gd"], 60
+    yield "gun_recoil", ["--script", "res://tests/test_gun_recoil.gd"], 60
+    yield "first_person", ["--script", "res://tests/test_first_person.gd"], 60
+    yield "soy_flight", ["--script", "res://tests/test_soy_flight.gd"], 60
+    yield "soy_gun", ["--script", "res://tests/test_soy_gun.gd"], 60
+    yield "soy_reload", ["--script", "res://tests/test_soy_reload.gd"], 60
+    yield "gun_run_pose", ["--script", "res://tests/test_gun_run_pose.gd"], 60
+    yield "sotjet", ["--script", "res://tests/test_sotjet.gd"], 60
+    yield "sotjet_coop", ["--script", "res://tests/test_sotjet_coop.gd"], 60
+    yield "right_hand", ["--script", "res://tests/test_right_hand.gd"], 60
+    yield "sword", ["--script", "res://tests/test_sword.gd"], 60
+    yield "sandbox", ["--script", "res://tests/test_sandbox.gd"], 60
+    yield "armored_shell", ["--script", "res://tests/test_armored_shell.gd"], 60
+    yield "farm_combat", ["--script", "res://tests/test_farm_combat.gd"], 60
+    yield "wild_bee", ["--script", "res://tests/test_wild_bee.gd"], 60
+    yield "coop_wild_bee", ["--script", "res://tests/test_coop_wild_bee.gd"], 60
+    yield "snail", ["--script", "res://tests/test_snail.gd"], 60
+    yield "world_contours", ["--script", "res://tests/test_world_contours.gd"], 60
+    yield "ocean", ["--script", "res://tests/test_ocean.gd"], 60
+    yield "coop_ocean", ["--script", "res://tests/test_coop_ocean.gd"], 60
+    yield "river", ["--script", "res://tests/test_river.gd"], 60
+    yield "sky", ["--script", "res://tests/test_sky.gd"], 60
+    yield "weather", ["--script", "res://tests/test_weather.gd"], 60
+    yield "weather_exposure", ["--script", "res://tests/test_weather_exposure.gd"], 60
+    yield "pod_escape", ["--script", "res://tests/test_pod_escape.gd"], 60
+    yield "session_transport", ["--script", "res://tests/test_session_transport.gd"], 60
+    yield "oracle", ["--script", "res://tests/test_oracle.gd"], 120
+    yield "public_multiplayer", ["--script", "res://tests/test_public_multiplayer.gd"], 120
+    yield "coop_protocol", ["--script", "res://tests/test_coop_protocol.gd"], 60
+    yield "snapshot_channel", ["--script", "res://tests/test_snapshot_channel.gd"], 60
+    yield "arena", ["--script", "res://tests/test_arena.gd"], 60
+    yield "solo_arena", ["--script", "res://tests/test_solo_arena.gd"], 120
+    yield "coop_gameplay", ["--script", "res://tests/test_coop_gameplay.gd"], 60
+    yield "coop_response", ["--script", "res://tests/test_coop_response.gd"], 60
+    yield "coop_opening", ["--script", "res://tests/test_coop_opening.gd"], 60
+    yield "coop_launch", ["--script", "res://tests/test_coop_launch.gd"], 60
+    yield "chat", ["--script", "res://tests/test_chat.gd"], 60
+    yield "coop_scene", ["--script", "res://tests/test_coop_scene.gd"], 60
+    yield "landing", ["--script", "res://tests/test_landing.gd"], 60
+    yield "lobby", ["--script", "res://tests/test_lobby.gd"], 60
+    yield "frontend", ["--script", "res://tests/test_frontend.gd"], 60
+    yield "scene", ["--script", "res://tests/test_scene.gd"], 60
+
+
+def parse_options(argv, stages):
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--quick", action="store_true",
+                      help="architecture, Godot import and scene smoke test")
+    mode.add_argument("--full", action="store_true", help="all checks (also the default)")
+    parser.add_argument("--tests", nargs="+", metavar="NAME",
+                        help="run selected tests; may be combined with --quick")
+    parser.add_argument("--list", action="store_true", help="list test names without running checks")
+    parser.add_argument("--verbose", action="store_true", help="print each successful stage and duration")
+    options = parser.parse_args(argv)
+    if options.full and options.tests:
+        parser.error("--full cannot be combined with --tests")
+    unknown = set(options.tests or ()) - {name for name, _, _ in stages}
+    if unknown:
+        parser.error(f"unknown tests: {', '.join(sorted(unknown))}; use --list for names")
+    return options
+
+
+def main(argv=None):
+    stages = list(test_stages())
+    options = parse_options(argv, stages)
+    if options.list:
+        for name, args, timeout in stages:
+            print(f"{name}: {args[-1]} (timeout {timeout}s)")
+        return
+    selected = set(options.tests or ())
+    if options.quick:
+        selected.add("scene")
+    scope = "Quick" if options.quick else "Focused" if options.tests else "Full"
+    if selected:
+        stages = [stage for stage in stages if stage[0] in selected]
+    started = time.monotonic()
+    print(f"{scope} verification: architecture, import, {len(stages)} Godot tests", flush=True)
     subprocess.run([sys.executable, str(ROOT / "tools/check_architecture.py")], check=True)
     subprocess.run([sys.executable, str(ROOT / "tests/test_architecture.py")], check=True)
+    subprocess.run([sys.executable, str(ROOT / "tests/test_verify.py")], check=True)
     godot = find_godot()
     logs = Path(tempfile.mkdtemp(prefix="tofufu-verify-"))
     print(f"Logs: {logs}", flush=True)
-    run_stage(godot, "import", ["--editor", "--import"], logs)
-    # Two three-world scenarios include a sustained full-party harvest check.
-    run_stage(godot, "coop_farming", ["--script", "res://tests/test_coop_farming.gd"], logs, timeout_seconds=120)
-    run_stage(godot, "meadow_reorg", ["--script", "res://tests/test_meadow_reorg.gd"], logs)
-    run_stage(godot, "meadow_meshes", ["--script", "res://tests/test_meadow_meshes.gd"], logs)
-    run_stage(godot, "farming", ["--script", "res://tests/test_farming.gd"], logs)
-    run_stage(godot, "soy_plant", ["--script", "res://tests/test_soy_plant.gd"], logs)
-    run_stage(godot, "coop_parrot_travel", ["--script", "res://tests/test_coop_parrot_travel.gd"], logs)
-    run_stage(godot, "parrot_travel", ["--script", "res://tests/test_parrot_travel.gd"], logs)
-    run_stage(godot, "parrot_art", ["--script", "res://tests/test_parrot_art.gd"], logs)
-    run_stage(godot, "cloud_realm", ["--script", "res://tests/test_cloud_realm.gd"], logs)
-    run_stage(godot, "cloud_realm_art", ["--script", "res://tests/test_cloud_realm_art.gd"], logs)
-    run_stage(godot, "cloud_heaven", ["--script", "res://tests/test_cloud_heaven.gd"], logs)
-    run_stage(godot, "celestial", ["--script", "res://tests/test_celestial.gd"], logs)
-    run_stage(godot, "lava_king_art", ["--script", "res://tests/test_lava_king_art.gd"], logs)
-    run_stage(godot, "volcanic_expansion", ["--script", "res://tests/test_volcanic_expansion.gd"], logs, timeout_seconds=120)
-    run_stage(godot, "castle_stairs", ["--script", "res://tests/test_castle_stairs.gd"], logs, timeout_seconds=150)
-    run_stage(godot, "coop_castle", ["--script", "res://tests/test_coop_castle.gd"], logs)
-    run_stage(godot, "castle_adventure", ["--script", "res://tests/test_castle_adventure.gd"], logs)
-    run_stage(godot, "castle_challenge", ["--script", "res://tests/test_castle_challenge.gd"], logs)
-    run_stage(godot, "volcanic", ["--script", "res://tests/test_volcanic.gd"], logs, timeout_seconds=180)
-    run_stage(godot, "jungle", ["--script", "res://tests/test_jungle.gd"], logs)
-    run_stage(godot, "waterfall", ["--script", "res://tests/test_waterfall.gd"], logs)
-    run_stage(godot, "northern_biomes", ["--script", "res://tests/test_northern_biomes.gd"], logs)
-    run_stage(godot, "map_exploration", ["--script", "res://tests/test_map_exploration.gd"], logs)
-    run_stage(godot, "map", ["--script", "res://tests/test_map.gd"], logs)
-    run_stage(godot, "input", ["--script", "res://tests/test_input.gd"], logs)
-    run_stage(godot, "motor", ["--script", "res://tests/test_player_motor.gd"], logs)
-    run_stage(godot, "heavy_movement", ["--script", "res://tests/test_heavy_movement.gd"], logs)
-    run_stage(godot, "render_budget", ["--script", "res://tests/test_render_budget.gd"], logs)
-    run_stage(godot, "occlusion", ["--script", "res://tests/test_occlusion.gd"], logs)
-    run_stage(godot, "scenery_batch", ["--script", "res://tests/test_scenery_batch.gd"], logs)
-    run_stage(godot, "mob_rest", ["--script", "res://tests/test_mob_rest.gd"], logs)
-    run_stage(godot, "grass", ["--script", "res://tests/test_grass.gd"], logs)
-    run_stage(godot, "world_life", ["--script", "res://tests/test_world_life.gd"], logs)
-    run_stage(godot, "apple_trees", ["--script", "res://tests/test_apple_trees.gd"], logs)
-    run_stage(godot, "apple_pickup", ["--script", "res://tests/test_apple_pickup.gd"], logs)
-    run_stage(godot, "actor_collisions", ["--script", "res://tests/test_actor_collisions.gd"], logs)
-    run_stage(godot, "jump", ["--script", "res://tests/test_jump.gd"], logs)
-    run_stage(godot, "vitals", ["--script", "res://tests/test_vitals.gd"], logs)
-    run_stage(godot, "progression", ["--script", "res://tests/test_progression.gd"], logs)
-    run_stage(godot, "combat", ["--script", "res://tests/test_combat.gd"], logs)
-    run_stage(godot, "knife_combo", ["--script", "res://tests/test_knife_combo.gd"], logs)
-    run_stage(godot, "melee_flow", ["--script", "res://tests/test_melee_flow.gd"], logs)
-    run_stage(godot, "melee_clash", ["--script", "res://tests/test_melee_clash.gd"], logs)
-    run_stage(godot, "equipment", ["--script", "res://tests/test_equipment.gd"], logs)
-    run_stage(godot, "loadout_shop", ["--script", "res://tests/test_loadout_shop.gd"], logs)
-    run_stage(godot, "nori_katana", ["--script", "res://tests/test_nori_katana.gd"], logs)
-    run_stage(godot, "edamame_sword", ["--script", "res://tests/test_edamame_sword.gd"], logs)
-    run_stage(godot, "staff_combat", ["--script", "res://tests/test_staff_combat.gd"], logs)
-    run_stage(godot, "backpack", ["--script", "res://tests/test_backpack.gd"], logs)
-    run_stage(godot, "world_items", ["--script", "res://tests/test_world_items.gd"], logs)
-    run_stage(godot, "depot_focus", ["--script", "res://tests/test_depot_focus.gd"], logs)
-    run_stage(godot, "inventory_input", ["--script", "res://tests/test_inventory_input.gd"], logs)
-    run_stage(godot, "inventory", ["--script", "res://tests/test_inventory.gd"], logs)
-    run_stage(godot, "seed_storage", ["--script", "res://tests/test_seed_storage.gd"], logs)
-    run_stage(godot, "currency", ["--script", "res://tests/test_currency.gd"], logs)
-    run_stage(godot, "factory_route", ["--script", "res://tests/test_factory_route.gd"], logs, timeout_seconds=240)
-    run_stage(godot, "tofu_dungeon", ["--script", "res://tests/test_tofu_dungeon.gd"], logs)
-    run_stage(godot, "tofu_dungeon_coop", ["--script", "res://tests/test_tofu_dungeon_coop.gd"], logs)
-    for name in ["tofu_boss_coop", "factory_recovery", "factory_presentation", "factory_surfaces", "factory_reactivity", "factory_stashes", "factory_handling", "tofu_production_views", "tofu_sorting_lab_rules", "tofu_production_rules", "tofu_dungeon_attempt", "tofu_reward_ledger", "tofu_puzzle_protocol", "dungeon_puzzle_runtime", "dungeon_ui", "factory_soy_fighter", "dofufu"]:
-        run_stage(godot, name, ["--script", f"res://tests/test_{name}.gd"], logs)
-    run_stage(godot, "tofu_dungeon_active", ["--script", "res://tests/test_tofu_dungeon_active.gd"], logs)
-    run_stage(godot, "tofu_dungeon_active_coop", ["--script", "res://tests/test_tofu_dungeon_active_coop.gd"], logs)
-    run_stage(godot, "gun_recoil", ["--script", "res://tests/test_gun_recoil.gd"], logs)
-    run_stage(godot, "first_person", ["--script", "res://tests/test_first_person.gd"], logs)
-    run_stage(godot, "soy_flight", ["--script", "res://tests/test_soy_flight.gd"], logs)
-    run_stage(godot, "soy_gun", ["--script", "res://tests/test_soy_gun.gd"], logs)
-    run_stage(godot, "soy_reload", ["--script", "res://tests/test_soy_reload.gd"], logs)
-    run_stage(godot, "gun_run_pose", ["--script", "res://tests/test_gun_run_pose.gd"], logs)
-    run_stage(godot, "sotjet", ["--script", "res://tests/test_sotjet.gd"], logs)
-    run_stage(godot, "sotjet_coop", ["--script", "res://tests/test_sotjet_coop.gd"], logs)
-    run_stage(godot, "right_hand", ["--script", "res://tests/test_right_hand.gd"], logs)
-    run_stage(godot, "sword", ["--script", "res://tests/test_sword.gd"], logs)
-    run_stage(godot, "sandbox", ["--script", "res://tests/test_sandbox.gd"], logs)
-    run_stage(godot, "armored_shell", ["--script", "res://tests/test_armored_shell.gd"], logs)
-    run_stage(godot, "farm_combat", ["--script", "res://tests/test_farm_combat.gd"], logs)
-    run_stage(godot, "wild_bee", ["--script", "res://tests/test_wild_bee.gd"], logs)
-    run_stage(godot, "coop_wild_bee", ["--script", "res://tests/test_coop_wild_bee.gd"], logs)
-    run_stage(godot, "snail", ["--script", "res://tests/test_snail.gd"], logs)
-    run_stage(godot, "world_contours", ["--script", "res://tests/test_world_contours.gd"], logs)
-    run_stage(godot, "ocean", ["--script", "res://tests/test_ocean.gd"], logs)
-    run_stage(godot, "coop_ocean", ["--script", "res://tests/test_coop_ocean.gd"], logs)
-    run_stage(godot, "river", ["--script", "res://tests/test_river.gd"], logs)
-    run_stage(godot, "sky", ["--script", "res://tests/test_sky.gd"], logs)
-    run_stage(godot, "weather", ["--script", "res://tests/test_weather.gd"], logs)
-    run_stage(godot, "weather_exposure", ["--script", "res://tests/test_weather_exposure.gd"], logs)
-    run_stage(godot, "pod_escape", ["--script", "res://tests/test_pod_escape.gd"], logs)
-    run_stage(godot, "session_transport", ["--script", "res://tests/test_session_transport.gd"], logs)
-    run_stage(godot, "oracle", ["--script", "res://tests/test_oracle.gd"], logs)
-    run_stage(godot, "coop_protocol", ["--script", "res://tests/test_coop_protocol.gd"], logs)
-    run_stage(godot, "coop_gameplay", ["--script", "res://tests/test_coop_gameplay.gd"], logs)
-    run_stage(godot, "coop_response", ["--script", "res://tests/test_coop_response.gd"], logs)
-    run_stage(godot, "coop_opening", ["--script", "res://tests/test_coop_opening.gd"], logs)
-    run_stage(godot, "coop_launch", ["--script", "res://tests/test_coop_launch.gd"], logs)
-    run_stage(godot, "chat", ["--script", "res://tests/test_chat.gd"], logs)
-    run_stage(godot, "coop_scene", ["--script", "res://tests/test_coop_scene.gd"], logs)
-    run_stage(godot, "landing", ["--script", "res://tests/test_landing.gd"], logs)
-    run_stage(godot, "lobby", ["--script", "res://tests/test_lobby.gd"], logs)
-    run_stage(godot, "frontend", ["--script", "res://tests/test_frontend.gd"], logs)
-    run_stage(godot, "scene", ["--script", "res://tests/test_scene.gd"], logs)
-    print("All automated checks passed. Visual/NAT checks remain separate.")
+    durations = [("import", run_stage(godot, "import", ["--editor", "--import"], logs,
+                                    verbose=options.verbose))]
+    for name, args, timeout in stages:
+        durations.append((name, run_stage(godot, name, args, logs, timeout,
+                                         verbose=options.verbose)))
+    elapsed = time.monotonic() - started
+    slowest = sorted(durations, key=lambda stage: stage[1], reverse=True)[:3]
+    print(f"{scope} checks passed in {elapsed:.1f}s ({len(stages)} Godot tests). "
+          "Visual/NAT checks remain separate.")
+    print("Slowest stages: " + ", ".join(f"{name} {duration:.1f}s" for name, duration in slowest))
+    if scope != "Full":
+        print("Full suite was not run.")
 
 
 if __name__ == "__main__":

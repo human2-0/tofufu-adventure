@@ -18,6 +18,7 @@ var healing: PlayerHealing
 var world_items: WorldItems
 var authority: bool = false
 var respawn_count: int = 0
+var duel: CoopDuel
 var duel_defeated: Callable
 var block_count: int = 0
 var last_command := PlayerCommand.new()
@@ -86,27 +87,23 @@ func _configure_loadout() -> void:
 		add_child(loadout)
 		loadout.seed()
 	loadout.replica = not authority
-	if healing == null:
-		healing = PlayerHealing.new()
-		healing.equipment = character_equipment
-		healing.health = health
-		healing.vitals = combat.vitals
-		healing.eaten.connect(func(_n: String, amt: float) -> void: CombatEffects.burst(self, actor.global_position, "+%d HP (gradual)" % int(amt), Color("c8efa0")))
+	ActorCare.configure_healing(self)
 
 func _command(command: PlayerCommand, delta: float) -> void:
 	if spectating: return
+	CoopDuelCommand.prepare(self, command)
 	ActorMeleeImpact.prepare(actor, command)
 	if world_items != null: BarnPeace.prepare(world_items.game, actor, combat, command)
 	last_command = command
 	if command.cancel_actions: combat.reset()
-	if command.camp_pressed and (world_items == null or not world_items.game.factory_dungeon.puzzle_enabled or not world_items.game.factory_dungeon.actor_in_run(actor)): respawn()
+	if command.camp_pressed and not duel_defeated.is_valid() and (world_items == null or not world_items.game.factory_dungeon.puzzle_enabled or not world_items.game.factory_dungeon.actor_in_run(actor)): respawn()
 	if command.time_pressed: time_requested.emit()
 	var moving := Vector2(actor.velocity.x, actor.velocity.z).length_squared() > 0.01
 	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.melee_selected() and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
 	actor.ability_velocity = combat.plunge.velocity
 	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO, not actor.is_on_floor(), command.guard_held)
 	combat.gun.targets = combat.targets
-	combat.gun.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
+	combat.gun.step(command.attack_held and not command.reload_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta, command.reload_pressed and not command.cancel_actions)
 	combat.sotjet.flow.targets = combat.targets
 	combat.sotjet.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
 	actor.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
@@ -117,7 +114,7 @@ func _command(command: PlayerCommand, delta: float) -> void:
 	if command.use_healing_2: healing.use_slot("support_2")
 	if command.use_healing_3: healing.use_slot("support_3")
 	if command.use_healing_4: healing.use_slot("support_4")
-	healing.step(delta)
+	if not duel_defeated.is_valid(): healing.step(delta)
 
 func hurt(amount: float, source: Vector3, kind: Damageable.HitKind = Damageable.HitKind.SLIME) -> void:
 	CoopEnemyDamage.hurt(self, amount, source, kind)
@@ -192,5 +189,6 @@ func _reflect_projectile(incoming: Vector3, point: Vector3, confirmed: bool) -> 
 	return combat.equipment.reflection_normal(incoming, point, confirmed)
 
 func _on_super_dashed(at: Vector3) -> void:
+	if duel != null and duel.phase != "fight" and duel_defeated.is_valid(): return
 	if world_items != null and MeadowBarn.contains(world_items.game.world.seed_bank, at): return
 	FART_CLOUD.spawn(actor.get_parent(), at, combat.targets)

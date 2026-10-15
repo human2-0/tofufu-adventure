@@ -15,6 +15,7 @@ var _gun: Sprite3D
 var _raygun: Node3D
 var _jet: SotjetVisual
 var _hands: Array[MeshInstance3D] = []
+var _magic := MagicalTofufuOrbit.new()
 var _arms := FirstPersonArms.new()
 var _phase: float = 0.0
 var _kick: float = 0.0
@@ -58,6 +59,12 @@ func _ready() -> void:
 	_jet.first_person_view = true
 	_jet.visible = false
 	_rig.add_child(_jet)
+	_magic.radius = 0.24
+	_magic.plane = Basis(Vector3.RIGHT, PI * 0.5)
+	_magic.span = 0.10
+	_magic.center = func() -> Vector3: return FirstPersonEnhancementView.center(self)
+	_magic.enabled = func() -> bool: return combat.equipment.weapon_enhanced and (combat.ranged_selected() or combat.equipment.melee_selected())
+	_rig.add_child(_magic)
 	_viewport.add_child(_arms)
 	for index in 2:
 		var hand := MeshInstance3D.new()

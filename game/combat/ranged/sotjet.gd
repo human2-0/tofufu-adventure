@@ -7,10 +7,12 @@ var actor: CollisionObject3D
 var tuning := SotjetTuning.new()
 var attack_speed_multiplier: float = 1.0
 var range_multiplier: float = 1.0
+var projectile_speed_multiplier: float = 1.0
 var selected: bool = false
 var aiming: bool = false
 var firing: bool = false
 var milk: float = 100.0
+var consumption_multiplier: float = 1.0
 var sequence: int = 0
 var origin := Vector3.ZERO
 var velocity := Vector3.ZERO
@@ -37,10 +39,11 @@ func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: fl
 	visual.visible = selected
 	visual.facing = aim
 	var was_firing := firing
-	firing = selected and held and milk >= tuning.consumption * delta
+	var consumption := tuning.consumption * consumption_multiplier * delta
+	firing = selected and held and milk >= consumption
 	if firing:
 		if not was_firing: _burst += 1
-		milk = maxf(0.0, milk - tuning.consumption * delta)
+		milk = maxf(0.0, milk - consumption)
 		_refill_wait = tuning.refill_delay
 		origin = muzzle_position(aim)
 		velocity = (aim_point - origin).normalized() * launch_speed()
@@ -53,7 +56,7 @@ func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: fl
 	_present_nozzle()
 
 func launch_speed() -> float:
-	return tuning.speed * range_multiplier * attack_speed_multiplier
+	return tuning.speed * range_multiplier * attack_speed_multiplier * projectile_speed_multiplier
 
 func muzzle_position(aim: Vector2) -> Vector3:
 	var forward := Vector3(aim.x, 0, aim.y).normalized()
@@ -70,6 +73,7 @@ func use_replica() -> void:
 
 func present(state: Dictionary, facing: Vector2) -> void:
 	selected = state.get("jet", false)
+	consumption_multiplier = 0.8 if selected and state.get("enhanced", false) else 1.0
 	aiming = selected and state.get("jet_ads", false)
 	milk = state.get("milk", tuning.capacity)
 	visual.visible = selected

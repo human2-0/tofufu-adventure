@@ -6,13 +6,24 @@ signal rendering_requested(limit: int, scale: float, sync: bool, adaptive: bool)
 signal deadzone_changed(value: float)
 signal binding_requested(action: String, device: String)
 signal reset_requested
+signal language_requested(locale: String)
 signal back
 var bindings: Dictionary[String, Button] = {}
 var message: Label
 var device: String = "keyboard"
 var _rows: VBoxContainer
+var language_picker: OptionButton
 
 func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzone: float, actions: Array[String], frame_limit: int = 120, render_scale: float = 1.0, vsync: bool = false, adaptive: bool = true) -> void:
+	MenuStyle.label(self, "Language", 22)
+	language_picker = OptionButton.new()
+	language_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	language_picker.add_item("English")
+	language_picker.add_item("Polski")
+	language_picker.select(1 if TranslationServer.get_locale().begins_with("pl") else 0)
+	add_child(language_picker)
+	language_picker.item_selected.connect(func(index: int) -> void: language_requested.emit("pl" if index == 1 else "en"))
+	MenuStyle.paragraph(self, "Choose your language. Changes apply immediately and are saved on this device.")
 	MenuStyle.label(self, "Display", 22)
 	var display_row := HFlowContainer.new()
 	add_child(display_row)
@@ -66,7 +77,11 @@ func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzo
 	add_child(footer)
 	MenuStyle.button(footer, "Reset controls", reset_requested.emit)
 	MenuStyle.button(footer, "Back", back.emit)
-	MenuStyle.focus_later(sizes)
+	MenuStyle.focus_later(language_picker)
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and language_picker != null:
+		language_picker.select(1 if TranslationServer.get_locale().begins_with("pl") else 0)
 
 func _render_options(frame_limit: int, render_scale: float, vsync: bool, adaptive: bool) -> void:
 	MenuStyle.label(self, "Rendering", 22)

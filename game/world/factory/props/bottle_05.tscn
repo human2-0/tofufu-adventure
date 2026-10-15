@@ -118,6 +118,8 @@ mesh = SubResource("r8")
 material_override = SubResource("r9")
 
 [node name="ContentLabel" type="Label3D" parent="."]
+visibility_range_end = 32.0
+visibility_range_end_margin = 2.0
 double_sided = false
 position = Vector3(0.0, 0.235, 0.142)
 text = "Glucono-delta-lactone"

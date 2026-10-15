@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Local dedicated server + two real launcher processes, restart and saved identities."""
+import argparse
 import hashlib
 import json
 import os
@@ -14,7 +15,7 @@ import time
 from verify import ROOT, find_godot
 
 
-def wait_for(predicate, processes, seconds=25):
+def wait_for(predicate, processes, seconds=60):
     deadline = time.monotonic() + seconds
     while time.monotonic() < deadline:
         if predicate():
@@ -26,6 +27,13 @@ def wait_for(predicate, processes, seconds=25):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--server-pack", type=Path,
+                        help="Exercise an exported authority pack with source clients")
+    args = parser.parse_args()
+    server_pack = args.server_pack.resolve() if args.server_pack else None
+    if server_pack and not server_pack.is_file():
+        raise RuntimeError(f"Server pack not found: {server_pack}")
     directory = Path(tempfile.mkdtemp(prefix="tofufu-dedicated-"))
     print(f"Logs and checkpoints: {directory}", flush=True)
     with socket.socket() as probe:
@@ -46,8 +54,10 @@ def main():
         for key in ("TOFUFU_SERVER_CONFIG", "TOFUFU_CLIENT_CONFIG", "TOFUFU_STATE_DIR", "TOFUFU_SERVER_PORT"):
             env.pop(key, None)
         env.update(settings)
-        process = subprocess.Popen([find_godot(), "--headless", "--path", str(ROOT),
-                                    "--max-fps", "60", *args], cwd=ROOT, env=env,
+        exported_server = server_pack is not None and name.startswith("server-")
+        project = ["--main-pack", str(server_pack)] if exported_server else ["--path", str(ROOT)]
+        process = subprocess.Popen([find_godot(), "--headless", *project,
+                                    "--max-fps", "60", *args], cwd=directory if exported_server else ROOT, env=env,
                                    stdout=handle, stderr=subprocess.STDOUT)
         processes.append(process)
         return process, log

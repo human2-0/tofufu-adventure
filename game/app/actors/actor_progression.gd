@@ -12,9 +12,12 @@ var equipment: CharacterEquipment:
 		if equipment != null: equipment.changed.connect(_apply)
 		if is_inside_tree(): _apply()
 var progress := CharacterProgress.new()
+var care := ActorCare.new()
 var _level: int = 1
 
 func _ready() -> void:
+	care.progression = self
+	add_child(care)
 	combat.weapon_trained.connect(progress.weapon_hit)
 	combat.gun.weapon_trained.connect(progress.weapon_hit)
 	combat.sotjet.weapon_trained.connect(progress.weapon_hit)
@@ -44,6 +47,7 @@ static func threaten(quarry: Node3D) -> void:
 
 func _apply() -> void:
 	combat.vitals.set_level(progress.level())
+	combat.vitals.recovery_multiplier = progress.journey.recovery_multiplier()
 	if combat.owner_health != null:
 		var health := combat.owner_health
 		var maximum := combat.tuning.maximum_health * pow(VitalRules.HP_GROWTH, progress.level() - 1)

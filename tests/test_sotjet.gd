@@ -117,7 +117,9 @@ func _run() -> void:
 	snapshot.jet_velocity = [0, 0, -combat.sotjet.launch_speed()]
 	check(ExplorationProtocol.combat(snapshot), "fully upgraded Soyjet speed survives network validation")
 	var valid_velocity: Array = snapshot.jet_velocity.duplicate()
-	snapshot.jet_velocity = [0, 0, -101]
+	snapshot.jet_velocity = [0, 0, -144]
+	check(ExplorationProtocol.combat(snapshot), "double-speed arena Soyjet velocity is accepted")
+	snapshot.jet_velocity = [0, 0, -201]
 	check(not ExplorationProtocol.combat(snapshot), "out-of-bounds Soyjet velocity is rejected")
 	snapshot.jet_velocity = valid_velocity
 	combat.sotjet.present(snapshot, Vector2.UP)

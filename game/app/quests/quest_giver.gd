@@ -31,14 +31,16 @@ func _ready() -> void:
 func _setup_npc_interaction() -> void:
 	var npc: Node3D = game.world.quest_npc
 	_prompt = Label3D.new()
+	_prompt.visibility_range_end = 32.0
+	_prompt.visibility_range_end_margin = 2.0
 	_prompt.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_prompt.position.y = 3.0
 	_prompt.font_size = 32
 	_prompt.outline_size = 8
 	_prompt.modulate = Color("ffdc79")
 	_prompt.pixel_size = 0.009
-	_prompt.no_depth_test = true
-	_prompt.ignore_occlusion_culling = true
+	_prompt.no_depth_test = false
+	_prompt.ignore_occlusion_culling = false
 	_prompt.render_priority = 127
 	npc.add_child(_prompt)
 	_build_highlight(npc)

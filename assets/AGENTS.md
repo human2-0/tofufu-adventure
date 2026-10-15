@@ -1,6 +1,7 @@
 # Assets
 
 - Preserve original source art. Keep feature assets under descriptive directories and update all references when moving them.
+- Keep generated texture sources and prompts/provenance beside the feature's assets in `SOURCE.md`. Choose suitable texture resolution and UV or triplanar mapping; use seamless textures for repeating surfaces. Check the applied materials, texture scale and seams in a rendered Godot preview.
 - Fufu walk sheet: 4 columns x 3 rows; down row 0, up row 1, LEFT row 2. Flip row 2 for RIGHT.
 - Eight-pose idle sheet: 4x2, S/SW/W/NW then N/NE/E/SE. Idle pixel size 0.00284; cardinal walk 0.005. Preserve per-frame center/foot offsets and apparent size.
 - Diagonal sheet: original 1254px PNG, 4x4 frames; rows SE, SW, NE, NW. Keep calibrated pixel scale/foot baselines in `FufuVisuals`; keep source provenance with the art.

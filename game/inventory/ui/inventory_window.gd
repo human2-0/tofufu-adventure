@@ -10,6 +10,7 @@ var quick_transfer_handler: Callable
 signal drop_requested(source: String, id: Variant)
 signal drop_warning_skipped
 
+signal character_requested
 signal opened
 signal closed
 var inventory: PlayerInventory:
@@ -29,14 +30,14 @@ var equipment: CharacterEquipment:
 var _inv_buttons: Array[InventorySlotButton] = []
 var _eq_buttons: Dictionary = {}
 var _currency: Label
-var _description: Label
-var _inspected_button: InventorySlotButton
+var _tooltip: ItemTooltip
 var _conversion_status: Label
 var _refine_menu: PopupMenu
 var _refine_slot: int = -1
 var _refine_id: String = ""
 var _backpack_dock: PanelContainer
 var _equipment_dock: PanelContainer
+var enhancement_confirmation: WeaponEnhancementConfirmation
 var drop_confirmation: InventoryDropConfirmation
 var _bag_label: Label
 var _selected_source: String = ""
@@ -44,11 +45,18 @@ var _selected_slot: Variant = null
 func _ready() -> void:
 	layer = 15
 	visible = false
+	_tooltip = ItemTooltip.new()
+	_tooltip.window = self
+	add_child(_tooltip)
 	_build_ui()
+	move_child(_tooltip, get_child_count() - 1)
 	drop_confirmation = InventoryDropConfirmation.new()
 	drop_confirmation.approved.connect(drop_requested.emit)
 	drop_confirmation.skip_future_approved.connect(drop_warning_skipped.emit)
 	add_child(drop_confirmation)
+	enhancement_confirmation = WeaponEnhancementConfirmation.new()
+	enhancement_confirmation.window = self
+	add_child(enhancement_confirmation)
 
 func toggle() -> void:
 	if visible: close()
@@ -59,8 +67,7 @@ func open() -> void:
 	visible = true
 	_selected_source = ""
 	_selected_slot = null
-	_inspected_button = null
-	if _description != null: _description.text = "Hover or focus an item to see its description."
+	_tooltip.clear()
 	if _conversion_status != null: _conversion_status.text = ""
 	refresh()
 	if not _inv_buttons.is_empty():
@@ -69,9 +76,11 @@ func open() -> void:
 
 func close() -> void:
 	if not visible: return
+	if enhancement_confirmation != null: enhancement_confirmation.clear()
 	if _refine_menu != null: _refine_menu.hide()
 	if drop_confirmation != null: drop_confirmation.hide()
 	visible = false
+	_tooltip.clear()
 	_selected_source = ""
 	_selected_slot = null
 	closed.emit()
@@ -102,7 +111,6 @@ func refresh() -> void:
 		btn.visible = inventory != null and i < inventory.capacity
 		var stack: ItemStack = inventory.get_slot(i) if inventory != null else null
 		btn.present(stack, null, "Bag slot %d" % (i + 1), "", _selected_source == "inventory" and _selected_slot == i)
-	if _inspected_button != null: InventoryWindowDescriptions.show_for_slot(self, _inspected_button)
 
 func _count(id: String) -> int:
 	return inventory.count_item(id) if inventory != null else 0
@@ -159,10 +167,15 @@ func _on_slot_clicked(source: String, slot_id: Variant) -> void:
 		refresh()
 
 func execute_transfer(src: String, src_id: Variant, dst: String, dst_id: Variant) -> void:
-	if transfer_handler.is_valid():
-		transfer_handler.call(src, src_id, dst, dst_id)
-	else:
-		InventoryTransfer.apply(inventory, equipment, src, src_id, dst, dst_id)
+	if enhancement_confirmation == null:
+		var incoming := inventory.get_slot(int(src_id)) if inventory != null and src == "inventory" and InventoryTransfer.valid_slot(src, src_id) else null
+		if incoming != null and incoming.item.id == MagicalTofufu.ID: return
+	elif enhancement_confirmation.intercept(src, src_id, dst, dst_id): return
+	commit_transfer(src, src_id, dst, dst_id)
+
+func commit_transfer(src: String, src_id: Variant, dst: String, dst_id: Variant) -> void:
+	if transfer_handler.is_valid(): transfer_handler.call(src, src_id, dst, dst_id)
+	else: InventoryTransfer.apply(inventory, equipment, src, src_id, dst, dst_id)
 	refresh()
 
 func request_drop(source: String, id: Variant) -> void:

@@ -8,6 +8,7 @@
 
 ## Invariants
 - Preserve the example's 3D X/Z ground plane, Y elevation, billboard Fufu, mouse facing, walk/jump/dash, and obstacle collisions unless the task changes them.
+- Whenever creating or redesigning a 3D asset, read `assets/AGENTS.md` and use `imagegen` or an equivalent image-generation skill to generate textures and apply them to the finished asset's materials. Match the project's established art style.
 - Compose small objects with one responsibility. Use typed commands, signals, exported dependencies, and Resources for configuration. Keep mutable actor state per instance.
 - `game/app/` wires features. Movement rules do not read Input, scenes, UI, files, or networking. Views never decide gameplay outcomes.
 - Prefer composition over inheritance; inherit only for a real substitution (e.g. command sources). No global event bus, service locator, catch-all Manager, or speculative framework.
@@ -17,7 +18,8 @@
 
 ## Done
 - Run `python3 tools/check_architecture.py` for source/layout changes.
-- For GDScript, scene, or project changes run `python3 tools/verify.py` (Godot import, rule tests, scene smoke test). Set `GODOT_BIN` if discovery fails.
+- For local GDScript/scene changes, use `python3 tools/verify.py --quick --tests NAME ...`: architecture, Godot import, scene smoke and affected scenarios from the map. Include affected callers and save/co-op contracts, not just edited files. Use `--list` for names; set `GODOT_BIN` if discovery fails.
+- During iteration use `--tests NAME ...` for focused feedback. Run `--full` once for broad wiring/boundary changes, resource moves, shared save/network schema or project settings changes, and before releases. Repeat checks only after relevant edits or failures; report focused vs full coverage honestly.
 - Visually check control/art/camera changes in Godot; report when only headless checks were possible.
 - Update the map when moving files; update the relevant architecture decision when changing a boundary. Record implemented vs planned honestly.
 - Report changes, verification, and remaining limitations concisely. Do not add session diaries or repeat these rules in child files.

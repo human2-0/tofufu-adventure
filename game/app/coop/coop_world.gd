@@ -30,18 +30,23 @@ static func apply(game: Node3D, data: Dictionary, replica: bool, changes: Replic
 		game.seed_storage.barn.banks[0].restore(data.seed_storage)
 	if not replica and not data.has("barn") and game.seed_storage.barn.banks[0].occupied_slots() > 0: game.seed_storage.barn.owners[0] = game.seed_storage.barn.key(game.player)
 	if data.has("produce") and (changes == null or changes.changed("produce", data.produce)): game.meadow_harvest.restore(data.produce, replica)
-	if data.has("barn") and (changes == null or changes.changed("barn", data.barn)): game.seed_storage.barn.restore(data.barn)
+	if data.has("barn") and (changes == null or changes.changed("barn", data.barn)):
+		game.seed_storage.barn.restore(data.barn)
+		game.seed_storage.refresh_deposit()
 	if data.has("seed_satchel_claimed"): game.seed_storage.free_satchel_claimed = data.seed_satchel_claimed
 	if data.has("world_items") and (changes == null or changes.changed("world_items", data.world_items)): game.world_items.pool.restore(data.world_items)
 	if data.has("factory") and (changes == null or changes.changed("factory", data.factory)):
 		if replica: game.factory_dungeon.apply_world(data.factory)
 		else: game.factory_dungeon.restore(data.factory)
-	if data.has("castle"): game.castle_adventure.restore(data.castle, true)
+	if data.has("castle") and (changes == null or changes.changed("castle", data.castle)):
+		game.castle_adventure.restore(data.castle, true)
 	game.weather.set_phase(float(data.get("weather_phase", 0.0)))
 	for i in data.mobs.size(): EncounterState.apply_mob(encounters.mob_nodes[i], data.mobs[i], replica)
-	for i in encounters.prop_nodes.size(): EncounterState.apply_prop(encounters.prop_nodes[i], data.props[i], replica)
-	for i in encounters.dummy_nodes.size(): EncounterState.apply_dummy(encounters.dummy_nodes[i], data.dummies[i], replica)
-	if data.has("apple_trees"):
+	if changes == null or changes.changed("props", data.props):
+		for i in encounters.prop_nodes.size(): EncounterState.apply_prop(encounters.prop_nodes[i], data.props[i], replica)
+	if changes == null or changes.changed("dummies", data.dummies):
+		for i in mini(encounters.dummy_nodes.size(), data.dummies.size()): EncounterState.apply_dummy(encounters.dummy_nodes[i], data.dummies[i], replica)
+	if data.has("apple_trees") and (changes == null or changes.changed("apple_trees", data.apple_trees)):
 		for i in mini(game.world.apple_trees.size(), data.apple_trees.size()):
 			var tree: AppleTree = game.world.apple_trees[i]
 			var target: Damageable = game.apple_tree_targets[i]

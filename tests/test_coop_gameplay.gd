@@ -27,6 +27,8 @@ func drop_id(pool: WorldItemPool, item_id: String) -> int:
 	return 0
 
 func _run() -> void:
+	# Held input windows must not gain unobserved catch-up ticks on slow frames.
+	Engine.max_physics_steps_per_frame = 1
 	host = PlaytestRoom.new()
 	guest = PlaytestRoom.new()
 	root.add_child(host)
@@ -73,16 +75,21 @@ func _run() -> void:
 		var apparel_id := "bright_leaf_%s" % slot_name
 		guest_game.merchant._request(apparel_id)
 		await ticks(12)
-		var apparel_slot := -1
-		for slot in replica.inventory.capacity:
-			var stack := replica.inventory.get_slot(slot)
-			if stack != null and stack.item != null and stack.item.id == apparel_id:
-				apparel_slot = slot
-				break
-		check(apparel_slot >= 0, "%s purchase synchronizes from Kaji" % apparel_id)
-		guest_game.inventory_window.execute_transfer("inventory", apparel_slot, "equipment", slot_name)
-		await ticks(12)
+		var worn := replica.character_equipment.get_slot(slot_name)
+		check(worn != null and worn.item.id == apparel_id, "%s purchase equips and synchronizes from Grandpa Fufu" % apparel_id)
 	check(remote.actor.visuals.worn_set == "bright_leaf" and replica.actor.visuals.worn_set == "bright_leaf" and is_equal_approx(remote.health.armor_multiplier, 0.90), "host equipment sync shows the complete set and protection on both players")
+	# Derive the fixture independently of the runtime damage multiplier under test.
+	var expected_level_defence: float = 1.0 - CharacterProgress.TUNING.character_defence * 4.0
+	var expected_guest_mitigation: float = expected_level_defence * 0.90
+	check(remote.progression.progress.skill("defence") == 1 and replica.progression.progress.skill("defence") == 1, "level-five guest has no trained defence bonus yet")
+	check(is_equal_approx(remote.combat.incoming_damage_multiplier, expected_level_defence) and is_equal_approx(replica.combat.incoming_damage_multiplier, expected_level_defence), "level-five defence agrees on authority and replica")
+	remote.character_equipment.set_slot("backpack", null)
+	await ticks(8)
+	check(remote.inventory.capacity == 0 and replica.inventory.capacity == 0, "lost backpack leaves host and guest without bag slots")
+	guest_game.merchant._request("traveler_backpack")
+	await ticks(15)
+	var recovered_bag := replica.character_equipment.get_slot("backpack")
+	check(recovered_bag != null and recovered_bag.item.id == "traveler_backpack" and remote.inventory.capacity == 20 and replica.inventory.capacity == 20, "guest buys and immediately wears a replacement backpack with no bag slots")
 	remote.inventory.set_slot(0, ItemStack.new(InventoryItem.create_edamame(), 100))
 	remote.inventory.refining_unlocked = true
 	await ticks(8)
@@ -158,7 +165,7 @@ func _run() -> void:
 		if child is CoopInventory: host_inventory = child
 	check(host_inventory != null and host_inventory._pending.has(GUEST), "host queues the guest quick-storage intent")
 	await ticks(12)
-	check(remote.inventory.get_slot(2) == null and host_game.seed_storage.chest.get_slot(0).count == 5, "guest quick-storage request moves a bag stack on the host")
+	check(remote.inventory.get_slot(2) == null and host_game.seed_storage.barn.personal(remote.actor).get_slot(0).count == 5, "guest quick-storage request moves a bag stack on the host")
 	check(guest_game.seed_storage.chest.get_slot(0) != null and guest_game.seed_storage.chest.get_slot(0).count == 5, "host chest snapshot returns the quick-storage result")
 	remote.actor.relocate(before_shop)
 	guest_game.player.relocate(before_shop)
@@ -201,7 +208,8 @@ func _run() -> void:
 	remote.hurt(12, remote.actor.position + Vector3(0, 0, 1))
 	await ticks(10)
 	check(remote.progression.progress.practice.defence == 1 and replica.progression.progress.practice.defence == 1, "only the successful guard trains defence")
-	check(is_equal_approx(remote.health.current, remote.health.maximum - 10.8) and is_equal_approx(replica.health.current, remote.health.current), "rear hit is reduced by ten percent for the armored guest")
+	var expected_rear_damage: float = 12.0 * expected_guest_mitigation
+	check(is_equal_approx(remote.health.current, remote.health.maximum - expected_rear_damage) and is_equal_approx(replica.health.current, remote.health.current), "rear hit combines level defence and armor for the guest")
 	input.guard = false
 	input.drop = true
 	await ticks(10)
@@ -281,7 +289,8 @@ func _run() -> void:
 	host_game.combat.gun.tuning.aim_spread_degrees = 0
 	host_game.combat.gun.step(true, true, Vector2.UP, remote.actor.position + Vector3.UP * 0.98, 0.02)
 	await ticks(18)
-	check(is_equal_approx(remote.health.current, 64.0) and is_equal_approx(replica.health.current, 64.0), "armored guest reduces the host headshot and replicates health (remote %.2f, replica %.2f)" % [remote.health.current, replica.health.current])
+	var expected_guest_health: float = 100.0 - host_game.combat.gun.tuning.bean_head_damage * host_game.combat.gun.damage_multiplier * expected_guest_mitigation
+	check(is_equal_approx(remote.health.current, expected_guest_health) and is_equal_approx(replica.health.current, expected_guest_health), "armored guest reduces the host headshot with level defence and replicates health (remote %.2f, replica %.2f)" % [remote.health.current, replica.health.current])
 	var saved := CoopCheckpoint.capture(host_session)
 	check(CoopCheckpoint.valid(saved), "full checkpoint validates")
 	var store := SaveStore.new()
@@ -302,6 +311,7 @@ func _run() -> void:
 	await ticks(3)
 	check(not host_session.roster.party.has(GUEST) and host_session.roster.saved_states.has(GUEST), "disconnect preserves character checkpoint")
 	guest.join_room(HOST)
+	guest.send_game(HOST, {"type": "ready"})
 	await ticks(3)
 	check(guest.playing and host_session.roster.party.has(GUEST), "join-in-progress accepted")
 	remote = host_session.roster.party[GUEST]
@@ -339,19 +349,28 @@ func _run() -> void:
 	remote.actor.motor.endurance.rest_remaining = 1.2
 	remote.actor.motor.endurance.exhausted = true
 	await ticks(1)
-	check(host_session.duel.phase == "entry" and not host_inventory._pending.has(GUEST), "duel entry discards a fighter's already queued inventory action")
+	check(host_session.duel.phase == "loadout" and not host_inventory._pending.has(GUEST), "duel entry discards a fighter's already queued inventory action")
 	check(not is_instance_valid(stale_host_shot), "duel entry clears live host soy projectiles")
 	await ticks(3)
-	check(host_session.duel.phase == "entry" and host_session.duel.participants == [HOST, GUEST], "distinct players on both village tiles start the duel countdown")
+	check(host_session.duel.phase == "loadout" and host_session.duel.participants == [HOST, GUEST], "distinct players on village tiles open explicit loadout agreement")
 	check(remote.inventory.get_slot(pending_slot) != null and remote.inventory.get_slot(pending_slot).item.id == pending_item_id and host_game.world_items.pool.drops.size() == drops_before_queue, "discarded inventory action does not mutate the fighter bag")
 	var execution_probe := pending_transfer.duplicate(true)
 	execution_probe.sequence = int(host_inventory._seen.get(GUEST, 0)) + 1
 	host_inventory._pending[GUEST] = [execution_probe]
 	host_inventory._physics_process(0.016)
 	check(remote.inventory.get_slot(pending_slot) != null and remote.inventory.get_slot(pending_slot).item.id == pending_item_id and host_game.world_items.pool.drops.size() == drops_before_queue, "queued fighter action is rechecked and discarded at execution")
+	check(DuelProtocol.valid(host_session.duel.capture(), host.members), "loadout snapshot validates")
+	await ticks(8)
+	host_game.hud.arena.action_requested.emit("accept", "sotjet", "knife")
+	guest_game.hud.arena.action_requested.emit("accept", "soy_gun", "knife")
+	await ticks(3)
+	check(host_session.duel.phase == "loadout", "different ranged choices cannot start the arena")
+	host_game.hud.arena.action_requested.emit("accept", "soy_gun", "knife")
+	await ticks(3)
+	check(host_session.duel.phase == "entry", "both authenticated fighters agreeing starts countdown")
 	host_session.duel.countdown = 0.01
 	guest_session.duel.present(host_session.duel.capture())
-	check(stale_guest_shot.is_queued_for_deletion(), "duel entry clears live cosmetic soy projectiles on guests")
+	check(not is_instance_valid(stale_guest_shot) or stale_guest_shot.is_queued_for_deletion(), "duel entry clears live cosmetic soy projectiles on guests")
 	await ticks(3)
 	check(host_session.duel.phase == "fight" and host_session.duel.round_number == 1, "five-to-one countdown teleports both players into the arena")
 	var duel_arena: FarmDuelArena = host_game.world.duel_arena
@@ -370,7 +389,42 @@ func _run() -> void:
 	var escape_x: float = duel_arena.ARENA_CENTER.x + duel_arena.ARENA_HALF_SIZE.x + 3.0
 	remote.actor.global_position = Vector3(escape_x, spawns[1].y + 0.12, duel_arena.ARENA_CENTER.y)
 	await ticks(2)
-	check(duel_arena.contains_arena(remote.actor.global_position) and remote.actor.global_position.distance_to(duel_arena.return_position(1)) < 0.5, "host returns a fighter that crosses the arena wall to their spawn")
+	check(duel_arena.contains_arena(remote.actor.global_position) and remote.actor.global_position.distance_to(duel_arena.return_position(1)) > 4.0 and host_session.duel.round_number == 1, "escape recovery stays beside the wall without restarting the round")
+	var wall_hug := Vector3(duel_arena.ARENA_CENTER.x + duel_arena.ARENA_HALF_SIZE.x - 0.91, spawns[1].y + 0.12, duel_arena.ARENA_CENTER.y + 7)
+	remote.actor.relocate(wall_hug)
+	await ticks(4)
+	check(Vector2(remote.actor.position.x - wall_hug.x, remote.actor.position.z - wall_hug.z).length() < 0.1, "standing against a physical wall never returns a fighter to spawn")
+	for mob in host_game.encounters.mob_nodes:
+		check(not FarmDuelArena.mob_exclusion().has_point(Vector2(mob._home.x, mob._home.z)), "mob homes remain outside the reserved arena")
+	var invading_mob: TrainingMob = host_game.encounters.mob_nodes[0]
+	invading_mob.position = spawns[0]
+	ArenaMobExclusion.apply(host_game.encounters)
+	check(not FarmDuelArena.mob_exclusion().has_point(Vector2(invading_mob.position.x, invading_mob.position.z)), "legacy or displaced mobs are removed from arena without awarding loot")
+	var old_speed: float = host_game.combat.gun.tuning.bean_speed
+	host_game.combat.gun._fire(false, Vector2.RIGHT, host_game.player.position + Vector3(20, 1, 0))
+	check(is_equal_approx(host_game.combat.gun.shot_velocity.length(), old_speed * 2.0), "arena soybean bullets travel at exactly twice normal speed")
+	check(ExplorationProtocol.combat(CombatState.capture(host_game.combat)), "double-speed shots pass guest snapshot validation")
+	host_session.duel._fighters.clear_projectiles(host_session.duel.participants)
+	var camp_probe := PlayerCommand.new()
+	camp_probe.camp_pressed = true
+	remote._command(camp_probe, 0.016)
+	check(not camp_probe.camp_pressed and duel_arena.contains_arena(remote.actor.position), "camp shortcut cannot silently reset a duel")
+	remote.healing.apple_duration_remaining = 10.0
+	remote.healing.active_heal_remaining = 12.0
+	remote.health.current = 80.0
+	remote._command(PlayerCommand.new(), 0.1)
+	check(remote.health.current == 80.0 and remote.healing.apple_duration_remaining == 10.0 and remote.healing.active_heal_remaining == 12.0, "world consumable regeneration is suspended throughout arena combat")
+	remote.healing.apple_duration_remaining = 0.0
+	remote.healing.active_heal_remaining = 0.0
+	remote.health.restore()
+	CoopDuelView.process(host_session.duel)
+	check(not (remote.actor.get_node("PartyName") as Label3D).visible, "opponent name tags are hidden during arena fights")
+	var reveals_opponent := false
+	for marker: Dictionary in host_game.map.markers():
+		if marker.get("label") == "Guest": reveals_opponent = true
+	check(not reveals_opponent, "arena minimap cannot reveal the opponent behind cover")
+	CoopDuelView.process(guest_session.duel)
+	check(not (guest_session.roster.actors[HOST].get_node("PartyName") as Label3D).no_depth_test, "replica name tags respect wall depth")
 	var drops_before_duel: int = host_game.world_items.pool.drops.size()
 	for kill in 10:
 		remote.health.invulnerability = 0.0
@@ -395,7 +449,8 @@ func _run() -> void:
 	host_game.player.relocate(disconnect_pads[0] + Vector3.UP * 0.26)
 	remote.actor.relocate(disconnect_pads[1] + Vector3.UP * 0.26)
 	await ticks(3)
-	check(host_session.duel.phase == "entry", "the same pair can start another duel")
+	check(host_session.duel.phase == "loadout", "the same pair can start another duel")
+	await accept_duel()
 	host_session.duel.countdown = 0.01
 	await ticks(3)
 	var disconnect_entry: Dictionary = host_session.duel._fighters.saved_states[GUEST].duplicate(true)
@@ -406,6 +461,7 @@ func _run() -> void:
 	var guest_pad_exit: Vector3 = host_game.world.duel_arena.pad_exit_position(1)
 	check(host_session.roster.saved_states[GUEST].progression == disconnect_entry.progression and host_session.roster.saved_states[GUEST].equipment == disconnect_entry.equipment and CoopValues.vector3(host_session.roster.saved_states[GUEST].position).distance_to(guest_pad_exit) < 0.01, "disconnect preserves pre-duel gear and releases the guest's entry tile")
 	guest.join_room(HOST)
+	guest.send_game(HOST, {"type": "ready"})
 	await ticks(5)
 	check(guest.playing and host_session.roster.party.has(GUEST), "a duelist can reconnect after the cancelled match")
 	remote = host_session.roster.party[GUEST]
@@ -414,7 +470,8 @@ func _run() -> void:
 	host_game.player.relocate(rematch_pads[0] + Vector3.UP * 0.26)
 	remote.actor.relocate(rematch_pads[1] + Vector3.UP * 0.26)
 	await ticks(3)
-	check(host_session.duel.phase == "entry", "a new pair can reserve the arena after the aborted match releases its tiles")
+	check(host_session.duel.phase == "loadout", "a new pair can reserve the arena after the aborted match releases its tiles")
+	await accept_duel()
 	host_session.duel.countdown = 0.01
 	await ticks(3)
 	check(host_session.duel.phase == "fight", "the released arena starts a fresh match")
@@ -495,6 +552,43 @@ func _run() -> void:
 		for target: Damageable in host_game.combat.targets:
 			if not is_instance_valid(target): invalid_cleanup_targets = true
 		check(host_game.combat.targets.has(spectator_member.health) and remote.combat.targets.has(spectator_member.health) and not invalid_cleanup_targets, "match cleanup rebuilds targets from current players and releases departed references")
+	if spectator_member != null:
+		spectator_member.actor.relocate(Vector3(-44, 0.2, 0))
+		await ticks(2)
+	var surrender_pads: Array[Vector3] = host_game.world.duel_arena.pad_positions()
+	host_game.player.relocate(surrender_pads[0] + Vector3.UP * 0.26)
+	remote.actor.relocate(surrender_pads[1] + Vector3.UP * 0.26)
+	await ticks(3)
+	var surrender_saved := remote.capture()
+	await accept_duel("sotjet", "", "nori_katana")
+	host_session.duel.countdown = 0.01
+	await ticks(3)
+	check(host_game.combat.sotjet.selected and remote.combat.sotjet.selected and host_game.character_equipment.get_slot("combat_1") == null and remote.character_equipment.get_slot("combat_1").item.id == "nori_katana", "agreed Soyjet match supports fists or an optional chosen melee loan")
+	check(is_equal_approx(remote.combat.sotjet.launch_speed(), remote.combat.sotjet.tuning.speed * remote.combat.sotjet.range_multiplier * remote.combat.sotjet.attack_speed_multiplier * 2), "arena Soyjet also travels at twice normal speed")
+	check(DuelProtocol.valid(host_session.duel.capture(), host.members), "Soyjet match snapshot validates")
+	var stale := {"type": "duel_action", "action": "leave", "sequence": 100, "match": host_session.duel.match_id - 1, "ranged": "soy_gun", "melee": ""}
+	var controls: CoopDuelControls = host_session.duel.get_child(0)
+	controls._packet(HOST, stale)
+	await ticks(2)
+	check(host_session.duel.phase == "fight", "a stale surrender from a previous match cannot end a new match")
+	guest_game.hud.arena.action_requested.emit("leave", "soy_gun", "")
+	await ticks(3)
+	check(host_session.duel.phase == "complete" and host_session.duel.winner == HOST and remote.progression.progress.capture() == surrender_saved.progression, "authenticated guest surrender ends match and restores progression")
+	check(remote.combat.gun.projectile_speed_multiplier == 1.0 and remote.combat.sotjet.projectile_speed_multiplier == 1.0 and host_game.combat.sotjet.projectile_speed_multiplier == 1.0, "match exit restores normal projectile speeds")
+	check(duel_arena.pad_for(remote.actor.position) < 0 and remote.character_equipment.complete_set() == "bright_leaf", "surrender restores world equipment and releases entry tiles")
+	host_session.duel._complete_remaining = 0.01
+	await ticks(3)
+	host_game.player.relocate(surrender_pads[0] + Vector3.UP * 0.26)
+	remote.actor.relocate(surrender_pads[1] + Vector3.UP * 0.26)
+	await ticks(8)
+	check(host_session.duel.phase == "loadout", "a surrendered arena can be reserved again")
+	host_game.hud.arena.action_requested.emit("accept", "soy_gun", "knife")
+	controls._packet(OBSERVER, {"type": "duel_action", "action": "leave", "sequence": 1, "match": host_session.duel.match_id, "ranged": "soy_gun", "melee": ""})
+	await ticks(3)
+	check(host_session.duel.phase == "loadout", "one consent or spectator surrender cannot start or cancel a match")
+	host_session.duel.agreement.remaining = 0.01
+	await ticks(3)
+	check(host_session.duel.phase == "idle" and duel_arena.pad_for(remote.actor.position) < 0, "unaccepted setup times out and releases both fighters safely")
 	store.remove_slot(0)
 	DirAccess.remove_absolute(store.directory)
 	host.leave()
@@ -521,3 +615,10 @@ func ticks(count: int) -> void:
 	for frame in count:
 		await physics_frame
 		await process_frame
+
+func accept_duel(ranged: String = "soy_gun", host_melee: String = "knife", guest_melee: String = "knife") -> void:
+	await ticks(8)
+	host_game.hud.arena.action_requested.emit("accept", ranged, host_melee)
+	guest_game.hud.arena.action_requested.emit("accept", ranged, guest_melee)
+	await ticks(3)
+	check(host_session.duel.phase == "entry", "both fighters explicitly accept the next match")

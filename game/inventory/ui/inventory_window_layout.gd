@@ -8,6 +8,10 @@ static func build_ui(window: InventoryWindow) -> void:
 	window.add_child(root)
 	root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var eq_box := make_dock(window, root, false, 240)
+	var character_button := Button.new()
+	character_button.text = "← My Tofufu"
+	character_button.pressed.connect(window.character_requested.emit)
+	eq_box.add_child(character_button)
 	label(window, eq_box, "EQUIPMENT", Color("aee6d0"))
 	build_equipment(window, eq_box)
 	label(window, eq_box, "1–2 Combat · 3–6 Support", Color("c1d7cc"))
@@ -34,13 +38,6 @@ static func build_ui(window: InventoryWindow) -> void:
 	_details(window, vbox)
 
 static func _details(window: InventoryWindow, vbox: VBoxContainer) -> void:
-	window._description = Label.new()
-	window._description.custom_minimum_size = Vector2(0, 66)
-	window._description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	window._description.add_theme_font_size_override("font_size", 12)
-	window._description.add_theme_color_override("font_color", Color("e9f4dd"))
-	window._description.text = "Hover or focus an item to see its description."
-	vbox.add_child(window._description)
 	window._refine_menu = PopupMenu.new()
 	window._refine_menu.id_pressed.connect(window._on_refine_menu_pressed)
 	window.add_child(window._refine_menu)
@@ -124,7 +121,7 @@ static func build_backpack(window: InventoryWindow, inv_box: VBoxContainer) -> v
 		InventoryWindowDescriptions.watch(window, btn)
 		inv_grid.add_child(btn)
 		window._inv_buttons.append(btn)
-	label(window, inv_box, "Shift-click near the Seed Bank to store. Drag outside to drop.\nI / B / Esc · Close backpack", Color("c1d7cc"))
+	label(window, inv_box, "Shift-click near the Seed Bank to store. Drag outside to drop.\nR3 / Wheel · Toggle item details.\nI / B / Select / Esc · Close character hub", Color("c1d7cc"))
 
 static func label(window: InventoryWindow, parent: Control, text: String, col: Color) -> void:
 	var l := Label.new()

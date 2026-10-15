@@ -170,6 +170,8 @@ mesh = SubResource("r14")
 material_override = SubResource("r12")
 
 [node name="TagText" type="Label3D" parent="."]
+visibility_range_end = 32.0
+visibility_range_end_margin = 2.0
 double_sided = false
 position = Vector3(0.0, 0.43, 0.44)
 text = "FRESH

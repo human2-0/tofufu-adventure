@@ -30,6 +30,8 @@ func _entrance() -> void:
 	JungleProps.arch(arch, Vector3.ZERO, 10, 7)
 	MeadowGeometry.signpost(self, _authored_point(-7, 104), "JADEWILD JUNGLE · OPEN  v", PI)
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.double_sided = false
 	label.text = "JADEWILD\nOPEN · WALK THROUGH"
 	label.position = arch.position + Vector3(-1, 8.5, -1)
@@ -83,7 +85,7 @@ func _forest() -> void:
 		JungleProps.palm(self, point(x, 232), 13, x)
 
 func _boundaries() -> void:
-	for spec in [Vector4(-81, 278, 1, 126), Vector4(0, 341, 162, 1)]:
+	for spec in [Vector4(-81, 278, 1, 126)]:
 		var wall := MeadowGeometry.box(self, Vector3(spec.x, 35, spec.y), Vector3(spec.z, 100, spec.w), Color.WHITE, true)
 		wall.visible = false
 	MeadowGeometry.signpost(self, point(60, 251), "EMBERCROWN CONTINENT →

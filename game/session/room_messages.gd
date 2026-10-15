@@ -35,7 +35,7 @@ static func packet(room: PlaytestRoom, key: String, data: Dictionary) -> void:
 			if key == room.host_key and not room.hosting and data.get("epoch") == room.epoch:
 				room._reset_session(str(data.get("reason", "The host ended this connection.")).left(160))
 				room._presence()
-		"input", "snapshot", "ready", "ping", "pong", "chat_text", "chat_voice", "inventory_transfer", "seed_storage_transfer", "seed_storage_quick_transfer", "shop_result", "storage_result", "grandma_quest", "inventory_consume", "currency_result", "farm_action", "farm_result", "apple_harvest", "tofu_puzzle", "tofu_puzzle_result", "parrot_action", "parrot_result":
+		"duel_action", "input", "snapshot", "snapshot_delta", "ready", "ping", "pong", "allocate_stat", "server_health", "personal_map", "chat_text", "chat_voice", "inventory_transfer", "seed_storage_transfer", "seed_storage_quick_transfer", "shop_result", "storage_result", "grandma_quest", "inventory_consume", "currency_result", "farm_action", "farm_result", "apple_harvest", "tofu_puzzle", "tofu_puzzle_result", "parrot_action", "parrot_result":
 			if room.playing and (key in room.members or key == room.host_key) and data.get("epoch") == room.epoch:
 				room.gameplay_packet.emit(key, data)
 

@@ -37,13 +37,15 @@ func _build_trunk_collision() -> void:
 
 func _build_prompt() -> void:
 	prompt = Label3D.new()
+	prompt.visibility_range_end = 32.0
+	prompt.visibility_range_end_margin = 2.0
 	prompt.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	prompt.font_size = 28
 	prompt.outline_size = 7
 	prompt.pixel_size = 0.008
 	prompt.position.y = 2.7
-	prompt.no_depth_test = true
-	prompt.ignore_occlusion_culling = true
+	prompt.no_depth_test = false
+	prompt.ignore_occlusion_culling = false
 	prompt.render_priority = 127
 	add_child(prompt)
 

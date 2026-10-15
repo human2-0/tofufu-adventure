@@ -39,6 +39,7 @@ func _ready() -> void:
 	_card.add_child(body)
 	MenuStyle.label(body, "THE WORLD IS CALLING", 13, MenuStyle.SOY_GOLD)
 	_chapter = MenuStyle.paragraph(body, "")
+	_chapter.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	_chapter.add_theme_font_size_override("font_size", 28)
 	status = MenuStyle.paragraph(body, "Preparing your adventure…")
 	progress = ProgressBar.new()

@@ -16,7 +16,8 @@ The shared offline game now accepts keyboard/mouse, gamepad and multitouch actio
 | Yell farther | Megaphone button in composer | — | Composer button |
 | Nearby voice | Enable Mic, then hold V; Listen toggles reception | — | — |
 | Pause menu | Escape | Start | — |
-| Return to camp | R | Select / Back | Camp |
+| Return to initial spot (testing) | P | Remappable in Settings | Camp |
+| Reload held gun | R | West face button (PlayStation Square) | — |
 | Skip six hours | N | North face button | Keyboard/controller only |
 
 RMB / right shoulder now holds directional knife guard. Desktop F punches with either slot, 1/2/3 selects knife/fists/soybean gun, Q drops the knife, and E picks it up nearby. The additional equipment/punch controls are desktop bindings; touch equipment controls are not yet implemented.
@@ -79,3 +80,5 @@ A Windows resource pack exported successfully and launched headlessly outside th
 - [Android export setup](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_android.html)
 - [iOS export setup](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_ios.html)
 - [macOS export and signing](https://docs.godotengine.org/en/stable/tutorials/export/exporting_for_macos.html)
+
+B/I or controller Select/Share opens the character hub. My Tofufu shows base, training and equipment contributions; Equipment & Bag switches to the existing inventory. Escape or controller B/Circle closes it. Select now opens this hub; keyboard Tab retains help/journal. Controller focus uses D-pad and A/Cross, with automatic scrolling to focused investment buttons.

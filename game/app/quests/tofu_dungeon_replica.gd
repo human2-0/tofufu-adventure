@@ -74,13 +74,17 @@ static func _sync_enemies(dungeon: TofuDungeon, rows: Array) -> void:
 		if enemy == null:
 			enemy = Dofufu.new() if int(row[0]) == FactoryBean.Kind.DOFUFU else FactoryBean.new()
 			enemy.kind = int(row[0])
+			if enemy is Dofufu:
+				enemy.combat_participants = maxi(1, dungeon.boss_members.size() if dungeon.puzzle_enabled else dungeon.state.run_members.size())
 			dungeon.game.world.add_child(enemy)
 			enemy.set_physics_process(false)
 			enemy.target.set_physics_process(false)
 			enemy.collision_layer = 0
 			if i < dungeon._replica_enemies.size(): dungeon._replica_enemies[i] = enemy
 			else: dungeon._replica_enemies.append(enemy)
-		enemy.position = Vector3(row[1], row[2], row[3])
+		var destination := Vector3(row[1], row[2], row[3])
+		if enemy is Dofufu: enemy.present_replica_motion(destination - enemy.position)
+		enemy.position = destination
 		if float(row[4]) < enemy.target.current: enemy.reaction.flash()
 		enemy.target.current = float(row[4])
 

@@ -9,7 +9,7 @@ var inventory: PlayerInventory
 var status: Label
 var balance: Label
 var _title: Label
-var _description: Label
+var _tooltip: ItemTooltip
 var _bag_grid: GridContainer
 var _stock_grid: GridContainer
 var _first_button: Button
@@ -19,7 +19,11 @@ var stock_ids: Array[String] = WeaponTrade.BUYABLE_IDS.duplicate()
 func _ready() -> void:
 	layer = 16
 	visible = false
+	_tooltip = ItemTooltip.new()
+	_tooltip.window = self
+	add_child(_tooltip)
 	_build_ui()
+	move_child(_tooltip, get_child_count() - 1)
 	_build_stock()
 	if inventory != null: inventory.changed.connect(_refresh_bag)
 	_refresh_bag()
@@ -72,13 +76,6 @@ func _build_ui() -> void:
 	_bag_grid = _build_section(body, "YOUR BAG")
 	_stock_grid = _build_section(body, "EQUIPMENT & APPAREL · FREE")
 
-	_description = Label.new()
-	_description.custom_minimum_size.y = 30
-	_description.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_description.add_theme_font_size_override("font_size", 12)
-	_description.add_theme_color_override("font_color", Color("e9f4dd"))
-	_description.text = "Hover or focus a tile to inspect it. Buy equipment for 0 Mature Beans."
-	column.add_child(_description)
 	status = Label.new()
 	status.text = "Buy gear from Grandpa Fufu's stock. Equip clothing from your bag to wear a complete set."
 	status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -127,7 +124,7 @@ func set_stock(ids: Array[String]) -> void:
 
 func _refresh_bag() -> void:
 	if _bag_grid == null: return
-	if _description != null: _description.text = "Hover or focus a tile to inspect it. Buy equipment for 0 Mature Beans."
+	_tooltip.clear()
 	for child in _bag_grid.get_children():
 		_bag_grid.remove_child(child)
 		child.queue_free()
@@ -160,14 +157,7 @@ func _tile_size() -> Vector2:
 	return Vector2(88, 96) if width < 1100 else Vector2(106, 104)
 
 func _watch_description(button: ShopItemTile) -> void:
-	button.inspected.connect(_show_description)
-	button.inspection_ended.connect(_hide_description)
-
-func _show_description(description: String) -> void:
-	if _description != null: _description.text = description
-
-func _hide_description() -> void:
-	if _description != null: _description.text = "Hover or focus a tile to inspect it. Buy equipment for 0 Mature Beans."
+	_tooltip.watch(button, func() -> ItemStack: return ItemStack.new(button.item, 1))
 
 func _process(_delta: float) -> void:
 	if visible and balance != null: balance.text = "Mature Beans: %d" % (inventory.count_item("mature_bean") if inventory != null else 0)
@@ -175,6 +165,7 @@ func _process(_delta: float) -> void:
 func close() -> void:
 	if not visible: return
 	visible = false
+	_tooltip.clear()
 	closed.emit()
 
 func set_merchant_name(title: String) -> void:

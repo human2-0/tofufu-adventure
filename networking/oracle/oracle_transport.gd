@@ -1,10 +1,11 @@
 class_name OracleTransport
 extends SessionTransport
-## Explicit dedicated connection. Public traffic uses Caddy TLS; listener is loopback only.
+## Explicit dedicated connection. Public traffic uses a trusted TLS proxy; listener is loopback only.
 
 @export var server_mode: bool = false
 @export var endpoint: String = ""
 @export var credential_file: String = "user://oracle-client.json"
+@export var public_mode: bool = false
 var port: int = 9080
 var credentials: Dictionary = {} # Injected by tests or read from the private config file.
 var _listener := TCPServer.new()
@@ -12,6 +13,7 @@ var _links: Array[OracleSocketLink] = []
 var _key: String = ""
 var _name: String = ""
 var _active: bool = false
+var _admission := OracleAdmission.new()
 
 func backend_name() -> String:
 	return "Dedicated world"
@@ -37,7 +39,7 @@ func start(display_name: String) -> void:
 			var parser := JSON.new()
 			if parser.parse(file.get_as_text()) == OK and parser.data is Dictionary: credentials = parser.data
 	if server_mode:
-		if not _valid_server_config():
+		if not _admission.configure(credentials):
 			_fail("Invalid Oracle server configuration.")
 			return
 		_key = str(credentials.server_id)
@@ -79,12 +81,17 @@ func _poll() -> void:
 		if not link.poll():
 			_drop(link)
 			continue
+		if link.rejecting: continue
 		if not server_mode and not link.sent_auth and link.socket.get_ready_state() == WebSocketPeer.STATE_OPEN:
 			link.sent_auth = true
-			if not link.send({"auth": credentials.token, "name": _name}):
+			var auth := {"auth": credentials.token, "name": _name}
+			if public_mode: auth.merge({"public": true, "create": true})
+			if not link.send(auth):
 				_drop(link)
 				continue
-		while _active and link in _links and link.socket.get_available_packet_count() > 0:
+		var processed: int = 0
+		while _active and link in _links and not link.rejecting and processed < 16 and link.socket.get_available_packet_count() > 0:
+			processed += 1
 			var data := link.receive()
 			if data.is_empty():
 				_drop(link)
@@ -97,27 +104,30 @@ func _poll() -> void:
 
 func _authenticate(link: OracleSocketLink, data: Dictionary) -> void:
 	if server_mode:
-		var token: Variant = data.get("auth")
-		if not _hex_key(token) or not credentials.players.has(str(token).sha256_text()) or not data.get("name") is String:
-			_drop(link)
+		var admitted := _admission.authenticate(credentials, data)
+		if admitted.is_empty():
+			link.reject(_admission.error)
 			return
-		var identity := str(token).sha256_text()
+		var identity: String = admitted.identity
 		for other: OracleSocketLink in _links:
 			if other.key == identity:
-				_drop(link)
+				link.reject("This character is already connected on another device.")
 				return
 		link.key = identity
-		if not link.send({"server": _key, "identity": identity, "name": _name}):
+		if not link.send({"server": _key, "identity": identity, "name": _name, "character": admitted.name}):
 			_drop(link)
 			return
-		event_received.emit({"type": "peer", "key": identity, "name": str(data.name).left(24)})
+		event_received.emit({"type": "peer", "key": identity, "name": admitted.name})
 	else:
+		if data.get("error") is String:
+			_fail(str(data.error).left(160))
+			return
 		if not _hex_key(data.get("server")) or data.get("identity") != str(credentials.token).sha256_text():
 			_drop(link)
 			return
 		_key = str(data.identity)
 		link.key = str(data.server)
-		event_received.emit({"type": "ready", "key": _key, "name": _name})
+		event_received.emit({"type": "ready", "key": _key, "name": str(data.get("character", _name))})
 		event_received.emit({"type": "peer", "key": link.key, "name": str(data.get("name", "Oracle world")).left(24)})
 
 func send_packet(key: String, data: Dictionary) -> void:
@@ -150,18 +160,8 @@ func is_closed() -> bool:
 func _exit_tree() -> void:
 	close()
 
-func _valid_server_config() -> bool:
-	if not _hex_key(credentials.get("server_id")) or not credentials.get("players") is Array: return false
-	if credentials.players.is_empty() or credentials.players.size() > 32: return false
-	for identity: Variant in credentials.players:
-		if not _hex_key(identity) or identity == credentials.server_id: return false
-	return true
-
 func _hex_key(value: Variant) -> bool:
-	if not value is String or value.length() != 64: return false
-	for character: String in value:
-		if character not in "0123456789abcdef": return false
-	return true
+	return PublicCharacters.hex_key(value)
 
 func can_host() -> bool:
 	return false

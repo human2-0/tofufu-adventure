@@ -17,6 +17,8 @@ var frost: FrostWorld
 var desert: DesertWorld
 var jungle: JungleWorld
 var volcanic: VolcanicWorld
+var dofufu_highlands: DofufuHighlands
+var groatfields: Groatfields
 var cloud_realm: CloudRealm
 var terrain: FarmTerrain
 var rain_effects: RainGroundEffects
@@ -65,6 +67,13 @@ func _ready() -> void:
 	jungle = JungleWorld.new()
 	jungle.desert = desert
 	add_child(jungle)
+	groatfields = Groatfields.new()
+	groatfields.jungle = jungle
+	add_child(groatfields)
+	var hunting_marker := Node3D.new()
+	hunting_marker.position = groatfields.point(0, 400)
+	add_child(hunting_marker)
+	map_npcs["Groatfields · Level 20 Angels"] = hunting_marker
 	volcanic = VolcanicWorld.new()
 	add_child(volcanic)
 	map_npcs["Embercrown · Tofufu Castle"] = volcanic.castle
@@ -76,21 +85,30 @@ func _ready() -> void:
 	map_npcs["Cloud Realm · Godfufu (above jungle)"] = cloud_realm.godfufu
 	map_npcs["Nimbus · Cloud Royal Gear Shop"] = cloud_realm.court.merchant
 	map_npcs["Tofufu Goddess · Cloud Court"] = cloud_realm.court.goddess
+	dofufu_highlands = DofufuHighlands.new()
+	dofufu_highlands.farm = terrain
+	add_child(dofufu_highlands)
+	for title: String in dofufu_highlands.city.residents:
+		map_npcs[title] = dofufu_highlands.city.residents[title]
 	RiverPlants.populate(self, ground_point)
 	add_child(RiverWildlife.new())
 	StaticDecorationBatch.build(self)
 
 func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
+	if dofufu_highlands != null and DofufuTerrain.contains(Vector2(x, z)): return dofufu_highlands.point(x, z, lift)
 	if volcanic != null and VolcanicTerrain.contains(Vector2(x, z)): return volcanic.point(x, z, lift)
 	if x > 84 and z > -44 and z < 56: return Vector3(x, lift, z)
 	if z <= FrostTerrain.NORTH_START and frost != null: return frost.point(x, z, lift)
 	if z <= OceanTerrain.NORTH_START and ocean != null: return ocean.point(x, z, lift)
+	if z >= Groatfields.START and groatfields != null: return groatfields.point(x, z, lift)
 	if z >= JungleTerrain.SOUTH_START and jungle != null: return jungle.point(x, z, lift)
 	if z >= DesertTerrain.SOUTH_START and desert != null: return desert.point(x, z, lift)
 	return terrain.point(x, z, lift)
 
 func is_water(at: Vector3) -> bool:
+	if DofufuTerrain.contains(Vector2(at.x, at.z)): return false
 	if at.y >= CloudTerrain.ALTITUDE - 2.0 and CloudTerrain.contains(Vector2(at.x, at.z)): return false
+	if at.z >= Groatfields.START: return false
 	if jungle != null and JungleCoast.is_water(at, jungle.desert): return true
 	if volcanic != null and volcanic.is_water(at): return true
 	if ocean != null and ocean.is_water(at): return true
@@ -123,7 +141,7 @@ func _countryside() -> void:
 	for i in 85:
 		var x := _rng.randf_range(-81, 81)
 		var z := _rng.randf_range(-81, 81)
-		if z > 68 or z < -68: continue
+		if z > 68 or z < -68 or (x < -70 and absf(z) < 12): continue
 		if terrain.path_distance(x, z) < 3.2 or terrain.is_field(x, z) or absf(x - terrain.river_x(z)) < 4.5:
 			continue
 		if FarmCombatGrounds.is_clearing(x, z):
@@ -146,11 +164,6 @@ func _countryside() -> void:
 			if Vector2(x, z).distance_to(center) < 17.0:
 				hill_height = 1.0
 		MeadowGeometry.rock(self, ground_point(x, z, 0.5), Vector3(5, hill_height, 5), Color("88a17a").lerp(Color("b6be8d"), _rng.randf_range(0, 0.6)))
-	# The east side continues into Gigalopolis and the north/south sides continue into
-	# the biome chain. Keep only the true western map edge; the old x=80 walls blocked
-	# the factory road and made walkable terrain look like invisible dead ends.
-	var western_edge := MeadowGeometry.box(self, Vector3(-110, 6, 0), Vector3(0.8, 12, 168), Color.WHITE, true)
-	western_edge.visible = false
 
 func _place_apple_trees() -> void:
 	var orchard_rng := RandomNumberGenerator.new()

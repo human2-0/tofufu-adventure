@@ -12,7 +12,7 @@ func open(parent: Node, preferences: GamePreferences, data: Dictionary, online: 
 	busy = true
 	_generation += 1
 	var generation := _generation
-	view.begin(str(data.get("name", "Our meadow")), online)
+	view.begin(str(data.get("name", tr("Our meadow"))), online)
 	# Two frames let the loading overlay draw before resource/scene work begins.
 	await get_tree().process_frame
 	await get_tree().process_frame

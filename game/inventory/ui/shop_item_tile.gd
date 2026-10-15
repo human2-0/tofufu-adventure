@@ -1,9 +1,6 @@
 class_name ShopItemTile
 extends Button
 
-signal inspected(description: String)
-signal inspection_ended
-
 var item: InventoryItem
 
 func setup(value: InventoryItem, footer: String, tile_size: Vector2) -> void:
@@ -43,11 +40,7 @@ func setup(value: InventoryItem, footer: String, tile_size: Vector2) -> void:
 	note.add_theme_font_size_override("font_size", 8)
 	note.add_theme_color_override("font_color", Color("f4c75d"))
 	content.add_child(note)
-	tooltip_text = "%s\n%s" % [item.name, item.description]
-	mouse_entered.connect(_inspect)
-	focus_entered.connect(_inspect)
-	mouse_exited.connect(_inspection_ended)
-	focus_exited.connect(_inspection_ended)
+	tooltip_text = ""
 
 func setup_empty(tile_size: Vector2) -> void:
 	item = null
@@ -82,10 +75,3 @@ func _apply_style(empty: bool) -> void:
 	add_theme_stylebox_override("hover", hover)
 	add_theme_stylebox_override("focus", focus)
 	add_theme_stylebox_override("pressed", hover)
-
-func _inspect() -> void:
-	if item != null: inspected.emit("%s · %s" % [item.name, item.description])
-
-func _inspection_ended() -> void:
-	if not has_focus() and not get_global_rect().has_point(get_global_mouse_position()):
-		inspection_ended.emit()

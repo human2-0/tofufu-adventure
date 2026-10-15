@@ -43,9 +43,16 @@ resolution scaling cannot remove CPU bottlenecks.
   Scripted/named views, cutaway pieces, range-controlled geometry and unsupported
   vertex effects retain their own nodes. Plain static collider children keep
   their original parent and transform while their visual joins a batch.
-- Through-wall labels and depth-independent effects explicitly bypass occlusion
-  to preserve their existing presentation contracts. Depth-tested world objects
-  use normal visibility culling.
+- All world text uses a 32-metre camera visibility range with two metres of
+  hysteresis, depth testing and ordinary occlusion culling. This includes enemy
+  titles/telegraphs, signs, NPC information, factory inscriptions, item/crop
+  prompts, party names, speech and floating combat text. Native renderer culling
+  adds no per-label distance loop or physics ray. Physical signs retain their
+  authored facing. This changes only presentation; mobs keep their 60 Hz physics
+  and 10 Hz authoritative world refresh. Screen-space HUD and chat history keep
+  their existing behavior. The range uses the active camera in each viewport,
+  including overhead, shoulder and first person, following Godot's
+  [visibility-range contract](https://docs.godotengine.org/en/stable/classes/class_geometryinstance3d.html#class-geometryinstance3d-property-visibility-range-end).
 - Offscreen enemies skip cosmetic pose updates. Gameplay still runs at 60 Hz.
   A stationary grounded snail can reuse its confirmed contact on terrain marked
   by `TerrainSupport` as permanent. Movement intent, knockback, vertical motion,
@@ -57,11 +64,12 @@ resolution scaling cannot remove CPU bottlenecks.
   before sprite/hand presentation and weapon views. There is one Fufu sprite per
   actor; teleport, respawn and transport changes reset its history. Physics
   capsules, combat poses, input and authority remain at 60 Hz.
-- Remote actors use up to eight snapshots with 75 ms interpolation delay and at
+- Remote actors use up to eight snapshots with 25 ms interpolation delay and at
   most 100 ms extrapolation. Guests skip rebuilding unchanged world views using
   a per-session value cache. Host packets share immutable captured values in
   shallow recipient envelopes before transport serialization. Actor/world
-  publication rates remain 20/10 Hz; see [co-op contracts](architecture/COOP.md).
+  publication rates are 60/10 Hz with ordered changes, millimetre display poses
+  and bounded peer compression; see [co-op contracts](architecture/COOP.md).
 - Adaptive resolution starts at the selected ceiling, waits three seconds and
   reacts to sustained slow frame intervals in two-second windows. It drops five
   percentage points at a time to an 85% floor and recovers one step after fifteen
@@ -271,3 +279,48 @@ JSON and PNG captures under `/tmp`. Retain useful results outside `/tmp` when
 reviewing a feature. Run `python3 tools/check_architecture.py`,
 `git diff --check` and `python3 tools/verify.py` separately for source and gameplay
 validation. Headless success does not establish visual quality or locked FPS.
+
+## Co-op delivery measurements (2026-10-13)
+
+`tests/benchmark_coop_latency.gd` constructs four party actors, a real guest world
+and eighty extra item stacks. Its ordered JSON link models a shared 1 Mbit/s host
+upload and 20 ms underlying RTT; it measures six seconds after warm-up. The
+compression model includes the JSON/base64 envelope and conservatively retains
+Godot DEFLATE's six-byte zlib wrapper, while the real sidecar uses raw DEFLATE.
+This is a bandwidth/queue stress fixture, not a measured Internet route.
+
+| Metric | Original delivery | Updated delivery |
+| --- | ---: | ---: |
+| Actor publications per second | 20.0 | 60.1 |
+| World publications per second | 6.7 | 10.2 |
+| Aggregate modeled upload | 6.93 Mbit/s | 0.95 Mbit/s |
+
+The updated run remains within the modeled upload budget, with approximately
+62 ms queued at the end; application RTT samples were 45–104 ms under this
+near-saturated link. The original stream exceeded the budget and accumulated
+several seconds of backlog. The intended ten-hertz world clock now retains its
+remainder; the small updated excess includes periodic complete keyframes.
+Movement/collision authority, mob AI, damage, resources and art quality are not
+reduced. Live poses use millimetre coordinates; checkpoints remain exact.
+
+Run the stress fixture with `-- --compressed --assert`; use `--unlimited` to
+remove bandwidth restriction. Actual Holepunch, render timing and distinct
+physical networks are separate checks. See [co-op contracts](architecture/COOP.md).
+
+The rendered M1 guest check (`tests/performance/m1_coop_latency_guest.json`)
+uses a synchronized four-player guest alongside a hidden, fully simulated host
+on the same machine at 2560 × 1440. All five cases synchronized and retained
+scenery. Median frame times were 20.2–52.8 ms. These two-world stress timings do
+not establish cross-device FPS or an FPS improvement over a matched control;
+the 120 FPS target remains unachieved. Screenshots were checked in overhead and
+shoulder views.
+
+`tests/preview_world_text.gd` verified Metal/Mobile text rendering: the nearby
+label produced 2,941 coloured pixels, while the distant and wall-hidden labels
+produced zero. The same distant label with culling disabled produced 77 pixels,
+confirming that the text was removed rather than merely too small to detect.
+Opening the line of sight and returning nearby restored the
+label. The loaded world was checked for unbounded/through-wall labels, and
+village, snail and castle views were captured for visual review. Evidence is
+in `tests/performance/world_text_visibility.json`; this check does not measure
+the FPS gain from culling.

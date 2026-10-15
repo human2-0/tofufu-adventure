@@ -10,11 +10,14 @@ var store := SaveStore.new()
 var state_directory: String = "/var/lib/tofufu"
 var _clock: float = 0
 var _seconds: float = 0
+var last_saved_at: float = 0
+var _stopping: bool = false
 
 func _ready() -> void:
 	get_tree().auto_accept_quit = false
 	if OS.has_environment("TOFUFU_STATE_DIR"): state_directory = OS.get_environment("TOFUFU_STATE_DIR")
 	store.directory = state_directory
+	store.size_limit = 4194304
 	store.extra_validator = CoopCheckpoint.valid
 	room.dedicated = true
 	room.send_packet = transport.send_packet
@@ -50,6 +53,7 @@ func _start_world() -> void:
 	session.room = room
 	if not data.is_empty(): session.checkpoint = data.coop
 	game.add_child(session)
+	session.roster.changed.connect(_save_departure)
 	session.local_input_enabled(false)
 	game.shooting_view.process_mode = Node.PROCESS_MODE_DISABLED
 	game.chat.set_menu_open(true)
@@ -59,12 +63,15 @@ func _start_world() -> void:
 		get_tree().quit(1)
 		return
 	print("ORACLE_READY")
+	var health := DedicatedHealth.new()
+	health.server = self
+	add_child(health)
 
 func _process(delta: float) -> void:
-	if session == null: return
+	if session == null or _stopping: return
 	_seconds += delta
 	_clock += delta
-	if _clock >= 30: save_world()
+	if _clock >= 5 and not save_world(): _stop()
 	var stop_file := state_directory.path_join("stop-request")
 	if FileAccess.file_exists(stop_file):
 		DirAccess.remove_absolute(stop_file)
@@ -74,6 +81,8 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_WM_CLOSE_REQUEST: _stop()
 
 func _stop() -> void:
+	if _stopping: return
+	_stopping = true
 	var saved := save_world()
 	room.leave("The meadow is restarting. Please reconnect shortly.")
 	transport.close()
@@ -85,8 +94,14 @@ func save_world() -> bool:
 	data.coop = CoopCheckpoint.capture(session)
 	_clock = 0
 	var success := store.write_slot(0, data)
+	if success: last_saved_at = Time.get_unix_time_from_system()
 	if not success: push_error(store.last_error)
 	return success
+
+func _save_departure() -> void:
+	# Roster removes departed actors and commits their state before this signal.
+	if _stopping: return
+	if not save_world(): _stop()
 
 func _exit_tree() -> void:
 	transport.close()

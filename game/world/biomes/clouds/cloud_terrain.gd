@@ -6,8 +6,8 @@ const ALTITUDE: float = 58.0
 const CENTER := Vector2(-8, 266)
 const LANDING := Vector2(-8, 247)
 const HUB := Vector2(0, 7)
-const BOUNDS := Rect2i(-82, 236, 160, 128)
-const ISLANDS: Array[Vector3] = [Vector3(0, 7, 30), Vector3(0, -19, 9), Vector3(50, 22, 22), Vector3(-49, 27, 21), Vector3(12, 67, 27), Vector3(-33, 70, 18), Vector3(52, 65, 18)]
+const BOUNDS := Rect2i(-82, 236, 190, 170)
+const ISLANDS: Array[Vector3] = [Vector3(0, 7, 30), Vector3(0, -19, 9), Vector3(50, 22, 22), Vector3(-49, 27, 21), Vector3(12, 67, 27), Vector3(-33, 70, 18), Vector3(52, 65, 18), Vector3(70, 102, 30)]
 
 static func contains(at: Vector2) -> bool:
 	return distance_to_edge(at) <= 0.0

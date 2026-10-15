@@ -1,0 +1,9 @@
+[gd_resource type="Translation" script_class="LocalizedMessages" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://game/settings/localization/localized_messages.gd" id="1"]
+[ext_resource type="Translation" path="res://game/settings/localization/pl.po" id="2"]
+
+[resource]
+script = ExtResource("1")
+locale = "pl"
+catalog = ExtResource("2")

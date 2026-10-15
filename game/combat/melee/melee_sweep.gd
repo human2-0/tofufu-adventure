@@ -58,7 +58,7 @@ static func unobstructed(combat: PlayerCombat, at: Vector3, target: Damageable) 
 static func damage(combat: PlayerCombat, target: Damageable, point: Vector3 = Vector3.INF) -> void:
 	var base_damage := combat._melee_damage()
 	var critical := combat._attack_critical_chance > 0.0 and critical_roll(combat) < combat._attack_critical_chance
-	var damage := base_damage * combat.sword_damage_multiplier
+	var damage := base_damage * combat.sword_damage_multiplier * (1.2 if combat.equipment.weapon_enhanced else 1.0)
 	if critical:
 		damage *= combat.tuning.combo_critical_damage_multiplier
 	var impulse := KnifeAttack.impulse(combat.attack_style, combat.attack_aim, combat.tuning)

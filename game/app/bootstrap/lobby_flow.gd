@@ -15,6 +15,7 @@ var preferences: GamePreferences
 var _nickname_error: bool = false
 
 func show_lobby() -> void:
+	if server_transport != null: server_transport.public_mode = false
 	if preferences.nickname.is_empty():
 		_nickname_error = preferences.remember_nickname("") != OK
 	var content := menu.clear_page("Adventure together", "CO-OP  /  UP TO FOUR FRIENDS")
@@ -39,6 +40,12 @@ func show_lobby() -> void:
 	_add_connection_choices(content)
 	if panel.can_host: connection.ensure_discovery(preferences.nickname)
 	_refresh()
+
+func open_saved(slot: int) -> void:
+	if peer_transport != null: await connection.select_transport(peer_transport)
+	show_lobby()
+	panel.select_adventure(slot)
+	panel.status.text = "Co-op adventure selected. Choose Host world to continue."
 
 func _refresh() -> void:
 	if is_instance_valid(panel):
@@ -70,15 +77,15 @@ func _host(slot: int) -> void:
 	if store == null: return
 	if slot >= 0:
 		save_data = store.read_slot(slot)
-		if save_data.is_empty():
-			panel.status.text = "Could not read that adventure. Select another save."
+		if save_data.is_empty() or not save_data.has("coop") or not DungeonSnapshotValidation.adventure(save_data):
+			panel.status.text = "Choose a valid co-op adventure. Solo saves stay in Solo adventures."
 			return
 	else:
 		save_slot = store.free_slot()
 		if save_slot < 0:
-			panel.status.text = "All save slots are full. Free a slot in Continue before hosting a new adventure."
+			panel.status.text = "All co-op slots are full. Delete a save in Continue → Co-op adventures."
 			return
-		save_data = {"name": "Our world · %d" % (save_slot + 1)}
+		save_data = {"name": tr("Our world · %d") % (save_slot + 1)}
 	if not _can_admit(room.local_key):
 		panel.status.text = "This adventure already has 32 saved beans. Use its original profile or choose another adventure."
 		return

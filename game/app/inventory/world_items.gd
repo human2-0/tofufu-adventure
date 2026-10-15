@@ -3,7 +3,7 @@ extends Node
 ## Wires shared world drops to actor equipment, local focus, and inventory grants.
 
 const DEATH_DROP_CHANCE: float = 0.10
-const NAMES := {"celestial_helmet": "Celestial Laurel Helm", "celestial_armor": "Celestial Aegis", "celestial_legs": "Celestial Greaves", "celestial_boots": "Celestial Winged Boots", "celestial_sword": "Celestial Laurel Sword", "celestial_staff": "Olympian Star Staff", "soy_raygun": "Celestial Soy Raygun", "nori_katana": "Nori Katana", "edamame_sword": "Edamame Pod Sword", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Sotjet", "sproutwood_staff": "Sproutwood Staff", "factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel · +4 slots", "traveler_backpack": "Soypod Backpack", "edamame": "Edamame", "mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk", "piece_of_shell": "Piece of Shell", "soy_milk": "Soy Milk", "apple": "Apple", "potato": "Potato", "cucumber": "Cucumber", "red_berries": "Red Berries", "beetroot": "Beetroot", "forest_mushroom": "Forest Mushroom", "bright_leaf_helmet": "Soypod Helmet", "bright_leaf_armor": "Soypod Armor", "bright_leaf_legs": "Soypod Legs", "bright_leaf_boots": "Soypod Boots", "dark_leaf_helmet": "Nori Helmet", "dark_leaf_armor": "Nori Armor", "dark_leaf_legs": "Nori Legs", "dark_leaf_boots": "Nori Boots"}
+const NAMES := {"magical_tofufu_chunk": "Magical Tofufu Chunk", "celestial_helmet": "Celestial Laurel Helm", "celestial_armor": "Celestial Aegis", "celestial_legs": "Celestial Greaves", "celestial_boots": "Celestial Winged Boots", "celestial_sword": "Celestial Laurel Sword", "celestial_staff": "Olympian Star Staff", "soy_raygun": "Celestial Soy Raygun", "nori_katana": "Nori Katana", "edamame_sword": "Edamame Pod Sword", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Sotjet", "sproutwood_staff": "Sproutwood Staff", "factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel · +4 slots", "traveler_backpack": "Soypod Backpack", "edamame": "Edamame", "mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk", "piece_of_shell": "Piece of Shell", "soy_milk": "Soy Milk", "apple": "Apple", "potato": "Potato", "cucumber": "Cucumber", "red_berries": "Red Berries", "beetroot": "Beetroot", "forest_mushroom": "Forest Mushroom", "bright_leaf_helmet": "Soypod Helmet", "bright_leaf_armor": "Soypod Armor", "bright_leaf_legs": "Soypod Legs", "bright_leaf_boots": "Soypod Boots", "dark_leaf_helmet": "Nori Helmet", "dark_leaf_armor": "Nori Armor", "dark_leaf_legs": "Nori Legs", "dark_leaf_boots": "Nori Boots"}
 
 signal backpack_claimed(item_id: String)
 var game: Node3D
@@ -14,6 +14,7 @@ var focused_plot: int = -1
 var _inventories: Dictionary = {}
 var _loadouts: Dictionary = {}
 var _bag_drops: Array = []
+var magic_roll: Callable = func() -> float: return randf()
 var death_roll: Callable = func() -> float: return randf()
 
 func _ready() -> void:
@@ -44,6 +45,8 @@ func _drop_weapon(combat: PlayerCombat) -> bool:
 	if drop == null:
 		if combat == game.combat: game.hud.announce("No room to drop / Step away from the obstacle")
 		return false
+	var active: ItemStack = _loadouts[combat].equipment.get_slot("combat_%d" % _loadouts[combat].active_slot) if _loadouts.get(combat) != null else null
+	drop.enhanced = active != null and active.enhanced
 	gear.dropped = drop
 	var loadout: ActorLoadout = _loadouts.get(combat)
 	if loadout != null: loadout.equipment.set_slot("combat_%d" % loadout.active_slot, null)
@@ -77,6 +80,7 @@ func _pickup(id: int, combat: PlayerCombat) -> bool:
 	if loadout == null: return false
 	var stack := ItemStack.new(item, 1)
 	stack.reserve = drop.reserve
+	stack.enhanced = drop.enhanced
 	if not loadout.receive(stack): return false
 	pool.remove(id)
 	return true
@@ -100,7 +104,7 @@ func _pickup_backpack(drop: WorldItemDrop, combat: PlayerCombat, inventory: Play
 		if not row is Dictionary or row.is_empty(): continue
 		var stack := ItemStack.restore(row)
 		if stack == null: continue
-		var remaining := inventory.add_item(stack.item, stack.count)
+		var remaining := inventory.add_stack(stack)
 		if remaining < stack.count: taken = true
 		if remaining == 0: drop.contents[index] = {}
 		else:
@@ -150,13 +154,7 @@ func _physics_process(_delta: float) -> void:
 	for row: Array in _bag_drops: drop_stack(game.combat, game.inventory, game.character_equipment, row[0], row[1])
 	_bag_drops.clear()
 	if pool.authoritative: BarnDisplay.release_departed(self)
-	# Legacy saves with full bags recover overflow without destroying weapons.
-	if pool.authoritative:
-		for combat: PlayerCombat in _inventories:
-			var inv: PlayerInventory = _inventories[combat]
-			if not inv.pending_items.is_empty():
-				var stack: ItemStack = inv.pending_items[0]
-				if pool.spawn(stack.item.id, stack.count, combat.actor.global_position, combat.equipment.facing, stack.reserve) != null: inv.pending_items.pop_front()
+	WorldItemOverflow.release(self)
 
 func drop_stack(combat: PlayerCombat, inventory: PlayerInventory, equipment: CharacterEquipment, source: String, id: Variant) -> bool:
 	if not pool.authoritative or not InventoryTransfer.valid_slot(source, id): return false
@@ -165,7 +163,9 @@ func drop_stack(combat: PlayerCombat, inventory: PlayerInventory, equipment: Cha
 	if stack == null or stack.item == null or stack.item.id not in NAMES or stack.count < 1 or stack.count > stack.item.max_stack: return false
 	var loadout: ActorLoadout = _loadouts.get(combat)
 	if loadout != null: loadout.persist_reserve()
-	if BarnDisplay.spawn(self, combat, stack.item.id, stack.count, stack.reserve) == null: return false
+	var drop := BarnDisplay.spawn(self, combat, stack.item.id, stack.count, stack.reserve)
+	if drop == null: return false
+	drop.enhanced = stack.enhanced
 	if source == "inventory": inventory.set_slot(int(id), null)
 	else: equipment.set_slot(str(id), null)
 	return true
@@ -191,5 +191,7 @@ func drop_on_death(combat: PlayerCombat) -> void:
 		var stack := equipment.get_slot(slot_name)
 		if stack == null or stack.item == null or stack.item.id not in NAMES: continue
 		if death_roll.is_valid() and float(death_roll.call()) >= DEATH_DROP_CHANCE: continue
-		if pool.spawn(stack.item.id, stack.count, combat.actor.global_position, combat.equipment.facing, stack.reserve) != null:
+		var drop := pool.spawn(stack.item.id, stack.count, combat.actor.global_position, combat.equipment.facing, stack.reserve)
+		if drop != null:
+			drop.enhanced = stack.enhanced
 			equipment.set_slot(slot_name, null)

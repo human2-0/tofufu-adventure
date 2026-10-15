@@ -3,6 +3,7 @@ extends RefCounted
 ## Manages gradual health recovery and consumable consumption cooldowns.
 
 signal eaten(item_name: String, amount: float)
+signal recovered(amount: float)
 signal cooldown_updated(remaining: float, total: float)
 
 const APPLE_DURATION_PER_STACK: float = 25.0
@@ -26,14 +27,14 @@ func step(delta: float) -> void:
 		cooldown_updated.emit(cooldown_remaining, cooldown_total)
 	if active_heal_remaining > 0.0 and health != null and health.has_method("heal") and health.current > 0.0:
 		var tick: float = minf(active_heal_remaining, active_heal_rate * delta)
-		health.heal(tick)
+		_recover(tick)
 		active_heal_remaining = maxf(0.0, active_heal_remaining - tick)
 	if apple_duration_remaining > 0.0:
 		var tick_time := minf(apple_duration_remaining, delta)
 		apple_duration_remaining = maxf(0.0, apple_duration_remaining - delta)
 		var regen := APPLE_REGEN_RATE * tick_time
 		if health != null and health.has_method("heal") and health.current > 0.0:
-			health.heal(regen)
+			_recover(regen)
 		if vitals != null and "current" in vitals and "maximum" in vitals:
 			vitals.current = minf(vitals.maximum, vitals.current + regen)
 
@@ -116,3 +117,9 @@ func consume_from_bag(inventory: PlayerInventory, slot: int) -> bool:
 		eaten.emit(item_name, heal_amt)
 		return true
 	return false
+
+func _recover(amount: float) -> void:
+	var before: float = health.current
+	health.heal(amount)
+	var actual: float = maxf(0.0, health.current - before)
+	if actual > 0.0: recovered.emit(actual)

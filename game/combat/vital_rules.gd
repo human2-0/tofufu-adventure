@@ -10,6 +10,7 @@ const SPECIAL_COST: float = 25.0
 const SP_REGEN: float = 0.05
 const HP_REGEN: float = 0.02
 const COMBAT_SECONDS: float = 30.0
+var recovery_multiplier: float = 1.0
 var maximum: float = BASE_SP
 var current: float = BASE_SP
 var combat_remaining: float = 0.0
@@ -37,8 +38,8 @@ func step(delta: float, alive: bool = true) -> float:
 	if not alive: return 0.0
 	var recovery_seconds := maxf(0.0, delta - combat_remaining)
 	combat_remaining = maxf(0.0, combat_remaining - delta)
-	current = minf(maximum, current + maximum * SP_REGEN * delta)
-	return recovery_seconds * HP_REGEN
+	current = minf(maximum, current + maximum * SP_REGEN * recovery_multiplier * delta)
+	return recovery_seconds * HP_REGEN * recovery_multiplier
 
 func reset() -> void:
 	current = maximum

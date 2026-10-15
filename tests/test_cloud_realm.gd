@@ -29,6 +29,7 @@ func _run() -> void:
 	root.add_child(game)
 	game.encounters.process_mode = Node.PROCESS_MODE_DISABLED
 	await ticks(4)
+	_check_training_terrace(game)
 	game.progression.progress.award_experience(CharacterProgress.threshold(8, true))
 	var court := game.world.cloud_realm.court
 	check(court.residents.size() == 12 and court.angels.size() == 12, "court has the Goddess, six sentries, four servants, a merchant and twelve angels")
@@ -123,3 +124,44 @@ func _run() -> void:
 	for frame in 5: await process_frame
 	print("Cloud Realm: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
+
+func _check_training_terrace(game: AdventureGame) -> void:
+	check(game.encounters.dummy_nodes.size() == 6, "cloud targets append after legacy meadow targets")
+	var dummy := game.encounters.dummy_nodes[3]
+	check(dummy.target.maximum == 500 and dummy.target.current == 500, "cloud dummy starts with 500 HP")
+	dummy.target.damage(100)
+	dummy._physics_process(3.0)
+	dummy.target.damage(100)
+	dummy._physics_process(2.9)
+	check(dummy.target.current == 300, "continued attacks preserve damage until the six-second tick")
+	dummy._physics_process(0.11)
+	check(dummy.target.current == 500 and dummy.target.invulnerability == 0, "six-second recovery permits immediate follow-up attacks")
+	dummy.target.damage(500)
+	check(dummy.target.current == 500, "defeated cloud dummy fully recovers")
+	var snapshot := CoopWorld.capture(game)
+	check(WorldProtocol.valid(snapshot), "six-target world snapshot validates")
+	var invalid := snapshot.duplicate(true)
+	invalid.dummies[3][0] = 501
+	check(not WorldProtocol.valid(invalid), "cloud target health remains bounded")
+	snapshot.dummies = snapshot.dummies.slice(0, 3)
+	check(WorldProtocol.valid(snapshot), "legacy three-target checkpoint still validates")
+	CoopWorld.apply(game, snapshot, false)
+	var storage := game.seed_storage
+	var site := game.world.cloud_realm.deposit_sites[0]
+	game.player.global_position = site.global_position + Vector3(0, 0.1, 1.5)
+	check(storage.bay_for(game.player) == 0, "cloud chest supports frontal access")
+	check(storage.focus_position(game.player).distance_to(site.global_position + Vector3.UP) < 0.01, "cloud chest receives interaction focus")
+	game.inventory.set_slot(0, ItemStack.new(InventoryItem.create_edamame(), 7))
+	check(storage.transfer(game.player, game.inventory, "inventory", 0, "chest", 0, 0), "cloud chest stores in the personal deposit")
+	game.player.global_position = site.global_position + Vector3(0, -58, 1.5)
+	check(storage.bay_for(game.player) == -1, "actors below the clouds cannot access the chest")
+	game.player.global_position = site.global_position + Vector3(0, 0.1, -1.5)
+	check(storage.bay_for(game.player) == -1, "cloud chest rejects rear access")
+	game.player.global_position = game.world.seed_bank.to_global(MeadowBarn.table_position(0) + MeadowBarn.front(0) + Vector3.UP * -0.6)
+	check(storage.barn.personal(game.player).get_slot(0).count == 7, "Meadow and cloud access share the same personal contents")
+	for at: Vector2 in [Vector2(62, 360), Vector2(62, 368), Vector2(62, 384), Vector2(62, 396)]:
+		var point := CloudTerrain.point(at.x, at.y)
+		check(CloudTerrain.contains(at), "expanded workspace uses shared terrain queries")
+		var ray := PhysicsRayQueryParameters3D.create(point + Vector3.UP, point - Vector3.UP, 1)
+		var hit := game.get_world_3d().direct_space_state.intersect_ray(ray)
+		check(not hit.is_empty() and absf(hit.position.y - point.y) < 0.1, "expanded workspace floor aligns with terrain height")

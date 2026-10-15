@@ -43,6 +43,8 @@ static func select_focus(items: WorldItems, source: LocalPlayerInput, pointer: V
 			items.focused_id = id
 	if items.game.quest_giver != null and items.game.quest_giver.nearby(items.game.player):
 		best = consider(items, "quest", items.game.world.quest_npc.global_position + Vector3(0, 1.5, 0.65), origin, source, camera, pointer, best)
+	if items.game.god_hunt != null and items.game.god_hunt.nearby(items.game.player):
+		best = consider(items, "god_quest", items.game.world.cloud_realm.godfufu.global_position + Vector3.UP * 1.5, origin, source, camera, pointer, best)
 	if items.game.merchant != null and items.game.merchant.nearby(items.game.player):
 		best = consider(items, "merchant", items.game.merchant.focus_position(items.game.player), origin, source, camera, pointer, best)
 	if items.game.seed_storage != null and items.game.seed_storage.nearby(items.game.player):

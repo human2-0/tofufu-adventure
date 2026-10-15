@@ -27,13 +27,17 @@ def stop(process):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--public-network', action='store_true')
+    parser.add_argument('--startup-scale', type=float, default=1, help='Allow slower cold world construction (1–5); gameplay clocks stay unchanged')
     args = parser.parse_args()
+    if not 1 <= args.startup_scale <= 5:
+        parser.error('--startup-scale must be between 1 and 5')
     node = os.environ.get('TOFUFU_NODE_BIN') or shutil.which('node')
     if not node:
         raise RuntimeError('Node.js 22+ is required')
     directory = Path(tempfile.mkdtemp(prefix='tofufu-coop-'))
     print(f'Co-op logs: {directory}', flush=True)
     env = dict(os.environ, TOFUFU_NODE_BIN=node, TOFUFU_TEST_DIRECTORY=str(directory), TOFUFU_TEST_TOPIC=uuid.uuid4().hex)
+    env['TOFUFU_TEST_STARTUP_SCALE'] = str(args.startup_scale)
     processes = []
     handles = []
     try:
@@ -57,10 +61,10 @@ def main():
             return process
 
         host, guest = launch('host'), launch('guest')
-        guest.wait(timeout=40)
+        guest.wait(timeout=40 * args.startup_scale)
         returning = launch('returning')
-        returning.wait(timeout=30)
-        host.wait(timeout=15)
+        returning.wait(timeout=30 * args.startup_scale)
+        host.wait(timeout=15 * args.startup_scale)
         for handle in handles:
             handle.flush()
         for role, process in [('host', host), ('guest', guest), ('returning', returning)]:

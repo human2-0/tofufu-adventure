@@ -16,7 +16,7 @@ func check(ok: bool, message: String) -> void:
 
 func deliver(room: PlaytestRoom, key: String, data: Dictionary) -> void:
 	var copy: Dictionary = JSON.parse_string(JSON.stringify(data))
-	if data.type in ["input", "snapshot", "ping", "pong"]:
+	if data.type in ["input", "snapshot", "snapshot_delta", "ping", "pong"]:
 		create_timer(delay).timeout.connect(func() -> void:
 			if is_instance_valid(room): room.receive({"type": "packet", "key": key, "data": copy}))
 	else: room.receive({"type": "packet", "key": key, "data": copy})
@@ -61,6 +61,7 @@ func _run() -> void:
 	var remote := sessions[0].roster.party[GUEST]
 	var replica := sessions[1].roster.party[GUEST]
 	_check_replica_work(replica)
+	_check_encounter_motion()
 	var before := replica.actor.position
 	input.move = Vector2.RIGHT
 	await ticks(2)
@@ -165,10 +166,19 @@ func _check_replica_work(replica: CoopActor) -> void:
 	var progress_changes := [0]
 	var on_progress := func() -> void: progress_changes[0] += 1
 	replica.progression.progress.changed.connect(on_progress)
+	var inventory_changes := [0]
+	var equipment_changes := [0]
+	var on_inventory := func() -> void: inventory_changes[0] += 1
+	var on_equipment := func() -> void: equipment_changes[0] += 1
+	replica.inventory.changed.connect(on_inventory)
+	replica.character_equipment.changed.connect(on_equipment)
 	var state := replica.target_state.duplicate(true)
 	for i in 20: replica.accept_view(state.duplicate(true))
 	check(progress_changes[0] == 0, "unchanged peer progression does not refresh stats")
+	check(inventory_changes[0] == 0 and equipment_changes[0] == 0, "unchanged JSON inventory and equipment do not rebuild guest UI")
 	replica.progression.progress.changed.disconnect(on_progress)
+	replica.inventory.changed.disconnect(on_inventory)
+	replica.character_equipment.changed.disconnect(on_equipment)
 	var gun := replica.combat.gun.visual
 	gun.visible = true
 	gun.facing = Vector2.RIGHT
@@ -194,3 +204,27 @@ func _check_replica_work(replica: CoopActor) -> void:
 	replica._process(0.016)
 	check(replica.actor.visuals.attack_facing == command.aim and gun.facing == command.aim, "peer firing keeps hand and gun facing together while moving")
 	replica.target_state = state
+
+func _check_encounter_motion() -> void:
+	var session := sessions[1]
+	var mob: TrainingMob = session.game.encounters.mob_nodes[0]
+	var original := EncounterState.mob(mob)
+	var health := mob.target.current
+	var at := mob.position
+	mob.velocity = Vector3.RIGHT
+	session._encounter_motion.before_snapshot()
+	session._encounter_motion.accept()
+	session._encounter_motion._physics_process(1.0 / 60.0)
+	check(mob.position.x > at.x, "guest mob moves between authoritative world updates")
+	session._encounter_motion._physics_process(1.0)
+	check(mob.position.x <= at.x + 0.1001, "mob extrapolation stops after 100ms of silence")
+	check(mob.target.current == health and not mob.is_physics_processing(), "mob smoothing runs no health or AI simulation")
+	session._encounter_motion.before_snapshot()
+	mob.position = at + Vector3(20, 0, 0)
+	mob.velocity = Vector3.ZERO
+	session._encounter_motion.accept()
+	session._encounter_motion._physics_process(0)
+	check(mob.position == at + Vector3(20, 0, 0), "mob teleport discards stale smoothing")
+	session._encounter_motion.before_snapshot()
+	EncounterState.apply_mob(mob, original)
+	session._encounter_motion.accept()

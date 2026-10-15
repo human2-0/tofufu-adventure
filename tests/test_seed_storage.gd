@@ -17,6 +17,8 @@ func _run() -> void:
 	root.add_child(scene)
 	await physics_frame
 	var storage: SeedStorage = scene.seed_storage
+	storage.barn.owners[0] = "solo"
+	_check_legacy_deposits()
 	check(scene.world.seed_bank != null, "seed bank is composed into the meadow")
 	var floor_from: Vector3 = scene.world.seed_bank.global_position + Vector3(0, 1.1, 0)
 	var floor_to: Vector3 = scene.world.seed_bank.global_position + Vector3(0, -0.1, 0)
@@ -72,6 +74,7 @@ func _run() -> void:
 	scene.inventory_window._inv_buttons[0]._gui_input(shift_click)
 	check(scene.inventory.get_slot(0) == null and storage.chest.get_slot(0).count == 24, "Shift-click in the backpack stores the stack at the Seed Bank")
 	scene.inventory.set_slot(2, ItemStack.new(bean, 4))
+	storage._open_bay = storage.bay_for(scene.player)
 	storage.window.open()
 	await process_frame
 	storage.window._bag_buttons[2]._gui_input(shift_click)
@@ -82,7 +85,7 @@ func _run() -> void:
 	check(storage.window.visible, "storage interaction opens chest transfer panel")
 	await process_frame
 	storage.window._chest_buttons[4].grab_focus()
-	check(storage.window._description.text.contains("Fresh soybean"), "focused chest item shows its description")
+	check(storage.window._tooltip._details.text.contains("Fresh soybean"), "focused chest item shows its description")
 	if "--preview" in OS.get_cmdline_user_args():
 		root.size = Vector2i(960, 540)
 		await process_frame
@@ -93,3 +96,20 @@ func _run() -> void:
 	await process_frame
 	print("Seed storage tests: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
+
+func _check_legacy_deposits() -> void:
+	var deposits := BarnChests.new()
+	deposits.owners[0] = "solo"
+	deposits.owners[7] = "solo"
+	for slot in ChestInventory.CAPACITY:
+		deposits.banks[0].set_slot(slot, ItemStack.new(InventoryItem.create_edamame(), slot + 1))
+	deposits.banks[7].set_slot(3, ItemStack.new(InventoryItem.create_edamame(), 53))
+	var migrated := BarnChests.new()
+	migrated.restore(deposits.capture())
+	check(migrated.banks[7].get_slot(3).count == 53, "full legacy deposit preserves overflow in the save")
+	migrated.banks[0].set_slot(4, null)
+	migrated.refill("solo")
+	check(migrated.banks[0].get_slot(4).count == 53 and migrated.owners[7].is_empty(), "withdrawal brings legacy overflow into the same deposit")
+	var repeated := BarnChests.new()
+	repeated.restore(migrated.capture())
+	check(repeated.capture() == migrated.capture(), "migration is stable across repeated restores")

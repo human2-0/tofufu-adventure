@@ -2,6 +2,11 @@ class_name PracticeDummy
 extends StaticBody3D
 ## Stationary, reward-free combat target with hit feedback and automatic recovery.
 
+var maximum_health: float = 200.0
+var recovery_seconds: float = 4.0
+var periodic_recovery: bool = false
+var figure_builder: Callable
+var title: String = "PRACTICE"
 var target: Damageable
 var hit_count: int = 0
 var last_damage: float = 0.0
@@ -26,22 +31,24 @@ func _ready() -> void:
 	head_collider.position.y = 1.85
 	add_child(head_collider)
 	target = Damageable.new()
-	target.maximum = 200.0
+	target.maximum = maximum_health
 	target.headshot_height = 1.56
 	target.body = self
 	target.position.y = 0.85
 	add_child(target)
-	_build_figure()
+	_create_figure()
 	target.hit.connect(_hit)
 	target.depleted.connect(_depleted)
 	_label = Label3D.new()
+	_label.visibility_range_end = 32.0
+	_label.visibility_range_end_margin = 2.0
 	_label.position.y = 2.6
 	_label.font_size = 28
 	_label.pixel_size = 0.008
 	_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_label.modulate = Color("fff0bf")
-	_label.no_depth_test = true
-	_label.ignore_occlusion_culling = true
+	_label.no_depth_test = false
+	_label.ignore_occlusion_culling = false
 	_label.render_priority = 127
 	add_child(_label)
 	_show_status()
@@ -60,15 +67,29 @@ func _hit(amount: float, direction: Vector3) -> void:
 	hit_count += 1
 	last_damage = amount
 	_figure.rotation.z = -0.22 if direction.x >= 0 else 0.22
-	_reset_in = 4.0
+	if not periodic_recovery or _reset_in <= 0.0: _reset_in = recovery_seconds
 	_show_status()
 
 func _depleted() -> void:
+	if periodic_recovery:
+		target.restore()
+		target.invulnerability = 0.0
+		_reset_in = 0.0
+		_show_status()
+		return
 	_reset_in = 1.5
 	_label.text = "NICE HIT!\nResetting…"
 
 func _show_status() -> void:
-	_label.text = "PRACTICE · %d / 200\n%s" % [int(target.current), "Knife / fists / soy gun" if hit_count == 0 else "Last hit: %d" % int(last_damage)]
+	_label.text = "%s · %d / %d\n%s" % [title, int(target.current), int(target.maximum), "Knife / fists / soy gun" if hit_count == 0 else "Last hit: %d" % int(last_damage)]
+
+func _create_figure() -> void:
+	if figure_builder.is_valid():
+		_figure = Node3D.new()
+		add_child(_figure)
+		figure_builder.call(_figure)
+	else:
+		_build_figure()
 
 func _build_figure() -> void:
 	_figure = Node3D.new()

@@ -1,6 +1,6 @@
 class_name SeedStorage
 extends Node
-## App composition for personal barn bays, frontal reach and safe inventory transfers.
+## App composition for personal deposits at barn bays, frontal reach and safe inventory transfers.
 
 var game: Node3D
 var barn := BarnChests.new()
@@ -21,21 +21,26 @@ func _ready() -> void:
 	call_deferred("_place_free_satchel")
 	if game.world.seed_bank == null: return
 	_prompt = Label3D.new()
+	_prompt.visibility_range_end = 32.0
+	_prompt.visibility_range_end_margin = 2.0
 	_prompt.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_prompt.position = Vector3(0, 2.25, 1.55)
 	_prompt.font_size = 32
 	_prompt.outline_size = 8
 	_prompt.modulate = Color("ffdc79")
 	_prompt.pixel_size = 0.009
-	_prompt.no_depth_test = true
-	_prompt.ignore_occlusion_culling = true
+	_prompt.no_depth_test = false
+	_prompt.ignore_occlusion_culling = false
 	_prompt.render_priority = 127
 	game.world.seed_bank.add_child(_prompt)
 
 func bay_for(actor: Node3D) -> int:
 	if actor == null or game.world.seed_bank == null: return -1
+	var cloud_bay := CloudDepositAccess.bay_for(game.world.cloud_realm, actor)
+	if cloud_bay >= 0: return cloud_bay
 	var barn_node: Node3D = game.world.seed_bank
 	var local: Vector3 = barn_node.to_local(actor.global_position)
+	if local.y < -0.5 or local.y > 3.0: return -1
 	var best := 2.15
 	var selected := -1
 	for index in MeadowBarn.BAY_COUNT:
@@ -52,6 +57,8 @@ func nearby(actor: Node3D) -> bool:
 	return bay_for(actor) >= 0
 
 func focus_position(actor: Node3D) -> Vector3:
+	var cloud_bay := CloudDepositAccess.bay_for(game.world.cloud_realm, actor)
+	if cloud_bay >= 0: return game.world.cloud_realm.deposit_sites[cloud_bay].global_position + Vector3.UP * 1.0
 	var index := bay_for(actor)
 	# Aim at the chest lid, separate from the item sitting on its display desk.
 	return game.world.seed_bank.to_global(MeadowBarn.bay_position(index) + Vector3.UP * 0.88) if index >= 0 else Vector3.INF
@@ -59,17 +66,21 @@ func focus_position(actor: Node3D) -> Vector3:
 func transfer(actor: Node3D, inventory: PlayerInventory, src: String, src_id: Variant, dst: String, dst_id: Variant, expected_bay: int = -1) -> bool:
 	var index := bay_for(actor)
 	if index < 0 or (expected_bay >= 0 and index != expected_bay) or not barn.permitted(index, actor): return false
-	if not ChestTransfer.apply(inventory, barn.banks[index], src, src_id, dst, dst_id): return false
-	barn.permitted(index, actor, true)
+	var deposit := barn.personal(actor)
+	if not ChestTransfer.apply(inventory, deposit, src, src_id, dst, dst_id): return false
+	barn.owners[barn.banks.find(deposit)] = barn.key(actor)
+	barn.refill(barn.key(actor))
 	return true
 
 func quick_transfer(actor: Node3D, inventory: PlayerInventory, source: String, id: Variant, expected_bay: int = -1) -> String:
 	var index := bay_for(actor)
 	if index < 0 or (expected_bay >= 0 and index != expected_bay): return "Move to the front of a chest bay."
-	if not barn.permitted(index, actor): return "This chest belongs to another Fufu."
-	if not ChestTransfer.quick_move(inventory, barn.banks[index], source, id): return "No room in the other inventory."
-	barn.permitted(index, actor, true)
-	return "Stored in your personal chest." if source == "inventory" else "Moved to your bag."
+	var deposit := barn.personal(actor)
+	if deposit == null: return "No personal deposit available."
+	if not ChestTransfer.quick_move(inventory, deposit, source, id): return "No room in the other inventory."
+	barn.owners[barn.banks.find(deposit)] = barn.key(actor)
+	barn.refill(barn.key(actor))
+	return "Stored in your personal deposit." if source == "inventory" else "Moved to your bag."
 
 func _place_free_satchel() -> void:
 	if not is_inside_tree() or not is_instance_valid(game) or game.is_queued_for_deletion(): return
@@ -96,7 +107,8 @@ func _process(_delta: float) -> void:
 	if _prompt.visible:
 		var index := bay_for(game.player)
 		_prompt.global_position = focus_position(game.player) + Vector3.UP
-		_prompt.text = "[%s] Chest %02d · %s" % [GamePreferences.binding_text("pickup_weapon", "keyboard"), index + 1, "Personal storage" if barn.permitted(index, game.player) else "Owned by another Fufu"]
+		_prompt.text = "[%s] Chest %02d · %s" % [GamePreferences.binding_text("pickup_weapon", "keyboard"), index + 1, "Personal deposit"]
+	refresh_deposit()
 	if window.visible and bay_for(game.player) != _open_bay: window.close()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -108,8 +120,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if _prompt == null or not _prompt.visible or game.world_items.focused_kind != "storage": return
 	_open_bay = bay_for(game.player)
 	if not barn.permitted(_open_bay, game.player): return
-	chest = barn.banks[_open_bay]
-	window.chest = chest
+	refresh_deposit()
+	if chest == null: return
 	window.open()
 	game.shooting_view.local_input.enabled = false
 	game.chat.set_menu_open(true)
@@ -121,3 +133,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func _closed() -> void:
 	game.shooting_view.local_input.enabled = true
 	game.chat.set_menu_open(false)
+
+func refresh_deposit() -> void:
+	var deposit := barn.personal(game.player)
+	if chest == deposit: return
+	chest = deposit
+	window.chest = chest

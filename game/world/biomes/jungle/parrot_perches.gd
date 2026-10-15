@@ -29,6 +29,8 @@ func _ready() -> void:
 		station.add_child(bird)
 		birds.append(bird)
 		var label := Label3D.new()
+		label.visibility_range_end = 32.0
+		label.visibility_range_end_margin = 2.0
 		label.text = "PARROT FLIGHTS\n" + TITLES[i]
 		label.position.y = 2.55
 		label.font_size = 32

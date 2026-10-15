@@ -2,6 +2,7 @@ class_name CloudRealm
 extends Node3D
 ## Permanent floating terrain above Jadewild, reached by flying a parrot.
 
+var deposit_sites: Array[Node3D] = []
 var godfufu := Godfufu.new()
 var court := CloudCourt.new()
 var motes: Array[MeshInstance3D] = []
@@ -13,6 +14,7 @@ func _ready() -> void:
 	_cloud_banks()
 	_cloud_garden()
 	CloudKingdom.build(self)
+	deposit_sites = CloudTrainingCourt.build(self)
 	StaticDecorationBatch.build(self)
 	add_child(CloudMist.new())
 	add_child(court)

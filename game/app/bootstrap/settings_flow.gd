@@ -17,6 +17,10 @@ func show_settings() -> void:
 	panel = SettingsPanel.new()
 	content.add_child(panel)
 	panel.build(GamePreferences.RESOLUTIONS, preferences.resolution, preferences.fullscreen, preferences.deadzone, GamePreferences.ACTIONS, preferences.frame_limit, preferences.render_scale, preferences.vsync, preferences.adaptive_resolution)
+	panel.language_requested.connect(func(locale: String) -> void:
+		preferences.apply_language(locale)
+		_refresh_bindings()
+		panel.message.text = "Language saved." if preferences.save() == OK else "Language applied, but could not save preferences.")
 	panel.display_requested.connect(_preview_display)
 	panel.rendering_requested.connect(func(limit: int, scale: float, sync: bool, adaptive: bool) -> void:
 		preferences.adaptive_resolution = adaptive

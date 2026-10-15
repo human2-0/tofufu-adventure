@@ -91,11 +91,13 @@ func begin() -> void:
 
 func _guard_defeated(index: int) -> void:
 	if not flow.authoritative: return
+	MagicalMobLoot.drop(flow.game.world_items, guards[index].global_position)
 	flow.state.guard_defeated(index)
 	flow.present_state()
 
 func _victory() -> void:
 	if not flow.authoritative: return
+	MagicalMobLoot.drop(flow.game.world_items, king.global_position)
 	flow.state.completed = true
 	flow.state.revision += 1
 	flow.state.message = "KING LAVA: You cooled the flame without breaking the mountain. Accept my blessing, young Fufu."

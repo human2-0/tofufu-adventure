@@ -33,7 +33,7 @@ Ctrl-C in the server terminal requests a final save before shutdown. Alternative
 python3 tools/local_multiplayer.py stop
 ```
 
-Restart with the same `server` command to resume. After a restart, clients reconnect from the lobby. The server saves every 30 seconds and on managed shutdown; force-killing it can lose changes since the last save. It runs only while the computer is awake and the process is running.
+Restart with the same `server` command to resume. After a restart, clients reconnect from the lobby. The server saves every five seconds, after roster changes and on managed shutdown; force-killing it can lose changes since the last save. It runs only while the computer is awake and the process is running.
 
 Profiles and world saves live in `~/.tofufu-local`, outside the repository. Keep this directory private and back it up; deleting or regenerating profiles changes character identities. `init` refuses to overwrite an existing directory. Use `--directory /absolute/path` before the subcommand for a separate test world; use it consistently for server, client and stop. Use `init --port 9081` if port 9080 is occupied.
 
@@ -44,6 +44,8 @@ Open **Co-op mode**, select **Dedicated server · Local / Oracle**, and choose *
 A server owner can supply a player file for a remote WSS endpoint later. The file contains a bearer token: share each file only with its intended player. Never commit player files to Git. Public connections require TLS; the server itself listens only on loopback. This local setup does not expose a LAN or public port.
 
 ## Verification
+
+The separate **Public Multiplayer** menu creates a device credential automatically and asks only for a unique character name. It uses the public registration configuration described in [Public Multiplayer](../deploy/oracle/PUBLIC.md); the private connection-file flow above remains available.
 
 ```sh
 python3 tools/verify.py

@@ -32,6 +32,7 @@ func _nearest(at: Vector3, outside_village: bool) -> Player:
 	var nearest: Player
 	var distance := INF
 	for member: CoopActor in party.values():
+		if duel != null and duel.is_participant(duel.session.roster.actor_identity(member.actor)): continue
 		var actor := member.actor
 		if outside_village and game.encounters.protected_area.has_point(Vector2(actor.position.x, actor.position.z)): continue
 		var next := at.distance_squared_to(actor.global_position)
@@ -41,12 +42,15 @@ func _nearest(at: Vector3, outside_village: bool) -> Player:
 	return nearest
 
 func _hurt(actor: Node3D, amount: float, source: Vector3, kind: Damageable.HitKind = Damageable.HitKind.SLIME) -> void:
-	for member: CoopActor in party.values():
-		if member.actor == actor: member.hurt(amount, source, kind)
+	for key: String in party:
+		if party[key].actor != actor: continue
+		if duel != null and duel.is_participant(key): return
+		party[key].hurt(amount, source, kind)
 
 func _collect(actor: Node3D, bean: SoybeanPickup) -> bool:
 	for member: CoopActor in party.values():
 		if member.actor != actor: continue
+		if duel != null and duel.is_participant(duel.session.roster.actor_identity(actor)): return false
 		if member.inventory == null: return false
 		var requested := bean.count
 		var remaining := member.inventory.add_item(InventoryItem.create_edamame(), requested)

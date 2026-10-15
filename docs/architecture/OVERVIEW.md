@@ -42,7 +42,21 @@ Runtime GDScript has a project-enforced maximum of 200 lines. This is a maintain
 
 These helpers receive explicit typed owners and hold no shared mutable state. Existing callback APIs are retained where scenes, tests or other components call them. The refactor changes neither authority nor packet/save schemas. Resource paths, launch/export/deployment references and documentation move together; `.uid` sidecars and scene/resource UIDs are preserved. The architecture checker validates the runtime budget and literal resource references, including test/transport entry paths.
 
+### Character growth and care (implemented)
+
+The inventory modal hosts an app-composed character tab. `CharacterSheet` accepts display values and emits navigation/allocation intents; `CharacterDetailsData` derives values from the actor's progression, selected weapon and equipment rules. Segmented bars distinguish natural attributes, training, equipment bonuses and equipment penalties. Allocation uses the existing HUD intent, including the sequenced co-op authority path. Views never change progression.
+
+`JourneyPractice` owns three bounded personal ledgers: ground metres, confirmed weapon hits and actual missing HP restored with consumables. `ActorCare` samples collision-resolved movement and connects effective recovery. Transport, dash, airborne movement, teleports, dead actors, replicas and equalized arenas do not earn walking/care credit. Each path has five triangular-cost medals: trail starts at 500 metres, rhythm at 50 hits, care at 150 HP; maximum totals are 7500/750/2250. Rewards are +1% walk speed, +1% attack speed and +2% natural HP/SP recovery per medal. Partial measurement below 10 metres/HP is transient. Existing weapon practice remains useful and dummy hits count as practice. No new daily timer or consumable is required.
+
+Level growth retains 5% compounded maximum HP, 2% compounded SP, 1% additive damage and 0.2% attack speed per level above one. Walking grows by 0.3% per level up to 25%; defence adds 0.05% damage reduction per level multiplicatively with existing defence ranks. Jump/dash geometry and the separate running reserve retain their authored rules. Magic investments in the new tab are disabled while mana abilities remain unimplemented.
+
 ## A3 — Intent, simulation and appearance are separate (accepted)
+
+### Solo Dofufu arena (implemented)
+
+`SoloArena` composes an offline challenge at either village duel tile, with a five-second countdown and one 2400-HP opponent. `DofufuArenaBoss` owns committed glaive, returning fan, Dragon Step and jump-avoidable gong slam attacks; `DofufuRules` owns per-instance timing. At half health, movement and recovery accelerate and fan volleys grow from five to seven. World collision, attack occlusion, directional guard with stamina payment, blade reflection and player dash immunity remain authoritative. A small app-owned visibility graph routes around authored arena cover. Ground warnings, afterimages and shock rings only display outcomes.
+
+`SoloArenaFighter` loans a celestial sword and raygun with 180 match HP, freezes healing buffs, prevents item transfers and restores entry equipment, inventory, health, weapon resources and progression after defeat, victory, surrender or the testing reset. Save capture overlays original actor values onto current world data, so continuing cannot strand the actor in a match or retain loans. `Player.command_filter` lets app composition restrict typed intent before movement runs; the pure motor is unchanged. Solo simulation is disabled when a co-op session is composed. Co-op duels retain their existing lifecycle. The factory Dofufu uses the same eight-direction idle/weapon art while preserving dungeon attacks, scaling and rewards; replicas derive cosmetic facing from received movement. Solo arena matchmaking and the boss are not replicated. `AdventureWorldSetup` owns ordered world-interaction composition extracted from the setup facade to respect its size budget.
 
 Each physics tick: sample one fresh PlayerCommand; update the per-player PlayerMotor using velocity, grounded state and delta; apply its returned velocity through move_and_slide; present state and emit cooldown data. A command is an in-process value, not a wire-format object. Each motor holds its own timers; tuning may be shared read-only.
 
@@ -125,7 +139,7 @@ Attacks have a harmless wind-up, a 130-degree cutting arc, and harmless recovery
 
 ## A4 — Player-hosted authority behind a replaceable transport (implemented)
 
-See [COOP.md](COOP.md) before adding networking. One participating player's Godot process owns the session simulation. The launch scene injects a `SessionTransport`; `SessionConnection` connects its lifecycle and authenticated packets to room rules. Holepunch remains the default discovery/encrypted-connectivity adapter/runtime. An explicit Oracle client scene selects a TLS WebSocket adapter, and a separate dedicated server scene owns the simulation and saves without a host avatar (COOP N8). Holepunch remains available for comparison. See COOP N1a for the contract and migration limits. Local physics remains playable without that runtime. A fixed tick makes ordering explicit; it does **not** guarantee deterministic Jolt simulation across machines.
+See [COOP.md](COOP.md) before adding networking. One participating player's Godot process owns the default co-op simulation. The launch scene injects a `SessionTransport`; `SessionConnection` connects its lifecycle and authenticated packets to room rules. Holepunch remains the default discovery/encrypted-connectivity adapter/runtime. The explicit Public Multiplayer menu or Oracle client scene selects a TLS WebSocket adapter, and a separate dedicated server scene owns the simulation and saves without a host avatar (COOP N8). Public name claims and device credentials belong to the adapter; app components wire authoritative personal maps, stat intent and connection health to the existing gameplay. See COOP N1a for the contract and migration limits. Local physics remains playable without that runtime. A fixed tick makes ordering explicit; it does **not** guarantee deterministic Jolt simulation across machines.
 
 ## Growth rules
 
@@ -150,7 +164,7 @@ Codex discovers instructions along its project-root/current-directory path; ther
 
 `app/bootstrap/launch.tscn` is the entry scene. It composes presentation-only `ui/menu/` views, the existing offline scene, settings/save flows and injected peer/dedicated transports selected explicitly in the lobby. `SessionConnection` retires and detaches the old transport before switching; selecting a mode alone opens no connection. The main gameplay scene remains independently instantiable for tests. Menus use the existing Fufu atlas with original mint, cream and ink vector scenery. Escape / controller Start opens the pause menu; solo pauses simulation, while online menus neutralize local intent without stopping the host world.
 
-`SaveStore` bounds and validates version-1 JSON, writes a sibling temporary file, flushes and atomically renames it into one of 12 slots. A new adventure uses an unused slot; deletion requires an explicit confirmation. Autosave runs every minute and on save/return/quit. Saves contain name, timestamp, elapsed playtime, opening-complete flag, position, health, time of day, progress/EXP, discoveries and owned/selected/dropped knife. Solo checkpoints regenerate encounters and loot and restart an incomplete opening. Shared records add a validated version-2 payload retaining encounters, loot, exact opening progress and characters keyed by persistent peer identity. `AdventureSnapshot` and `CoopCheckpoint` translate scene objects to values; the store receives an injected co-op validator. Transient swings and dashes reset safely on restore.
+`SaveStore` bounds and validates version-1 JSON, writes a sibling temporary file, flushes and atomically renames it into one of twelve slots per mode. Solo and co-op records live in separate folders; legacy flat records appear only in their recorded mode and remain untouched on save. Solo adventures cannot be hosted. Save failures offer retry or an explicit leave-without-saving action; the previous save remains safe. A new adventure uses an unused slot; deletion requires an explicit confirmation. Autosave runs every minute and on save/return/quit. Saves contain name, timestamp, elapsed playtime, opening-complete flag, position, health, time of day, progress/EXP, discoveries and owned/selected/dropped knife. Solo checkpoints regenerate encounters and loot and restart an incomplete opening. Shared records add a validated version-2 payload retaining encounters, loot, exact opening progress and characters keyed by persistent peer identity. `AdventureSnapshot` and `CoopCheckpoint` translate scene objects to values; the store receives an injected co-op validator. Transient swings and dashes reset safely on restore.
 
 `GamePreferences` persists window resolution/fullscreen, keyboard/mouse and controller bindings, and stick deadzone locally. Display changes require Keep within 15 seconds or revert. Fullscreen uses native display resolution. Escape/Enter/Start remain menu navigation keys. Stick movement is retained when remapping controller buttons. One local actor still owns all local devices. No runtime singleton or global event bus was added.
 
@@ -293,3 +307,23 @@ The Cloud Realm uses generated pearl-cloud, ivory marble and laurel-embroidered 
 `combat/CelestialCombat` selects three cosmetic variants of the existing authoritative sword, staff and gun paths. Small game-owned 3D models provide continuous camera angles, swings, first-person equipment and dropped weapons. Sword tip/guard calibration and the staff star tip match their damage reach. `CelestialSoyRay` is a bounded cosmetic projectile view; cadence, magazine/reload, ricochet, reflection, collisions and damage remain controlled by `SoyGun`/`SoyProjectile`. The first-person rig shows ivory gloves and gold cuffs for the complete outfit. Item definitions, equipment transfers, saves and world pickups retain their identity through existing inventory contracts. See COOP for the bounded variant field and current live version.
 
 Celestial loot luck multiplies beneficial item-drop probabilities by 1.10, capped at one; guaranteed harvests and quest rewards stay guaranteed, and death-drop penalties are unaffected. The current randomized loot is the armored-snail shell roll. App composition injects the probability rule into encounters; co-op derives it from the nearest party loot recipient rather than granting the host outfit to everybody. `player/CelestialAura` presents a faint pulsing gold halo, foot rings and eight rising motes only for the complete set; it has no lights or dynamically spawned particles and follows first-person body masking.
+
+### Polish localization and local language choice (implemented)
+
+`settings/localization/pl.po` owns the Polish vocabulary, dialogue and plural forms.
+`GamePreferences` stores an English/Polish choice on the device; app entry
+composition installs a `Translation` resource and unregisters it on scene-tree
+exit. The settings view emits language intent and `SettingsFlow` applies it through
+Godot's translation server. Existing Control/Label3D source text can therefore
+refresh without replacing gameplay objects. Custom map/arena/reticle canvas text
+translates at drawing time. Device bindings have compact localized captions.
+
+Rules, items, saves and replicated messages keep their original IDs and authored
+English source text. `LocalizedMessages` implements Godot's
+[`Translation._get_message`](https://docs.godotengine.org/en/stable/classes/class_translation.html#class-translation-private-method-get-message)
+for exact catalog entries, known printf templates and composed display fragments.
+This preserves guest-local language even for messages formatted by authority.
+Recursion and caching are bounded; placeholders containing player/adventure names
+are opaque. Player chat/nameplate text opts out of automatic translation.
+[The localization guide](../LOCALIZATION.md) records vocabulary, editing rules and
+focused/rendered checks. No session schema or save migration is required.

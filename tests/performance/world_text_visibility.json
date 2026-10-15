@@ -1,0 +1,32 @@
+[
+	{
+		"case": "near",
+		"expected_visible": true,
+		"text_pixels": 2941
+	},
+	{
+		"case": "far_control",
+		"expected_visible": true,
+		"text_pixels": 77
+	},
+	{
+		"case": "far",
+		"expected_visible": false,
+		"text_pixels": 0
+	},
+	{
+		"case": "wall",
+		"expected_visible": false,
+		"text_pixels": 0
+	},
+	{
+		"case": "opening",
+		"expected_visible": true,
+		"text_pixels": 2941
+	},
+	{
+		"case": "return",
+		"expected_visible": true,
+		"text_pixels": 2941
+	}
+]

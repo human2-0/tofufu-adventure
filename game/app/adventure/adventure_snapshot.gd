@@ -7,7 +7,7 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 	var position: Vector3 = game.player.transport_origin if game.player.transport_active else game.player.position
 	var equipment: PlayerEquipment = game.combat.equipment
 	var dropped := equipment.dropped.global_position if is_instance_valid(equipment.dropped) else Vector3.ZERO
-	return {"version": 1, "name": title, "saved_at": Time.get_datetime_string_from_system(),
+	var data := {"version": 1, "name": title, "saved_at": Time.get_datetime_string_from_system(),
 		"opening_complete": game.opening == null or not game.opening.active,
 		"parrot_rest": CoopValues.array3(game.player.parrot_rest) if game.player.parrot_rest.is_finite() else [],
 		"map_exploration": game.map.exploration.capture(),
@@ -32,6 +32,7 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 		"castle": game.castle_adventure.capture(),
 		"tofu_dungeon": game.factory_dungeon.capture() if game.factory_dungeon != null else {},
 		"equipment": game.character_equipment.capture() if game.character_equipment != null else {}}
+	return game.solo_arena.checkpoint(data) if game.solo_arena != null else data
 
 static func restore(game: Node3D, data: Dictionary) -> void:
 	if not DungeonSnapshotValidation.adventure(data): return
@@ -64,6 +65,7 @@ static func restore(game: Node3D, data: Dictionary) -> void:
 	if data.has("produce") and BarnProtocol.produce(data.produce): game.meadow_harvest.restore(data.produce, false)
 	if not data.has("barn") and game.seed_storage.barn.banks[0].occupied_slots() > 0: game.seed_storage.barn.owners[0] = game.seed_storage.barn.key(game.player)
 	if data.has("barn") and game.seed_storage != null and BarnProtocol.valid(data.barn, WorldProtocol.ITEM_LIMITS): game.seed_storage.barn.restore(data.barn)
+	game.seed_storage.refresh_deposit()
 	if game.seed_storage != null: game.seed_storage.free_satchel_claimed = data.get("seed_satchel_claimed", false)
 	if data.has("quest") and game.quest_giver != null: game.quest_giver.quest.restore(data.get("quest", {}))
 	if game.factory_dungeon != null: game.factory_dungeon.restore(data.get("tofu_dungeon", {}))

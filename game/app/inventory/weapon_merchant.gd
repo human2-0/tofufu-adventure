@@ -18,6 +18,8 @@ func _ready() -> void:
 	window.sale_requested.connect(_request_sale)
 	window.closed.connect(_closed)
 	_prompt = Label3D.new()
+	_prompt.visibility_range_end = 32.0
+	_prompt.visibility_range_end_margin = 2.0
 	_prompt.text = "[E] Grandpa Fufu · Gear Shop"
 	_prompt.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	_prompt.position.y = 3.3
@@ -25,8 +27,8 @@ func _ready() -> void:
 	_prompt.outline_size = 8
 	_prompt.modulate = Color("ffdc79")
 	_prompt.pixel_size = 0.009
-	_prompt.no_depth_test = true
-	_prompt.ignore_occlusion_culling = true
+	_prompt.no_depth_test = false
+	_prompt.ignore_occlusion_culling = false
 	_prompt.render_priority = 127
 	game.world.weapon_merchant.add_child(_prompt)
 	_build_highlight()
@@ -78,11 +80,13 @@ func _physics_process(_delta: float) -> void:
 		else: window.status.text = sell(game.player, game.inventory, trade.slot, trade.id)
 	_pending.clear()
 
-func purchase(actor: Node3D, inventory: PlayerInventory, id: String) -> String:
+func purchase(actor: Node3D, inventory: PlayerInventory, id: String, equipment: CharacterEquipment = null) -> String:
 	var npc := MerchantLocations.nearest(game.world, actor)
 	if npc == null: return "Move closer to a gear merchant to trade."
 	if id not in MerchantLocations.stock(game.world, npc): return "Nimbus stocks celestial equipment in the Cloud Realm."
-	return WeaponTrade.purchase(inventory, id)
+	if equipment == null and actor == game.player and inventory == game.inventory:
+		equipment = game.character_equipment
+	return WeaponTrade.purchase(inventory, id, equipment)
 
 func _request_sale(slot: int, id: String) -> void:
 	if sale_handler.is_valid(): sale_handler.call(slot, id)

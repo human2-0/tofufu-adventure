@@ -7,6 +7,7 @@ signal status_changed(magazine: int, reload_seconds: float, charge_seconds: floa
 const MAGAZINE_SIZE: int = 9
 const RELOAD_SECONDS: float = 2.0
 const RICOCHET_CHARGE_SECONDS: float = 2.0
+var projectile_speed_multiplier: float = 1.0
 var damage_multiplier: float = 1.0
 var attack_speed_multiplier: float = 1.0
 var spread_multiplier: float = 1.0
@@ -23,6 +24,8 @@ var selected: bool = false
 var celestial: bool = false
 var aiming: bool = false
 var cooldown: float = 0.0
+var magazine_capacity: int = MAGAZINE_SIZE
+var enhancement_multiplier: float = 1.0
 var magazine: int = MAGAZINE_SIZE
 var reload_remaining: float = 0.0
 var charge_elapsed: float = 0.0
@@ -45,12 +48,13 @@ func _ready() -> void:
 func _process(_delta: float) -> void:
 	visual.reload_remaining = reload_remaining
 
-func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: float) -> void:
+func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: float, reload_pressed: bool = false) -> void:
 	recoil.step(selected and held, delta, tuning)
 	cooldown = maxf(0.0, cooldown - delta * attack_speed_multiplier)
 	if reload_remaining > 0.0:
 		reload_remaining = maxf(0.0, reload_remaining - delta)
-		if reload_remaining == 0.0: magazine = MAGAZINE_SIZE
+		if reload_remaining == 0.0: magazine = magazine_capacity
+	if reload_pressed: reload()
 	aiming = selected and precise
 	visual.visible = selected
 	visual.facing = aim
@@ -79,12 +83,19 @@ func step(held: bool, precise: bool, aim: Vector2, aim_point: Vector3, delta: fl
 	if magazine == 0: reload_remaining = RELOAD_SECONDS
 	status_changed.emit(magazine, reload_remaining, charge_elapsed, selected)
 
+func reload() -> void:
+	if not selected or magazine >= magazine_capacity or reload_remaining > 0.0: return
+	reload_remaining = RELOAD_SECONDS
+	charge_elapsed = 0.0
+	_charged_this_hold = true
+	status_changed.emit(magazine, reload_remaining, charge_elapsed, selected)
+
 func _fire(ricochet: bool, aim: Vector2, aim_point: Vector3) -> void:
 	shot_origin = muzzle_position(aim)
 	var direction := (aim_point - shot_origin).normalized()
 	if direction.is_zero_approx(): direction = Vector3(aim.x, 0, aim.y)
 	direction = spread(direction, recoil.spread_degrees(aiming, tuning) * spread_multiplier)
-	shot_velocity = direction * tuning.bean_speed
+	shot_velocity = direction * tuning.bean_speed * projectile_speed_multiplier
 	recoil.fired(tuning)
 	if ricochet:
 		ricochet_sequence += 1
@@ -118,8 +129,8 @@ func _spawn(authority: bool, ricochet: bool = false) -> void:
 	bean.visual_origin = visual.muzzle_position() if visual.visible else shot_origin
 	if visual_muzzle.is_valid(): bean.visual_origin = visual_muzzle.call()
 	visual.kick = 1.0
-	bean.body_damage = tuning.bean_damage * damage_multiplier
-	bean.head_damage = tuning.bean_head_damage * damage_multiplier
+	bean.body_damage = tuning.bean_damage * damage_multiplier * enhancement_multiplier
+	bean.head_damage = tuning.bean_head_damage * damage_multiplier * enhancement_multiplier
 	bean.weapon_trained.connect(weapon_trained.emit)
 	bean.targets.assign(targets)
 	bean.targets.append_array(friends)

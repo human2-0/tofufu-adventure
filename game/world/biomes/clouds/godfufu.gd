@@ -24,7 +24,7 @@ func _ready() -> void:
 	body.add_child(collider)
 	add_child(body)
 	_label("GODFUFU\nKing of the Cloud Realm", Vector3(0, 3.2, 0), Color("fff0b4"), 32)
-	greeting = _label("Welcome, little Fufu.\nMy guardians keep the paths safe.\nVisit Nimbus for equipment,\nthen rest in our blossom gardens.", Vector3(0, 4.5, 0), Color("fff9e8"), 25)
+	greeting = _label("Welcome, little Fufu.\nThe fallen angels await in the south.\nSpeak to me for your first hunt.\nNimbus stocks celestial equipment.", Vector3(0, 4.5, 0), Color("fff9e8"), 25)
 	greeting.visible = false
 	MeadowGeometry.rock(self, Vector3(0, 0.025, 0), Vector3(0.9, 0.025, 0.65), Color("b4abd6"))
 
@@ -34,6 +34,8 @@ func _process(delta: float) -> void:
 
 func _label(text: String, at: Vector3, color: Color, font_size: int) -> Label3D:
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.text = text
 	label.position = at
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED

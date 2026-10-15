@@ -49,6 +49,8 @@ func _ready() -> void:
 	_sprite.position.y = 0.8 if kind == Kind.SCOUT else 1.0
 	add_child(_sprite)
 	_warning = Label3D.new()
+	_warning.visibility_range_end = 32.0
+	_warning.visibility_range_end_margin = 2.0
 	_warning.text = "!"
 	_warning.font_size = 54
 	_warning.pixel_size = 0.01
@@ -58,6 +60,8 @@ func _ready() -> void:
 	_warning.visible = false
 	add_child(_warning)
 	var nameplate := Label3D.new()
+	nameplate.visibility_range_end = 32.0
+	nameplate.visibility_range_end_margin = 2.0
 	nameplate.text = NAMES[kind]
 	nameplate.font_size = 26
 	nameplate.pixel_size = 0.007

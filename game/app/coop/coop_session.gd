@@ -23,12 +23,18 @@ var _pending: Dictionary = {}
 var _synchronized: bool = false
 var _ping_clock: float = 0
 var latency_ms: int = 0
+var public_mode: bool = false
+var personal_maps: CoopPersonalMaps
+var connection_health: CoopConnectionHealth
 var _world_changes := ReplicaWorldChanges.new()
+var _snapshots := CoopSnapshotFlow.new()
+var _encounter_motion: CoopEncounterMotion
 
 func _ready() -> void:
-	process_physics_priority = 10
 	authority = room.hosting
+	process_physics_priority = 10 if authority else -20
 	game.set_physics_process(false)
+	if game.solo_arena != null: game.solo_arena.enabled = false
 	roster.game = game
 	roster.room = room
 	roster.authority = authority
@@ -63,6 +69,9 @@ func _ready() -> void:
 			opening.apply(checkpoint.opening)
 	else:
 		CoopWorld.disable_simulation(game)
+		_encounter_motion = CoopEncounterMotion.new()
+		_encounter_motion.game = game
+		add_child(_encounter_motion)
 		game.hud.announce("Joining your friends / Synchronizing the adventure…")
 	CoopInteractions.build(self)
 	game.chat.connect_session(room, roster)
@@ -84,8 +93,8 @@ func _physics_process(delta: float) -> void:
 		duel.step(delta)
 		_snapshot_clock += delta
 		_world_clock += delta
-		if _snapshot_clock >= 0.05:
-			_snapshot_clock = fmod(_snapshot_clock, 0.05)
+		if _snapshot_clock >= 1.0 / 60.0:
+			_snapshot_clock = fmod(_snapshot_clock, 1.0 / 60.0)
 			_publish()
 	else:
 		_silence += delta
@@ -125,12 +134,8 @@ func _packet(key: String, data: Dictionary) -> void:
 				var result: Dictionary = game.factory_dungeon.submit_puzzle(intent, roster.party[key].actor)
 				room.send_game(key, {"type": "tofu_puzzle_result", "sequence": intent.sequence, "accepted": bool(result.get("accepted", false))})
 	elif key == room.host_key:
-		if data.get("type") == "snapshot":
-			if not ExplorationProtocol.valid_snapshot(data, room.members) or int(data.sequence) <= _snapshot_sequence: return
-			_snapshot_sequence = int(data.sequence)
-			_silence = 0
-			if not data.has("world") and _pending.has("world"): data.world = _pending.world
-			_pending = data
+		if data.get("type") in ["snapshot", "snapshot_delta"]:
+			_snapshots.receive(self, data)
 		elif data.get("type") == "pong" and ExplorationProtocol.sequence(data.get("stamp")):
 			latency_ms = maxi(0, Time.get_ticks_msec() - int(data.stamp))
 		elif data.get("type") == "tofu_puzzle_result" and ExplorationProtocol.sequence(data.get("sequence")) and data.get("accepted") is bool:
@@ -144,19 +149,13 @@ func _send_puzzle_command(command: TofuPuzzleCommand) -> void:
 	room.send_game(room.host_key, {"type": "tofu_puzzle", "command": payload})
 
 func _publish() -> void:
-	var states := {}
-	for key: String in roster.party: states[key] = roster.party[key].capture()
-	var snapshot := {"type": "snapshot", "sequence": _sequence, "actors": states, "opening": opening.capture(), "duel": duel.capture()}
-	if _world_clock >= 0.1:
-		snapshot.world = CoopWorld.capture(game)
-		_world_clock = 0
-	for key: String in room.members:
-		# Room adds only the epoch; immutable nested records need no per-peer deep copy.
-		if key != room.local_key and _ready_peers.has(key): room.send_game(key, snapshot.duplicate())
+	_snapshots.publish(self)
 
 func _apply(data: Dictionary) -> void:
 	if data.has("world"):
+		_encounter_motion.before_snapshot()
 		CoopWorld.apply(game, data.world, true, _world_changes)
+		_encounter_motion.accept()
 		if not _synchronized: game.hud.announce("Connected / The host saves our shared adventure.")
 		_synchronized = true
 	opening.apply(data.opening)
@@ -171,6 +170,7 @@ func _roster_changed() -> void:
 		if key not in room.members:
 			_ready_peers.erase(key)
 			_window.forget(key)
+			_snapshots.channel.forget(key)
 	_world_clock = 1
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -180,14 +180,7 @@ func local_input_enabled(enabled: bool) -> void:
 	(roster.local_input as LocalPlayerInput).enabled = enabled
 
 func _process(delta: float) -> void:
-	if authority and room.dedicated: return
-	var label := "Co-op · %d/4 beans · %s" % [room.members.size(), "Host saves" if authority else "%d ms RTT" % latency_ms]
-	game.hud.show_session(label)
-	var duel_label := duel.status(room.local_key)
-	if not duel_label.is_empty(): game.hud.show_session(duel_label)
-	if authority: return
-	for dummy: PracticeDummy in game.encounters.dummy_nodes:
-		dummy._figure.rotation.z = lerpf(dummy._figure.rotation.z, 0, minf(1, delta * 9))
+	CoopSessionView.process(self, delta)
 
 func _migrate_legacy_drops() -> void:
 	var rows: Array = []

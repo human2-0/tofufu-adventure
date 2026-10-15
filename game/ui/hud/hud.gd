@@ -2,6 +2,7 @@ class_name HUD
 extends CanvasLayer
 ## Minimalist kawaii HUD: edge-aligned translucent panels, skill slot, and delayed jump bar.
 
+var arena: ArenaHUD
 var dash_bar: ProgressBar
 var dash_status: Label
 var _dash_slot: DashSlot
@@ -155,8 +156,8 @@ func show_character(data: Dictionary) -> void:
 func show_gun(selected: bool, precise: bool) -> void:
 	HUDCombatView.show_gun(self, selected, precise)
 
-func show_gun_status(magazine: int, reload_seconds: float, charge_seconds: float, visible: bool) -> void:
-	if visible: HUDCombatView.show_gun_status(self, magazine, reload_seconds, charge_seconds)
+func show_gun_status(magazine: int, reload_seconds: float, charge_seconds: float, visible: bool, capacity: int = 9) -> void:
+	if visible: HUDCombatView.show_gun_status(self, magazine, reload_seconds, charge_seconds, capacity)
 
 func show_damage_hit(kind: int) -> void:
 	if kind == 1: show_snail_hit()

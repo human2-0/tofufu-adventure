@@ -7,12 +7,15 @@ var stream: StreamPeerTCP
 var key: String = ""
 var created: int = Time.get_ticks_msec()
 var sent_auth: bool = false
+var rejecting: bool = false
+var _reject_deadline: int = 0
 var _last_received: int = Time.get_ticks_msec()
 var _ping: int = Time.get_ticks_msec()
 var _window: int = Time.get_ticks_msec()
 var _count: int = 0
 var _bytes: int = 0
 var _blocked: int = 0
+var _startup_deadline: int = Time.get_ticks_msec() + 60000
 
 func _init() -> void:
 	socket.inbound_buffer_size = 262144
@@ -25,8 +28,11 @@ func poll() -> bool:
 	socket.poll()
 	if socket.get_ready_state() == WebSocketPeer.STATE_OPEN: socket.set_no_delay(true)
 	var now := Time.get_ticks_msec()
+	if rejecting and now >= _reject_deadline: return false
 	if key.is_empty() and now - created > 10000: return false
-	if now - _last_received > 20000: return false
+	# Authenticated clients may construct the full world synchronously on join.
+	# Consume waiting packets before declaring silence after that bounded grace.
+	if now > _startup_deadline and now - _last_received > 20000 and socket.get_available_packet_count() == 0: return false
 	if not key.is_empty() and now - _ping >= 5000:
 		_ping = now
 		if not send({"_oracle_ping": true}): return false
@@ -60,3 +66,8 @@ func send(data: Dictionary) -> bool:
 func close() -> void:
 	socket.close(-1)
 	if stream != null: stream.disconnect_from_host()
+
+func reject(message: String) -> void:
+	send({"error": message.left(160)})
+	rejecting = true
+	_reject_deadline = Time.get_ticks_msec() + 250

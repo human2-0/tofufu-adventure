@@ -4,6 +4,7 @@ extends Control
 signal new_game
 signal continue_game
 signal coop
+signal public_multiplayer
 signal settings
 signal resume_game
 signal save_game
@@ -108,6 +109,7 @@ func show_home(paused: bool = false, can_save: bool = true) -> void:
 		first.add_theme_stylebox_override("normal", MenuStyle.button_box("primary"))
 		MenuStyle.button(buttons, "Continue adventure", continue_game.emit, MenuIcons.BOOK)
 		MenuStyle.button(buttons, "Play with friends", coop.emit, MenuIcons.FRIENDS)
+		MenuStyle.button(buttons, "Public Multiplayer", public_multiplayer.emit, MenuIcons.FRIENDS)
 		var utilities := VBoxContainer.new()
 		buttons.add_child(utilities)
 		for item in [["Settings", settings.emit, MenuIcons.SETTINGS], ["Quit", quit_game.emit, MenuIcons.EXIT]]:
@@ -132,6 +134,7 @@ func _responsive() -> void:
 	_eyebrow.visible = not compact
 	_description.visible = not compact
 	_adventure.add_theme_font_size_override("font_size", 16 if compact else 22)
+	_adventure.visible = size.y >= 400
 	_home.add_theme_constant_override("separation", 4 if compact else 12)
 	_actions.add_theme_constant_override("separation", 4 if compact else 12)
 	for action: Control in _actions.get_children():

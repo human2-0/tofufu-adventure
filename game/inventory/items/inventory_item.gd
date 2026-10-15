@@ -164,6 +164,7 @@ static func apparel(id: String) -> InventoryItem:
 	return item
 
 static func from_id(id: String) -> InventoryItem:
+	if id == MagicalTofufu.ID: return MagicalTofufu.create()
 	if id in CelestialItems.IDS: return CelestialItems.create(id)
 	if id in ["edamame", "mature_bean", "tofu_white_chunk", "toasted_tofu_chunk", "golden_tofu_chunk"]: return currency(id)
 	if id in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return weapon(id)

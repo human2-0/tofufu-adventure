@@ -55,6 +55,8 @@ static func seed_bank(parent: Node3D, at: Vector3) -> Node3D:
 		_chest(bank, Vector3(3.18, 0.86, z))
 	MeadowGeometry.box(bank, Vector3(0, 3.0, -3.03), Vector3(4.0, 0.75, 0.08), Color("87684c"))
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.double_sided = false
 	label.text = "SEED BANK"
 	label.position = Vector3(0, 3.0, 3.48)
@@ -96,6 +98,8 @@ static func resident(parent: Node3D, at: Vector3, title: String, coat: Color, ma
 	if mayor:
 		MeadowGeometry.rock(npc, Vector3(0, 1.22, 0.35), Vector3(0.22, 0.075, 0.07), Color("fff2d7"))
 	var label := Label3D.new()
+	label.visibility_range_end = 32.0
+	label.visibility_range_end_margin = 2.0
 	label.double_sided = false
 	label.name = "ResidentTitle"
 	label.text = title

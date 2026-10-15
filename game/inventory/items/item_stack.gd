@@ -5,6 +5,7 @@ extends RefCounted
 var item: InventoryItem
 var count: int = 1
 var reserve: float = 100.0
+var enhanced: bool = false
 
 func _init(p_item: InventoryItem = null, p_count: int = 1) -> void:
 	item = p_item
@@ -13,6 +14,7 @@ func _init(p_item: InventoryItem = null, p_count: int = 1) -> void:
 func duplicate_stack() -> ItemStack:
 	var copy := ItemStack.new(item, count)
 	copy.reserve = reserve
+	copy.enhanced = enhanced
 	return copy
 
 func can_merge(other: ItemStack) -> bool:
@@ -33,7 +35,7 @@ func capture() -> Dictionary:
 		return {}
 	return {
 		"id": item.id,
-		"count": count, "reserve": reserve
+		"count": count, "reserve": reserve, "enhanced": enhanced
 	}
 
 static func restore(data: Dictionary) -> ItemStack:
@@ -53,5 +55,8 @@ static func restore(data: Dictionary) -> ItemStack:
 	var stack := ItemStack.new(item, count)
 	var reserve: Variant = data.get("reserve", 100.0)
 	if not (reserve is int or reserve is float) or not is_finite(float(reserve)) or reserve < 0 or reserve > 100: return null
+	var upgraded: Variant = data.get("enhanced", false)
+	if not upgraded is bool or (upgraded and item.category != "combat"): return null
+	stack.enhanced = upgraded
 	stack.reserve = float(reserve)
 	return stack

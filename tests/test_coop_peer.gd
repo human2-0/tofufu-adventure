@@ -50,7 +50,8 @@ func _run() -> void:
 	room.ended.connect(func(reason: String) -> void:
 		if not closing: check(false, "session stays connected until explicit shutdown: " + reason))
 	bridge.start("Host" if role == "host" else "Guest")
-	var deadline := Time.get_ticks_msec() + 50000
+	var startup_scale := clampf(float(OS.get_environment("TOFUFU_TEST_STARTUP_SCALE")), 1.0, 5.0)
+	var deadline := Time.get_ticks_msec() + roundi(50000 * startup_scale)
 	while Time.get_ticks_msec() < deadline:
 		await process_frame
 		if Time.get_ticks_msec() - debug_at > 5000:
@@ -117,6 +118,7 @@ func _host_step() -> bool:
 			var member := session.roster.party[key]
 			member.actor.position = game.encounters.dummy_nodes[0].position + Vector3(0, 0.05, 1.4)
 			member.health.current = 80
+			member.health.invulnerability = 90.0 # Keep the network fixture alive while a cold guest world builds.
 			game.player.position = member.actor.position + Vector3(-4, 0, 0)
 		started_at = Time.get_ticks_msec()
 
@@ -127,7 +129,9 @@ func _host_step() -> bool:
 		var bean: SoybeanPickup = game.encounters.add_pickup(game.encounters.next_pickup_id, session.roster.actors[guest_key].position)
 		bean._age = 1
 	if not session.roster.party.has(guest_key): departed = true
-	elif departed and rejoined_at == 0: rejoined_at = Time.get_ticks_msec()
+	elif departed and rejoined_at == 0:
+		rejoined_at = Time.get_ticks_msec()
+		session.roster.party[guest_key].health.invulnerability = 90.0
 	if rejoined_at == 0 or not FileAccess.file_exists(directory.path_join("returning.json")): return false
 	check(game.chat.view.history.has("Guest: Peer hello"), "text delivered over real Holepunch stream")
 	check(_voice_received, "synthetic voice reached host playback over real Holepunch stream")

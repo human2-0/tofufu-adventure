@@ -49,7 +49,7 @@ func _run() -> void:
 	game.player.set_physics_process(false)
 	game.player.velocity = Vector3.ZERO
 	check(barn.to_local(game.player.global_position).x < 2.8 and game.player.is_on_floor(), "courtyard entrance reaches central aisle without blocking chest dividers")
-	check(storage.barn.banks.size() == 20, "twenty separate chest inventories")
+	check(storage.barn.banks.size() == 20, "bounded personal deposit records")
 	check(game.world.quest_npc.name == "GrandmaFufu" and game.world.weapon_merchant.name == "GrandpaFufu", "named billboard NPCs own village services")
 	for npc: Node3D in [game.world.quest_npc, game.world.weapon_merchant]:
 		var art := npc.get_node("DirectionalArt") as MeadowResidentArt
@@ -99,7 +99,7 @@ func _run() -> void:
 	await physics_frame
 	check(storage.bay_for(game.player) == 0, "first bay reachable from its front")
 	game.inventory.set_slot(0, ItemStack.new(InventoryItem.create_edamame(), 17))
-	check(storage.transfer(game.player, game.inventory, "inventory", 0, "chest", 0, 0), "deposit claims a personal bay")
+	check(storage.transfer(game.player, game.inventory, "inventory", 0, "chest", 0, 0), "deposit creates personal storage")
 	check(storage.barn.owners[0] == "solo" and storage.barn.banks[0].get_slot(0).count == 17, "ownership and whole stack retained")
 	var other: Player = preload("res://game/player/player.tscn").instantiate()
 	root.add_child(other)
@@ -108,6 +108,14 @@ func _run() -> void:
 	storage.barn.actor_key = func(actor: Node3D) -> String: return "solo" if actor == game.player else "b".repeat(64)
 	var bag := PlayerInventory.new()
 	check(not storage.transfer(other, bag, "chest", 0, "inventory", 0, 0), "another identity cannot withdraw")
+	other.global_position = barn.to_global(MeadowBarn.table_position(1) + MeadowBarn.front(1) * 1.1 + Vector3.DOWN * 0.7)
+	bag.set_slot(0, ItemStack.new(InventoryItem.create_edamame(), 9))
+	check(storage.transfer(other, bag, "inventory", 0, "chest", 0, 1), "second player deposits at a different bay")
+	game.player.global_position = other.global_position
+	check(storage.quick_transfer(game.player, game.inventory, "chest", 0, 1) == "Moved to your bag.", "another bay opens the same personal deposit")
+	check(game.inventory.count_item("edamame") == 17 and storage.barn.personal(other).get_slot(0).count == 9, "simultaneous deposits remain isolated by player")
+	check(storage.quick_transfer(game.player, game.inventory, "inventory", 0, 1) == "Stored in your personal deposit.", "personal deposit accepts reciprocal transfer")
+	game.player.global_position = barn.to_global(MeadowBarn.table_position(0) + MeadowBarn.front(0) * 1.1 + Vector3.DOWN * 0.7)
 	check(not storage.transfer(game.player, game.inventory, "chest", 0, "inventory", 0, 1), "stale bay request cannot access a different chest")
 	game.inventory.set_slot(1, ItemStack.new(InventoryItem.create_edamame(), 4))
 	check(game.world_items.drop_stack(game.combat, game.inventory, game.character_equipment, "inventory", 1), "dropping in bay places item on display table")

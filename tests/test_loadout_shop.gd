@@ -29,7 +29,7 @@ func _run() -> void:
 	check(game.merchant.window.visible and not game.shooting_view.local_input.enabled, "interaction opens Grandpa Fufu shop and pauses combat input")
 	check(game.merchant.window._stock_grid.get_child_count() == WeaponTrade.BUYABLE_IDS.size() - CelestialItems.IDS.size(), "Grandpa's stock excludes Nimbus's celestial equipment")
 	game.merchant.window._first_button.grab_focus()
-	check(game.merchant.window._description.text.contains("close-range blade"), "focused shop item shows its description")
+	check(game.merchant.window._tooltip._details.text.contains("close-range blade"), "focused shop item shows its description")
 	game.merchant.window.close()
 	game.inventory.add_item(InventoryItem.currency("mature_bean"), 2)
 	game.merchant.purchase(game.player, game.inventory, "sotjet")
@@ -81,8 +81,9 @@ func _run() -> void:
 		var apparel_id := "bright_leaf_%s" % slot
 		if slot != "helmet": game.merchant.purchase(game.player, game.inventory, apparel_id)
 		var apparel_slot := _slot_of(game.inventory, apparel_id)
-		check(apparel_slot >= 0, "%s is available in Grandpa Fufu's stock" % apparel_id)
-		game.inventory_window.execute_transfer("inventory", apparel_slot, "equipment", slot)
+		if slot == "helmet":
+			game.inventory_window.execute_transfer("inventory", apparel_slot, "equipment", slot)
+		check(game.character_equipment.get_slot(slot).item.id == apparel_id, "%s equips into its empty apparel slot" % apparel_id)
 		if slot == "helmet":
 			var before: float = game.health.current
 			game.health.damage(20.0)

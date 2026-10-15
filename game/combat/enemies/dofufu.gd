@@ -24,28 +24,30 @@ var _next_dash: float = 5.0
 var _next_slam: float = 8.0
 var _katana: Sprite3D
 var _aura: MeshInstance3D
+var _directional_art: DofufuVisuals
+var _view_facing := Vector3.BACK
+var _replica_motion: float = 0.0
 
 func _ready() -> void:
 	kind = Kind.DOFUFU
 	super._ready()
 	target.maximum = BASE_HEALTH * (1.0 + 0.5 * float(combat_participants - 1)) * health_scale
 	target.current = target.maximum
-	_sprite.modulate = Color("e9b8e8")
-	_sprite.position.y = 0.55
-	_sprite.texture = preload("res://assets/characters/fufu/sets/dark_leaf_standing.png")
-	_sprite.hframes = 5
-	_sprite.vframes = 1
-	_sprite.frame = 2
-	_sprite.pixel_size = 0.002
+	_sprite.queue_free()
+	_directional_art = DofufuVisuals.new()
+	add_child(_directional_art)
+	_directional_art.pixel_size *= 0.6
+	_directional_art.set_pose(0)
+	_sprite = _directional_art
 	_warning.text = "!"
-	_warning.position.y = 2.0
+	_warning.position.y = 2.3
 	_add_katana()
 	_add_aura()
 	for child in get_children():
 		if child is Label3D and child != _warning:
-			child.text = "DOFUFU · HOSTILE CLONE"
+			child.text = "DOFUFU · JADE DRAGON MASTER"
 			child.modulate = Color("ff8fe6")
-			child.position.y = 1.7
+			child.position.y = 2.0
 
 func _physics_process(delta: float) -> void:
 	if not _alive or not is_instance_valid(quarry): return
@@ -136,13 +138,23 @@ func _recovery_step() -> void:
 		_clock = 0.0
 
 func _face(toward: Vector3) -> void:
-	var facing := 2
-	if absf(toward.x) > absf(toward.z): facing = 0 if toward.x > 0.0 else 4
-	elif toward.z < 0.0: facing = 6
-	_sprite.frame = 0 if facing == 6 else 4 if facing == 2 else 2
-	_sprite.flip_h = facing == 0
+	if toward.length_squared() > 0.01: _view_facing = toward.normalized()
+	_directional_art.present(toward.normalized(), velocity.length_squared() > 0.1, phase in [Phase.WINDUP, Phase.DASH], second_phase, get_physics_process_delta_time())
+	_katana.visible = _directional_art.pose_index < 8
 	_katana.flip_h = toward.x < 0.0
 	_katana.position.x = -0.43 if toward.x < 0.0 else 0.43
+
+func present_replica_motion(offset: Vector3) -> void:
+	if offset.length_squared() > 0.0001:
+		_view_facing = offset.normalized()
+		_replica_motion = 0.15
+
+func _process(delta: float) -> void:
+	if not is_physics_processing() and visible:
+		_replica_motion = maxf(0.0, _replica_motion - delta)
+		_directional_art.present(_view_facing, _replica_motion > 0.0, false, target.current <= target.maximum * 0.5, delta)
+		_katana.visible = _directional_art.pose_index < 8
+	super._process(delta)
 
 func _on_depleted() -> void:
 	phase = Phase.DEAD

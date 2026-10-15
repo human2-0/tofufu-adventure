@@ -34,6 +34,9 @@ func height_at(x: float, z: float) -> float:
 	h += west * 10.0
 	var south_rim := WorldContours.rim(x, z, 80.0, 84.0, 216.0, noise.seed) if z > 57.0 and absf(x) > 58.0 else 0.0
 	h += south_rim * smoothstep(57.0, 84.0, z)
+	# Open the western rim with a walkable grade into the mountain trail.
+	if x < -70:
+		h = lerpf(h, 11.0 * smoothstep(80, 110, -x), 1.0 - smoothstep(5, 10, absf(z)))
 	h = RiverCourse.carve(x, z, h)
 	# A gently graded approach to the main plank bridge.
 	var approach := (1.0 - smoothstep(1.3, 3.5, absf(z - 4))) * (1.0 - smoothstep(6.0, 10.0, absf(x - 11)))
@@ -51,7 +54,8 @@ func path_distance(x: float, z: float) -> float:
 	var mayor_lane := Vector2(maxf(0, absf(x - 27) - 4), z - (18 + sin(x * 0.3) * 0.3)).length()
 	var country_lane := absf(z - 4.0) if x > 15 and x < 110 else 99.0
 	var courtyard_lane := MeadowVillageGround.path_distance(Vector2(x, z))
-	return minf(minf(country_lane, courtyard_lane), minf(mayor_lane, minf(minf(east_lane, nursery_lane), minf(bank_lane, village_lane))))
+	var western_lane := absf(z) if x < -70 else 99.0
+	return minf(western_lane, minf(minf(country_lane, courtyard_lane), minf(mayor_lane, minf(minf(east_lane, nursery_lane), minf(bank_lane, village_lane)))))
 
 func is_field(x: float, z: float) -> bool:
 	return Rect2(73, -78, 30, 30).has_point(Vector2(x, z)) or Rect2(18, 20, 22, 35).has_point(Vector2(x, z)) or (x > -16.5 and x < -7.0 and z > -11.0 and z < -1.3) or (x > -6.5 and x < 5.2 and z > -9.5 and z < 1.2) or (x > -17 and x < -5 and z > 12 and z < 23)

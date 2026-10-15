@@ -5,6 +5,11 @@ extends RefCounted
 const APPAREL_DROP_SPANS: Dictionary = {"helmet": 0.38, "armor": 0.44, "legs": 0.38, "boots": 0.34}
 
 static func build(drop: WorldItemDrop) -> void:
+	var orbit := MagicalTofufuOrbit.new()
+	orbit.lazy = true
+	orbit.center = func() -> Vector3: return drop.global_position
+	orbit.enabled = func() -> bool: return drop.enhanced
+	drop.add_child(orbit)
 	if drop.item_id in ["knife", "edamame_sword", "nori_katana", "celestial_sword"]:
 		var reach := 0.48 if drop.item_id == "knife" else (0.72 if drop.item_id == "nori_katana" else 0.64)
 		_add_weapon_model(drop, drop.item_id, reach)
@@ -59,7 +64,7 @@ static func build(drop: WorldItemDrop) -> void:
 	elif drop.item_id.begins_with("bright_leaf_") or drop.item_id.begins_with("dark_leaf_"):
 		_apparel(drop)
 	else:
-		var art := InventoryItem.from_id(drop.item_id).icon if drop.item_id in MeadowFood.NAMES else CurrencyVisuals.icon(drop.item_id, drop.count)
+		var art := InventoryItem.from_id(drop.item_id).icon if drop.item_id in MeadowFood.NAMES or drop.item_id == MagicalTofufu.ID else CurrencyVisuals.icon(drop.item_id, drop.count)
 		if art == null: return
 		var sprite := Sprite3D.new()
 		sprite.texture = InventoryIconQuality.for_slot(art)
