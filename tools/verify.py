@@ -175,6 +175,7 @@ def test_stages():
     yield "coop_launch", ["--script", "res://tests/test_coop_launch.gd"], 60
     yield "chat", ["--script", "res://tests/test_chat.gd"], 60
     yield "coop_scene", ["--script", "res://tests/test_coop_scene.gd"], 60
+    yield "update_log", ["--script", "res://tests/test_update_log.gd"], 60
     yield "landing", ["--script", "res://tests/test_landing.gd"], 60
     yield "lobby", ["--script", "res://tests/test_lobby.gd"], 60
     yield "frontend", ["--script", "res://tests/test_frontend.gd"], 60

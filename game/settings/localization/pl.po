@@ -8242,3 +8242,51 @@ msgstr "Brama Dofufu"
 
 msgid "Groatfields Approach"
 msgstr "Przedpola Kaszopól"
+
+msgid "What's new?"
+msgstr "Co nowego?"
+
+msgid "A little catch-up before your next adventure. English + Polski."
+msgstr "Krótki przegląd przed kolejną przygodą. English + Polski."
+
+msgid "Adventure playtest"
+msgstr "Próbna przygoda"
+
+msgid "Your update journal"
+msgstr "Twój dziennik nowości"
+
+msgid "New combat gear: Fallen Angel Bow, Bengal Paws and Soy Milk."
+msgstr "Nowy sprzęt do walki: Łuk Upadłego Anioła, Bengalskie Łapcie i Sojomleczko."
+
+msgid "Stronger character growth, clearer stats and a celebration when you level up."
+msgstr "Mocniejszy rozwój postaci, czytelniejsze statystyki i świętowanie awansu na kolejny poziom."
+
+msgid "More places to explore, personal soybean save spots to claim and a Dofufu solo challenge."
+msgstr "Więcej miejsc do odkrycia, osobiste sojowe punkty zapisu do zajęcia i solowe wyzwanie Dofufu."
+
+msgid "Updated character art, scenery and terrain, plus more graphics options."
+msgstr "Odświeżony wygląd postaci, krajobrazu i terenu oraz więcej opcji graficznych."
+
+msgid "Improvements to co-op, saves and combat controls."
+msgstr "Ulepszenia wspólnej gry, zapisu postępów i sterowania w walce."
+
+msgid "A short English and Polish update journal now shows what changed since your last visit."
+msgstr "Krótki dziennik nowości po angielsku i po polsku pokazuje, co zmieniło się od ostatniej wizyty."
+
+msgid "Reopen the journal any time from the title or pause menu."
+msgstr "Do dziennika możesz wrócić w dowolnej chwili z menu głównego lub menu pauzy."
+
+msgid "Could not remember read updates. They will appear again next time."
+msgstr "Nie udało się zapamiętać przeczytanych nowości. Pojawią się ponownie przy kolejnym uruchomieniu."
+
+msgid "Back to menu"
+msgstr "Wróć do menu"
+
+msgid "Smoother adventuring"
+msgstr "Przygoda bez zgrzytów"
+
+msgid "Super Claw dashes and Nori plunges keep working after solo and co-op arena matches."
+msgstr "Doskok Super Claw i pikowanie Nori działają poprawnie także po walkach na arenie solo i we wspólnej grze."
+
+msgid "In the behind-the-player view, stopping now keeps Fufu facing the direction you were walking."
+msgstr "W widoku zza pleców Fufu po zatrzymaniu patrzy w kierunku, w którym szedł."

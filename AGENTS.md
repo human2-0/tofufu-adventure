@@ -17,6 +17,7 @@
 - Offline play stays functional. Default co-op uses a player as authority and Holepunch behind a transport boundary. The existing dedicated composition is explicit and optional; never add an automatic central-service fallback or gameplay relay. Never claim universal NAT connectivity or deterministic cross-machine Godot physics.
 
 ## Done
+- Before committing or pushing player-facing changes, append a concise release batch to `game/ui/menu/update_log.gd` with a new increasing ID and exact Polish translations in `game/settings/localization/pl.po`. Group changes into a few broad player-friendly bullets; never change shipped IDs. The in-game journal uses these batches to catch players up after pulling updates.
 - Run `python3 tools/check_architecture.py` for source/layout changes.
 - For local GDScript/scene changes, use `python3 tools/verify.py --quick --tests NAME ...`: architecture, Godot import, scene smoke and affected scenarios from the map. Include affected callers and save/co-op contracts, not just edited files. Use `--list` for names; set `GODOT_BIN` if discovery fails.
 - During iteration use `--tests NAME ...` for focused feedback. Run `--full` once for broad wiring/boundary changes, resource moves, shared save/network schema or project settings changes, and before releases. Repeat checks only after relevant edits or failures; report focused vs full coverage honestly.

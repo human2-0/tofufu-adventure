@@ -76,7 +76,7 @@ func contain(participants: Array[String]) -> void:
 		member.actor.motor.dash_remaining = 0.0
 		member.actor.motor.cancel_jump()
 		member.actor.motor.cancel_dash_charge()
-		member.actor.ability_velocity = Callable()
+		member.combat.interrupt()
 		member.respawn_count += 1
 
 func clear_projectiles(participants: Array[String]) -> void:
@@ -153,7 +153,7 @@ func _leave_pad(member: CoopActor, index: int) -> void:
 	member.actor.motor.dash_remaining = 0.0
 	member.actor.motor.cancel_jump()
 	member.actor.motor.cancel_dash_charge()
-	member.actor.ability_velocity = Callable()
+	member.combat.interrupt()
 
 func _set_saved_exit_position(state: Dictionary, index: int) -> void:
 	var destination: Vector3 = (session.game.world.duel_arena as FarmDuelArena).pad_exit_position(index)

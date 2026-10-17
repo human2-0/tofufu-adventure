@@ -8,6 +8,7 @@ var coop_store := SaveStore.new()
 var preferences := GamePreferences.new()
 var saves := SaveFlow.new()
 var settings := SettingsFlow.new()
+var updates := UpdateLogFlow.new()
 @export var transport: SessionTransport
 @export var server_transport: OracleTransport
 var connection := SessionConnection.new()
@@ -53,6 +54,12 @@ func _ready() -> void:
 	menu.return_title.connect(_return_title)
 	menu.quit_game.connect(_quit)
 	LaunchFlows.connect_flows(self)
+	updates.menu = menu
+	updates.go_back = _home
+	updates.path = preferences.path + ".updates.cfg"
+	updates.load_seen()
+	menu.updates.connect(updates.show_history)
+	if "--dedicated-lobby" not in OS.get_cmdline_user_args(): updates.show_unseen()
 	if "--dedicated-lobby" in OS.get_cmdline_user_args() and not transport.can_host(): lobby.show_lobby()
 
 func _home() -> void:

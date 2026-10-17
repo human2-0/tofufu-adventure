@@ -6,6 +6,7 @@ signal continue_game
 signal coop
 signal public_multiplayer
 signal settings
+signal updates
 signal resume_game
 signal save_game
 signal return_title
@@ -69,8 +70,9 @@ func _ready() -> void:
 	show_home()
 	_responsive()
 
-func clear_page(title: String, description: String) -> VBoxContainer:
+func clear_page(title: String, description: String, top_aligned: bool = false) -> VBoxContainer:
 	set_page_width(0)
+	_page.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if top_aligned else Control.SIZE_SHRINK_CENTER
 	_home_frame.hide()
 	_page.show()
 	_clear(content)
@@ -103,6 +105,7 @@ func show_home(paused: bool = false, can_save: bool = true) -> void:
 		first = MenuStyle.button(buttons, "Resume adventure   →", resume_game.emit, MenuIcons.ARROW)
 		if can_save: MenuStyle.button(buttons, "Save adventure", save_game.emit, MenuIcons.BOOK)
 		MenuStyle.button(buttons, "Settings", settings.emit, MenuIcons.SETTINGS)
+		MenuStyle.button(buttons, "What's new?", updates.emit, MenuIcons.BOOK)
 		MenuStyle.button(buttons, "Save & return to title" if can_save else "Leave & return to title", return_title.emit, MenuIcons.EXIT)
 	else:
 		first = MenuStyle.button(buttons, "New adventure   →", new_game.emit, MenuIcons.SPROUT)
@@ -110,11 +113,12 @@ func show_home(paused: bool = false, can_save: bool = true) -> void:
 		MenuStyle.button(buttons, "Continue adventure", continue_game.emit, MenuIcons.BOOK)
 		MenuStyle.button(buttons, "Play with friends", coop.emit, MenuIcons.FRIENDS)
 		MenuStyle.button(buttons, "Public Multiplayer", public_multiplayer.emit, MenuIcons.FRIENDS)
-		var utilities := VBoxContainer.new()
+		var utilities := HBoxContainer.new()
 		buttons.add_child(utilities)
-		for item in [["Settings", settings.emit, MenuIcons.SETTINGS], ["Quit", quit_game.emit, MenuIcons.EXIT]]:
+		for item in [["Settings", settings.emit, MenuIcons.SETTINGS], ["What's new?", updates.emit, MenuIcons.BOOK]]:
 			var button := MenuStyle.button(utilities, item[0], item[1], item[2])
 			button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		MenuStyle.button(buttons, "Quit", quit_game.emit, MenuIcons.EXIT)
 	MenuStyle.focus_later(first)
 	note.text = "Esc / Start · Resume     /     Progress autosaves every minute" if paused else "SOLO & CO-OP   /   Your adventure, your pace   /   Playtest"
 	_scroll.scroll_vertical = 0
@@ -130,13 +134,14 @@ func _responsive() -> void:
 	note.add_theme_font_size_override("font_size", 12 if compact else 16)
 	if not is_instance_valid(_brand): return
 	_home.custom_minimum_size.x = minf(380, size.x - padding * 2 - 40)
-	_brand.add_theme_font_size_override("font_size", 32 if compact else (58 if size.y < 650 else 76))
+	_brand.add_theme_font_size_override("font_size", 32 if compact else (58 if size.y < 800 else 76))
 	_eyebrow.visible = not compact
 	_description.visible = not compact
 	_adventure.add_theme_font_size_override("font_size", 16 if compact else 22)
 	_adventure.visible = size.y >= 400
-	_home.add_theme_constant_override("separation", 4 if compact else 12)
-	_actions.add_theme_constant_override("separation", 4 if compact else 12)
+	var spacing: int = 4 if compact else (8 if size.y < 800 else 12)
+	_home.add_theme_constant_override("separation", spacing)
+	_actions.add_theme_constant_override("separation", spacing)
 	for action: Control in _actions.get_children():
 		if action is Button: _fit_button(action, compact)
 		elif action is Container:

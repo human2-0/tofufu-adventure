@@ -33,7 +33,7 @@ costs by 0.75. These are per-actor modifiers, composed with progression and
 outfits without changing shared tuning; stowing paws removes them. App-owned
 `ActorCombatMotion` injects ability velocity, command restrictions and actor-pass
 presentation into Player. Physics still uses move_and_slide against terrain.
-Guest movement follows received dash velocity without resolving combat.
+Guest movement follows received dash velocity without resolving combat. Arena entry, containment and exit stop transient movement/attacks while preserving these installed callbacks, so subsequent Super Claw dashes and Nori plunges remain functional.
 
 Actor snapshots add optional bounded paw selection, charge, charging/dashing
 flags, remaining dash time, cooldown, launch/finisher sequences, origin and aim.

@@ -56,6 +56,9 @@ func sample(world_position: Vector3) -> PlayerCommand:
 		if _camera_aim_active():
 			var direction := command.aim_point - world_position
 			_aim = Vector2(direction.x, direction.z).normalized()
+		elif not command.move.is_zero_approx():
+			# Free-look idle keeps the last travel heading in world space.
+			_aim = command.move.normalized()
 	command.face_aim = first_person_view
 	command.aim = _aim
 	command.dash_direction = command.move.normalized() if command.move.length_squared() > 0.01 else _aim

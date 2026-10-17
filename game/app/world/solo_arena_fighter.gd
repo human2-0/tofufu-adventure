@@ -73,7 +73,6 @@ static func stop_motion(actor: Player) -> void:
 	actor.motor.cancel_jump()
 	actor.motor.cancel_dash_charge()
 	actor.motor.impact.clear()
-	actor.ability_velocity = Callable()
 
 static func clear_projectiles(game: AdventureGame) -> void:
 	game.combat.bow.clear_flights()

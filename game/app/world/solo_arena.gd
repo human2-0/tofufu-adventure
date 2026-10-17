@@ -131,6 +131,7 @@ func _contain() -> void:
 	if not arena.contains_arena(game.player.global_position):
 		game.player.global_position = arena.constrained_position(game.player.global_position)
 		SoloArenaFighter.stop_motion(game.player)
+		game.combat.interrupt()
 	if is_instance_valid(boss) and not arena.contains_arena(boss.global_position):
 		boss.global_position = arena.constrained_position(boss.global_position)
 		boss.velocity = Vector3.ZERO

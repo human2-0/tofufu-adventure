@@ -54,6 +54,8 @@ func _run() -> void:
 	await process_frame
 	actor.set_physics_process(true)
 	await ticks(3)
+	SoloArenaFighter.stop_motion(actor)
+	check(actor.ability_velocity.is_valid(), "arena motion reset must preserve the installed ability movement callback")
 	combat.step(Vector2.DOWN, false, 1.99, Vector2.ZERO, false, true)
 	combat.equipment.step(Vector2.DOWN, false, true, false, false, 0, DT)
 	check(combat.claws.charging and not combat.claws.dashing and combat.vitals.current == 100, "1.99s cannot launch, spend SP or deal damage")

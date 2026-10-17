@@ -32,12 +32,14 @@ func _run() -> void:
 	game.combat.vitals.current = 43.0
 	game.healing.apple_duration_remaining = 20.0
 	game.player.motor.cooldown_remaining = 0.7
+	var motion := game.player.ability_velocity
 	var old := AdventureSnapshot.capture(game, "Before", 0.0)
 	arena.start()
 	if not is_instance_valid(arena.boss):
 		printerr("FAIL: boss could not start at ", game.player.global_position)
 		quit(1)
 		return
+	check(game.player.ability_velocity == motion, "solo arena entry preserves ability movement wiring")
 	check(arena.phase == "entry" and arena.boss.target.maximum == 2400.0, "challenge creates one powerful boss and countdown")
 	check(game.health.maximum == 180.0 and game.loadout.has_equipped("celestial_sword") and game.loadout.has_equipped("soy_raygun"), "match grants explicit temporary weapons and health")
 	var command := PlayerCommand.new()
@@ -147,6 +149,7 @@ func _run() -> void:
 		art.present(back.rotated(Vector3.UP, -direction * PI / 4.0), false, true, false, 0.0)
 		check(art.pose_index == direction + 8, "weapon pose has independent directional frame %d" % direction)
 	arena.finish("TEST SURRENDER")
+	check(game.player.ability_velocity == motion, "solo arena exit preserves Super Claw and Nori movement")
 	check(game.player.motor.cooldown_remaining == 0.7, "original dash cooldown is restored")
 	await ticks(1)
 	check(arena.phase == "complete" and not game.player.command_filter.is_valid(), "surrender ends boss and removes input filter")

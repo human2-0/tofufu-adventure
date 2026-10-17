@@ -43,6 +43,7 @@ func _run() -> void:
 	view._unhandled_input(click)
 	check(game.camera.shoulder_side == -1.0, "inventory inspection blocks direction switch")
 	view.set_inventory_inspection(false)
+	_check_shoulder_idle(game, source)
 	view.cycle_mode()
 	check(view.first_person and game.camera.first_person, "second cycle enters first person")
 	view._unhandled_input(click)
@@ -140,3 +141,23 @@ func _run() -> void:
 	await process_frame
 	if failures == 0: print("First-person checks passed")
 	quit(1 if failures else 0)
+
+func _check_shoulder_idle(game: Node3D, source: LocalPlayerInput) -> void:
+	var sprite: FufuVisuals = game.player.visuals
+	for yaw in [0.0, PI * 0.5]:
+		game.camera.yaw = yaw
+		game.camera._follow_shoulder(10.0)
+		for keys in [["move_right"], ["move_right", "move_down"], ["move_down"], ["move_left", "move_down"], ["move_left"], ["move_left", "move_up"], ["move_up"], ["move_right", "move_up"]]:
+			for key in keys: Input.action_press(key)
+			var walking := source.sample(game.player.position)
+			for key in keys: Input.action_release(key)
+			sprite.present(walking, Vector3(walking.move.x, 0, walking.move.y) * 4.8, true, false, 0.016)
+			var facing := sprite.current_facing
+			var idle := source.sample(game.player.position)
+			check(idle.aim.is_equal_approx(walking.move.normalized()), "behind-view idle retains last world travel direction")
+			for frame in 3: sprite.present(idle, Vector3.ZERO, true, false, 0.016)
+			check(sprite.current_facing == facing and sprite.texture == sprite.idle_texture, "all eight behind-view walk poses stop in the matching standing pose")
+	var retained := source.sample(game.player.position)
+	game.camera.orbit(Vector2(180, 0))
+	game.camera._follow_shoulder(10.0)
+	check(source.sample(game.player.position).aim.is_equal_approx(retained.aim), "orbit after stopping preserves world heading")

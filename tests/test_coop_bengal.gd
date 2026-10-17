@@ -59,6 +59,17 @@ func _run() -> void:
 	var game: AdventureGame = sessions[0].game
 	var remote: CoopActor = sessions[0].roster.party[GUEST]
 	var replica: CoopActor = sessions[1].roster.party[GUEST]
+	var motion := remote.actor.ability_velocity
+	var fighters := sessions[0].duel._fighters
+	fighters._leave_pad(remote, 1)
+	check(remote.actor.ability_velocity == motion, "duel exit preserves authoritative ability movement")
+	remote.actor.position = game.world.duel_arena.global_position + Vector3.RIGHT * 40
+	remote.combat.claws.charging = true
+	remote.combat.plunge.active = true
+	var participants: Array[String] = [GUEST]
+	fighters.contain(participants)
+	check(not remote.combat.claws.busy() and not remote.combat.plunge.active, "duel containment cancels active abilities")
+	check(remote.actor.ability_velocity == motion, "duel containment preserves future ability movement")
 	remote.health.current = 30
 	remote.combat.vitals.current = 10
 	remote.progression.progress.award_experience(CharacterProgress.threshold(15, true))
