@@ -11,7 +11,7 @@ static func height_at(x: float, z: float, ocean: OceanWorld) -> float:
 	snow += 4.4 * exp(-Vector2(x - 28, z + 159).length_squared() / 260.0)
 	snow = lerpf(snow, 1.15, 1.0 - smoothstep(2.0, 5.2, trail_distance(x, z)))
 	snow += WorldContours.rim(x, z, HALF_WIDTH, NORTH_START, NORTH_END, ocean.farm.noise.seed, true)
-	var blend := smoothstep(0.0, 1.0, clampf((NORTH_START - z) / 22.0, 0.0, 1.0))
+	var blend := smoothstep(0.0, 1.0, clampf((NORTH_START - z) / 36.0, 0.0, 1.0))
 	return lerpf(ocean.point(x, maxf(z, NORTH_START)).y, snow, blend)
 
 static func trail_distance(x: float, z: float) -> float:
@@ -36,8 +36,7 @@ static func build(parent: Node3D, ocean: OceanWorld) -> void:
 	var ground := MeshInstance3D.new()
 	ground.name = "FrostGround"
 	ground.mesh = surface.commit()
-	var material := MeadowGeometry.material(Color.WHITE)
-	material.vertex_color_use_as_albedo = true
+	var material := TerrainFinish.create()
 	ground.material_override = material
 	parent.add_child(ground)
 	ground.create_trimesh_collision()

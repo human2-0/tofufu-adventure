@@ -203,6 +203,15 @@ func _check_replica_work(replica: CoopActor) -> void:
 	replica.target_state.combat.gun = true
 	replica._process(0.016)
 	check(replica.actor.visuals.attack_facing == command.aim and gun.facing == command.aim, "peer firing keeps hand and gun facing together while moving")
+	command.attack_held = false
+	replica.target_state.combat.gun = false
+	replica.target_state.combat.active = false
+	replica.target_state.combat.punch = replica.combat.tuning.punch_cooldown
+	replica.target_state.combat.punch_sequence = replica.combat.equipment.punch_sequence + 1
+	replica._view_age = 0.0
+	replica._process(0.0)
+	check(replica.actor.visuals.attack_facing == command.aim and replica.combat.equipment.facing == command.aim, "moving peer fist contacts face the strike instead of travel")
+	check(replica.actor.visuals.unarmed_pose.call().get("aim", Vector2.ZERO) == command.aim, "whole-body peer pose receives the same direction as its hit effect")
 	replica.target_state = state
 
 func _check_encounter_motion() -> void:

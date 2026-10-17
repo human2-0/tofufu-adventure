@@ -125,7 +125,7 @@ func _responsive() -> void:
 	var padding: int = 16 if compact else (24 if size.x < 1000 else 48)
 	for side in ["left", "right", "top", "bottom"]:
 		_margin.add_theme_constant_override("margin_" + side, padding)
-	_page.custom_minimum_size.x = minf(_page_width, size.x - padding * 2 - 12) if _page_width > 0 else 0
+	_page.custom_minimum_size.x = minf(_page_width, size.x - padding * 2 - 12) if _page_width > 0 else 0.0
 	if is_instance_valid(heading): heading.add_theme_font_size_override("font_size", 24 if compact else 32)
 	note.add_theme_font_size_override("font_size", 12 if compact else 16)
 	if not is_instance_valid(_brand): return

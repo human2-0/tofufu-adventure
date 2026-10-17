@@ -15,6 +15,9 @@ static func build(game: AdventureGame) -> void:
 	var cloud_visit := CloudRealmVisit.new()
 	cloud_visit.game = game
 	game.add_child(cloud_visit)
+	game.soy_spots = SoySaveSpots.new()
+	game.soy_spots.game = game
+	game.add_child(game.soy_spots)
 	game.farming = SoybeanFarming.new()
 	game.farming.game = game
 	game.add_child(game.farming)

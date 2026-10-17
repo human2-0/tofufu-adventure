@@ -18,14 +18,14 @@ func setup(value: InventoryItem, footer: String, tile_size: Vector2) -> void:
 	content.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	content.add_theme_constant_override("separation", 1)
 	add_child(content)
-	var icon := TextureRect.new()
-	icon.custom_minimum_size = Vector2(48, 48)
-	icon.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
-	icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	icon.texture = InventoryIconQuality.for_slot(item.icon)
-	icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	content.add_child(icon)
+	var item_icon := TextureRect.new()
+	item_icon.custom_minimum_size = Vector2(48, 48)
+	item_icon.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	item_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+	item_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	item_icon.texture = InventoryIconQuality.for_slot(item.icon)
+	item_icon.texture_filter = CanvasItem.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	content.add_child(item_icon)
 	var item_name := Label.new()
 	item_name.text = item.name
 	item_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER

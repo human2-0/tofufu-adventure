@@ -8,6 +8,7 @@ const SHED := Vector2(26, -49)
 const UNITS := Vector2(49, -54)
 const FLOWERS := Vector2(47, -25)
 const FOOD := Vector2(65, -30)
+const FUFU_STUDY := Vector2(40, -13.5)
 const BOUNDS := Rect2(17, -60, 55, 63)
 
 static func build(world: Meadow) -> void:
@@ -25,6 +26,9 @@ static func build(world: Meadow) -> void:
 	MeadowGeometry.signpost(world, world.ground_point(19, 1), "STODOŁA · GRANDMA · GRANDPA ↑")
 	MeadowGeometry.signpost(world, world.ground_point(69, 0), "COUNTRY ROAD · FIELDS")
 	StaticDecorationBatch.build(world)
+	var fufu_study := preload("res://game/world/farm/fufu_3d_display.tscn").instantiate() as Node3D
+	fufu_study.position = world.ground_point(FUFU_STUDY.x, FUFU_STUDY.y)
+	world.add_child(fufu_study)
 	for i in 4:
 		var cat := MeadowAnimal.new()
 		cat.kind = "cat"

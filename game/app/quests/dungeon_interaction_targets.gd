@@ -23,10 +23,10 @@ static func selected(dungeon: TofuDungeon, actor: Player) -> Dictionary:
 	for candidate: Dictionary in candidates:
 		var at: Vector3 = TofuFactory.object_position(candidate.id)
 		if not at.is_finite() or TofuFactory.room_at(at) != TofuFactory.room_at(actor.global_position): continue
-		var range: float = actor.global_position.distance_to(at)
-		if range < distance and dungeon.puzzle_runtime._visible(actor, at):
+		var reach: float = actor.global_position.distance_to(at)
+		if reach < distance and dungeon.puzzle_runtime._visible(actor, at):
 			closest = candidate
-			distance = range
+			distance = reach
 	if closest.is_empty() and not cargo.is_empty():
 		var object_id: String = cargo.trim_prefix("slab_") if cargo.begins_with("slab_") else ""
 		return _entry(cargo, TofuPuzzleCommand.Action.RETURN_PROP, object_id, "Return " + cargo_name(dungeon, actor) + " to dock")

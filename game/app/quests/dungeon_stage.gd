@@ -35,10 +35,10 @@ static func spawn_stage(dungeon: TofuDungeon) -> void:
 	if dungeon.state.stage == 3 and not dungeon.state.coagulant_added: count = 0
 	if dungeon.state.stage == 5: count = 1
 	for i in count:
-		var enemy: FactoryBean = Dofufu.new() if dungeon.state.stage == 5 and i == 0 else FactorySoyFighter.new()
+		var enemy: FactoryBean = (Dofufu.new() as FactoryBean) if dungeon.state.stage == 5 and i == 0 else FactorySoyFighter.new()
 		if enemy is Dofufu: (enemy as Dofufu).combat_participants = maxi(1, dungeon._actors_inside().size())
 		else: enemy.kind = FactoryBean.Kind.DOFU if dungeon.state.stage >= 3 else (FactoryBean.Kind.BRUISER if i % 2 == 1 else FactoryBean.Kind.SCOUT)
-		enemy.position = TofuFactory.CENTERS[dungeon.state.stage] + Vector3(-3 + float(i % 3) * 3, 0.1, -1 + float(i / 3) * 3)
+		enemy.position = TofuFactory.CENTERS[dungeon.state.stage] + Vector3(-3 + float(i % 3) * 3, 0.1, -1 + float(int(i / 3.0)) * 3)
 		enemy.quarry = dungeon._nearest_actor(enemy.position)
 		dungeon.game.world.add_child(enemy)
 		enemy.targeting.connect(ActorProgression.threaten)
@@ -98,12 +98,12 @@ static func enemy_defeated(dungeon: TofuDungeon, _at: Vector3, enemy: FactoryBea
 		dungeon.state.begin_process()
 		dungeon.game.hud.announce("Room secure · " + TofuFactory.INSTRUCTIONS[dungeon.state.stage])
 
-static func crate_broken(dungeon: TofuDungeon, at: Vector3, crate: FactoryCrate, index: int) -> void:
+static func crate_broken(dungeon: TofuDungeon, _at: Vector3, crate: FactoryCrate, index: int) -> void:
 	dungeon._crates.erase(crate)
 	dungeon._unregister_target(crate.target)
 	if dungeon.state.crate_broken(index): return
 	if index % 2 == 0:
-		var room: int = clampi(index / 2, 0, 5)
+		var room: int = clampi(int(index / 2.0), 0, 5)
 		if dungeon.game.world_items.pool.spawn("soy_milk", 1, TofuFactory.recovery_anchor(room), Vector2.RIGHT) == null: return
 	dungeon.state.mark_crate(index)
 

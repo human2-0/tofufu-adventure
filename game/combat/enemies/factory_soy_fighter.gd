@@ -20,6 +20,7 @@ var _stance: String = "idle"
 
 func _physics_process(delta: float) -> void:
 	if not _alive or not is_instance_valid(quarry): return
+	if EnemyParalysis.hold(self, target, delta): return
 	if reaction.step(delta): return
 	var offset := quarry.global_position - global_position
 	offset.y = 0.0

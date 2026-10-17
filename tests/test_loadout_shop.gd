@@ -31,6 +31,17 @@ func _run() -> void:
 	game.merchant.window._first_button.grab_focus()
 	check(game.merchant.window._tooltip._details.text.contains("close-range blade"), "focused shop item shows its description")
 	game.merchant.window.close()
+	check("soy_milk" in MerchantLocations.stock(game.world, game.world.weapon_merchant) and "soy_milk" in MerchantLocations.stock(game.world, game.world.cloud_realm.court.merchant), "both merchants offer factory Soy Milk")
+	game.merchant.purchase(game.player, game.inventory, "soy_milk")
+	var milk_slot := ""
+	for slot_name in CharacterEquipment.SLOTS:
+		var bought: ItemStack = game.character_equipment.get_slot(slot_name)
+		if bought != null and bought.item.id == "soy_milk": milk_slot = slot_name
+	check(not milk_slot.is_empty(), "purchased factory milk equips into an available support slot")
+	game.health.current = 40
+	check(game.healing.use_slot(milk_slot), "purchased Soy Milk uses existing support consumable path")
+	game.healing.step(2.5)
+	check(is_equal_approx(game.health.current, 90.0), "shop milk preserves factory healing: 50 HP over 2.5 seconds")
 	game.inventory.add_item(InventoryItem.currency("mature_bean"), 2)
 	game.merchant.purchase(game.player, game.inventory, "sotjet")
 	var sotjet_slot := _slot_of(game.inventory, "sotjet")

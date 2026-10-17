@@ -1,9 +1,9 @@
 class_name TrainingMob
 extends CharacterBody3D
-## Small roaming snail: wander, chase, telegraph, strike, recover.
+## Small roaming snail: wander, chase, telegraph, strike, recover. Helpers use the annotated signals/state.
 
-signal targeting(quarry: Node3D)
-signal attacked(amount: float, source: Vector3)
+@warning_ignore("unused_signal") signal targeting(quarry: Node3D)
+@warning_ignore("unused_signal") signal attacked(amount: float, source: Vector3)
 signal defeated(at: Vector3)
 @export var quarry: Node3D
 @export var protected_area: Rect2
@@ -21,7 +21,7 @@ var _nameplate: Label3D
 var _warning: Label3D
 var _home: Vector3
 var _destination: Vector3
-var _timer: float = 0.0
+@warning_ignore("unused_private_class_variable") var _timer: float = 0.0
 var _rest: float = 0.0
 var _respawn: float = 0.0
 var _windup: float = 0.0
@@ -53,6 +53,7 @@ func _ready() -> void:
 	_warning.visible = false
 	_create_nameplate()
 	target = Damageable.new()
+	target.paralysis_allowed = true
 	target.maximum = tuning.dry_health
 	target.headshot_height = 0.72
 	target.position.y = 0.6
@@ -75,6 +76,7 @@ func _physics_process(delta: float) -> void:
 			collision_layer = 2
 			target.restore()
 		return
+	if EnemyParalysis.hold(self, target, delta): return
 	if reaction.step(delta): return
 	_rest = maxf(0.0, _rest - delta)
 	var direction := Vector3.ZERO if reaction.stagger > 0.0 or (not is_on_floor() and velocity.y != 0.0) else _choose_direction(delta)

@@ -2,7 +2,7 @@ class_name GamePreferences
 extends RefCounted
 ## Local settings only. ConfigFile stores primitives, never peer-supplied objects.
 
-const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "run", "attack", "reload_gun", "guard", "punch", "drop_weapon", "pickup_weapon", "combat_slot_1", "combat_slot_2", "camera_mode", "camera_direction", "toggle_inventory", "toggle_map", "use_support_1", "use_support_2", "use_support_3", "use_support_4", "toggle_help", "return_to_camp", "skip_time"]
+const ACTIONS: Array[String] = ["move_left", "move_right", "move_up", "move_down", "jump", "dash", "run", "attack", "reload_gun", "guard", "punch", "drop_weapon", "pickup_weapon", "combat_slot_1", "combat_slot_2", "camera_mode", "camera_direction", "toggle_inventory", "toggle_character", "toggle_map", "use_support_1", "use_support_2", "use_support_3", "use_support_4", "toggle_help", "return_to_camp", "skip_time"]
 const RESOLUTIONS: Array[Vector2i] = [Vector2i(960, 540), Vector2i(1280, 720), Vector2i(1600, 900), Vector2i(1920, 1080), Vector2i(2560, 1440)]
 var path: String = "user://preferences.cfg"
 var config := ConfigFile.new()
@@ -17,9 +17,11 @@ var minimap_zoom: float = 1.0
 var skip_item_drop_warning: bool = false
 var nickname: String = ""
 var language: String = "en"
+var graphics := GraphicsPreferences.new()
 
 func load_preferences() -> void:
 	config.load(path)
+	graphics.load_config(config)
 	var stored_language: Variant = config.get_value("interface", "language", TranslationServer.get_locale().substr(0, 2))
 	apply_language(stored_language if stored_language is String else "en")
 	var stored_name: Variant = config.get_value("profile", "nickname", "")
@@ -47,6 +49,7 @@ func load_preferences() -> void:
 	apply_display(resolution, fullscreen)
 
 func save() -> Error:
+	graphics.save_config(config)
 	config.set_value("interface", "language", language)
 	config.set_value("profile", "nickname", nickname)
 	config.set_value("map", "zoom", minimap_zoom)
@@ -97,7 +100,7 @@ func apply_display(index: int, full: bool) -> void:
 	if not full:
 		DisplayServer.window_set_size(RESOLUTIONS[resolution])
 		var screen := DisplayServer.window_get_current_screen()
-		DisplayServer.window_set_position(DisplayServer.screen_get_position(screen) + (DisplayServer.screen_get_size(screen) - RESOLUTIONS[resolution]) / 2)
+		DisplayServer.window_set_position(DisplayServer.screen_get_position(screen) + Vector2i(Vector2(DisplayServer.screen_get_size(screen) - RESOLUTIONS[resolution]) / 2.0))
 
 func apply_rendering(viewport: Viewport, limit: int, scale: float, sync: bool = false) -> void:
 	frame_limit = limit if limit in [0, 60, 120, 144] else 120
@@ -153,7 +156,7 @@ static func binding_text(action: String, device: String) -> String:
 	for event in InputMap.action_get_events(action):
 		if same_device(event, device):
 			names.append(InputBindingNames.describe(event))
-	return " / ".join(names) if not names.is_empty() else TranslationServer.translate("Unassigned")
+	return " / ".join(names) if not names.is_empty() else String(TranslationServer.translate("Unassigned"))
 
 func _replace(action: String, event: InputEvent, device: String) -> void:
 	for previous in InputMap.action_get_events(action):

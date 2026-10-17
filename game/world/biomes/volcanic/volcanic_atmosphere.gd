@@ -35,19 +35,19 @@ func _process(delta: float) -> void:
 		var at := crater
 		var size := 3.0 + phase * 11.0
 		if i < 64:
-			at = VolcanicTerrain.point(VENTS[i / 8], 0.3)
+			at = VolcanicTerrain.point(VENTS[i >> 3], 0.3)
 			size = 0.4 + phase * 1.4
 		at += Vector3(sin(i * 2.4 + phase * 3) * phase * 3, phase * (8 if i < 64 else 50), phase * 4)
 		var fade := sin(phase * PI)
 		steam.multimesh.set_instance_transform(i, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * size * fade), at))
-	var active := erupting()
+	var eruption_active := erupting()
 	for i in 32:
 		var age := fmod(elapsed + i * 0.157, 3.5)
 		var angle := i * 2.399
 		var at := crater + Vector3(cos(angle) * age * 6, age * 26 - age * age * 9.0, sin(angle) * age * 6)
-		var size := 0.36 + (i % 4) * 0.08 if active and at.y > crater.y - 3 else 0.0
+		var size := 0.36 + (i % 4) * 0.08 if eruption_active and at.y > crater.y - 3 else 0.0
 		cinders.multimesh.set_instance_transform(i, Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * size), at))
-	rumble.volume_db = move_toward(rumble.volume_db, -11.0 if active else -27.0, delta * 12)
+	rumble.volume_db = move_toward(rumble.volume_db, -11.0 if eruption_active else -27.0, delta * 12)
 
 func _pool(count: int, color: Color, glow: bool) -> MultiMeshInstance3D:
 	var material := StandardMaterial3D.new()

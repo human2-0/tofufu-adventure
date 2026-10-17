@@ -23,7 +23,7 @@ func present(deck: int, solved: bool, sequence: int, revision: int, action: int,
 	for i in 4:
 		var remembered := deck == 1 and ORDER.find(i) < sequence
 		resting[i] = Color("6de4cf") if solved or remembered else Color("cf9d59")
-	if revision != last_revision and last_revision >= 0 and action / 4 == deck and action >= 0:
+	if revision != last_revision and last_revision >= 0 and int(action / 4.0) == deck and action >= 0:
 		selected = action % 4
 		success = accepted
 		pulse = 0.9

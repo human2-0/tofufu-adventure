@@ -1,10 +1,10 @@
 class_name PlaytestRoom
 extends Node
-## Lobby lifecycle and admission. Identity is supplied by the authenticated transport.
+## Lobby lifecycle and admission. Identity is supplied by the authenticated transport. Helpers use the annotated signals/state.
 
 signal changed
 signal started(is_host: bool, members: Array, local_key: String)
-signal gameplay_packet(key: String, data: Dictionary)
+@warning_ignore("unused_signal") signal gameplay_packet(key: String, data: Dictionary)
 signal ended(reason: String)
 var send_packet: Callable
 var peers: Dictionary = {}
@@ -23,7 +23,7 @@ var _pending: String = ""
 var _timeout: float = 0
 var _retry_clock: float = 0
 var _presence_clock: float = 0
-const GAME_VERSION: int = 58
+const GAME_VERSION: int = 64
 
 func receive(event: Dictionary) -> void:
 	var key := str(event.get("key", ""))

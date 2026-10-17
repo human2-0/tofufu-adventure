@@ -116,12 +116,12 @@ func _bonuses(game: AdventureGame) -> void:
 	for speed: float in [game.combat.attack_speed_multiplier, game.combat.gun.attack_speed_multiplier, game.combat.sotjet.attack_speed_multiplier]:
 		check(is_equal_approx(speed, progress.attack_multiplier() * 1.25), "all attack rates gain twenty-five percent")
 	var flow: SotjetFlow = game.combat.sotjet.flow
-	check(is_equal_approx(flow.attack_cadence_multiplier, 1.25), "continuous Soyjet damage ticks also gain twenty-five percent attack cadence")
+	check(is_equal_approx(flow.attack_cadence_multiplier, progress.attack_multiplier() * 1.25), "continuous Soyjet damage ticks also gain twenty-five percent attack cadence")
 	var target: Damageable = game.encounters.dummy_nodes[0].target
 	flow._hit_until.clear()
 	flow._clock = 1.0
 	flow._impact({"collider": target.body, "position": target.global_position, "normal": Vector3.UP}, Vector3.ZERO)
-	check(is_equal_approx(flow._hit_until[target.get_instance_id()] - flow._clock, flow.tuning.damage_interval / 1.25), "actual stream hit interval is reduced to eighty percent")
+	check(is_equal_approx(flow._hit_until[target.get_instance_id()] - flow._clock, flow.tuning.damage_interval / (progress.attack_multiplier() * 1.25)), "actual stream hit interval combines trained pace and outfit cadence")
 	for kind in Damageable.HitKind.values():
 		game.health.invulnerability = 0.0
 		var before: float = game.health.current

@@ -41,6 +41,33 @@ func _run() -> void:
 			var a := game.world.ground_point(x, seam - 0.04).y
 			var b := game.world.ground_point(x, seam + 0.04).y
 			check(absf(a - b) < 0.15, "height remains continuous on both sides of each biome crossing")
+	# The formerly exposed region sides now have a graded physical shoulder.
+	for at in [Vector2(100, 130), Vector2(-95, 240), Vector2(120, -60), Vector2(194, 6), Vector2(-1000, 0), Vector2(156, -145)]:
+		check(MainlandFringe.contains(at), "former chunk edges are backed by a mainland shoulder")
+		var desired := game.world.ground_point(at.x, at.y)
+		check(ParrotLanding.height(game, desired) >= maxf(desired.y, MainlandFringe.water_level(at)), "parrot flight clears the shoulder and outer sea")
+		var ray := PhysicsRayQueryParameters3D.create(desired + Vector3.UP * 2, desired - Vector3.UP, 1)
+		var hit := game.get_world_3d().direct_space_state.intersect_ray(ray)
+		check(not hit.is_empty() and absf(hit.position.y - desired.y) < 0.05, "shoulder landing height matches collision at %s" % at)
+		check(MapTerrainImage._color(game.world, at) != Color("233e49"), "map presents shoulder land and sea instead of void")
+	for z in [100.0, 160.0, 230.0, 300.0, 400.0]:
+		check(absf(game.world.ground_point(80, z).y - game.world.ground_point(80.01, z).y) < 0.06, "east shoulders meet the original ground at %s" % z)
+	var switches := GraphicsPreferences.new()
+	game.graphics_effects.configure(switches)
+	game.weather.set_phase(0.42)
+	game.weather_particles._process(2.0)
+	var condition := game.weather.condition
+	var phase := game.weather.phase
+	game.wind.strength = 0.8
+	for key: String in GraphicsPreferences.LABELS: switches.set_enabled(key, false)
+	check(not game.weather_particles._rain.visible and not game.weather_particles._leaves.visible and not game.weather_particles._snow.visible, "disabled weather batches disappear immediately")
+	check(not game.world.rain_effects.visible and not game.world.rain_effects.is_processing(), "disabled puddles stop their update work")
+	check(not game.cycle.world_environment.environment.fog_enabled and not game.cycle._motes.visible, "fog and fireflies can be disabled")
+	check(game.cycle.sky_effects.present(20, 0.4, 1, 1) == 0 and not game.cycle.sky_effects._audio.playing, "disabled lightning and thunder never flash or play")
+	check(game.weather.condition == condition and game.weather.phase == phase and game.wind.strength > 0, "graphics choices preserve real weather and wind rules")
+	for key: String in GraphicsPreferences.LABELS: switches.set_enabled(key, true)
+	game.weather_particles._process(2.0)
+	check(game.weather_particles._rain.visible and game.world.rain_effects.is_processing(), "effects can be re-enabled during the same weather")
 	var ocean: OceanWorld = game.world.ocean
 	check(ocean.point(80, -169).y > OceanTerrain.WATER_LEVEL + 1.0, "crescent has a dry, elevated lookout")
 	check(ocean.point(66, -157).y < OceanTerrain.WATER_LEVEL and ocean.point(36, -153).y < OceanTerrain.WATER_LEVEL, "lagoon connects to the sea through its western inlet")

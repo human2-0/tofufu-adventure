@@ -1,6 +1,6 @@
 class_name CoopActor
 extends Node
-## App composition for one owned actor's combat, health, respawn and replica view.
+## App composition for one owned actor's combat, health, respawn and replica view. Helpers use the annotated signals/state.
 
 const FART_CLOUD := preload("res://game/combat/abilities/fart_cloud.gd")
 
@@ -14,6 +14,7 @@ var loadout: ActorLoadout
 var inventory: PlayerInventory
 var character_equipment: CharacterEquipment
 var quests := QuestState.new()
+var soy_spots := SoySpotOwnership.new()
 var healing: PlayerHealing
 var world_items: WorldItems
 var authority: bool = false
@@ -24,7 +25,7 @@ var block_count: int = 0
 var last_command := PlayerCommand.new()
 var target_state: Dictionary = {}
 var prediction: CoopPrediction
-var _view_age: float = 0
+@warning_ignore("unused_private_class_variable") var _view_age: float = 0
 var motion := ReplicaMotion.new()
 var spectating: bool = false
 
@@ -99,17 +100,21 @@ func _command(command: PlayerCommand, delta: float) -> void:
 	if command.camp_pressed and not duel_defeated.is_valid() and (world_items == null or not world_items.game.factory_dungeon.puzzle_enabled or not world_items.game.factory_dungeon.actor_in_run(actor)): respawn()
 	if command.time_pressed: time_requested.emit()
 	var moving := Vector2(actor.velocity.x, actor.velocity.z).length_squared() > 0.01
-	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.melee_selected() and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
-	actor.ability_velocity = combat.plunge.velocity
+	var primary_fist := not combat.equipment.melee_selected() and not combat.ranged_selected()
+	var punch_held := not command.cancel_actions and (command.punch_held or (command.attack_held and primary_fist))
+	var punch_pressed := not command.cancel_actions and (command.punch_pressed or (command.attack_pressed and primary_fist))
+	combat.equipment.step(command.aim, command.guard_held, punch_held, command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id, punch_pressed)
 	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO, not actor.is_on_floor(), command.guard_held)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.reload_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta, command.reload_pressed and not command.cancel_actions)
 	combat.sotjet.flow.targets = combat.targets
 	combat.sotjet.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
-	actor.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
+	combat.bow.step(command.attack_held and not command.cancel_actions, command.guard_held and not command.cancel_actions, command.aim, command.aim_point, delta)
+	actor.visuals.attack_facing = combat.attack_aim if combat.active or combat.claws.busy() else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
 	if moving and not command.face_aim and not command.attack_held and not command.guard_held:
 		combat.gun.visual.facing = command.move
 		combat.sotjet.visual.facing = command.move
+		combat.bow.visual.facing = command.move
 	if command.use_healing_1: healing.use_slot("support_1")
 	if command.use_healing_2: healing.use_slot("support_2")
 	if command.use_healing_3: healing.use_slot("support_3")
@@ -136,7 +141,7 @@ func die() -> void:
 func capture() -> Dictionary:
 	loadout.persist_reserve()
 	var input_ack := (actor.command_source as RemotePlayerInput).consumed_sequence if actor.command_source is RemotePlayerInput else 0
-	return {"parrot_rest": CoopValues.array3(actor.parrot_rest) if actor.parrot_rest.is_finite() else [], "transport": actor.transport_active, "quests": quests.capture(), "spectating": spectating, "input_ack": input_ack, "facing_locked": last_command.face_aim or last_command.attack_held or last_command.guard_held, "hits": health.hit_counts.duplicate(), "clearance": minf(100, actor._ground_clearance()), "position": CoopValues.array3(actor.position), "velocity": CoopValues.array3(actor.velocity),
+	return {"soy_spots": soy_spots.mask, "parrot_rest": CoopValues.array3(actor.parrot_rest) if actor.parrot_rest.is_finite() else [], "transport": actor.transport_active, "quests": quests.capture(), "spectating": spectating, "input_ack": input_ack, "facing_locked": last_command.face_aim or last_command.attack_held or last_command.guard_held, "hits": health.hit_counts.duplicate(), "clearance": minf(100, actor._ground_clearance()), "position": CoopValues.array3(actor.position), "velocity": CoopValues.array3(actor.velocity),
 		"endurance": actor.motor.endurance.capture(),
 		"impact": actor.motor.impact.capture(),
 		"aim": [last_command.aim.x, last_command.aim.y], "grounded": actor.is_on_floor() and not actor.transport_active,
@@ -149,6 +154,7 @@ func capture() -> Dictionary:
 func restore(state: Dictionary, legacy_experience: int = 0) -> void:
 	actor.parrot_rest = CoopValues.vector3(state.parrot_rest) if state.get("parrot_rest", []).size() == 3 else Vector3.INF
 	quests.restore(state.get("quests", {}))
+	soy_spots.restore(int(state.get("soy_spots", 0)))
 	progression.progress.restore(state.get("progression", {}), legacy_experience)
 	respawn_count = int(state.get("respawns", 0))
 	block_count = int(state.get("blocks", 0))
@@ -159,7 +165,7 @@ func restore(state: Dictionary, legacy_experience: int = 0) -> void:
 	actor.motor.endurance.restore(state.get("endurance", {}))
 	actor.motor.cooldown_remaining = state.cooldown
 	spectating = bool(state.get("spectating", false))
-	health.current = 0.0 if spectating else maxf(1, state.health)
+	health.current = 0.0 if spectating else clampf(state.health, 1, health.maximum)
 	health.invulnerability = state.invulnerability
 	last_command.aim = Vector2(state.aim[0], state.aim[1])
 	CombatState.restore(combat, state.combat)

@@ -5,7 +5,7 @@ extends RefCounted
 var flow: CastleAdventure
 
 func chest(index: int) -> CastleTreasureChest:
-	return flow.castle.floors[index / 4].chests[index % 4]
+	return flow.castle.floors[int(index / 4.0)].chests[index % 4]
 
 func claim(actor: Player, index: int) -> bool:
 	if index < 0 or index >= 12 or actor not in flow.party.actors() or not flow.reachable(actor, index + 13): return false

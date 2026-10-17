@@ -66,8 +66,8 @@ func _physics_process(delta: float) -> void:
 	if not _speaker.playing: _play_step(_random.randf_range(0.9, 1.1), -10.0)
 	_until_step = STEP_INTERVAL / clampf(speed / 4.0, 0.7, 1.5)
 
-func present_grounded(grounded: bool) -> void:
-	_replica_grounded = grounded
+func present_grounded(is_grounded: bool) -> void:
+	_replica_grounded = is_grounded
 	_has_replica_grounded = true
 
 func present_dashing(dashing: bool) -> void:
@@ -96,8 +96,8 @@ func _dash_sound() -> AudioStreamWAV:
 	var bytes := PackedByteArray()
 	bytes.resize(int(rate * 0.22) * 2)
 	var low := 0.0
-	for i in bytes.size() / 2:
-		var progress := float(i) / (bytes.size() / 2)
+	for i in int(bytes.size() / 2.0):
+		var progress := float(i) / (int(bytes.size() / 2.0))
 		low = lerpf(low, _random.randf_range(-1, 1), 0.24)
 		bytes.encode_s16(i * 2, int(low * sin(progress * PI) * (1.0 - progress) * 24000))
 	var stream := AudioStreamWAV.new()

@@ -58,9 +58,9 @@ static func _fields(world: Meadow) -> void:
 		var poses: Array[Transform3D] = []
 		for i in 1800:
 			var x := 73.8 + (i % 40) * 0.72 if kind == 0 else 18.4 + (i % 30) * 0.70
-			var z := -77.2 + (i / 40) * 0.63 if kind == 0 else 20.4 + (i / 30) * 0.56
+			var z := -77.2 + int(i / 40.0) * 0.63 if kind == 0 else 20.4 + int(i / 30.0) * 0.56
 			poses.append(Transform3D(Basis.IDENTITY, world.ground_point(x, z, 0.4 if kind == 0 else 0.63)))
-		SceneryInstances.build(world, "NortheastSoyFields" if kind == 0 else "SouthernWheatFields", soy_mesh if kind == 0 else wheat_mesh, poses)
+		SceneryInstances.build(world, "NortheastSoyFields" if kind == 0 else "SouthernWheatFields", (soy_mesh as Mesh) if kind == 0 else wheat_mesh, poses)
 	MeadowGeometry.signpost(world, world.ground_point(74, -46), "NORTHEAST · SOYBEANS")
 	MeadowGeometry.signpost(world, world.ground_point(22, 19), "SOUTH · WHEAT")
 
@@ -87,6 +87,6 @@ static func _forest(world: Meadow) -> void:
 	for i in 16:
 		var plant := MeadowProduce.new()
 		plant.item_id = "forest_mushroom"
-		plant.position = world.ground_point(19 + (i % 8) * 6.1, -61 - (i / 8) * 9)
+		plant.position = world.ground_point(19 + (i % 8) * 6.1, -61 - int(i / 8.0) * 9)
 		world.add_child(plant)
 		world.produce.append(plant)

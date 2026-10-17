@@ -11,7 +11,7 @@ func _ready() -> void:
 	for index in AppleTree.APPLE_YIELD:
 		var apple := AppleTreeVisuals.create_apple_model()
 		apple.scale = Vector3.ONE * 1.3
-		apple.position = Vector3((index % 2) * 0.36 - 0.18, -WorldItemDrop.RADIUS + 0.052, (index / 2) * 0.36 - 0.18)
+		apple.position = Vector3((index % 2) * 0.36 - 0.18, -WorldItemDrop.RADIUS + 0.052, int(index / 2.0) * 0.36 - 0.18)
 		apple.rotation.y = index * 1.7
 		add_child(apple)
 		_apples.append(apple)

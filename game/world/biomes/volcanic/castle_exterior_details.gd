@@ -13,8 +13,8 @@ static func build(parent: Node3D) -> void:
 			for y in [4.0, 12.0, 20.0]:
 				_window(batch, Vector3(side * 27.34, y, z), side * PI * 0.5)
 		for x in [-12.0, 0.0, 12.0]:
-			for y in [12.0, 20.0]: _window(batch, Vector3(x, y, side * 27.34), 0 if side > 0 else PI)
-		for x in [-18.0, 18.0]: _banner(batch, Vector3(x, 15, side * 27.75), 0 if side > 0 else PI)
+			for y in [12.0, 20.0]: _window(batch, Vector3(x, y, side * 27.34), 0.0 if side > 0 else PI)
+		for x in [-18.0, 18.0]: _banner(batch, Vector3(x, 15, side * 27.75), 0.0 if side > 0 else PI)
 	for x in [-27.5, 27.5]:
 		for z in [-27.5, 27.5]: _tower(batch, Vector3(x, 0, z))
 	_entrance(batch)
@@ -43,7 +43,7 @@ static func _tower(batch: CastleDecorationBatch, at: Vector3) -> void:
 		for i in 12:
 			batch.box("stone", at + Vector3(corner.x * 3.55, 1.8 + i * 2.0, corner.y * 3.55), Vector3(0.6, 0.6, 0.6))
 	for side in [-1.0, 1.0]:
-		for y in [5.0, 13.0, 21.0]: _window(batch, at + Vector3(0, y, side * 3.56), 0 if side > 0 else PI)
+		for y in [5.0, 13.0, 21.0]: _window(batch, at + Vector3(0, y, side * 3.56), 0.0 if side > 0 else PI)
 	for i in 8:
 		var angle := i * TAU / 8.0
 		var bottom := at + Vector3(sin(angle) * 4.7, 27, cos(angle) * 4.7)

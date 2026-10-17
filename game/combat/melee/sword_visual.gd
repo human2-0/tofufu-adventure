@@ -140,8 +140,8 @@ func _apply_pose() -> void:
 		return
 	var blade := (_hand_plane.y + _hand_plane.x * _outward * 0.55).normalized()
 	var width := blade.cross(_hand_plane.z).normalized()
-	var basis := Basis(width, -blade.cross(width), -blade)
+	var weapon_basis := Basis(width, -blade.cross(width), -blade)
 	var depth := 0.035 if _in_front else -0.035
-	var held := Transform3D(basis, _hand + _hand_plane.z * depth - basis * _model_grip)
+	var held := Transform3D(weapon_basis, _hand + _hand_plane.z * depth - weapon_basis * _model_grip)
 	_model_root.global_transform = _physical_pose.interpolate_with(held, _attachment)
 	grip.present(model_grip_position())

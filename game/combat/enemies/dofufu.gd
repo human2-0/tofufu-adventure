@@ -51,6 +51,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not _alive or not is_instance_valid(quarry): return
+	if EnemyParalysis.hold(self, target, delta): return
 	if not second_phase and target.current <= target.maximum * 0.5:
 		second_phase = true
 		phase_changed.emit(2)
@@ -84,13 +85,13 @@ func _approach(toward: Vector3) -> void:
 		velocity.x = toward.normalized().x * 3.4
 		velocity.z = toward.normalized().z * 3.4
 
-func _begin(name: String, duration: float) -> void:
+func _begin(attack_name: String, duration: float) -> void:
 	phase = Phase.WINDUP
-	_attack = name
+	_attack = attack_name
 	_clock = 0.0
 	_warning.visible = true
-	_warning.text = "! " + name
-	attack_telegraphed.emit(name, duration)
+	_warning.text = "! " + attack_name
+	attack_telegraphed.emit(attack_name, duration)
 
 func _windup_step(toward: Vector3) -> void:
 	velocity.x = 0.0

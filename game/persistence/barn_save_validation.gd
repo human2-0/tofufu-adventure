@@ -31,7 +31,7 @@ static func display(value: Variant) -> bool:
 	return value.has("enhanced")
 
 static func enhancement(id: Variant, value: Variant) -> bool:
-	return value is bool and (not value or id in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana", "celestial_sword", "celestial_staff", "soy_raygun"])
+	return value is bool and (not value or id in ["angel_bow", "bengal_paws", "knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana", "celestial_sword", "celestial_staff", "soy_raygun"])
 
 static func _integer(value: Variant) -> bool:
 	return _number(value, 2147483647) and value >= 0 and value == floorf(value)

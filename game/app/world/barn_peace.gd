@@ -9,5 +9,7 @@ static func prepare(game: Node3D, actor: Player, combat: PlayerCombat, command: 
 	if not contains(game, actor.global_position): return
 	combat.reset()
 	command.attack_held = false
+	command.attack_pressed = false
+	command.punch_pressed = false
 	command.punch_held = false
 	command.guard_held = false

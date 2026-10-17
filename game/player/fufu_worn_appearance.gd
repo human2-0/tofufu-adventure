@@ -53,8 +53,8 @@ func apply(sprite: Sprite3D, set_id: String, facing: int, walking: bool, walk_ph
 		sprite.frame = 0
 		sprite.flip_h = facing in MIRROR_RIGHT_FACINGS
 		sprite.pixel_size = WALK_PIXEL_SIZE
-		var feet := BRIGHT_WALK_FEET if set_id == "bright_leaf" else DARK_WALK_FEET
-		sprite.offset = Vector2(0, feet[direction_row] - WALK_CELL_SIZE.y * 0.5 - 0.56 / WALK_PIXEL_SIZE)
+		var walk_feet := BRIGHT_WALK_FEET if set_id == "bright_leaf" else DARK_WALK_FEET
+		sprite.offset = Vector2(0, walk_feet[direction_row] - WALK_CELL_SIZE.y * 0.5 - 0.56 / WALK_PIXEL_SIZE)
 		return
 	sprite.texture = BRIGHT_STANDING if set_id == "bright_leaf" else DARK_STANDING
 	sprite.hframes = 5

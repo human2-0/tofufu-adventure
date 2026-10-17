@@ -99,6 +99,31 @@ func _run() -> void:
 			var muzzle: Vector3 = view._jet_muzzle() if jet else view._gun_muzzle()
 			var actual: Vector2 = game.camera.unproject_position(muzzle) / root.get_visible_rect().size
 			check(actual.distance_to(expected) < 0.001, "first-person muzzle matches visible barrel through ADS and camera rotation")
+	game.player.set_physics_process(false)
+	var overlay := view.weapon_view
+	game.combat.active = false
+	game.combat.gun.selected = false
+	game.combat.sotjet.selected = false
+	game.combat.bow.selected = false
+	game.combat.equipment.knife_selected = false
+	game.combat.equipment.staff_selected = false
+	game.combat.claws.selected = true
+	game.combat.equipment._punch_time = BengalClaws.CADENCE * 0.5
+	game.combat.equipment.punch_sequence = 1
+	overlay._process(0.0)
+	var right := overlay._hands[0].position.z
+	var left := overlay._hands[1].position.z
+	check(right < left - 0.4, "first paw click extends right glove while left rests")
+	game.combat.equipment.punch_sequence = 2
+	overlay._process(0.0)
+	check(overlay._hands[1].position.z < overlay._hands[0].position.z - 0.4, "second paw click extends left glove while right rests")
+	game.combat.claws.sequence = 1
+	overlay._paws._process(0.0)
+	overlay._paws._finisher = 0.21
+	overlay._process(0.0)
+	check(is_equal_approx(overlay._hands[0].position.z, overlay._hands[1].position.z), "RMB finisher extends both paws together")
+	check(overlay._paws.rakes[0].visible and overlay._paws.rakes[1].visible, "RMB finisher displays both claw scratches")
+	game.combat.claws.selected = false
 	source.chat_blocked = true
 	await process_frame
 	await process_frame

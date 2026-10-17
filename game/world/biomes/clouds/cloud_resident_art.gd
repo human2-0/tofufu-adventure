@@ -24,11 +24,11 @@ func _ready() -> void:
 	_anchors.assign(entry.anchors)
 	_flip_cells.assign(entry.flip_cells)
 	for index in _bounds.size():
-		var frame := AtlasTexture.new()
-		frame.atlas = sheet
-		frame.region = CloudSpriteCatalog.crop(_bounds, index)
-		frame.filter_clip = true
-		_frames.append(frame)
+		var atlas_frame := AtlasTexture.new()
+		atlas_frame.atlas = sheet
+		atlas_frame.region = CloudSpriteCatalog.crop(_bounds, index)
+		atlas_frame.filter_clip = true
+		_frames.append(atlas_frame)
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	alpha_scissor_threshold = 0.4

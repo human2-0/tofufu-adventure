@@ -3980,8 +3980,8 @@ msgid "LMB"
 msgstr "LPM"
 
 #: game/ui/hud/hud_combat_view.gd:11 game/ui/hud/hud_combat_view.gd:20
-msgid "LMB / PUNCH · %d DMG"
-msgstr "LPM / PIĘŚĆ · %d OBRAŻEŃ"
+msgid "CLICK LMB / PUNCH · %d DMG"
+msgstr "KLIKNIJ LPM / PIĘŚĆ · %d OBRAŻEŃ"
 
 msgid "LOAD INTAKE"
 msgstr "ZAŁADUJ ZASYPNIK"
@@ -7840,12 +7840,12 @@ msgid "HP recovery begins after 30 seconds without combat.\nBars show contributi
 msgstr "Regeneracja HP zaczyna się po 30 sekundach bez walki.\nPaski pokazują wkład bonusów; każdy wiersz ma własną skalę."
 
 #: character hub and journey mastery
-msgid "Walk & run on land · +1% speed per medal"
-msgstr "Maszeruj i biegaj po lądzie · +1% prędkości za medal"
+msgid "Walk & run on land · +3% speed per medal"
+msgstr "Maszeruj i biegaj po lądzie · +3% prędkości za medal"
 
 #: character hub and journey mastery
-msgid "Land real hits · +1% attack speed per medal"
-msgstr "Trafiaj w cel · +1% tempa ataków za medal"
+msgid "Land real hits · +4% attack speed per medal"
+msgstr "Trafiaj w cel · +4% tempa ataków za medal"
 
 #: character hub and journey mastery
 msgid "Restore missing HP with food/medicine\n+2% natural HP/SP recovery per medal"
@@ -7941,3 +7941,304 @@ msgstr "+20% obrażeń broni"
 
 msgid "Items changed. Apply the chunk again."
 msgstr "Przedmioty się zmieniły. Użyj kąska ponownie."
+
+msgid "Weather and effects"
+msgstr "Pogoda i efekty"
+
+msgid "Disable individual effects for smoother play. Weather still affects the world. Changes apply immediately."
+msgstr "Wyłącz poszczególne efekty, aby gra działała płynniej. Pogoda nadal wpływa na świat. Zmiany działają od razu."
+
+msgid "Wind animation and leaves"
+msgstr "Animacja wiatru i liście"
+
+msgid "Rain particles"
+msgstr "Krople deszczu"
+
+msgid "Snow particles"
+msgstr "Płatki śniegu"
+
+msgid "Lightning flashes"
+msgstr "Błyski piorunów"
+
+msgid "Thunder sounds"
+msgstr "Odgłosy grzmotów"
+
+msgid "Puddles and rain splashes"
+msgstr "Kałuże i rozpryski deszczu"
+
+msgid "Fireflies and movement particles"
+msgstr "Świetliki i drobinki ruchu"
+
+msgid "Atmospheric fog"
+msgstr "Mgła atmosferyczna"
+
+msgid "Wind and rain sounds"
+msgstr "Odgłosy wiatru i deszczu"
+
+msgid "Effects saved."
+msgstr "Zapisano efekty."
+# Bengal jungle hunt and fist/speed training weapon.
+msgid "Bengal Paws"
+msgstr "Bengalskie Łapcie"
+
+msgid "CHIBI BENGAL · LV 15"
+msgstr "CHIBI BENGAL · POZ. 15"
+
+msgid "BENGAL PROWL · LV 15\nQUICK CLAWS · RARE PAWS 1%"
+msgstr "BENGALSKIE ŁOWISKO · POZ. 15\nSZYBKIE PAZURY · RZADKIE ŁAPCIE 1%"
+
+msgid "BENGAL PAWS · FIST + SPEED TRAINING"
+msgstr "BENGALSKIE ŁAPCIE · TRENING PIĘŚCI I TEMPA"
+
+msgid " · RIFT %.1fs"
+msgstr " · ROZDARCIE %.1fs"
+
+msgid " · RMB SUPER CLAW 25 SP / 3× / PARALYSIS 4s"
+msgstr " · PPM SUPERPAZUR 25 SP / 3× / PARALIŻ 4s"
+
+msgid "Rare Bengal drop (1%). Lv. 15. Hits train fists + attack speed. Hold RMB 2s: dash hits for 1x damage, then a separate 3x rift cut with 4s paralysis. 20 SP; 8s cooldown. Held: +15% walk/run speed; -25% dash cooldown and SP cost. Sold in the testing shop."
+msgstr "Rzadki łup z bengali (1%). Poz. 15. Trafienia ćwiczą pięści i szybkość ataku. Trzymaj PPM 2s: szarża trafia za 1x obrażeń, potem osobne cięcie szczeliny za 3x i paraliż na 4s. 20 SP; odnowienie 8s. W dłoniach: +15% szybkości chodu i biegu; -25% odnowienia i kosztu SP uników. Do kupienia w sklepie testowym."
+
+msgid "Attributes"
+msgstr "Atrybuty"
+
+msgid "Training & Care"
+msgstr "Trening i troska"
+
+msgid "Close player info"
+msgstr "Zamknij informacje o postaci"
+
+msgid "VITALITY & MOVEMENT"
+msgstr "WITALNOŚĆ I RUCH"
+
+msgid "RECOVERY"
+msgstr "REGENERACJA"
+
+msgid "STAT INSPECTOR"
+msgstr "SZCZEGÓŁY ATRYBUTU"
+
+msgid "Base"
+msgstr "Podstawa"
+
+msgid "Training"
+msgstr "Trening"
+
+msgid "Equipment"
+msgstr "Sprzęt"
+
+msgid "Base includes level growth. Training includes skills and earned medals. Equipment includes your held weapon and outfit."
+msgstr "Podstawa uwzględnia rozwój poziomu. Trening obejmuje umiejętności i zdobyte medale. Sprzęt to broń w ręku i noszony strój."
+
+msgid "Segments show contributions to this stat, not progress toward a cap."
+msgstr "Odcinki pokazują składowe atrybutu, a nie postęp do limitu."
+
+msgid "EQUIPPED NOW"
+msgstr "AKTUALNY SPRZĘT"
+
+msgid "Health · %s / %s"
+msgstr "Zdrowie · %s / %s"
+
+msgid "Stamina · %s / %s"
+msgstr "Wytrzymałość · %s / %s"
+
+msgid "Level progress · %d%% · %d EXP to next level"
+msgstr "Postęp poziomu · %d%% · %d EXP do następnego poziomu"
+
+msgid "%s · Inventory    %s · Player info    Esc / B / ○ · Close    D-pad · Focus    A / ✕ · Choose"
+msgstr "%s · Ekwipunek    %s · Postać    Esc / B / ○ · Zamknij    Krzyżak · Nawigacja    A / ✕ · Wybierz"
+
+msgid "Rank %d"
+msgstr "Ranga %d"
+
+msgid "Practice toward the next rank · %d%%"
+msgstr "Praktyka do następnej rangi · %d%%"
+
+msgid "Mastered"
+msgstr "Mistrzostwo"
+
+msgid "Reserved"
+msgstr "Zarezerwowane"
+
+msgid "Invest 1 point"
+msgstr "Zainwestuj 1 punkt"
+
+msgid "Permanent choice · Rank %d → %d"
+msgstr "Trwały wybór · Ranga %d → %d"
+
+msgid "One point per level. Choose a permanent improvement below. Weapon skills also grow through practice."
+msgstr "Jeden punkt za poziom. Wybierz trwałe ulepszenie poniżej. Umiejętności bojowe rosną też dzięki praktyce."
+
+msgid "Small habits. Lasting rewards. These bonuses stay with your Tofufu, even between adventures."
+msgstr "Drobne nawyki, trwałe korzyści. Te premie zostają z Twoim Tofufu także pomiędzy przygodami."
+
+msgid "Your maximum health. The meter above shows how much health you have now."
+msgstr "Twoje maksymalne zdrowie. Pasek powyżej pokazuje jego aktualny stan."
+
+msgid "Your maximum stamina for attacks, guarding and movement. The meter above shows your current reserve."
+msgstr "Maksymalna wytrzymałość do ataków, bloków i ruchu. Pasek powyżej pokazuje aktualny zapas."
+
+msgid "Ground walking speed before running or dashing. Explore on foot to earn permanent speed medals."
+msgstr "Prędkość chodu po ziemi, bez biegu i zrywu. Zwiedzaj pieszo, aby zdobywać medale z trwałą premią prędkości."
+
+msgid "Attack speed relative to the base rhythm: 100% is normal speed. Your held weapon and outfit affect this total."
+msgstr "Szybkość ataku względem podstawowego rytmu: 100% to zwykłe tempo. Wynik uwzględnia broń w ręku i strój."
+
+msgid "Damage from one normal unarmed hit, before the target's protection and critical hits."
+msgstr "Obrażenia jednego zwykłego ciosu bez broni, przed ochroną celu i trafieniami krytycznymi."
+
+msgid "Damage from the currently held weapon's light hit or body shot, before the target's protection and critical hits. A stream is shown as damage per second."
+msgstr "Obrażenia lekkiego ciosu lub strzału w korpus aktualną bronią, przed ochroną celu i trafieniami krytycznymi. Strumień podaje obrażenia na sekundę."
+
+msgid "The share of incoming damage absorbed by your level, defence skill and worn armour together. These protections combine multiplicatively."
+msgstr "Część otrzymywanych obrażeń pochłaniana łącznie dzięki poziomowi, obronie i pancerzowi. Te źródła ochrony łączą się mnożnikowo."
+
+msgid "Percentage of maximum health restored each second after 30 seconds without combat. Care medals improve recovery."
+msgstr "Procent maksymalnego zdrowia odzyskiwany co sekundę po 30 sekundach bez walki. Medale troski poprawiają regenerację."
+
+msgid "Percentage of maximum stamina restored each second while recovery is available. Care medals improve recovery."
+msgstr "Procent maksymalnej wytrzymałości odzyskiwany co sekundę, gdy regeneracja jest dostępna. Medale troski poprawiają regenerację."
+
+msgid "Next rank: +%s%% of base fist damage."
+msgstr "Następna ranga: +%s%% podstawowych obrażeń pięścią."
+
+msgid "Next rank: +%s%% of base melee weapon damage."
+msgstr "Następna ranga: +%s%% podstawowych obrażeń bronią wręcz."
+
+msgid "Next rank: +%s%% of base ranged damage and tighter aim."
+msgstr "Następna ranga: +%s%% podstawowych obrażeń dystansowych i celniejszy ostrzał."
+
+msgid "Next rank: +%s%% skill protection, combined with level and armour."
+msgstr "Następna ranga: +%s%% ochrony z umiejętności, łączonej z poziomem i pancerzem."
+
+msgid "Next rank: +%s%% base attack speed before medal and equipment bonuses."
+msgstr "Następna ranga: +%s%% podstawowej szybkości ataku, przed premiami medali i sprzętu."
+
+msgid "Reserved for future mana abilities. No points can be spent here."
+msgstr "Miejsce na przyszłe zdolności zużywające manę. Nie można tu wydawać punktów."
+
+msgid "Toggle Character"
+msgstr "Informacje o postaci"
+
+msgid "Shift-click near the Seed Bank to store. Drag outside to drop.\nR3 / Wheel · Toggle item details.\nB / Esc · Close bag    I / Select · Player info"
+msgstr "Shift-klik przy Banku Nasion: schowaj. Przeciągnij poza torbę: upuść.\nR3 / Kółko: szczegóły przedmiotu.\nB / Esc · Zamknij plecak    I / Select · Postać"
+
+msgid "WASD: Walk • Ctrl / L3: Run • Mouse: Aim • Space: Leap • Shift: Dash / hold 0.66s for Super Dash • LMB: Tap combo / hold power (25 SP)\nRMB: Knife guard / Staff tornado / Podburst. Nori: hold RMB, steer with WASD, release to plunge (75 SP).\nSuper Dash lasts twice as long, passes through actors and leaves a light-damage fart cloud.\nMelee: attack mid-air for a diving slash. Hit, then fast tap to stab; hold the next combo hit to launch foes.\nAccurate hits briefly raise critical chance. 1/2: Combat slots • B: Inventory & EQ • I / Select: Player info • 3–6: Support slots\nR / Square: Reload gun • P: Return to initial spot (testing)\nQ: Drop held weapon • E: Pick up highlighted item • Tab: Guide • C: Camera • MMB: Rotate overhead / switch shoulder • Enter: Chat • V: Voice"
+msgstr "WASD: Chód • Ctrl / L3: Bieg • Mysz: Celowanie • Spacja: Skok • Shift: Zryw / trzymaj 0,66s: Superzryw • LPM: Kombo / trzymaj: mocny cios (25 SP)\nPPM: Blok nożykiem / Tornado kosturem / Strąkopodmuch. Nori: trzymaj PPM, steruj WASD, puść: pikowanie (75 SP).\nSuperzryw trwa dwa razy dłużej, przenika przez postacie i zostawia chmurkę gazu z małymi obrażeniami.\nWręcz: atak w powietrzu daje cięcie z pikowania. Traf i szybko kliknij: pchnięcie; przytrzymaj następny cios kombo: podrzuć wroga.\nCelne trafienia na chwilę zwiększają szansę krytyka. 1/2: Miejsca bojowe • B: Ekwipunek • I / Select: Postać • 3–6: Wsparcie\nR / Kwadrat: Przeładuj broń • P: Wróć do pozycji początkowej (testy)\nQ: Upuść broń • E: Podnieś podświetlony przedmiot • Tab: Poradnik • C: Kamera • ŚPM: Obróć widok z góry / zmień ramię • Enter: Czat • V: Głos"
+
+msgid "BENGAL PAWS · FIST + SPEED TRAINING · RIFT %.1fs"
+msgstr "BENGALSKIE ŁAPCIE · TRENING PIĘŚCI I TEMPA · ROZDARCIE %.1fs"
+
+msgid "BENGAL PAWS · FIST + SPEED TRAINING · RMB SUPER CLAW 25 SP / 3× / PARALYSIS 4s"
+msgstr "BENGALSKIE ŁAPCIE · TRENING PIĘŚCI I TEMPA · PPM SUPERPAZUR 25 SP / 3× / PARALIŻ 4s"
+
+msgid "Inventory →"
+msgstr "Ekwipunek →"
+
+msgid "%s · Inventory    %s · Player info    Esc / Pad B / ○ · Close    D-pad · Focus    A / ✕ · Choose"
+msgstr "%s · Ekwipunek    %s · Postać    Esc / Pad B / ○ · Zamknij    Krzyżak · Nawigacja    A / ✕ · Wybierz"
+
+msgid "SUPER CLAW %.1fs"
+msgstr "SUPERPAZUR %.1fs"
+
+msgid "RMB 25 SP · 3× · 4s"
+msgstr "PPM 25 SP · 3× · 4s"
+
+msgid "Weapon · Requires Lv. %d"
+msgstr "Broń · Wymagany poz. %d"
+
+msgid "Stats are rounded up. Speed and attack pace keep decimals. Segments show contributions, not progress toward a cap."
+msgstr "Statystyki zaokrąglamy w górę. Prędkość i tempo ataku zachowują ułamki. Odcinki pokazują składowe, a nie postęp do limitu."
+
+msgid "Next: +%s%% base fist damage."
+msgstr "Dalej: +%s%% bazowych obrażeń pięścią."
+
+msgid "Next: +%s%% base melee damage."
+msgstr "Dalej: +%s%% bazowych obrażeń wręcz."
+
+msgid "Next: +%s%% base ranged damage; tighter aim."
+msgstr "Dalej: +%s%% bazowych obrażeń z dystansu; celniejszy ostrzał."
+
+msgid "Next: +%s%% skill protection."
+msgstr "Dalej: +%s%% ochrony z umiejętności."
+
+msgid "Next: +%s%% base attack pace."
+msgstr "Dalej: +%s%% bazowego tempa ataku."
+
+msgid "Future mana abilities. No points can be spent here."
+msgstr "Przyszłe zdolności many. Nie można tu wydawać punktów."
+
+msgid "Food/medicine restore missing HP · +8% HP/SP recovery per medal"
+msgstr "Jedzenie/leki: odzyskaj brakujące PŻ · +8% regeneracji PŻ/PW za medal"
+
+msgid "Base = level growth. Training = skills & medals. Equipment = weapon & outfit."
+msgstr "Podstawa = rozwój poziomu. Trening = umiejętności i medale. Sprzęt = broń i strój."
+
+msgid "Values round up; speeds keep decimals. Bars show contributions."
+msgstr "Wartości zaokrąglamy w górę; tempo zachowuje ułamki. Paski pokazują składowe."
+
+msgid "HOLD RMB 2s · 20 SP"
+msgstr "TRZYMAJ PPM 2s · 20 SP"
+
+msgid "CLAW CHARGE %d%%"
+msgstr "ŁADOWANIE %d%%"
+
+msgid "RIFT DASH → 3× CUT"
+msgstr "SZARŻA → CIĘCIE 3×"
+
+# Fallen Angel Bow
+msgid "Fallen Angel Bow"
+msgstr "Łuk Upadłego Anioła"
+
+msgid "The Fallen Tofu Angels' ivory laurel bow. LMB: precise arrow, 2.5x soybean bullet damage (50 body / 100 head), then reload for 2s. Hold RMB 1.25s: 25 SP, double-damage arrow; an enemy hit bursts into a 3.5m flame sphere for 50 nearby damage (6s skill cooldown). Damage scales with shooting mastery."
+msgstr "Laurowy łuk Upadłych Aniołów Tofu z kości słoniowej. LPM: celna strzała, 2,5x obrażeń sojowego pocisku (50 w korpus / 100 w głowę), potem 2s przeładowania. Przytrzymaj PPM 1,25s: 25 SP, strzała o podwójnych obrażeniach; trafienie wroga tworzy kulę ognia o promieniu 3,5m i zadaje 50 obrażeń pobliskim celom (6s odnowienia). Obrażenia rosną z mistrzostwem strzeleckim."
+
+msgid "NOCKING · %.1fs"
+msgstr "NAKŁADANIE · %.1fs"
+
+msgid "FLAME CHARGE %d%%"
+msgstr "OGNISTE ŁADOWANIE %d%%"
+
+msgid "FLAME · %.1fs"
+msgstr "OGIEŃ · %.1fs"
+
+msgid "FLAME NEEDS 25 SP"
+msgstr "OGIEŃ WYMAGA 25 SP"
+
+msgid "RMB 1.25s · FLAME 25 SP"
+msgstr "PPM 1.25s · OGIEŃ 25 SP"
+
+msgid "Level %d / Blessed! HP and SP fully restored."
+msgstr "Poziom %d / Błogosławieństwo! PŻ i PW w pełni odnowione."
+
+msgid "Owned · Soybean save spot"
+msgstr "Twój punkt zapisu · Sojowa przystań"
+
+msgid "[%s] Claim soybean save spot"
+msgstr "[%s] Oswój sojową przystań"
+
+msgid "Soybean save spot claimed · %s"
+msgstr "Sojowa przystań jest twoja · %s"
+
+msgid "Nursery Roots"
+msgstr "Korzonki Szkółki"
+
+msgid "Sunsand Oasis"
+msgstr "Oaza Słonecznych Piasków"
+
+msgid "Gigalopolis Gate"
+msgstr "Brama Gigalopolis"
+
+msgid "Jadewild Landing"
+msgstr "Przystań Nefrytowej Dżungli"
+
+msgid "Cloud Sanctuary"
+msgstr "Chmurowa Ostoja"
+
+msgid "Embercrown Landing"
+msgstr "Przystań Żarokorony"
+
+msgid "Dofufu Gate"
+msgstr "Brama Dofufu"
+
+msgid "Groatfields Approach"
+msgstr "Przedpola Kaszopól"

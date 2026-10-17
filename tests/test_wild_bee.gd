@@ -175,6 +175,7 @@ func _snapshot_checks() -> void:
 	for count in [9, 15, 27, 39]:
 		var legacy := data.duplicate(true)
 		legacy.mobs = legacy.mobs.slice(0, count)
+		legacy.erase("mob_paralysis")
 		check(WorldProtocol.valid(legacy), "legacy encounter checkpoint count %d remains valid" % count)
 	EncounterState.apply_mob(bee, row.slice(0, 9))
 	check(not bee.sting.active, "legacy bee record defaults to no live hazard")

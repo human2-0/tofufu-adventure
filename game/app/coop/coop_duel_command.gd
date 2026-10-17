@@ -14,6 +14,8 @@ static func prepare(member: CoopActor, command: PlayerCommand) -> void:
 	command.use_healing_4 = false
 	if member.duel.phase == "fight": return
 	command.attack_held = false
+	command.attack_pressed = false
+	command.punch_pressed = false
 	command.guard_held = false
 	command.punch_held = false
 	command.weapon_slot = 0

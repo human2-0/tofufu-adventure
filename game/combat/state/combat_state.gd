@@ -5,7 +5,7 @@ extends RefCounted
 static func capture(combat: PlayerCombat) -> Dictionary:
 	var equipment := combat.equipment
 	var drop := equipment.dropped.global_position if is_instance_valid(equipment.dropped) else Vector3.ZERO
-	return {"enhanced": combat.equipment.weapon_enhanced, "celestial": equipment.celestial_weapon, "nori": equipment.nori_selected, "plunging": combat.plunge.active, "plunge_recovery": combat.plunge.recovery, "plunge_sequence": combat.plunge.sequence, "plunge_at": _array(combat.plunge.impact_at), "plunge_cooldown": combat.plunge.cooldown, "vitals": combat.vitals.capture(), "pod": equipment.pod_selected, "podburst": combat.podburst.sequence, "pod_cooldown": combat.podburst.cooldown, "world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
+	var state := {"enhanced": combat.equipment.weapon_enhanced, "celestial": equipment.celestial_weapon, "nori": equipment.nori_selected, "plunging": combat.plunge.active, "plunge_recovery": combat.plunge.recovery, "plunge_sequence": combat.plunge.sequence, "plunge_at": _array(combat.plunge.impact_at), "plunge_cooldown": combat.plunge.cooldown, "vitals": combat.vitals.capture(), "pod": equipment.pod_selected, "podburst": combat.podburst.sequence, "pod_cooldown": combat.podburst.cooldown, "world_drops": true, "gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned, "staff_owned": equipment.staff_owned, "staff": equipment.staff_selected, "jet": combat.sotjet.selected, "milk": combat.sotjet.milk, "jet_ads": combat.sotjet.aiming,
 		"jet_firing": combat.sotjet.firing, "jet_sequence": combat.sotjet.sequence,
 		"jet_origin": _array(combat.sotjet.origin), "jet_velocity": _array(combat.sotjet.velocity), "recoil": combat.gun.recoil.heat, "gun": combat.gun.selected, "ads": combat.gun.aiming, "shot": combat.gun.shot_sequence,
 		"shot_origin": _array(combat.gun.shot_origin), "shot_velocity": _array(combat.gun.shot_velocity), "owned": equipment.knife_owned, "selected": equipment.knife_selected, "guard": equipment.guarding,
@@ -13,14 +13,20 @@ static func capture(combat: PlayerCombat) -> Dictionary:
 		"facing": [equipment.facing.x, equipment.facing.y], "gun_magazine": combat.gun.magazine, "gun_reload": combat.gun.reload_remaining,
 		"gun_charge": combat.gun.charge_elapsed, "ricochet": combat.gun.ricochet_sequence,
 		"ricochet_origin": _array(combat.gun.ricochet_origin), "ricochet_velocity": _array(combat.gun.ricochet_velocity), "charge": combat.rules.charge,
-		"strength": combat._strength, "style": combat.attack_style, "elapsed": combat._elapsed, "hit_pause": combat.hit_pause, "punch": equipment._punch_time,
+		"strength": combat._strength, "style": combat.attack_style, "elapsed": combat._elapsed, "hit_pause": combat.hit_pause, "punch": equipment._punch_time, "punch_sequence": equipment.punch_sequence,
 		"combo": combat.combo.count, "chain": combat.combo.chain, "combo_window": combat.combo.window_remaining, "clash": combat.clash.sequence,
 		"cooldown": combat.rules.cooldown, "drop": [drop.x, drop.y, drop.z]}
+
+	state.merge(BengalClawsState.capture(combat))
+	state.merge(AngelBowState.capture(combat.bow))
+	return state
 
 static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.equipment.weapon_enhanced = state.get("enhanced", false)
 	combat.gun.magazine_capacity = SoyGun.MAGAZINE_SIZE + (5 if combat.equipment.weapon_enhanced and state.get("gun", false) else 0)
 	combat.reset()
+	BengalClawsState.apply(combat, state, false)
+	AngelBowState.apply(combat.bow, state, false)
 	combat.vitals.restore(state.get("vitals", {}))
 	CelestialCombat.apply(combat, int(state.get("celestial", 0)))
 	combat.podburst.cooldown = state.get("pod_cooldown", 0.0)
@@ -47,12 +53,15 @@ static func restore(combat: PlayerCombat, state: Dictionary) -> void:
 	combat.equipment.knife_owned = state.owned
 	combat.equipment.knife_selected = state.selected and state.owned and not combat.equipment.staff_selected
 	combat.equipment._punch_time = state.punch
+	combat.equipment.punch_sequence = int(state.get("punch_sequence", 0))
 	combat.rules.cooldown = state.cooldown
 	combat.attack_style = int(state.get("style", KnifeAttack.Style.HEAVY if state.get("strength", 0.0) >= 1.0 else KnifeAttack.Style.SLASH))
 	combat.combo.restore(int(state.get("combo", 0)), float(state.get("combo_window", 0.0)), int(state.get("chain", -1)))
 	combat.clash.sequence = int(state.get("clash", 0))
 
 static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector2) -> void:
+	AngelBowState.apply(combat.bow, state, true)
+	BengalClawsState.apply(combat, state, true)
 	combat.equipment.weapon_enhanced = state.get("enhanced", false)
 	combat.gun.magazine_capacity = SoyGun.MAGAZINE_SIZE + (5 if combat.equipment.weapon_enhanced and state.get("gun", false) else 0)
 	combat.vitals.restore(state.get("vitals", {}))
@@ -97,7 +106,8 @@ static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector
 	equipment.sotjet_owned = state.get("sotjet_owned", true)
 	equipment.staff_owned = state.get("staff_owned", false)
 	equipment.staff_selected = state.get("staff", false) and equipment.staff_owned
-	var new_punch: bool = state.punch > equipment._punch_time + 0.1
+	var new_punch: bool = int(state.get("punch_sequence", 0)) > equipment.punch_sequence if state.has("punch_sequence") else state.punch > equipment._punch_time + 0.1
+	equipment.punch_sequence = int(state.get("punch_sequence", equipment.punch_sequence))
 	equipment._punch_time = state.punch
 	equipment.knife_owned = state.owned
 	equipment.knife_selected = state.selected and not equipment.staff_selected
@@ -127,8 +137,10 @@ static func present(combat: PlayerCombat, state: Dictionary, resting_aim: Vector
 	combat._trail.record(pose, combat.tuning, cutting, heavy, combat._melee_length())
 	if new_clash:
 		CombatEffects.sparks(combat, combat.actor.global_position + Vector3.UP * 0.8)
-	if new_punch:
-		CombatEffects.punch(combat, combat.actor.global_position + Vector3(aim.x * 0.65, 0.55, aim.y * 0.65))
+	if new_punch and combat.claws.selected:
+		BengalRiftVFX.slash(combat, combat.actor.global_position + Vector3(equipment.facing.x * 0.8, 0.55, equipment.facing.y * 0.8), false)
+	elif new_punch:
+		CombatEffects.punch(combat, combat.actor.global_position + Vector3(equipment.facing.x * 0.65, 0.55, equipment.facing.y * 0.65), equipment.punch_sequence, equipment.punch_outfit, equipment.facing, combat.attack_speed_multiplier)
 
 static func _array(value: Vector3) -> Array:
 	return [value.x, value.y, value.z]

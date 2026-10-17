@@ -17,6 +17,8 @@ static func apply(actor: Player, world: Meadow) -> void:
 		actor.motor.surface_grip = 0.24
 
 static func immersion(at: Vector3, world: Meadow) -> float:
+	if MainlandFringe.contains(Vector2(at.x, at.z)):
+		return clampf((MainlandFringe.water_level(Vector2(at.x, at.z)) - at.y - 0.25) / 1.1, 0.0, 1.0)
 	if at.z >= Groatfields.START: return 0.0
 	if world.jungle != null and JungleCoast.is_water(at, world.jungle.desert):
 		return clampf((JungleCoast.WATER_LEVEL - at.y - 0.25) / 1.1, 0.0, 1.0)

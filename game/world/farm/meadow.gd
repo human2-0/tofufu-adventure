@@ -20,6 +20,7 @@ var volcanic: VolcanicWorld
 var dofufu_highlands: DofufuHighlands
 var groatfields: Groatfields
 var cloud_realm: CloudRealm
+var fringe := MainlandFringe.new()
 var terrain: FarmTerrain
 var rain_effects: RainGroundEffects
 var grass_material: ShaderMaterial
@@ -90,14 +91,17 @@ func _ready() -> void:
 	add_child(dofufu_highlands)
 	for title: String in dofufu_highlands.city.residents:
 		map_npcs[title] = dofufu_highlands.city.residents[title]
+	MainlandFringe.build(self)
 	RiverPlants.populate(self, ground_point)
 	add_child(RiverWildlife.new())
 	StaticDecorationBatch.build(self)
 
 func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
+	if dofufu_highlands != null and MainlandFringe.contains(Vector2(x, z)):
+		return Vector3(x, MainlandFringe.height_at(self, Vector2(x, z)) + lift, z)
 	if dofufu_highlands != null and DofufuTerrain.contains(Vector2(x, z)): return dofufu_highlands.point(x, z, lift)
 	if volcanic != null and VolcanicTerrain.contains(Vector2(x, z)): return volcanic.point(x, z, lift)
-	if x > 84 and z > -44 and z < 56: return Vector3(x, lift, z)
+	if x >= 84 and x <= 184 and z >= -44 and z <= 56: return Vector3(x, lift, z)
 	if z <= FrostTerrain.NORTH_START and frost != null: return frost.point(x, z, lift)
 	if z <= OceanTerrain.NORTH_START and ocean != null: return ocean.point(x, z, lift)
 	if z >= Groatfields.START and groatfields != null: return groatfields.point(x, z, lift)
@@ -106,6 +110,7 @@ func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
 	return terrain.point(x, z, lift)
 
 func is_water(at: Vector3) -> bool:
+	if MainlandFringe.contains(Vector2(at.x, at.z)): return at.y < MainlandFringe.water_level(Vector2(at.x, at.z))
 	if DofufuTerrain.contains(Vector2(at.x, at.z)): return false
 	if at.y >= CloudTerrain.ALTITUDE - 2.0 and CloudTerrain.contains(Vector2(at.x, at.z)): return false
 	if at.z >= Groatfields.START: return false

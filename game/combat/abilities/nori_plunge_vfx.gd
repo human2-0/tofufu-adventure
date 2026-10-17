@@ -19,11 +19,11 @@ static func impact(parent: Node, at: Vector3, radius: float) -> void:
 		shard.material_override = _material(Color("b3ffe2") if i % 3 == 0 else Color("184f40"))
 		parent.add_child(shard)
 		shard.global_position = at + Vector3.UP * 0.1
-		var tween := shard.create_tween().set_parallel()
-		tween.tween_property(shard, "global_position", at + direction * radius * 0.85 + Vector3.UP * (0.3 + (i % 3) * 0.3), 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		tween.tween_property(shard, "rotation", Vector3(angle, angle * 2, angle), 0.5)
-		tween.tween_property(shard, "scale", Vector3.ZERO, 0.3).set_delay(0.25)
-		tween.chain().tween_callback(shard.queue_free)
+		var shard_tween := shard.create_tween().set_parallel()
+		shard_tween.tween_property(shard, "global_position", at + direction * radius * 0.85 + Vector3.UP * (0.3 + (i % 3) * 0.3), 0.25).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		shard_tween.tween_property(shard, "rotation", Vector3(angle, angle * 2, angle), 0.5)
+		shard_tween.tween_property(shard, "scale", Vector3.ZERO, 0.3).set_delay(0.25)
+		shard_tween.chain().tween_callback(shard.queue_free)
 	var flash := MeshInstance3D.new()
 	var beam := CylinderMesh.new()
 	beam.top_radius = 0.02

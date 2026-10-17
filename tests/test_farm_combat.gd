@@ -36,8 +36,8 @@ func _run() -> void:
 	var bee_count := FarmCombatGrounds.BEE_SPAWNS.size()
 	var angel_count := Groatfields.spawns().size()
 	var guard_count := DofufuCity.GUARDS.size()
-	check(mobs.size() == 15 + forest_count + bee_count + angel_count + guard_count and dummies.size() == 3 + CloudTrainingCourt.DUMMIES.size(), "outdoor packs, rain reserves, forest snails, bees, angels, city guards and village/cloud dummies")
-	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9 + forest_count + bee_count + angel_count + guard_count, "camp snails, forest snails, bees, angels and city guards are active in dry weather")
+	check(mobs.size() == 15 + forest_count + bee_count + angel_count + guard_count + BengalGrounds.spawns().size() and dummies.size() == 3 + CloudTrainingCourt.DUMMIES.size(), "outdoor packs, rain reserves, forest snails, bees, angels, city guards and village/cloud dummies")
+	check(mobs.filter(func(mob: TrainingMob) -> bool: return mob.visible).size() == 9 + forest_count + bee_count + angel_count + guard_count + BengalGrounds.spawns().size(), "camp snails, forest snails, bees, angels and city guards are active in dry weather")
 	await _practice(dummies[0])
 	await _rewards(mobs[0])
 	await _safe_village(mobs[3])
@@ -184,14 +184,13 @@ func _stat_effects(dummy: PracticeDummy) -> void:
 	scene.combat.reset()
 	scene.combat._strength = 0
 	scene.combat._damage(dummy.target)
-	check(is_equal_approx(dummy.last_damage, scene.combat.tuning.light_damage * 3.45), "real damage combines capped weapon skill and character strength")
+	check(is_equal_approx(dummy.last_damage, scene.combat.tuning.light_damage * (1.0 + CharacterProgress.TUNING.character_damage * 98 + CharacterProgress.TUNING.weapon_damage * 98)), "real damage combines capped weapon skill and character strength")
 	scene.health.current = 100
 	scene.health.invulnerability = 0
 	scene.encounters._hurt_player(10, scene.player.position + Vector3.BACK)
 	var tuning := CharacterProgress.TUNING
-	var trained_factor := 1.0 - tuning.defence_reduction * (CharacterProgress.CAP - 1)
-	var level_factor := 1.0 - tuning.character_defence * (CharacterProgress.CAP - 1)
-	check(is_equal_approx(scene.health.current, 100.0 - 10.0 * trained_factor * level_factor), "trained and level defence mitigate actual unguarded enemy damage")
+	var expected_reduction := maxf(0.2, 1.0 / (1.0 + tuning.defence_reduction * 98 + tuning.character_defence * 98))
+	check(is_equal_approx(scene.health.current, 100.0 - 10.0 * expected_reduction), "trained and level defence mitigate actual unguarded enemy damage")
 	scene._respawn()
 	check(progress.level() == 99 and progress.skill("sword") == 99, "respawn retains trained levels and modifiers")
 

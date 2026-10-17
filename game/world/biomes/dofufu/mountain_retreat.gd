@@ -58,8 +58,8 @@ func _camp() -> void:
 		var angle := i * TAU / 9
 		_boulder(center + Vector3(cos(angle), 0.15, sin(angle)) * 0.8, Vector3(0.25, 0.2, 0.22))
 	for i in 3:
-		var log := _box(center + Vector3(0, 0.2 + i * 0.08, 0), Vector3(1.1, 0.18, 0.2), 3)
-		log.rotation.y = i * PI / 3
+		var timber := _box(center + Vector3(0, 0.2 + i * 0.08, 0), Vector3(1.1, 0.18, 0.2), 3)
+		timber.rotation.y = i * PI / 3
 	for at in [Vector2(-581, 132), Vector2(-573, 135)]:
 		_box(terrain.point(at.x, at.y, 0.4), Vector3(1.4, 0.8, 0.6), 3, true)
 	# Storage, a chopping block, tea table and a small herb garden.

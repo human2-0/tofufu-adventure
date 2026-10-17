@@ -16,7 +16,7 @@ static func spawns() -> Array[Vector2]:
 func point(x: float, z: float, lift: float = 0) -> Vector3:
 	var base := 2.0 + sin(x * 0.05) * 0.7 + cos(z * 0.045) * 0.5
 	base = lerpf(base, 2.0, 1.0 - smoothstep(3, 8, absf(x)))
-	var height := lerpf(jungle.point(x, START).y, base, smoothstep(START, START + 18, z))
+	var height := lerpf(jungle.point(x, START).y, base, smoothstep(START, START + 36, z))
 	return Vector3(x, height + lift, z)
 
 func _ready() -> void:
@@ -51,6 +51,7 @@ func _build_ground() -> void:
 				var at: Vector2 = Vector2(x, z) + offset
 				var color := Color("afa2ba").lerp(Color("d6bf82"), (sin(at.x * 0.13 + at.y * 0.08) + 1) * 0.25)
 				color = color.lerp(Color("e8d6ad"), 1 - smoothstep(2, 4, absf(at.x)))
+				color = BiomePalette.color_at(at, point(at.x, at.y).y, jungle.desert.farm.noise.seed).lerp(color, smoothstep(START, START + 42, at.y))
 				surface.set_color(color.srgb_to_linear())
 				surface.set_uv(at / 7.0)
 				surface.add_vertex(point(at.x, at.y))

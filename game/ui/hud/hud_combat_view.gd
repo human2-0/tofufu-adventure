@@ -8,7 +8,7 @@ static func show_punch_cadence(hud: HUD, remaining: float, total: float, damage:
 	if not hud._knife_selected and not hud._staff_selected:
 		var progress := 1.0 if total <= 0.0 else clampf(1.0 - remaining / total, 0.0, 1.0)
 		hud._charge_bar.value = progress * 100.0
-		hud._charge_text.text = ("PUNCHING · %d DMG" if remaining > 0.001 else "LMB / PUNCH · %d DMG") % damage
+		hud._charge_text.text = ("PUNCHING · %d DMG" if remaining > 0.001 else "CLICK LMB / PUNCH · %d DMG") % damage
 
 static func show_charge(hud: HUD, value: float) -> void:
 	hud._knife_charge = value
@@ -17,7 +17,7 @@ static func show_charge(hud: HUD, value: float) -> void:
 	elif hud._staff_selected:
 		present_staff_rhythm(hud)
 	else:
-		hud._charge_text.text = "LMB / PUNCH · %d DMG" % hud._fist_damage
+		hud._charge_text.text = "CLICK LMB / PUNCH · %d DMG" % hud._fist_damage
 
 static func show_combo(hud: HUD, count: int, critical_chance: float) -> void:
 	hud._combo_count = count
@@ -38,6 +38,13 @@ static func show_nori_state(hud: HUD, selected: bool, plunging: bool, cooldown: 
 	present_knife_rhythm(hud)
 	hud._charge_text.text += " · NORI +10% SPEED · "
 	hud._charge_text.text += "MOVE TO AIM / RELEASE RMB TO DIVE" if plunging else ("PLUNGE %.1fs" % cooldown if cooldown > 0.05 else "RMB PLUNGE 75 SP / 3× HIT")
+
+static func show_paws_state(hud: HUD, selected: bool, cooldown: float, charge: float = 0.0, dashing: bool = false) -> void:
+	if not selected: return
+	hud._charge_text.text = "SUPER CLAW %.1fs" % cooldown if cooldown > 0.05 else "HOLD RMB 2s · 20 SP"
+	if charge > 0.0: hud._charge_text.text = "CLAW CHARGE %d%%" % roundi(charge / 2.0 * 100)
+	if dashing: hud._charge_text.text = "RIFT DASH → 3× CUT"
+	if charge > 0.0 or dashing: hud._charge_bar.value = 100.0 if dashing else charge / 2.0 * 100.0
 
 static func show_pod_state(hud: HUD, selected: bool, cooldown: float) -> void:
 	if not selected: return
@@ -104,3 +111,19 @@ static func show_sotjet(hud: HUD, selected: bool, reservoir: float) -> void:
 	hud._equipment.text = "[4] SOTJET · SOYMILK"
 	hud._charge_bar.value = reservoir * 100.0
 	hud._charge_text.text = "MILK %d%% · RELEASE TO REFILL" % roundi(reservoir * 100.0)
+
+static func show_bow_state(hud: HUD, selected: bool, reload_seconds: float, charge: float, cooldown: float, stamina: float) -> void:
+	if not selected: return
+	hud._charge_bar.value = 100.0
+	if reload_seconds > 0.0:
+		hud._charge_bar.value = (1.0 - reload_seconds / 2.0) * 100.0
+		hud._charge_text.text = "NOCKING · %.1fs" % reload_seconds
+	elif charge > 0.0:
+		hud._charge_bar.value = charge / 1.25 * 100.0
+		hud._charge_text.text = "FLAME CHARGE %d%%" % roundi(charge / 1.25 * 100)
+	elif cooldown > 0.0:
+		hud._charge_text.text = "FLAME · %.1fs" % cooldown
+	elif stamina < 25.0:
+		hud._charge_text.text = "FLAME NEEDS 25 SP"
+	else:
+		hud._charge_text.text = "RMB 1.25s · FLAME 25 SP"

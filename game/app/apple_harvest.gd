@@ -48,7 +48,7 @@ func _process(_delta: float) -> void:
 			text = "[%s] Shake tree · Drop %d Apples" % [key, AppleTree.APPLE_YIELD]
 		else:
 			var seconds := ceili(tree.regrow_remaining)
-			text = "Fruit returns · %d:%02d" % [seconds / 60, seconds % 60]
+			text = "Fruit returns · %d:%02d" % [int(seconds / 60.0), seconds % 60]
 		tree.present(tree == focused_tree, text)
 
 func _unhandled_input(event: InputEvent) -> void:

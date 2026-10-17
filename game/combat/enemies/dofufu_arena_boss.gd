@@ -31,6 +31,7 @@ func _ready() -> void:
 	collider.position.y = 1.1
 	add_child(collider)
 	target = Damageable.new()
+	target.paralysis_allowed = true
 	target.maximum = 2400.0
 	target.body = self
 	target.position.y = 1.0
@@ -46,6 +47,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not running or target.current <= 0.0 or not is_instance_valid(quarry): return
+	if EnemyParalysis.hold(self, target, delta): return
 	rules.enraged = target.current <= target.maximum * 0.5
 	_action_pose = maxf(0.0, _action_pose - delta)
 	var offset := quarry.global_position - global_position

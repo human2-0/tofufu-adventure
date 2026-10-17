@@ -257,7 +257,7 @@ func _player_reaction() -> void:
 	prediction.actor = player
 	prediction.initialized = true
 	prediction.respawns = 0
-	prediction.accept({"position": [0,0,0], "velocity": [2,7,0], "health": 59, "respawns": 0, "impact": snapshot})
+	prediction.accept({"position": [0,0,0], "velocity": [2,7,0], "health": 59, "respawns": 0, "impact": snapshot, "combat": CombatState.capture(player_combat)})
 	check(player.velocity.y == 7 and player.motor.impact.remaining > 0, "guest prediction adopts host recoil and vertical velocity")
 	health.restore()
 	check(player.motor.impact.remaining == 0.0, "restoring health clears transient player recoil")

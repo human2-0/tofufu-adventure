@@ -37,7 +37,7 @@ func _draw_reload(center: Vector2) -> void:
 	var text := tr("RELOADING %.1fs") % reload_remaining
 	var text_size := font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15)
 	# Keep the countdown on screen even when overhead aim is near an edge.
-	var size := get_viewport_rect().size
-	var at := Vector2(clampf(center.x - text_size.x * 0.5, 8, maxf(8, size.x - text_size.x - 8)), clampf(center.y + 47, 20, size.y - 8))
+	var viewport_size := get_viewport_rect().size
+	var at := Vector2(clampf(center.x - text_size.x * 0.5, 8, maxf(8, viewport_size.x - text_size.x - 8)), clampf(center.y + 47, 20, viewport_size.y - 8))
 	draw_rect(Rect2(at + Vector2(-6, -18), text_size + Vector2(12, 6)), Color(0.06, 0.09, 0.07, 0.9))
 	draw_string(font, at, text, HORIZONTAL_ALIGNMENT_LEFT, -1, 15, color)

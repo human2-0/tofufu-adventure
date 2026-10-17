@@ -23,4 +23,4 @@ static func apply(prop: Node3D, owner: int, actors: Dictionary, clock: float) ->
 		var offset: Vector3 = forward * 0.3 + side * 0.5 + Vector3(0, 0.18 + bob, 0) if sack else forward * 0.45 + side * 0.28 + Vector3(0, 0.45 + bob, 0)
 		prop.global_position = data.position + offset
 		if sack:
-			prop.rotation = Vector3(0, atan2(forward.x, forward.z), sin(clock * 9.0) * 0.025 if moving else 0)
+			prop.rotation = Vector3(0, atan2(forward.x, forward.z), sin(clock * 9.0) * 0.025 if moving else 0.0)

@@ -17,6 +17,8 @@ var _jet: SotjetVisual
 var _hands: Array[MeshInstance3D] = []
 var _magic := MagicalTofufuOrbit.new()
 var _arms := FirstPersonArms.new()
+var _paws := FirstPersonPaws.new()
+var _bow := FirstPersonBow.new()
 var _phase: float = 0.0
 var _kick: float = 0.0
 var _shot: int = 0
@@ -63,22 +65,14 @@ func _ready() -> void:
 	_magic.plane = Basis(Vector3.RIGHT, PI * 0.5)
 	_magic.span = 0.10
 	_magic.center = func() -> Vector3: return FirstPersonEnhancementView.center(self)
-	_magic.enabled = func() -> bool: return combat.equipment.weapon_enhanced and (combat.ranged_selected() or combat.equipment.melee_selected())
+	_magic.enabled = func() -> bool: return combat.equipment.weapon_enhanced and (combat.ranged_selected() or combat.equipment.melee_selected() or combat.claws.selected)
 	_rig.add_child(_magic)
 	_viewport.add_child(_arms)
-	for index in 2:
-		var hand := MeshInstance3D.new()
-		var sphere := SphereMesh.new()
-		sphere.radius = 0.075
-		sphere.height = 0.15
-		var material := StandardMaterial3D.new()
-		material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
-		material.albedo_color = Color("fff0bd")
-		sphere.material = material
-		hand.mesh = sphere
-		hand.material_override = _arms.material
-		_rig.add_child(hand)
-		_hands.append(hand)
+	_paws.view = self
+	_viewport.add_child(_paws)
+	_bow.build(self)
+	_hands = _arms.build_hands(_rig)
+
 
 func _sprite(source: Texture2D, region: Rect2, pixels: float) -> Sprite3D:
 	var sprite := Sprite3D.new()
@@ -157,7 +151,10 @@ func _process(delta: float) -> void:
 		_rig.rotation.z += SoyGunReloadPose.roll(remaining)
 		_hands[1].position += Vector3(0.2, 0.24, 0.08) * SoyGunReloadPose.feed(remaining)
 
+	_paws.pose_hands()
+	_bow.present(self)
 	_arms.present(_hands, FufuRightHand.tint((actor as Player).visuals.worn_set) if actor is Player else Color("fff0bd"), actor is Player and (actor as Player).visuals.worn_set == "celestial")
+
 
 func _place_hands(melee_visible: bool) -> void:
 	_hands[1].position = Vector3(-0.13, -0.18, 0.02)
@@ -180,7 +177,10 @@ func _place_hands(melee_visible: bool) -> void:
 		_hands[1].visible = true
 		_hands[0].position = Vector3(0.05, 0.0, 0.1)
 		_hands[1].position = Vector3(-0.65, 0.0, 0.1)
-		_hands[0].position.z -= sin(clampf(combat.equipment._punch_time / combat.tuning.punch_cooldown, 0, 1) * PI) * 0.25
+		if not combat.claws.selected:
+			var hand := (combat.equipment.punch_sequence + 1) % 2
+			_hands[hand].position.z -= sin(clampf(combat.equipment._punch_time / combat.tuning.punch_cooldown, 0, 1) * PI) * 0.25
+
 
 func muzzle_position(world_camera: Camera3D, jet: bool) -> Vector3:
 	var overlay_camera := _viewport.get_camera_3d()

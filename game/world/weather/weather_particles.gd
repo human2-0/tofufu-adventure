@@ -9,6 +9,9 @@ const RAIN_PER_CELL: int = 4
 var focus: Node3D
 var ground_point: Callable
 var raining: bool = false
+var rain_enabled: bool = true
+var snow_enabled: bool = true
+var wind_enabled: bool = true
 var snow_strength: float = 0.0
 var winter: bool = false
 var sheltered: bool = false
@@ -69,9 +72,9 @@ func present_wind(direction: Vector2, strength: float) -> void:
 func _process(delta: float) -> void:
 	_wet = move_toward(_wet, 1.0 if raining and not winter and not sheltered else 0.0, delta * 0.55)
 	_snow_amount = move_toward(_snow_amount, snow_strength if winter and not sheltered else 0.0, delta * 0.45)
-	_rain.visible = _wet > 0.01 and not winter and not sheltered
-	_leaves.visible = _gust > 0.02 and not winter and not sheltered
-	_snow.visible = _snow_amount > 0.01 and winter and not sheltered
+	_rain.visible = rain_enabled and _wet > 0.01 and not winter and not sheltered
+	_leaves.visible = wind_enabled and _gust > 0.02 and not winter and not sheltered
+	_snow.visible = snow_enabled and _snow_amount > 0.01 and winter and not sheltered
 	_snow_material.set_shader_parameter("strength", _snow_amount)
 	if not _rain.visible and not _leaves.visible and not _snow.visible: return
 	_rain_material.set_shader_parameter("strength", _wet)
@@ -87,7 +90,7 @@ func _place(center: Vector2i) -> void:
 	var heights: Dictionary[Vector2i, float] = {}
 	for z in SIDE:
 		for x in SIDE:
-			var cell := center + Vector2i(x - SIDE / 2, z - SIDE / 2)
+			var cell := center + Vector2i(x - (SIDE >> 1), z - (SIDE >> 1))
 			if _heights.has(cell):
 				heights[cell] = _heights[cell]
 				low = minf(low, heights[cell])
@@ -109,7 +112,7 @@ func _place(center: Vector2i) -> void:
 			_leaves.multimesh.set_instance_transform(index, Transform3D(Basis.IDENTITY, floor_at))
 			_leaves.multimesh.set_instance_custom_data(index, Color(rng.randf(), rng.randf(), rng.randf(), 1))
 	_heights = heights
-	var corner := Vector2(center - Vector2i(SIDE / 2, SIDE / 2)) * SPACING
+	var corner := Vector2(center - Vector2i((SIDE >> 1), (SIDE >> 1))) * SPACING
 	var bounds := AABB(Vector3(corner.x - 4, low - 1, corner.y - 4), Vector3(SIDE * SPACING + 8, high - low + 2, SIDE * SPACING + 8))
 	_rain.multimesh.custom_aabb = bounds
 	_leaves.multimesh.custom_aabb = bounds

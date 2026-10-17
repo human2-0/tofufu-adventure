@@ -13,7 +13,7 @@ static func height_at(x: float, z: float, farm: FarmTerrain) -> float:
 	dune += 2.0 * exp(-Vector2(x + 22, z - 83).length_squared() / 180.0)
 	var trail_flatten := 1.0 - smoothstep(2.0, 5.2, trail_distance(x, z))
 	dune = lerpf(dune, 0.72, trail_flatten) + rim
-	var blend := smoothstep(SOUTH_START, SOUTH_START + 20.0, z)
+	var blend := smoothstep(SOUTH_START, SOUTH_START + 36.0, z)
 	var height := lerpf(farm.height_at(x, minf(z, SOUTH_START)), dune, blend)
 	var carved := RiverCourse.carve(x, z, height)
 	return lerpf(farm.height_at(x, SOUTH_START), carved, smoothstep(SOUTH_START, SOUTH_START + 2.0, z))
@@ -44,8 +44,7 @@ static func build(parent: Node3D, farm: FarmTerrain) -> void:
 	var ground := MeshInstance3D.new()
 	ground.name = "DesertGround"
 	ground.mesh = surface.commit()
-	var material := MeadowGeometry.material(Color.WHITE)
-	material.vertex_color_use_as_albedo = true
+	var material := TerrainFinish.create()
 	ground.material_override = material
 	parent.add_child(ground)
 	ground.create_trimesh_collision()

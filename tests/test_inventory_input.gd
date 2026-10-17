@@ -33,16 +33,22 @@ func _run() -> void:
 	await process_frame
 	# Co-op disables this solo handler; modal controls must survive.
 	game.set_process_unhandled_input(false)
-	key(KEY_I)
-	check(game.inventory_window.visible, "I opens inventory")
+	key(KEY_B)
+	check(game.inventory_window.visible, "B opens inventory")
 	await process_frame
 	check(game.inventory_window.visible, "inventory stays open")
 	check(not game.shooting_view.local_input.enabled, "inventory blocks gameplay")
-	key(KEY_I, true)
+	key(KEY_B, true)
 	check(game.inventory_window.visible, "key repeat does not close inventory")
 	check(not game.chat.view.available, "modal blocks chat input")
-	key(KEY_B)
-	check(not game.inventory_window.visible, "B closes inventory")
+	key(KEY_I)
+	var sheet: CharacterSheet
+	for child in game.inventory_window.get_children():
+		if child is CharacterSheet: sheet = child
+	check(sheet != null and sheet.visible, "I switches inventory to player info")
+	check(not game.shooting_view.local_input.enabled and not game.chat.view.available, "page switch keeps gameplay and chat blocked")
+	key(KEY_I)
+	check(not game.inventory_window.visible, "I closes player info")
 	key(KEY_B)
 	check(game.inventory_window.visible, "B opens inventory")
 	key(KEY_ESCAPE)
@@ -52,7 +58,7 @@ func _run() -> void:
 	game.shooting_view.cycle_mode()
 	game.shooting_view.cycle_mode()
 	check(game.camera.first_person, "test starts inventory inspection from first person")
-	key(KEY_I)
+	key(KEY_B)
 	await physics_frame
 	await process_frame
 	check(not game.camera.first_person and not game.camera.shoulder, "bag shows actor using overhead camera")
@@ -66,19 +72,19 @@ func _run() -> void:
 	check(game.player.visuals.layers == 0, "closing bag restores first-person actor hiding")
 	game.shooting_view.cycle_mode()
 	game.chat.view.set_editing(true)
+	key(KEY_B)
+	check(not game.inventory_window.visible, "typing B in chat does not open bag")
 	key(KEY_I)
-	check(not game.inventory_window.visible, "typing I in chat does not open bag")
+	check(not game.inventory_window.visible, "typing I in chat does not open player info")
 	game.chat.view.set_editing(false)
-	key(KEY_I)
+	key(KEY_B)
 	app._input_enabled(false)
 	check(not game.inventory_window.visible and not game.shooting_view.local_input.enabled, "menu closes bag and keeps input blocked")
 	app._input_enabled(true)
 	game.inventory.add_item(InventoryItem.create_edamame(), 100)
 	game.inventory.refining_unlocked = true
-	key(KEY_I)
+	key(KEY_B)
 	await process_frame
-	for child in game.inventory_window.get_children():
-		if child is CharacterSheet: child.bag_requested.emit()
 	var right_click := InputEventMouseButton.new()
 	right_click.button_index = MOUSE_BUTTON_RIGHT
 	right_click.pressed = true

@@ -54,6 +54,14 @@ def run_stage(godot, name, args, logs, timeout_seconds=60, verbose=False):
 
 
 def test_stages():
+    yield "unarmed_art", ["--script", "res://tests/test_unarmed_art.gd"], 60
+    yield "fufu_3d", ["--script", "res://tests/test_fufu_3d.gd"], 90
+    yield "angel_bow", ["--script", "res://tests/test_angel_bow.gd"], 90
+    yield "coop_angel_bow", ["--script", "res://tests/test_coop_angel_bow.gd"], 120
+    yield "bengal_dash", ["--script", "res://tests/test_bengal_dash.gd"], 60
+    yield "bengal_vfx", ["--script", "res://tests/test_bengal_vfx.gd"], 60
+    yield "bengal", ["--script", "res://tests/test_bengal.gd"], 120
+    yield "coop_bengal", ["--script", "res://tests/test_coop_bengal.gd"], 180
     yield "localization", ["--script", "res://tests/test_localization.gd"], 60
     yield "weapon_enhancement", ["--script", "res://tests/test_weapon_enhancement.gd"], 120
     yield "item_tooltip", ["--script", "res://tests/test_item_tooltip.gd"], 60
@@ -63,6 +71,8 @@ def test_stages():
     yield "meadow_reorg", ["--script", "res://tests/test_meadow_reorg.gd"], 60
     yield "meadow_meshes", ["--script", "res://tests/test_meadow_meshes.gd"], 60
     yield "farming", ["--script", "res://tests/test_farming.gd"], 60
+    yield "soy_save_spots", ["--script", "res://tests/test_soy_save_spots.gd"], 150
+    yield "coop_soy_save_spots", ["--script", "res://tests/test_coop_soy_save_spots.gd"], 240
     yield "soy_plant", ["--script", "res://tests/test_soy_plant.gd"], 60
     yield "coop_parrot_travel", ["--script", "res://tests/test_coop_parrot_travel.gd"], 60
     yield "parrot_travel", ["--script", "res://tests/test_parrot_travel.gd"], 60

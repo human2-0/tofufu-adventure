@@ -8,12 +8,12 @@ static func vector3(value: Array) -> Vector3:
 static func array3(value: Vector3) -> Array:
 	return [value.x, value.y, value.z]
 
-static func input(command: PlayerCommand, sequence: int, ack: int) -> Dictionary:
-	var data := {"type": "input", "sequence": sequence, "ack": ack, "pickup_id": command.pickup_id,
-		"castle_action": command.castle_action, "castle_revision": command.castle_revision,
-		"move": [command.move.x, command.move.y], "aim": [command.aim.x, command.aim.y],
-		"aim_point": array3(command.aim_point), "dash": [command.dash_direction.x, command.dash_direction.y], "weapon_slot": command.weapon_slot}
-	for field in ExplorationProtocol.INPUT_FLAGS: data[field] = command.get(field)
+static func input(input_command: PlayerCommand, sequence: int, ack: int) -> Dictionary:
+	var data := {"type": "input", "sequence": sequence, "ack": ack, "pickup_id": input_command.pickup_id,
+		"castle_action": input_command.castle_action, "castle_revision": input_command.castle_revision,
+		"move": [input_command.move.x, input_command.move.y], "aim": [input_command.aim.x, input_command.aim.y],
+		"aim_point": array3(input_command.aim_point), "dash": [input_command.dash_direction.x, input_command.dash_direction.y], "weapon_slot": input_command.weapon_slot}
+	for field in ExplorationProtocol.INPUT_FLAGS: data[field] = input_command.get(field)
 	return data
 
 static func command(data: Dictionary) -> PlayerCommand:

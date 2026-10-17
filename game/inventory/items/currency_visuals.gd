@@ -22,7 +22,7 @@ static func icon(id: String, count: int) -> Texture2D:
 	var sheet: Texture2D = BEANS if id in ["edamame", "mature_bean"] else (WHITE if id == "tofu_white_chunk" else (TOASTED if id == "toasted_tofu_chunk" else GOLDEN))
 	var edges: Array[int] = BEAN_EDGES if sheet == BEANS else (WHITE_EDGES if sheet == WHITE else (TOASTED_EDGES if sheet == TOASTED else GOLDEN_EDGES))
 	var row := 1 if id == "mature_bean" else 0
-	var height := int(sheet.get_height() / (2 if sheet == BEANS else 1))
+	var height := int(sheet.get_height() / (2.0 if sheet == BEANS else 1.0))
 	var cell := Rect2i(edges[frame], row * height, edges[frame + 1] - edges[frame], height)
 	var image := sheet.get_image().get_region(cell)
 	# Ignore imperceptible alpha fringe; otherwise several frames scale down to

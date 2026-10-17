@@ -46,7 +46,7 @@ static func _kitchen(room: Node3D) -> void:
 		for z in [-0.95, -0.45]:
 			MeadowGeometry.box(room, Vector3(x, 0.7, z), Vector3(0.10, 0.5, 0.10), Color("81603f"), true)
 	for i in 6:
-		MeadowGeometry.box(room, Vector3(-1.8 + (i % 3) * 0.4, 0.65 + (i / 3) * 0.25, 1.6), Vector3(0.3, 0.22, 0.8), Color("80573b"))
+		MeadowGeometry.box(room, Vector3(-1.8 + (i % 3) * 0.4, 0.65 + int(i / 3.0) * 0.25, 1.6), Vector3(0.3, 0.22, 0.8), Color("80573b"))
 
 static func _couch(room: Node3D, at: Vector3) -> void:
 	MeadowGeometry.box(room, at + Vector3.UP * 0.35, Vector3(1.5, 0.65, 2.5), Color("842d32"), true)

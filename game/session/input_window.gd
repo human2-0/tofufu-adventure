@@ -12,7 +12,7 @@ func accept(key: String, data: Dictionary, host_tick: int) -> bool:
 	var sequence := int(data.sequence)
 	if sequence <= _last.get(key, -1): return false
 	if _last.has(key) and sequence - _last[key] > 240: return false
-	var now := Time.get_ticks_msec() / 1000
+	var now := int(Time.get_ticks_msec() / 1000.0)
 	if now != _window:
 		_window = now
 		_counts.clear()

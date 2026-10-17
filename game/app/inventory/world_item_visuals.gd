@@ -10,7 +10,12 @@ static func build(drop: WorldItemDrop) -> void:
 	orbit.center = func() -> Vector3: return drop.global_position
 	orbit.enabled = func() -> bool: return drop.enhanced
 	drop.add_child(orbit)
-	if drop.item_id in ["knife", "edamame_sword", "nori_katana", "celestial_sword"]:
+	if drop.item_id == AngelBowItem.ID:
+		var bow := AngelBowModel.new()
+		drop.add_child(bow)
+		bow.scale = Vector3.ONE * 0.52
+		bow.rotation = Vector3(-0.65, 0.7, 0.65)
+	elif drop.item_id in ["knife", "edamame_sword", "nori_katana", "celestial_sword"]:
 		var reach := 0.48 if drop.item_id == "knife" else (0.72 if drop.item_id == "nori_katana" else 0.64)
 		_add_weapon_model(drop, drop.item_id, reach)
 	elif drop.item_id == "soy_gun":
@@ -64,7 +69,7 @@ static func build(drop: WorldItemDrop) -> void:
 	elif drop.item_id.begins_with("bright_leaf_") or drop.item_id.begins_with("dark_leaf_"):
 		_apparel(drop)
 	else:
-		var art := InventoryItem.from_id(drop.item_id).icon if drop.item_id in MeadowFood.NAMES or drop.item_id == MagicalTofufu.ID else CurrencyVisuals.icon(drop.item_id, drop.count)
+		var art := InventoryItem.from_id(drop.item_id).icon if drop.item_id in MeadowFood.NAMES or drop.item_id in [MagicalTofufu.ID, BengalPawsItem.ID] else CurrencyVisuals.icon(drop.item_id, drop.count)
 		if art == null: return
 		var sprite := Sprite3D.new()
 		sprite.texture = InventoryIconQuality.for_slot(art)

@@ -7,7 +7,7 @@ const SOUTH_END: float = 340.0
 const HALF_WIDTH: float = 80.0
 
 static func height_at(x: float, z: float, desert: DesertWorld) -> float:
-	var blend := smoothstep(SOUTH_START, SOUTH_START + 20.0, z)
+	var blend := smoothstep(SOUTH_START, SOUTH_START + 36.0, z)
 	var hills := 1.8 + sin(x * 0.16) * 1.1 + cos(z * 0.18) * 0.9
 	hills += 4.0 * exp(-Vector2(x + 19, z - 157).length_squared() / 110.0)
 	var trail := trail_distance(x, z)
@@ -43,6 +43,7 @@ static func build(parent: Node3D, desert: DesertWorld) -> void:
 	ground.mesh = surface.commit()
 	var material := ShaderMaterial.new()
 	material.shader = preload("res://game/world/biomes/jungle/jungle_ground.gdshader")
+	material.set_shader_parameter("ground_grain", TerrainFinish.GRAIN)
 	ground.material_override = material
 	parent.add_child(ground)
 	ground.create_trimesh_collision()

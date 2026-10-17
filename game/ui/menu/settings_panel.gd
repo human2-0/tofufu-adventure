@@ -7,6 +7,7 @@ signal deadzone_changed(value: float)
 signal binding_requested(action: String, device: String)
 signal reset_requested
 signal language_requested(locale: String)
+signal effect_requested(key: String, enabled: bool)
 signal back
 var bindings: Dictionary[String, Button] = {}
 var message: Label
@@ -14,7 +15,7 @@ var device: String = "keyboard"
 var _rows: VBoxContainer
 var language_picker: OptionButton
 
-func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzone: float, actions: Array[String], frame_limit: int = 120, render_scale: float = 1.0, vsync: bool = false, adaptive: bool = true) -> void:
+func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzone: float, actions: Array[String], frame_limit: int = 120, render_scale: float = 1.0, vsync: bool = false, adaptive: bool = true, effects: Dictionary = {}) -> void:
 	MenuStyle.label(self, "Language", 22)
 	language_picker = OptionButton.new()
 	language_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
@@ -39,6 +40,7 @@ func build(resolutions: Array[Vector2i], selected: int, fullscreen: bool, deadzo
 	MenuStyle.button(display_row, "Apply", func() -> void: display_requested.emit(sizes.selected, full.button_pressed))
 	MenuStyle.paragraph(self, "Window size applies in windowed mode. Fullscreen uses your display’s native resolution.")
 	_render_options(frame_limit, render_scale, vsync, adaptive)
+	_effect_options(effects)
 	MenuStyle.label(self, "Controls", 22)
 	var devices := OptionButton.new()
 	devices.add_item("Mouse & keyboard")
@@ -93,10 +95,10 @@ func _render_options(frame_limit: int, render_scale: float, vsync: bool, adaptiv
 	for limit in limits: fps.add_item("%d FPS" % limit if limit > 0 else "Uncapped")
 	fps.select(maxi(0, limits.find(frame_limit)))
 	row.add_child(fps)
-	var scale := OptionButton.new()
-	for amount in scales: scale.add_item("3D resolution · %d%%" % roundi(amount * 100))
-	scale.select(maxi(0, scales.find(render_scale)))
-	row.add_child(scale)
+	var resolution_scale := OptionButton.new()
+	for amount in scales: resolution_scale.add_item("3D resolution · %d%%" % roundi(amount * 100))
+	resolution_scale.select(maxi(0, scales.find(render_scale)))
+	row.add_child(resolution_scale)
 	var sync := CheckButton.new()
 	sync.text = "VSync"
 	sync.button_pressed = vsync
@@ -105,5 +107,18 @@ func _render_options(frame_limit: int, render_scale: float, vsync: bool, adaptiv
 	automatic.text = "Adaptive 3D resolution"
 	automatic.button_pressed = adaptive
 	add_child(automatic)
-	MenuStyle.button(row, "Apply", func() -> void: rendering_requested.emit(limits[fps.selected], scales[scale.selected], sync.button_pressed, automatic.button_pressed))
+	MenuStyle.button(row, "Apply", func() -> void: rendering_requested.emit(limits[fps.selected], scales[resolution_scale.selected], sync.button_pressed, automatic.button_pressed))
 	MenuStyle.paragraph(self, "120 FPS is the target. Adaptive resolution can lower native 3D to 85% during sustained load and recover slowly. Your chosen scale is the maximum; text and menus stay sharp. VSync reduces tearing and follows display refresh.")
+
+func _effect_options(effects: Dictionary) -> void:
+	MenuStyle.label(self, "Weather and effects", 22)
+	MenuStyle.paragraph(self, "Disable individual effects for smoother play. Weather still affects the world. Changes apply immediately.")
+	var rows := HFlowContainer.new()
+	add_child(rows)
+	for key: String in effects:
+		var option := CheckButton.new()
+		option.name = "Effect_" + key
+		option.text = effects[key][0]
+		option.button_pressed = effects[key][1]
+		rows.add_child(option)
+		option.toggled.connect(func(value: bool) -> void: effect_requested.emit(key, value))

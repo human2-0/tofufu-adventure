@@ -47,6 +47,7 @@ func _ready() -> void:
 	warning.text = "Ember Guardian"
 	add_child(warning)
 	target = Damageable.new()
+	target.paralysis_allowed = true
 	target.body = self
 	target.maximum = 360 + rank * 60
 	target.trains_weapons = true
@@ -83,6 +84,7 @@ func _box(at: Vector3, size: Vector3, color: Color) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not authoritative or target.current <= 0 or not is_instance_valid(quarry) or route.is_empty(): return
+	if EnemyParalysis.hold(self, target, delta): return
 	spells.actors = [quarry]
 	var offset := quarry.global_position - global_position
 	var direction := tactics.step(self, delta, offset, clear_to(quarry.global_position))
@@ -143,10 +145,11 @@ func set_alive(value: bool) -> void:
 	set_physics_process(value)
 
 func capture() -> Dictionary:
-	return {"body": [global_position.x, global_position.y, global_position.z, target.current, waypoint, maxf(0, windup), cooldown, torso.rotation.y,
+	return {"paralysis": target.paralysis, "body": [global_position.x, global_position.y, global_position.z, target.current, waypoint, maxf(0, windup), cooldown, torso.rotation.y,
 		tactics.skill, tactics.dash_time, tactics.dash_cooldown, tactics.shield, tactics.cycle, tactics.side, tactics.dash_direction.x, tactics.dash_direction.z], "spells": spells.capture()}
 
 func apply(snapshot: Dictionary, authority: bool) -> void:
+	target.paralysis = snapshot.get("paralysis", 0.0)
 	var data: Array = snapshot.body
 	global_position = Vector3(data[0], data[1], data[2])
 	if float(data[3]) < target.current: reaction.flash()

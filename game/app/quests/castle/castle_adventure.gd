@@ -76,7 +76,7 @@ func focus_position(action: int) -> Vector3:
 	if action >= 13 and action <= 24: return treasure.chest(action - 13).global_position + Vector3.UP * 0.75
 	if action == 12: return encounter.king.global_position + Vector3.UP
 	if action < 0 or action >= 12: return Vector3.INF
-	return castle.floors[action / 4].trial.controls[action % 4].global_position + Vector3.UP * 1.2
+	return castle.floors[int(action / 4.0)].trial.controls[action % 4].global_position + Vector3.UP * 1.2
 
 func reachable(actor: Player, action: int) -> bool:
 	if action < 0 or action > 24: return false
@@ -84,8 +84,8 @@ func reachable(actor: Player, action: int) -> bool:
 	if action == 12 and encounter.king.active: return false
 	var at := focus_position(action)
 	if actor.global_position.distance_to(at - Vector3.UP) > (5.5 if action == 12 else 3.2): return false
-	if action < 12 and absf(castle.floors[action / 4].to_local(actor.global_position).y) > 2: return false
-	if action >= 13 and absf(castle.floors[(action - 13) / 4].to_local(actor.global_position).y) > 2: return false
+	if action < 12 and absf(castle.floors[int(action / 4.0)].to_local(actor.global_position).y) > 2: return false
+	if action >= 13 and absf(castle.floors[int((action - 13) / 4.0)].to_local(actor.global_position).y) > 2: return false
 	if action == 12 and not party.inside_arena(actor): return false
 	var ray := PhysicsRayQueryParameters3D.create(actor.global_position + Vector3.UP, at, 1)
 	var hit := get_world_3d().direct_space_state.intersect_ray(ray)
@@ -93,7 +93,7 @@ func reachable(actor: Player, action: int) -> bool:
 
 func prompt(action: int) -> String:
 	if action >= 13: return "Search hidden chest · Golden Tofu ×3"
-	if action < 12: return "Operate " + str(CastleTrialGeometry.LABELS[action / 4][action % 4])
+	if action < 12: return "Operate " + str(CastleTrialGeometry.LABELS[int(action / 4.0)][action % 4])
 	if state.completed: return "Receive King Lava's blessing" if party.key(game.player) not in state.rewarded else "The fire remembers your courage"
 	return "Speak to King Lava" if not state.introduced else "Challenge King Lava"
 
@@ -120,7 +120,7 @@ func _process(_delta: float) -> void:
 	var deck := clampi(floori(local.y / 8), 0, 3)
 	var heading: String = "KING LAVA · PHASE %d" % king.phase if king.active else "TOFUFU CASTLE · " + (["RESTRAINT", "MEMORY", "MEASURE", "ROYAL PLAZA"][deck])
 	var text := CastleHudCopy.text(self, deck, not action.is_empty())
-	view.present(shown, heading, text, action, king.target.current, king.target.maximum if king.active else 0)
+	view.present(shown, heading, text, action, king.target.current, king.target.maximum if king.active else 0.0)
 
 func present_state() -> void:
 	if state.message != _last_message and _view_revision >= 0: notice_time = 6

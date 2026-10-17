@@ -5,6 +5,8 @@ signal time_changed(hour: float, daylight: float)
 @export var sun: DirectionalLight3D
 @export var world_environment: WorldEnvironment
 @export var cycle_seconds: float = 180.0
+var fog_enabled: bool = true
+var motes_enabled: bool = true
 var phase: float = 0.35
 var cloud_cover: float = 0.0
 var _clouds: float = 0.0
@@ -42,7 +44,7 @@ func _process(delta: float) -> void:
 	var environment := world_environment.environment
 	environment.ambient_light_color = Color("7b90bd").lerp(Color("d6ebed"), daylight)
 	environment.ambient_light_energy = lerpf(0.55, 0.7, daylight)
-	environment.fog_enabled = true
+	environment.fog_enabled = fog_enabled
 	environment.fog_density = lerpf(0.0025, 0.012, _clouds)
 	environment.fog_light_color = Color("394965").lerp(Color("d9e8da"), daylight)
 	var flash := sky_effects.present(delta, phase, daylight, _clouds)
@@ -50,8 +52,8 @@ func _process(delta: float) -> void:
 	environment.fog_light_color = environment.fog_light_color.lerp(Color("7d939e"), _clouds * 0.6)
 	for light in _lights:
 		light.light_energy = (1.0 - daylight) * (1.5 + sin(_time * 3.0) * 0.1)
-	_motes.visible = daylight < 0.7
-	_animate_motes()
+	_motes.visible = motes_enabled and daylight < 0.7
+	if _motes.visible: _animate_motes()
 	time_changed.emit(phase * 24.0, daylight)
 
 func _build_motes() -> void:

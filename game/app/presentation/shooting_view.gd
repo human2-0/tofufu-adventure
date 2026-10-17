@@ -29,6 +29,7 @@ func _ready() -> void:
 	_collect_geometry(game.combat.sword)
 	_collect_geometry(game.combat.staff)
 	_collect_geometry(game.combat.gun.visual)
+	_collect_geometry(game.combat.bow.visual)
 	_collect_geometry(game.combat.sotjet.visual)
 	_collect_geometry(game.combat._trail)
 	_collect_geometry(game.loadout)
@@ -48,13 +49,16 @@ func _process(delta: float) -> void:
 	local_input.first_person_view = first_person
 	_update_run_pose(delta, available)
 	weapon_view.visible = first_person and available
-	game.camera.precise = game.combat.gun.aiming or game.combat.sotjet.aiming
+	var claw_tell := game.combat.get_node_or_null("ClawCharge") as Node3D
+	if claw_tell != null: claw_tell.visible = not first_person or _inventory_inspection
+	game.camera.precise = game.combat.gun.aiming or game.combat.sotjet.aiming or game.combat.bow.charge > 0.0
 	reticle.visible = available and (first_person or game.combat.ranged_selected())
 	reticle.spread_multiplier = game.progression.progress.shooting_spread_multiplier()
 	reticle.recoil = game.combat.gun.recoil.heat
-	reticle.precise = game.camera.precise
+	reticle.precise = game.camera.precise or game.combat.bow.selected
 	reticle.centered = shoulder
 	reticle.reload_remaining = game.combat.gun.reload_remaining if game.combat.gun.selected else 0.0
+	if game.combat.bow.selected: reticle.reload_remaining = game.combat.bow.reload_remaining
 	reticle.reload_progress = SoyGunReloadPose.progress(reticle.reload_remaining)
 	reticle.queue_redraw()
 	game.hud.show_gun(game.combat.gun.selected, game.combat.gun.aiming)
@@ -66,6 +70,8 @@ func _process(delta: float) -> void:
 	game.hud.show_staff_state(game.combat.equipment.staff_selected, game.combat.active and game.combat.attack_style == StaffAttack.TORNADO, game.combat.rules.cooldown)
 	game.hud.show_nori_state(game.combat.equipment.nori_selected, game.combat.plunge.active, game.combat.plunge.cooldown)
 	game.hud.show_pod_state(game.combat.equipment.pod_selected, game.combat.podburst.cooldown)
+	game.hud.show_paws_state(game.combat.claws.selected, game.combat.claws.cooldown, game.combat.claws.charge, game.combat.claws.dashing)
+	HUDCombatView.show_bow_state(game.hud, game.combat.bow.selected, game.combat.bow.reload_remaining, game.combat.bow.charge, game.combat.bow.cooldown, game.combat.vitals.current)
 
 func _update_run_pose(delta: float, available: bool) -> void:
 	var in_view: bool = shoulder and game.camera.shoulder and game.combat.ranged_selected() and not game.player.transport_active

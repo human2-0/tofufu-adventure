@@ -1,7 +1,7 @@
 class_name WeaponShopWindow
 extends CanvasLayer
 
-signal purchase_requested(item_id: String)
+@warning_ignore("unused_signal") signal purchase_requested(item_id: String) # Emitted by ShopStock.
 signal sale_requested(slot: int, item_id: String)
 signal closed
 

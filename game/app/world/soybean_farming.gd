@@ -13,7 +13,7 @@ var _pending: SoybeanPlot
 func _ready() -> void:
 	for i in 4:
 		var plot := SoybeanPlot.new()
-		plot.position = game.world.ground_point(-8.0 + (i % 2) * 2.7, 3.5 + (i / 2) * 2.7, 0.05)
+		plot.position = game.world.ground_point(-8.0 + (i % 2) * 2.7, 3.5 + int(i / 2.0) * 2.7, 0.05)
 		add_child(plot)
 		plots.append(plot)
 		if i >= 2:
@@ -78,7 +78,7 @@ func reachable(actor: Node3D, plot: SoybeanPlot) -> bool:
 	var ray := PhysicsRayQueryParameters3D.create(actor.global_position + Vector3.UP * 0.6, plot.global_position + Vector3.UP * 0.5, 1)
 	return get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
 
-func perform(actor: Node3D, inventory: PlayerInventory, id: int, revision: int, action: String) -> String:
+func perform(actor: Node3D, _inventory: PlayerInventory, id: int, revision: int, action: String) -> String:
 	if not authoritative or id < 0 or id >= plots.size(): return ""
 	var plot := plots[id]
 	if not reachable(actor, plot) or revision != plot.crop.revision: return ""

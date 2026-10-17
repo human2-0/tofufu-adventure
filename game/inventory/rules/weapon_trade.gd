@@ -9,13 +9,13 @@ const BUYABLE_IDS: Array[String] = [
 	"bright_leaf_helmet", "bright_leaf_armor", "bright_leaf_legs", "bright_leaf_boots",
 	"dark_leaf_helmet", "dark_leaf_armor", "dark_leaf_legs", "dark_leaf_boots",
 	"celestial_helmet", "celestial_armor", "celestial_legs", "celestial_boots", "celestial_sword", "celestial_staff", "soy_raygun",
-	MagicalTofufu.ID
+	BengalPawsItem.ID, MagicalTofufu.ID, AngelBowItem.ID, "soy_milk"
 ]
 
 static func purchase(inventory: PlayerInventory, item_id: String, equipment: CharacterEquipment = null) -> String:
 	if item_id not in BUYABLE_IDS: return "That item is not for sale."
 	var item := InventoryItem.from_id(item_id)
-	if item != null and item.id != MagicalTofufu.ID and item.category not in ["combat", "backpack", "helmet", "armor", "legs", "boots"]: item = null
+	if item != null and item.id not in [MagicalTofufu.ID, "soy_milk"] and item.category not in ["combat", "backpack", "helmet", "armor", "legs", "boots"]: item = null
 	if item == null: return "That item is not for sale."
 	if inventory == null: return "Your bag is unavailable."
 	if inventory.count_item(TENDER_ID) < PURCHASE_PRICE: return "You need %d Mature Bean%s." % [PURCHASE_PRICE, "" if PURCHASE_PRICE == 1 else "s"]

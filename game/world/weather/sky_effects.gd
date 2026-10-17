@@ -2,6 +2,8 @@ class_name SkyEffects
 extends Node
 ## Cosmetic atmosphere only: the existing clocks own time and weather.
 
+var lightning_enabled: bool = true
+var thunder_enabled: bool = true
 var material: ShaderMaterial
 var tropical_blend: float = 0.0
 var rainbow_remaining: float = 0.0
@@ -62,10 +64,15 @@ func present(delta: float, phase: float, daylight: float, clouds: float) -> floa
 	material.set_shader_parameter("clock", _elapsed)
 	material.set_shader_parameter("sun_direction", Vector3(cos(phase * TAU), sin(phase * TAU - PI * 0.5), -0.6).normalized())
 	var flash := _storm(delta, clouds)
-	material.set_shader_parameter("flash", flash)
-	return flash
+	material.set_shader_parameter("flash", flash if lightning_enabled else 0.0)
+	return flash if lightning_enabled else 0.0
 
 func _storm(delta: float, clouds: float) -> float:
+	if not thunder_enabled: _audio.stop()
+	if not thunder_enabled and not lightning_enabled:
+		_thunder_delay = -1.0
+		_flash_age = 10.0
+		return 0.0
 	_flash_age += delta
 	if clouds < 0.9:
 		_next_strike = 9.0
@@ -74,13 +81,13 @@ func _storm(delta: float, clouds: float) -> float:
 		if _next_strike <= 0.0:
 			material.set_shader_parameter("strike_offset", _random.randf_range(-0.6, 0.6))
 			_flash_age = 0.0
-			_thunder_delay = 1.4
+			_thunder_delay = 1.4 if thunder_enabled else -1.0
 			_next_strike = _random.randf_range(12.0, 23.0)
 	if _thunder_delay >= 0.0:
 		_thunder_delay -= delta
 		if _thunder_delay < 0.0:
 			_audio.pitch_scale = _random.randf_range(0.88, 1.08)
-			_audio.play()
+			if thunder_enabled: _audio.play()
 	return maxf(0.0, 1.0 - _flash_age / 0.18) * 0.65
 
 func _make_thunder() -> AudioStreamWAV:

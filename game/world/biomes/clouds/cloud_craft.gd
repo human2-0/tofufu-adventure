@@ -46,14 +46,14 @@ static func lathe(parent: Node3D, at: Vector3, profile: Array[Vector2], material
 	return view(parent, surface.commit(), at, material)
 
 static func body(parent: Node3D, at: Vector3, radius: float, height: float) -> void:
-	var body := StaticBody3D.new()
-	body.collision_layer = 1
-	body.collision_mask = 0
-	body.position = at + Vector3.UP * height * 0.5
+	var collider := StaticBody3D.new()
+	collider.collision_layer = 1
+	collider.collision_mask = 0
+	collider.position = at + Vector3.UP * height * 0.5
 	var shape := CollisionShape3D.new()
-	var cylinder := CylinderShape3D.new()
-	cylinder.radius = radius
-	cylinder.height = height
-	shape.shape = cylinder
-	body.add_child(shape)
-	parent.add_child(body)
+	var cylinder_shape := CylinderShape3D.new()
+	cylinder_shape.radius = radius
+	cylinder_shape.height = height
+	shape.shape = cylinder_shape
+	collider.add_child(shape)
+	parent.add_child(collider)

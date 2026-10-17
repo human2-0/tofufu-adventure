@@ -54,7 +54,7 @@ func step(delta: float) -> void:
 		if guard.target.current <= 0: continue
 		var best := INF
 		for actor: Player in actors:
-			var local := flow.castle.floors[index / 3].to_local(actor.global_position)
+			var local := flow.castle.floors[int(index / 3.0)].to_local(actor.global_position)
 			if local.y < -0.2 or local.y > 3.0 or absf(local.x) > 26 or absf(local.z) > 26: continue
 			var distance := guard.global_position.distance_to(actor.global_position)
 			if distance < best and distance < 18: best = distance; guard.quarry = actor

@@ -11,7 +11,10 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 		"opening_complete": game.opening == null or not game.opening.active,
 		"parrot_rest": CoopValues.array3(game.player.parrot_rest) if game.player.parrot_rest.is_finite() else [],
 		"map_exploration": game.map.exploration.capture(),
+		"soy_spots": game.soy_spots.ownership.mask,
 		"vitals": game.combat.vitals.capture(),
+		"claw_cooldown": game.combat.claws.cooldown,
+		"bow_reload": game.combat.bow.reload_remaining, "bow_cooldown": game.combat.bow.cooldown,
 		"endurance": game.player.motor.endurance.capture(),
 		"position": [position.x, position.y, position.z], "health": game.health.current,
 		"phase": game.cycle.phase, "seconds": seconds, "beans": game.encounters.beans,
@@ -39,6 +42,7 @@ static func restore(game: Node3D, data: Dictionary) -> void:
 	var rest: Variant = data.get("parrot_rest", [])
 	if not rest is Array or (not rest.is_empty() and not ExplorationProtocol.vector(rest, 3, 1000)): return
 	game.player.parrot_rest = CoopValues.vector3(data.parrot_rest) if data.get("parrot_rest", []).size() == 3 else Vector3.INF
+	game.soy_spots.ownership.restore(int(data.get("soy_spots", 0)))
 	game.map.restore_exploration(data.get("map_exploration", ""))
 	if data.opening_complete:
 		game.player.relocate(TerrainLocomotion.saved_position(Vector3(data.position[0], data.position[1], data.position[2]), game.world))
@@ -83,4 +87,8 @@ static func restore(game: Node3D, data: Dictionary) -> void:
 	if data.has("inventory") and game.inventory != null: game.inventory.restore(data.get("inventory", []))
 	game.inventory.restore_pending(data.get("pending_items", []))
 	game.loadout.stow_ineligible_apparel()
+	game.combat.claws.cooldown = float(data.get("claw_cooldown", 0.0))
+	game.combat.bow.clear_flights()
+	game.combat.bow.reload_remaining = float(data.get("bow_reload", 0.0))
+	game.combat.bow.cooldown = float(data.get("bow_cooldown", 0.0))
 	if data.has("castle"): game.castle_adventure.restore(data.castle)

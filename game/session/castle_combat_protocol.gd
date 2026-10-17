@@ -4,11 +4,12 @@ extends RefCounted
 
 static func guardian(value: Variant, index: int) -> bool:
 	if not value is Dictionary: return false
+	if not paralysis(value.get("paralysis", 0.0)): return false
 	var row: Variant = value.get("body")
 	if not numbers(row, 16, 2147483647): return false
-	if not integer(row[4], 0, 80) or row[3] < 0 or row[3] > 360 + (index / 3) * 60: return false
+	if not integer(row[4], 0, 80) or row[3] < 0 or row[3] > 360 + int(index / 3.0) * 60: return false
 	if row[5] < 0 or row[5] > 0.9 or row[6] < 0 or row[6] > 1.6 or absf(row[7]) > PI: return false
-	if absf(row[0] - 316) > 27 or absf(row[2] - 334) > 27 or absf(row[1] - (4.4 + (index / 3) * 8)) > 1: return false
+	if absf(row[0] - 316) > 27 or absf(row[2] - 334) > 27 or absf(row[1] - (4.4 + int(index / 3.0) * 8)) > 1: return false
 	if not integer(row[8], 0, 2) or row[9] < 0 or row[9] > 0.2 or row[10] < 0 or row[10] > 2.6: return false
 	if row[11] < 0 or row[11] > 0.8 or not integer(row[12], 0, 2147483647) or row[13] not in [-1.0, 1.0]: return false
 	if Vector2(row[14], row[15]).length_squared() > 1.01: return false
@@ -24,6 +25,9 @@ static func spells(value: Variant, bolt_limit: int, field_limit: int) -> bool:
 		if not numbers(field, 8, 1000) or not integer(field[0], 0, 1): return false
 		if field[4] < -3 or field[4] > 4 or field[5] < 0 or field[5] > 4 or field[6] < 0 or field[6] > 1 or field[7] < 0 or field[7] > 20: return false
 	return true
+
+static func paralysis(value: Variant) -> bool:
+	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= 4
 
 static func numbers(value: Variant, count: int, bound: float) -> bool:
 	if not value is Array or value.size() != count: return false

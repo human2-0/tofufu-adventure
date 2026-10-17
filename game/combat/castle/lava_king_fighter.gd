@@ -35,6 +35,7 @@ func _ready() -> void:
 	collider.position.y = 1.7
 	add_child(collider)
 	target = Damageable.new()
+	target.paralysis_allowed = true
 	target.maximum = 1100
 	target.trains_weapons = true
 	target.launch_immune = true
@@ -64,6 +65,7 @@ func begin(players: int) -> void:
 
 func _physics_process(delta: float) -> void:
 	if not active: return
+	if EnemyParalysis.hold(self, target, delta): return
 	if burst > 0:
 		burst_clock -= delta
 		if burst_clock <= 0:
@@ -149,12 +151,13 @@ func reset() -> void:
 	spells.clear()
 
 func capture() -> Dictionary:
-	return {"position": [global_position.x, global_position.y, global_position.z], "health": target.current,
+	return {"paralysis": target.paralysis, "position": [global_position.x, global_position.y, global_position.z], "health": target.current,
 		"maximum": target.maximum, "active": active, "phase": phase, "skill": skill, "cast": maxf(0, cast),
 		"recovery": maxf(0, recovery), "cycle": cycle, "locked_aim": [locked_aim.x, locked_aim.y, locked_aim.z], "facing": [facing.x, facing.y], "pose": pose, "spells": spells.capture(),
 		"burst": burst, "burst_clock": maxf(0, burst_clock), "chunk_aim": [chunk_aim.x, chunk_aim.y, chunk_aim.z]}
 
 func apply(data: Dictionary, authority: bool) -> void:
+	target.paralysis = data.get("paralysis", 0.0)
 	authoritative = authority
 	global_position = Vector3(data.position[0], data.position[1], data.position[2])
 	target.current = data.health

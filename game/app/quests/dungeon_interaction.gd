@@ -7,9 +7,9 @@ static func connect_actor(dungeon: TofuDungeon, actor: Player) -> void:
 	dungeon._connected.append(actor)
 	actor.command_sampled.connect(dungeon._command.bind(actor))
 
-static func command(dungeon: TofuDungeon, command: PlayerCommand, _delta: float, actor: Player) -> void:
+static func command(dungeon: TofuDungeon, input_command: PlayerCommand, _delta: float, actor: Player) -> void:
 	if dungeon.puzzle_enabled and dungeon.cooperative and actor != dungeon.game.player: return
-	if command.pickup_pressed and (dungeon.enabled or actor == dungeon.game.player): dungeon.interact(actor)
+	if input_command.pickup_pressed and (dungeon.enabled or actor == dungeon.game.player): dungeon.interact(actor)
 
 static func interact(dungeon: TofuDungeon, actor: Player) -> bool:
 	if not dungeon.enabled or not TofuFactory.contains(actor.global_position) or dungeon.state.completed or not dungeon.state.active: return false

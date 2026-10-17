@@ -54,7 +54,8 @@ func _vertex(at: Vector2i) -> float:
 func _color(at: Vector2i) -> Color:
 	if not _colors.has(at):
 		var main_mask := 1 - smoothstep(4, 6, trail_distance(Vector2(at)))
-		_colors[at] = Color(maxf(main_mask, paths.path_mask(Vector2(at))), 0, 0)
+		var palette := BiomePalette.color_at(Vector2(at), _vertex(at), farm.noise.seed).srgb_to_linear()
+		_colors[at] = Color(palette.r, palette.g, palette.b, maxf(main_mask, paths.path_mask(Vector2(at))))
 	return _colors[at]
 
 func _raw_height(x: float, z: float) -> float:

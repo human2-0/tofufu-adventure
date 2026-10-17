@@ -29,6 +29,7 @@ func _entrance() -> void:
 	arch.position = _authored_point(0, 109)
 	JungleProps.arch(arch, Vector3.ZERO, 10, 7)
 	MeadowGeometry.signpost(self, _authored_point(-7, 104), "JADEWILD JUNGLE · OPEN  v", PI)
+	MeadowGeometry.signpost(self, point(-6, 236), "BENGAL PROWL · LV 15\nQUICK CLAWS · RARE PAWS 1%", PI)
 	var label := Label3D.new()
 	label.visibility_range_end = 32.0
 	label.visibility_range_end_margin = 2.0
@@ -61,8 +62,8 @@ func _landmarks() -> void:
 	waterfall.jungle = self
 	add_child(waterfall)
 	# A fallen giant and buttress stones create another recognizable side trail.
-	var log := MeadowGeometry.box(self, _authored_point(17, 122, 1.1), Vector3(16, 1.8, 4), Color("746044"), true)
-	log.rotation.y = -0.35
+	var timber := MeadowGeometry.box(self, _authored_point(17, 122, 1.1), Vector3(16, 1.8, 4), Color("746044"), true)
+	timber.rotation.y = -0.35
 	for i in 5: JungleProps.fern(self, _authored_point(14 + i * 1.3, 122, 2.1), 2.0)
 
 func _forest() -> void:
@@ -73,6 +74,7 @@ func _forest() -> void:
 		var z := rng.randf_range(202, 334)
 		if rng.randf() > smoothstep(195.0, 239.0, z + WorldContours.noise(Vector2(x, z) / 29.0, rng.seed) * 12): continue
 		if JungleTerrain.trail_distance(x, z) < 3.5 or x > 53: continue
+		if _bengal_clearing(Vector2(x, z)): continue
 		if Vector2(x, z - 286).length() < 24 or Vector2(x + 40, z - 314).length() < 26: continue
 		JungleProps.palm(self, point(x, z), rng.randf_range(6, 12), rng.randf_range(0, TAU))
 		JungleProps.fern(self, point(x + 1, z + 1), rng.randf_range(1.3, 2.5))
@@ -83,6 +85,11 @@ func _forest() -> void:
 				MeadowGeometry.rock(self, point(x + cos(petal * PI / 2) * 0.3, z + 2 + sin(petal * PI / 2) * 0.3, 0.65), Vector3(0.4, 0.18, 0.4), Color("e79979"))
 	for x in [-68.0, 68.0]:
 		JungleProps.palm(self, point(x, 232), 13, x)
+
+func _bengal_clearing(at: Vector2) -> bool:
+	for center in BengalGrounds.CENTERS:
+		if at.distance_to(center) < 10: return true
+	return false
 
 func _boundaries() -> void:
 	for spec in [Vector4(-81, 278, 1, 126)]:

@@ -97,6 +97,7 @@ func _add(key: String) -> void:
 		actor.visuals.modulate = Color("def4d8")
 	else:
 		member.quests = game.quest_giver.quest
+		member.soy_spots = game.soy_spots.ownership
 		member.progression = game.progression
 		member.combat = game.combat
 		member.health = game.health

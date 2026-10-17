@@ -32,9 +32,9 @@ func request(source: String, id: Variant, stack: ItemStack) -> void:
 	_source = source
 	_slot_id = id
 	_checkbox.button_pressed = false
-	var name := stack.item.name if stack != null and stack.item != null else "this item"
+	var item_name := stack.item.name if stack != null and stack.item != null else "this item"
 	var count := " ×%d" % stack.count if stack != null and stack.count > 1 else ""
-	dialog_text = "Are you sure you want to drop %s%s onto the ground?" % [name, count]
+	dialog_text = "Are you sure you want to drop %s%s onto the ground?" % [item_name, count]
 	popup_centered(Vector2i(420, 170))
 
 func _approve() -> void:

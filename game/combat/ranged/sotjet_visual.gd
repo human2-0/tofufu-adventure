@@ -36,13 +36,13 @@ func refresh() -> void:
 		return
 	var forward := Vector3(facing.x, 0, facing.y).normalized()
 	if forward.is_zero_approx(): forward = Vector3.BACK
-	var basis := Basis.looking_at(forward, Vector3.UP)
-	basis *= Basis(Vector3.RIGHT, -0.24 * run_lowering)
+	var weapon_basis := Basis.looking_at(forward, Vector3.UP)
+	weapon_basis *= Basis(Vector3.RIGHT, -0.24 * run_lowering)
 	var camera := get_viewport().get_camera_3d()
 	var depth := 0.035 if _front else -0.035
-	var position := _hand
-	if camera != null: position += camera.global_basis.z * depth
-	global_transform = Transform3D(basis, position)
+	var hand_position := _hand
+	if camera != null: hand_position += camera.global_basis.z * depth
+	global_transform = Transform3D(weapon_basis, hand_position)
 	grip.present(model_grip_position())
 
 func model_grip_position() -> Vector3:

@@ -5,6 +5,7 @@ extends Node3D
 var flock: MeadowBirds
 var focus: Node3D
 var enabled: bool = true
+var weather_enabled: bool = true
 var _wind: AudioStreamPlayer
 var _rain: AudioStreamPlayer
 var _river: AudioStreamPlayer
@@ -27,8 +28,11 @@ func _ready() -> void:
 		_calls.append(voice)
 
 func present(delta: float, wind: float, rain: bool, river_distance: float) -> void:
-	_wind.volume_db = move_toward(_wind.volume_db, lerpf(-39.0, -24.0, wind) if enabled else -80.0, delta * 18.0)
-	_rain.volume_db = move_toward(_rain.volume_db, -25.0 if rain and enabled else -80.0, delta * 24.0)
+	for bed: AudioStreamPlayer in [_wind, _rain]:
+		if not weather_enabled and bed.playing: bed.stop()
+		elif weather_enabled and not bed.playing: bed.play()
+	_wind.volume_db = move_toward(_wind.volume_db, lerpf(-39.0, -24.0, wind) if enabled and weather_enabled else -80.0, delta * 18.0)
+	_rain.volume_db = move_toward(_rain.volume_db, -25.0 if rain and enabled and weather_enabled else -80.0, delta * 24.0)
 	_river.volume_db = move_toward(_river.volume_db, lerpf(-26.0, -70.0, clampf(river_distance / 22.0, 0, 1)) if enabled else -80.0, delta * 24.0)
 	_next_call -= delta
 	if not enabled or rain or flock.daylight < 0.18 or _next_call > 0.0: return
@@ -79,7 +83,7 @@ func _chirp(variant: int) -> AudioStreamWAV:
 	var bytes := PackedByteArray()
 	bytes.resize(int(rate * 0.68) * 2)
 	var phase := 0.0
-	for i in bytes.size() / 2:
+	for i in int(bytes.size() / 2.0):
 		var t := float(i) / rate
 		var syllable := fposmod(t, 0.22)
 		var progress := clampf(syllable / 0.14, 0.0, 1.0)

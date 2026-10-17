@@ -109,19 +109,19 @@ func _build_battlefield() -> void:
 		MeadowGeometry.box(self, center + Vector3(side * half_x, WALL_HEIGHT * 0.5, 0), Vector3(WALL_THICKNESS, WALL_HEIGHT, ARENA_HALF_SIZE.y * 2), wall, true)
 	_build_cover(center)
 	_build_audience(center)
-	var sign := Label3D.new()
-	sign.visibility_range_end = 32.0
-	sign.visibility_range_end_margin = 2.0
-	sign.double_sided = false
-	sign.text = "FIRST TO 10"
-	sign.position = center + Vector3.UP * (WALL_HEIGHT + 1.0)
-	sign.font_size = 32
-	sign.pixel_size = 0.025
-	sign.billboard = BaseMaterial3D.BILLBOARD_DISABLED
-	sign.modulate = Color("343b34")
-	sign.no_depth_test = false
-	sign.render_priority = 127
-	add_child(sign)
+	var sign_label := Label3D.new()
+	sign_label.visibility_range_end = 32.0
+	sign_label.visibility_range_end_margin = 2.0
+	sign_label.double_sided = false
+	sign_label.text = "FIRST TO 10"
+	sign_label.position = center + Vector3.UP * (WALL_HEIGHT + 1.0)
+	sign_label.font_size = 32
+	sign_label.pixel_size = 0.025
+	sign_label.billboard = BaseMaterial3D.BILLBOARD_DISABLED
+	sign_label.modulate = Color("343b34")
+	sign_label.no_depth_test = false
+	sign_label.render_priority = 127
+	add_child(sign_label)
 
 func _build_cover(center: Vector3) -> void:
 	var full_cover := Color("9d7658")

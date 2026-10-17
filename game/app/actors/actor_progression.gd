@@ -13,16 +13,18 @@ var equipment: CharacterEquipment:
 		if is_inside_tree(): _apply()
 var progress := CharacterProgress.new()
 var care := ActorCare.new()
-var _level: int = 1
 
 func _ready() -> void:
 	care.progression = self
 	add_child(care)
 	combat.weapon_trained.connect(progress.weapon_hit)
+	combat.speed_gear_trained.connect(progress.speed_gear_trained)
 	combat.gun.weapon_trained.connect(progress.weapon_hit)
 	combat.sotjet.weapon_trained.connect(progress.weapon_hit)
 	combat.equipment.defended.connect(progress.defended)
 	progress.changed.connect(_apply)
+	progress.leveled_up.connect(_level_up)
+	ActorCombatMotion.configure(actor, combat)
 	actor.motor.spend_stamina = combat.vitals.spend
 	actor.threatened.connect(combat.vitals.engage)
 	actor.command_sampled.connect(_step_vitals)
@@ -70,10 +72,24 @@ func _apply() -> void:
 	combat.sotjet.range_multiplier = progress.shooting_range_multiplier()
 	combat.sotjet.flow.push_multiplier = progress.shooting_push_multiplier()
 	combat.sotjet.flow.damage_multiplier = progress.damage_multiplier("shooting") * ApparelSetBonus.ranged_damage(set_id)
-	combat.sotjet.flow.attack_cadence_multiplier = ApparelSetBonus.attack_speed(set_id)
+	combat.sotjet.flow.attack_cadence_multiplier = progress.attack_multiplier() * ApparelSetBonus.attack_speed(set_id)
 	combat.gun.spread_multiplier = progress.shooting_spread_multiplier()
 	combat.incoming_damage_multiplier = progress.incoming_multiplier()
 	if hud != null:
 		hud.show_character(progress.display())
-		if progress.level() > _level: hud.announce("Level %d / Stronger hits, defence and quicker steps!" % progress.level())
-	_level = progress.level()
+
+
+func _level_up(_new_level: int) -> void:
+	if combat.replica_view: return
+	if combat.owner_health != null: combat.owner_health.heal(combat.owner_health.maximum)
+	combat.vitals.current = combat.vitals.maximum
+	celebrate()
+
+func celebrate() -> void:
+	var blessing := actor.get_node_or_null("LevelBlessing") as LevelBlessing
+	if blessing == null:
+		blessing = LevelBlessing.new()
+		blessing.name = "LevelBlessing"
+		actor.add_child(blessing)
+	blessing.restart()
+	if hud != null: hud.announce("Level %d / Blessed! HP and SP fully restored." % progress.level())

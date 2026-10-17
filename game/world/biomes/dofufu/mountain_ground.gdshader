@@ -16,7 +16,7 @@ vec3 tile(vec2 uv, vec2 cell) {
 void vertex() {
  world_at=(MODEL_MATRIX*vec4(VERTEX,1.0)).xyz;
  world_normal=normalize(MODEL_NORMAL_MATRIX*NORMAL);
- path_mask=COLOR.r;
+ path_mask=COLOR.a;
 }
 void fragment() {
  float mottles=noise(world_at*0.16);
@@ -34,7 +34,8 @@ void fragment() {
   vec2 paving=abs(fract(world_at.xz/vec2(2.0,1.4))-0.5);
   ground=mix(vec3(0.35,0.33,0.28),vec3(0.55,0.48,0.36),step(max(paving.x,paving.y),0.47))*(0.92+0.1*mottles);
  }
- ALBEDO=ground*(0.92+mottles*0.16);
+ float edge = min(min(world_at.x + 980.0, -110.0 - world_at.x), 180.0 - abs(world_at.z));
+ ALBEDO=mix(COLOR.rgb, ground*(0.92+mottles*0.16), smoothstep(0.0, 32.0, edge));
  ROUGHNESS=0.92;
  AO=0.9+dot(ground,vec3(0.04));
 }

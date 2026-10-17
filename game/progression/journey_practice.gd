@@ -8,8 +8,8 @@ const NAMES: Dictionary = {"trail": "Trailblazer", "rhythm": "Flowkeeper", "care
 const CAP: int = 5
 var totals: Dictionary = {"trail": 0, "rhythm": 0, "care": 0}
 
-static func threshold(track: String, rank: int) -> int:
-	return int(STEPS.get(track, 1)) * rank * (rank + 1) / 2
+static func threshold(track: String, practice_rank: int) -> int:
+	return int(int(STEPS.get(track, 1)) * practice_rank * (practice_rank + 1) / 2.0)
 
 func rank(track: String) -> int:
 	var result := 0
@@ -24,13 +24,13 @@ func record(track: String, units: int) -> bool:
 	return true
 
 func walk_multiplier() -> float:
-	return 1.0 + 0.01 * rank("trail")
+	return 1.0 + 0.03 * rank("trail")
 
 func rhythm_multiplier() -> float:
-	return 1.0 + 0.01 * rank("rhythm")
+	return 1.0 + 0.04 * rank("rhythm")
 
 func recovery_multiplier() -> float:
-	return 1.0 + 0.02 * rank("care")
+	return 1.0 + 0.08 * rank("care")
 
 func restore(data: Dictionary) -> void:
 	for track in TRACKS: totals[track] = clampi(int(data.get(track, 0)), 0, threshold(track, CAP))

@@ -1,4 +1,5 @@
 shader_type spatial;
+uniform sampler2D ground_grain : source_color, repeat_enable, filter_linear_mipmap;
 render_mode diffuse_toon;
 
 uniform vec4 grass_low : source_color = vec4(0.50, 0.67, 0.35, 1.0);
@@ -59,6 +60,7 @@ void fragment() {
 	float practice = 1.0 - smoothstep(3.1, 3.7, length(ground.xz - vec2(19.3, 12.0)) + fleck * 3.0);
 	color = mix(color, lane_color.rgb * (0.83 + fleck), clearing);
 	color = mix(color, lane_color.rgb * (1.0 + fleck), practice);
+	color *= mix(vec3(0.94), vec3(1.06), texture(ground_grain, ground.xz / 9.0).rgb);
 	// Rain darkens every exposed surface before the discrete puddle meshes add pooling.
 	ALBEDO = mix(color, color * vec3(0.57, 0.66, 0.70), wetness * 0.38);
 	ROUGHNESS = mix(1.0, 0.46, wetness);

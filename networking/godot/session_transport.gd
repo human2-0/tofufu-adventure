@@ -1,11 +1,11 @@
 @abstract
 class_name SessionTransport
 extends Node
-## Substitutable discovery + reliable, ordered, authenticated message delivery.
+## Substitutable discovery + reliable, ordered, authenticated message delivery. Transport implementations emit the annotated signal.
 ## See COOP.md N1a for event schemas, identity and lifecycle requirements.
 ## Implementations own bounded queues, connection deadlines and resource cleanup.
 
-signal event_received(event: Dictionary)
+@warning_ignore("unused_signal") signal event_received(event: Dictionary)
 
 @abstract
 func start(display_name: String) -> void

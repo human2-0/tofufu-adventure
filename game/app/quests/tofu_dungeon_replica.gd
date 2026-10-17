@@ -15,7 +15,7 @@ static func capture(dungeon: TofuDungeon) -> Dictionary:
 	for enemy: FactoryBean in dungeon._enemies:
 		if is_instance_valid(enemy) and not enemy.is_queued_for_deletion():
 			var at := enemy.position
-			data.enemies.append([int(enemy.kind), at.x, at.y, at.z, enemy.target.current])
+			data.enemies.append([int(enemy.kind), at.x, at.y, at.z, enemy.target.current, enemy.target.paralysis])
 	for crate: FactoryCrate in dungeon._crates:
 		if is_instance_valid(crate) and not crate.is_queued_for_deletion():
 			var at := crate.position
@@ -73,7 +73,7 @@ static func _sync_enemies(dungeon: TofuDungeon, rows: Array) -> void:
 			enemy = null
 		if enemy == null:
 			enemy = Dofufu.new() if int(row[0]) == FactoryBean.Kind.DOFUFU else FactoryBean.new()
-			enemy.kind = int(row[0])
+			enemy.kind = int(row[0]) as FactoryBean.Kind
 			if enemy is Dofufu:
 				enemy.combat_participants = maxi(1, dungeon.boss_members.size() if dungeon.puzzle_enabled else dungeon.state.run_members.size())
 			dungeon.game.world.add_child(enemy)
@@ -87,6 +87,7 @@ static func _sync_enemies(dungeon: TofuDungeon, rows: Array) -> void:
 		enemy.position = destination
 		if float(row[4]) < enemy.target.current: enemy.reaction.flash()
 		enemy.target.current = float(row[4])
+		enemy.target.paralysis = float(row[5]) if row.size() > 5 else 0.0
 
 static func _sync_crates(dungeon: TofuDungeon, rows: Array) -> void:
 	while dungeon._replica_crates.size() > rows.size():

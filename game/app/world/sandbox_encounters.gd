@@ -1,13 +1,13 @@
 class_name SandboxEncounters
 extends Node3D
-## App-owned composition of combat actors, harvestables and healing drops.
+## App-owned composition of combat actors, harvestables and healing drops. Helpers use the annotated signals/state.
 
 signal progress_changed(beans: int, mobs: int, props: int)
-signal experience_awarded(amount: int)
-signal experience_changed(total: int)
-signal mob_defeated(at: Vector3)
-signal angel_defeated(at: Vector3)
-signal armored_snail_defeated
+@warning_ignore("unused_signal") signal experience_awarded(amount: int)
+@warning_ignore("unused_signal") signal experience_changed(total: int)
+@warning_ignore("unused_signal") signal mob_defeated(at: Vector3)
+@warning_ignore("unused_signal") signal angel_defeated(at: Vector3)
+@warning_ignore("unused_signal") signal armored_snail_defeated
 var mob_nodes: Array[TrainingMob] = []
 var prop_nodes: Array[HarvestProp] = []
 var dummy_nodes: Array[PracticeDummy] = []
@@ -29,6 +29,7 @@ var health: Damageable
 var inventory: PlayerInventory
 var ground_point: Callable
 var magic_drop: Callable
+var bengal_drop: Callable
 var shell_drop: Callable
 var shell_drop_roll: Callable = func() -> float: return randf()
 var loot_chance: Callable
@@ -66,6 +67,8 @@ func populate() -> void:
 		_add_mob(at, false, false, false, true, true)
 	for at in DofufuCity.GUARDS:
 		_add_mob(at, false, false, false, false, false, true)
+	for at in BengalGrounds.spawns():
+		_add_mob(at, false, false, false, false, false, false, true)
 	for at in dummy_positions + CloudTrainingCourt.DUMMIES:
 		var dummy := PracticeDummy.new()
 		if at in CloudTrainingCourt.DUMMIES:
@@ -82,9 +85,15 @@ func populate() -> void:
 		combat.targets.append(dummy.target)
 		dummy_nodes.append(dummy)
 
-func _add_mob(at: Vector2, rain_only: bool = false, armored: bool = false, free_roaming: bool = false, bee: bool = false, angel: bool = false, city_guard: bool = false) -> void:
+func _add_mob(at: Vector2, rain_only: bool = false, armored: bool = false, free_roaming: bool = false, bee: bool = false, angel: bool = false, city_guard: bool = false, bengal: bool = false) -> void:
 	at = FarmDuelArena.mob_safe_point(at)
-	var mob: TrainingMob = DofufuCityEncounters.guard() if city_guard else (TofufuArcher.new() if angel else (WildBee.new() if bee else (ArmoredSnail.new() if armored else TrainingMob.new())))
+	var mob: TrainingMob
+	if bengal: mob = BengalMonster.new()
+	elif city_guard: mob = DofufuCityEncounters.guard()
+	elif angel: mob = TofufuArcher.new()
+	elif bee: mob = WildBee.new()
+	elif armored: mob = ArmoredSnail.new()
+	else: mob = TrainingMob.new()
 	mob.excluded_area = FarmDuelArena.mob_exclusion()
 	mob.rain_only = rain_only
 	mob.free_roaming = free_roaming
@@ -131,24 +140,7 @@ func _harvested(at: Vector3, count: int) -> void:
 	progress_changed.emit(beans, mobs, props)
 
 func _mob_defeated(at: Vector3, mob: TrainingMob) -> void:
-	if magic_drop.is_valid(): magic_drop.call(at)
-	mobs += 1
-	var reward := ARMORED_SNAIL_EXPERIENCE if mob is ArmoredSnail else MOB_EXPERIENCE
-	if mob is WildBee: reward = BEE_EXPERIENCE
-	if mob is TofufuArcher: reward = TofufuArcher.EXPERIENCE
-	experience += reward
-	experience_changed.emit(experience)
-	experience_awarded.emit(reward)
-	mob_defeated.emit(at)
-	if mob is TofufuArcher: angel_defeated.emit(at)
-	if mob is ArmoredSnail: armored_snail_defeated.emit()
-	_drop(at, 3 if mob is WildBee else (4 if mob is ArmoredSnail else 2))
-	var chance := float(loot_chance.call(SHELL_PIECE_DROP_CHANCE, at)) if loot_chance.is_valid() else SHELL_PIECE_DROP_CHANCE
-	if mob is ArmoredSnail and shell_drop.is_valid() and float(shell_drop_roll.call()) < chance:
-		for index in (2 if mob.shell_health <= 0.0 else 1):
-			shell_drop.call("piece_of_shell", at + Vector3.RIGHT * index * 0.35)
-	CombatEffects.burst(self, at, "+%d EXP" % reward, Color("b0e6cb"))
-	progress_changed.emit(beans, mobs, props)
+	SandboxMobRewards.defeated(self, at, mob)
 
 func _drop(at: Vector3, count: int) -> void:
 	spawn_edamame(at, count, player)
@@ -176,7 +168,7 @@ func _pickup_collected(bean: SoybeanPickup) -> bool:
 	return _collect(bean)
 
 func _mob_attacked(amount: float, source: Vector3, mob: TrainingMob) -> void:
-	var kind := Damageable.HitKind.MELEE if mob is DofufuCityGuard else Damageable.HitKind.SLIME
+	var kind := Damageable.HitKind.MELEE if mob is DofufuCityGuard or mob is BengalMonster else Damageable.HitKind.SLIME
 	if party_hurt.is_valid(): party_hurt.call(mob.quarry, amount, source, kind)
 	else: _hurt_player(amount, source, kind)
 

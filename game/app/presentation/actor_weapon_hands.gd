@@ -7,8 +7,9 @@ static func connect_visuals(sprite: FufuVisuals, combat: PlayerCombat) -> void:
 	celestial.combat = combat
 	combat.add_child(celestial)
 	sprite.celestial_pose = celestial.context
+	sprite.unarmed_pose = celestial.unarmed_context
 	var base_height := sprite.position.y
 	combat.render_position = func() -> Vector3: return sprite.global_position - Vector3.UP * base_height
-	for weapon in [combat.sword, combat.staff, combat.gun.visual, combat.sotjet.visual]:
+	for weapon in [combat.sword, combat.staff, combat.gun.visual, combat.sotjet.visual, combat.bow.visual]:
 		sprite.hand_presented.connect(weapon.follow_hand)
 		sprite.hand_tint_presented.connect(weapon.grip.set_tint)

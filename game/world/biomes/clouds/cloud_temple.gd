@@ -21,11 +21,11 @@ static func column(parent: Node3D, at: Vector3) -> void:
 	CloudCraft.box(parent, at + Vector3.UP * 4.64, Vector3(1.08, 0.22, 1.08), CloudMaterials.marble())
 
 static func roof(parent: Node3D, size: Vector2) -> void:
-	var roof := CloudRoof.new()
-	parent.add_child(roof)
-	parent = roof
+	var roof_node := CloudRoof.new()
+	parent.add_child(roof_node)
+	parent = roof_node
 	for z in [-size.y * 0.5 - 0.3, size.y * 0.5 + 0.3]:
-		var frieze := CloudCraft.box(parent, Vector3(0, 4.97, z), Vector3(size.x + 1.1, 0.45, 0.18), CloudMaterials.illustrated(CloudMaterials.FRIEZE))
+		CloudCraft.box(parent, Vector3(0, 4.97, z), Vector3(size.x + 1.1, 0.45, 0.18), CloudMaterials.illustrated(CloudMaterials.FRIEZE))
 		var surface := SurfaceTool.new()
 		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 		var points: Array[Vector3] = [Vector3(-size.x * 0.54, 5.3, z), Vector3(0, 7.2, z), Vector3(size.x * 0.54, 5.3, z)]
@@ -33,7 +33,7 @@ static func roof(parent: Node3D, size: Vector2) -> void:
 		for at in points:
 			surface.add_vertex(at)
 		surface.generate_normals()
-		var pediment := CloudCraft.view(parent, surface.commit(), Vector3.ZERO, CloudMaterials.marble(Color("c6c9dd")))
+		CloudCraft.view(parent, surface.commit(), Vector3.ZERO, CloudMaterials.marble(Color("c6c9dd")))
 		CloudOrnaments.wreath(parent, Vector3(0, 6.1, z + signf(z) * 0.1), 0.65, true)
 	for side in [-1, 1]:
 		var pitch := CloudCraft.box(parent, Vector3(side * size.x * 0.27, 6.25, 0), Vector3(size.x * 0.6, 0.18, size.y + 1.7), CloudMaterials.marble(Color("d7c9de")))

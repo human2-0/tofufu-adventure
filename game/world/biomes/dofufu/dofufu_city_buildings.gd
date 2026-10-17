@@ -33,7 +33,7 @@ static func _wall(parent: Node3D, at: Vector3, size: Vector3) -> void:
 static func _gate(parent: Node3D, at: Vector3, east: bool) -> void:
 	var gate := Node3D.new()
 	gate.position = at
-	gate.rotation.y = PI / 2 if east else 0
+	gate.rotation.y = PI / 2 if east else 0.0
 	parent.add_child(gate)
 	for side in [-1, 1]:
 		MeadowGeometry.box(gate, Vector3(side * 9, 3.4, 0), Vector3(1.2, 6.8, 1.2), Color("933d32"), true)
@@ -63,7 +63,7 @@ static func _roof(parent: Node3D, at: Vector3, size: Vector3) -> void:
 	for side in [-1, 1]:
 		for band in 5:
 			var z: float = side * size.z * band / 10.0
-			var y: float = 1.5 - band * 0.24 + (0.28 if band == 4 else 0)
+			var y: float = 1.5 - band * 0.24 + (0.28 if band == 4 else 0.0)
 			var tile := MeadowGeometry.box(parent, at + Vector3(0, y, z), Vector3(size.x + band * 0.15, 0.32, size.z / 9), Color("3c5554"))
 			tile.rotation.x = side * 0.3 if band < 4 else -side * 0.25
 	for x in range(-int(size.x / 2), int(size.x / 2), 1):

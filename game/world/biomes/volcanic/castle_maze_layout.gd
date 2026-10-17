@@ -29,8 +29,8 @@ func _generate(seed_value: int) -> void:
 		var cell: Vector2i = stack.back()
 		var choices: Array[int] = []
 		for direction in 4:
-			var next := cell + DIRECTIONS[direction]
-			if valid(next) and not visited.has(next): choices.append(direction)
+			var neighbor := cell + DIRECTIONS[direction]
+			if valid(neighbor) and not visited.has(neighbor): choices.append(direction)
 		if choices.is_empty():
 			stack.pop_back()
 			continue

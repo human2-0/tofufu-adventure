@@ -29,8 +29,8 @@ func _process(_delta: float) -> void:
 	if camera == null: return
 	var look := facing
 	if is_instance_valid(view_focus):
-		var offset := view_focus.global_position - global_position
-		var toward := Vector2(offset.x, offset.z)
+		var focus_offset := view_focus.global_position - global_position
+		var toward := Vector2(focus_offset.x, focus_offset.z)
 		if toward.length_squared() > 0.01 and toward.length_squared() < 16: look = toward.normalized()
 	var world := Vector3(look.x, 0, look.y)
 	var back := Vector3(camera.global_basis.z.x, 0, camera.global_basis.z.z).normalized()

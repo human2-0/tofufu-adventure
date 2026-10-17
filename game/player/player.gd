@@ -1,9 +1,9 @@
 class_name Player
 extends CharacterBody3D
 
-signal threatened
+@warning_ignore("unused_signal") signal threatened
 signal relocated
-## Actor composition: intent -> movement rules -> physics -> presentation.
+## Actor composition: intent -> movement rules -> physics -> presentation. Helpers use the annotated signals/state.
 
 signal dash_cooldown_updated(current: float, total: float)
 signal command_sampled(command: PlayerCommand, delta: float)
@@ -22,6 +22,8 @@ var transport_origin := Vector3.ZERO
 var surface_speed: float = 1.0
 var movement_modifier: Callable
 var ability_velocity: Callable
+var ability_command: Callable
+var ability_dashing: Callable
 var command_filter: Callable
 var presentation: ActorPresentation
 var motor: PlayerMotor
@@ -41,6 +43,7 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	var command := command_source.sample(global_position)
 	if command_filter.is_valid(): command_filter.call(command)
+	if ability_command.is_valid(): ability_command.call(command)
 	if transport_active:
 		if transport_step.is_valid(): transport_step.call(command, delta)
 		command = PlayerCommand.new()
@@ -56,12 +59,13 @@ func _physics_process(delta: float) -> void:
 	velocity = motor.step(command, velocity, is_on_floor(), delta)
 	if ability_velocity.is_valid(): velocity = ability_velocity.call(velocity, is_on_floor(), delta)
 	# Super dash remains solid against terrain, but passes through actor bodies.
-	collision_mask = 1 if motor.is_super_dashing else 3
+	var skill_dash := ability_dashing.is_valid() and bool(ability_dashing.call())
+	collision_mask = 1 if motor.is_super_dashing or skill_dash else 3
 	move_and_slide()
 	command_sampled.emit(command, delta)
-	visuals.present(command, velocity, is_on_floor(), motor.is_dashing, delta, motor.jump_charge, _ground_clearance())
+	visuals.present(command, velocity, is_on_floor(), motor.is_dashing or skill_dash, delta, motor.jump_charge, _ground_clearance())
 	jump_charge_updated.emit(motor.jump_charge)
-	dash_cooldown_updated.emit(motor.cooldown_remaining, tuning.dash_cooldown)
+	dash_cooldown_updated.emit(motor.cooldown_remaining, tuning.dash_cooldown * motor.dash_cooldown_multiplier)
 
 func _on_dashed() -> void:
 	visuals.show_dash()

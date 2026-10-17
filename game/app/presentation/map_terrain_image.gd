@@ -26,23 +26,27 @@ static func build(world: Meadow, bounds: Rect2, density: float) -> Texture2D:
 	return texture
 
 static func _color(world: Meadow, at: Vector2) -> Color:
+	if MainlandFringe.contains(at):
+		var shore_height := MainlandFringe.height_at(world, at)
+		if shore_height < MainlandFringe.water_level(at): return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -shore_height))
+		return BiomePalette.color_at(at, shore_height, world.world_seed).lerp(Color("d9c393"), smoothstep(3.6, MainlandFringe.water_level(at), shore_height))
 	if DofufuTerrain.contains(at): return world.dofufu_highlands.terrain.color_at(at)
 	if VolcanicTerrain.contains(at):
-		var height := VolcanicTerrain.height_at(at.x, at.y)
-		if height < VolcanicTerrain.WATER_LEVEL: return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -height))
-		if VolcanicLava.molten(Vector3(at.x, height, at.y)): return Color("ef6a2c")
+		var volcanic_height := VolcanicTerrain.height_at(at.x, at.y)
+		if volcanic_height < VolcanicTerrain.WATER_LEVEL: return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -volcanic_height))
+		if VolcanicLava.molten(Vector3(at.x, volcanic_height, at.y)): return Color("ef6a2c")
 		if absf(at.x - LavaCastle.CENTER.x) < 28 and absf(at.y - LavaCastle.CENTER.y) < 28: return Color("a88167")
 		for site in VolcanicLandmarks.SITES:
 			if at.distance_squared_to(site) < 100: return Color("c3ac8b")
-		return VolcanicTerrain.color_at(at, height)
+		return VolcanicTerrain.color_at(at, volcanic_height)
 	# Expanded atlas areas outside authored terrain are sea scenery or outer void.
 	if at.x > 200: return Color("163b52") if at.y >= 56 else Color("233e49")
 	if at.y >= Groatfields.START and at.y <= Groatfields.END and absf(at.x) <= 80:
 		return Color("e8d6ad") if absf(at.x) < 4 else Color("afa2ba")
 	if at.y > 340: return Color("233e49")
-	var seed := world.terrain.noise.seed
+	var noise_seed := world.terrain.noise.seed
 	var height := world.ground_point(at.x, at.y).y
-	var color := BiomePalette.color_at(at, height, seed)
+	var color := BiomePalette.color_at(at, height, noise_seed)
 	if at.y >= JungleTerrain.SOUTH_START and at.y <= JungleTerrain.SOUTH_END and at.x >= 53 and at.x <= JungleCoast.SEA_EDGE:
 		color = JungleCoast.color_at(at, height, color)
 		if height < JungleCoast.WATER_LEVEL: return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -height))
@@ -50,7 +54,7 @@ static func _color(world: Meadow, at: Vector2) -> Color:
 	if at.y <= -84 and at.y >= -220 and height < OceanTerrain.WATER_LEVEL:
 		var depth := OceanTerrain.WATER_LEVEL - height
 		color = Color("83c9be").lerp(Color("245f7b"), smoothstep(0, 7, depth))
-	color = color.lerp(Color("233e49"), _outer_ridge(at, seed))
+	color = color.lerp(Color("233e49"), _outer_ridge(at, noise_seed))
 	if at.y > -65 and at.y < 65 and world.terrain.path_distance(at.x, at.y) < 1.1: color = Color("dfcb9b")
 	if world.terrain.is_field(at.x, at.y): color = Color("9eae72")
 	if at.x > 84 and at.x < 184 and at.y > -44 and at.y < 56:
@@ -59,14 +63,14 @@ static func _color(world: Meadow, at: Vector2) -> Color:
 	if at.x > 7 and at.x < 15.4 and absf(at.y - 4) < 1.4: color = Color("b38c62")
 	return color
 
-static func _outer_ridge(at: Vector2, seed: int) -> float:
+static func _outer_ridge(at: Vector2, noise_seed: int) -> float:
 	# Shade inaccessible outer ridges, with the same seeded scallops as the ground.
 	var width := lerpf(110.0, 140.0, smoothstep(84.0, 109.0, -at.y))
 	width = lerpf(width, 80.0, smoothstep(57.0, 84.0, at.y))
 	var side := -1.0 if at.x < 0 else 1.0
-	var edge := WorldContours.edge_x(at.y, width, seed, side)
+	var edge := WorldContours.edge_x(at.y, width, noise_seed, side)
 	var distance := absf(at.x) - edge
-	var cap_offset := WorldContours.coast(at.x, seed) * 0.35
+	var cap_offset := WorldContours.coast(at.x, noise_seed) * 0.35
 	if at.y < -330: distance = maxf(distance, -at.y - (359.0 + cap_offset))
 	elif at.y > 310: distance = maxf(distance, at.y - (331.0 + cap_offset))
 	return smoothstep(-4.0, 2.5, distance)

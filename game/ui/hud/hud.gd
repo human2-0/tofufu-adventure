@@ -1,26 +1,26 @@
 class_name HUD
 extends CanvasLayer
-## Minimalist kawaii HUD: edge-aligned translucent panels, skill slot, and delayed jump bar.
+## Minimalist kawaii HUD: edge-aligned translucent panels, skill slot, and delayed jump bar. Helpers use the annotated signals/state.
 
 var arena: ArenaHUD
 var dash_bar: ProgressBar
 var dash_status: Label
 var _dash_slot: DashSlot
 var _jump_meter: JumpMeter
-var _jump_bar: ProgressBar
+@warning_ignore("unused_private_class_variable") var _jump_bar: ProgressBar
 var _run_meter: RunMeter
 var _sp_available: float = 100.0
-signal stat_point_allocated(skill_name: String)
+@warning_ignore("unused_signal") signal stat_point_allocated(skill_name: String)
 
-var _jump_text: Label
+@warning_ignore("unused_private_class_variable") var _jump_text: Label
 var _jump_val: float = 0.0
 
 var _stamina_bar: ProgressBar
 var _stamina_text: Label
 var _health_bar: ProgressBar
 var _health_text: Label
-var _charge_bar: ProgressBar
-var _charge_text: Label
+@warning_ignore("unused_private_class_variable") var _charge_bar: ProgressBar
+@warning_ignore("unused_private_class_variable") var _charge_text: Label
 var _equipment: Label
 var _session: Label
 var _clock: Label
@@ -41,16 +41,16 @@ var _beans: int = 0
 var _mobs: int = 0
 var _props: int = 0
 var _experience: int = 0
-var _knife_selected: bool = true
-var _staff_selected: bool = false
-var _tornado_active: bool = false
-var _tornado_cooldown: float = 0.0
-var _guarding: bool = false
-var _fist_hit_rate: float = 2.9
-var _fist_damage: int = 12
-var _knife_charge: float = 0.0
-var _combo_count: int = 0
-var _combo_critical_chance: float = 0.0
+@warning_ignore("unused_private_class_variable") var _knife_selected: bool = true
+@warning_ignore("unused_private_class_variable") var _staff_selected: bool = false
+@warning_ignore("unused_private_class_variable") var _tornado_active: bool = false
+@warning_ignore("unused_private_class_variable") var _tornado_cooldown: float = 0.0
+@warning_ignore("unused_private_class_variable") var _guarding: bool = false
+@warning_ignore("unused_private_class_variable") var _fist_hit_rate: float = 2.9
+@warning_ignore("unused_private_class_variable") var _fist_damage: int = 12
+@warning_ignore("unused_private_class_variable") var _knife_charge: float = 0.0
+@warning_ignore("unused_private_class_variable") var _combo_count: int = 0
+@warning_ignore("unused_private_class_variable") var _combo_critical_chance: float = 0.0
 var _prev_level: int = 1
 var _prev_skills: Dictionary = {}
 
@@ -97,6 +97,9 @@ func show_nori_state(selected: bool, plunging: bool, cooldown: float) -> void:
 
 func show_pod_state(selected: bool, cooldown: float) -> void:
 	HUDCombatView.show_pod_state(self, selected, cooldown)
+
+func show_paws_state(selected: bool, cooldown: float, charge: float = 0.0, dashing: bool = false) -> void:
+	HUDCombatView.show_paws_state(self, selected, cooldown, charge, dashing)
 
 func show_jump_charge(value: float) -> void: _jump_val = value
 
@@ -156,8 +159,8 @@ func show_character(data: Dictionary) -> void:
 func show_gun(selected: bool, precise: bool) -> void:
 	HUDCombatView.show_gun(self, selected, precise)
 
-func show_gun_status(magazine: int, reload_seconds: float, charge_seconds: float, visible: bool, capacity: int = 9) -> void:
-	if visible: HUDCombatView.show_gun_status(self, magazine, reload_seconds, charge_seconds, capacity)
+func show_gun_status(magazine: int, reload_seconds: float, charge_seconds: float, shown: bool, capacity: int = 9) -> void:
+	if shown: HUDCombatView.show_gun_status(self, magazine, reload_seconds, charge_seconds, capacity)
 
 func show_damage_hit(kind: int) -> void:
 	if kind == 1: show_snail_hit()

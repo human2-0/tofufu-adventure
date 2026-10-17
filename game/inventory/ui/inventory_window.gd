@@ -1,6 +1,6 @@
 class_name InventoryWindow
 extends CanvasLayer
-## Edge-docked equipment and backpack leave the local character unobstructed.
+## Edge-docked equipment and backpack leave the local character unobstructed. Helpers use the annotated signals/state.
 
 var transfer_handler: Callable
 var conversion_handler: Callable
@@ -10,7 +10,7 @@ var quick_transfer_handler: Callable
 signal drop_requested(source: String, id: Variant)
 signal drop_warning_skipped
 
-signal character_requested
+@warning_ignore("unused_signal") signal character_requested
 signal opened
 signal closed
 var inventory: PlayerInventory:

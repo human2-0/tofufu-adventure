@@ -106,6 +106,8 @@ func prepare(command: PlayerCommand) -> void:
 	if phase == "entry":
 		command.move = Vector2.ZERO
 		command.attack_held = false
+		command.attack_pressed = false
+		command.punch_pressed = false
 		command.punch_held = false
 		command.guard_held = false
 		command.jump_held = false

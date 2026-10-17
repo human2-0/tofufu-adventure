@@ -23,11 +23,11 @@ func _run() -> void:
 	progress.record_journey("trail", 499)
 	check(progress.journey.rank("trail") == 0, "walking medal waits for all 500 metres")
 	progress.record_journey("trail", 1)
-	check(is_equal_approx(progress.walk_multiplier(), 1.01), "first walking medal improves speed without EXP")
+	check(is_equal_approx(progress.walk_multiplier(), 1.03), "first walking medal improves speed without EXP")
 	progress.record_journey("care", 150)
-	check(is_equal_approx(progress.journey.recovery_multiplier(), 1.02), "care medal grants bounded recovery")
+	check(is_equal_approx(progress.journey.recovery_multiplier(), 1.08), "care medal grants bounded recovery")
 	progress.record_journey("rhythm", 50)
-	check(is_equal_approx(progress.attack_multiplier(), 1.01), "confirmed practice improves attack rhythm")
+	check(is_equal_approx(progress.attack_multiplier(), 1.04), "confirmed practice improves attack rhythm")
 	var saved := progress.capture()
 	var restored := CharacterProgress.new()
 	restored.restore(JSON.parse_string(JSON.stringify(saved)))
@@ -101,17 +101,48 @@ func _run() -> void:
 	var jet_data := CharacterDetailsData.build(game)
 	var jet_dps := game.combat.sotjet.flow.tuning.damage_per_second * game.combat.sotjet.flow.damage_multiplier * game.combat.sotjet.flow.enhancement_multiplier * game.combat.sotjet.flow.attack_cadence_multiplier
 	check(is_equal_approx(jet_data.rows[5].total, jet_dps), "stream DPS includes equipment damage and stream cadence")
+	sheet.present(data)
+	check(sheet.stat_rows[0].value.text == "%d HP" % ceili(data.rows[0].total), "maximum health always rounds upward to a whole number")
+	check(sheet.stat_rows[1].value.text == "%d SP" % ceili(data.rows[1].total), "maximum stamina always rounds upward to a whole number")
+	check(sheet.stat_rows[5].value.text == "%d DMG" % ceili(data.rows[5].total), "damage rounds upward without changing runtime damage")
+	check(sheet.stat_rows[2].value.text == String.num(data.rows[2].total, 2) + " m/s", "walking speed keeps its precise readout")
+	check(sheet.stat_rows[3].value.text == String.num(data.rows[3].total, 2) + " %", "attack pace keeps its precise readout")
+	sheet.stat_rows[6].button.focus_entered.emit()
+	check(sheet.selected_stat == 6 and sheet.inspector_title.text == "Damage reduction", "controller focus updates the same persistent inspector as hover")
+	sheet.stat_rows[2].button.mouse_entered.emit()
+	check(sheet.selected_stat == 2, "mouse hover selects stat details")
+	sheet.select_page(1)
+	check(sheet.pages[1].visible and not sheet.pages[0].visible, "training is a distinct page")
+	check(sheet.skills.sword.button.tooltip_text.contains("Rank") and sheet.skills.sword.benefit.text.contains(String.num(CharacterProgress.TUNING.weapon_damage * 100, 2) + "%"), "investments preview the next rank and actual tuning")
+	check(sheet.skills.magic.button.disabled, "reserved magic cannot waste a point")
 	TranslationServer.set_locale("pl")
 	sheet.present(data)
 	check(sheet.heading.text.contains("MÓJ TOFUFU") and sheet.heading.text.contains("Poziom 20"), "character heading uses Polish")
 	check(sheet.stat_rows[0].title.text == "Maksymalne zdrowie", "attribute labels use Polish")
-	check(sheet.stat_rows[2].detail.text.contains("Podstawa") and sheet.stat_rows[2].detail.text.contains("Sprzęt"), "stat contributions use Polish")
+	check(sheet.inspector_title.text == "Prędkość marszu" and sheet.inspector_sources[1].text.begins_with("+"), "selected stat has a translated inspector with explicit signed contributions")
 	check(sheet.milestones[0].title.text.contains("Odkrywca szlaków"), "mastery titles use Polish")
+	check(sheet.skills.sword.benefit.text.contains("Dalej:") and sheet.page_buttons[1].tr(sheet.page_buttons[1].text) == "Trening i troska", "training benefits and page tabs translate live")
 	check(sheet.gear.text.contains("W ręku:") and not sheet.gear.text.contains("Held:"), "equipment summary translates at presentation")
+	sheet.select_page(0)
+	root.content_scale_size = Vector2i(1280, 720)
+	root.size = Vector2i(1280, 720)
+	for locale in ["pl", "en"]:
+		TranslationServer.set_locale(locale)
+		for stat in 9:
+			sheet.inspect_stat(stat)
+			for frame in 4: await process_frame
+			_check_fit(sheet, locale)
+		sheet.select_page(1)
+		for frame in 4: await process_frame
+		_check_fit(sheet, locale)
+		sheet.select_page(0)
 	TranslationServer.set_locale("en")
 	check(sheet.heading.text.contains("MY TOFUFU") and sheet.stat_rows[0].title.text == "Maximum health", "live locale switch restores English without reopening")
 	key(KEY_B)
-	check(not game.inventory_window.visible and game.shooting_view.local_input.enabled, "B closes hub and restores movement")
+	check(game.inventory_window.visible and not sheet.visible and game.inventory_window._backpack_dock.visible, "B switches player info to inventory without releasing gameplay")
+	check(not game.shooting_view.local_input.enabled, "switching pages keeps gameplay blocked")
+	key(KEY_B)
+	check(not game.inventory_window.visible and game.shooting_view.local_input.enabled, "B closes inventory and restores movement")
 	var select := InputEventJoypadButton.new()
 	select.device = 16
 	select.button_index = JOY_BUTTON_BACK
@@ -175,3 +206,11 @@ func _run() -> void:
 	await process_frame
 	print("Character details: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
+
+func _check_fit(sheet: CharacterSheet, locale: String) -> void:
+	for page in sheet.pages:
+		if not page.visible: continue
+		for child in page.get_children():
+			if child is ScrollContainer:
+				var bar: VScrollBar = child.get_v_scroll_bar()
+				check(bar.max_value <= bar.page + 1, "full-size character pages need no scrolling in " + locale)

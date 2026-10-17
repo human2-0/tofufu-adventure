@@ -16,14 +16,14 @@ func _ready() -> void:
 		var x := -866 - (i % 5) * 15
 		var z: float = -34 if i < 5 else 34
 		if i >= 10:
-			x = -922 + ((i - 10) / 2) * 12
+			x = -922 + int((i - 10) / 2.0) * 12
 			z = -1.5 if i % 2 == 0 else 1.5
 		var npc := _resident("Dofufu Challenger %d" % (i + 1), 1 if i % 2 == 0 else 2, Vector2(x, z), "Strength. Skill. Victory.")
 		if i >= 10:
 			npc.sparring = true
 			npc.facing = Vector2.UP if i % 2 else Vector2.DOWN
 			npc.art.facing = npc.facing
-			npc.elapsed = PI / 4 if i % 2 else 0
+			npc.elapsed = PI / 4 if i % 2 else 0.0
 	MeadowGeometry.signpost(self, terrain.point(-843, 10), "JADE LANTERN · DOFUFU CITY\nRIVAL SCHOOLS · GUARDED GATES")
 	StaticDecorationBatch.build(self)
 

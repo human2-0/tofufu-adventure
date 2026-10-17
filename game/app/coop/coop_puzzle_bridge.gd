@@ -15,7 +15,7 @@ static func encode(command: TofuPuzzleCommand) -> Dictionary:
 static func decode(packet: Dictionary) -> TofuPuzzleCommand:
 	if not TofuPuzzleProtocol.valid(packet): return null
 	var command := TofuPuzzleCommand.new()
-	command.action = int(packet.action)
+	command.action = int(packet.action) as TofuPuzzleCommand.Action
 	command.target_id = packet.target_id
 	command.object_id = packet.object_id
 	command.run_id = int(packet.run_id)

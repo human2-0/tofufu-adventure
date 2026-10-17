@@ -69,9 +69,12 @@ func _run() -> void:
 	key.pressed = true
 	check(app.preferences.bind_action("jump", key, "keyboard").is_empty(), "keyboard rebind saves")
 	check(not app.preferences.bind_action("dash", key, "keyboard").is_empty(), "conflicting binding rejected")
+	app.settings.panel.effect_requested.emit("rain", false)
+	app.settings.panel.effect_requested.emit("thunder", false)
 	var loaded := GamePreferences.new()
 	loaded.path = app.preferences.path
 	loaded.load_preferences()
+	check(not loaded.graphics.enabled("rain") and not loaded.graphics.enabled("thunder") and loaded.graphics.enabled("snow"), "individual effects survive a preferences reload")
 	check(GamePreferences.binding_text("jump", "keyboard").contains("J"), "binding survives reload")
 	key.physical_keycode = KEY_ESCAPE
 	check(not app.preferences.bind_action("jump", key, "keyboard").is_empty(), "Escape remains available")

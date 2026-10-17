@@ -65,30 +65,32 @@ static func apple() -> InventoryItem:
 	item.cooldown = 0.5
 	return item
 
-static func currency(id: String) -> InventoryItem:
-	if id == "edamame": return create_edamame()
-	if id not in ["mature_bean", "tofu_white_chunk", "toasted_tofu_chunk", "golden_tofu_chunk"]: return null
+static func currency(item_id: String) -> InventoryItem:
+	if item_id == "edamame": return create_edamame()
+	if item_id not in ["mature_bean", "tofu_white_chunk", "toasted_tofu_chunk", "golden_tofu_chunk"]: return null
 	var item := InventoryItem.new()
-	item.id = id
-	item.name = {"mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk"}[id]
+	item.id = item_id
+	item.name = {"mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk"}[item_id]
 	item.description = {
 		"mature_bean": "Shop currency. Each Mature Bean can be refined into 1 White Tofu Chunk.",
 		"tofu_white_chunk": "Refine 100 White Tofu Chunks into 1 Toasted Tofu Chunk.",
 		"toasted_tofu_chunk": "Refine 100 Toasted Tofu Chunks into 1 Golden Tofu Chunk.",
 		"golden_tofu_chunk": "The highest-value tofu currency. It cannot be refined further.",
-	}[id]
-	item.icon = CurrencyVisuals.icon(id, 1)
+	}[item_id]
+	item.icon = CurrencyVisuals.icon(item_id, 1)
 	item.max_stack = 100
 	item.category = "currency"
 	item.healing_amount = 0.0
 	return item
 
-static func weapon(id: String) -> InventoryItem:
-	if id in ["celestial_sword", "celestial_staff", "soy_raygun"]: return CelestialItems.create(id)
-	if id not in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return null
+static func weapon(item_id: String) -> InventoryItem:
+	if item_id == AngelBowItem.ID: return AngelBowItem.create()
+	if item_id == BengalPawsItem.ID: return BengalPawsItem.create()
+	if item_id in ["celestial_sword", "celestial_staff", "soy_raygun"]: return CelestialItems.create(item_id)
+	if item_id not in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return null
 	var item := InventoryItem.new()
-	item.id = id
-	item.name = {"nori_katana": "Nori Katana", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Soyjet", "edamame_sword": "Edamame Pod Sword", "sproutwood_staff": "Sproutwood Staff"}[id]
+	item.id = item_id
+	item.name = {"nori_katana": "Nori Katana", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Soyjet", "edamame_sword": "Edamame Pod Sword", "sproutwood_staff": "Sproutwood Staff"}[item_id]
 	item.description = {
 		"nori_katana": "Requires level 5. Nori armory: long-reaching hack-and-slash combos, +10% attack speed while selected. Hold RMB: rise and steer with movement, release to plunge (auto after 1.05s), 75 SP, 3x normal hit in a 2.6m radius.",
 		"edamame_sword": "Requires level 5. Knife combos with 20% more damage. RMB: Podburst wind cone pushes enemies (3s cooldown).",
@@ -96,29 +98,29 @@ static func weapon(id: String) -> InventoryItem:
 		"soy_gun": "A ranged weapon that fires soybeans.",
 		"sotjet": "A ranged sprayer that uses a limited milk reserve.",
 		"sproutwood_staff": "A melee staff with a broad secondary sweep.",
-	}[id]
+	}[item_id]
 	item.category = "combat"
 	item.max_stack = 1
 	item.healing_amount = 0
-	if id == "nori_katana":
+	if item_id == "nori_katana":
 		item.weapon_level = 3
 		item.weapon_power = 10
 		item.required_level = 5
-	elif id == "edamame_sword":
+	elif item_id == "edamame_sword":
 		item.weapon_level = 3
 		item.weapon_power = 12
 		item.required_level = 5
-	elif id == "knife":
+	elif item_id == "knife":
 		item.weapon_level = 2
 		item.weapon_power = 10
-	elif id == "sproutwood_staff":
+	elif item_id == "sproutwood_staff":
 		item.weapon_level = 1
 		item.weapon_power = 5
-	if id == "nori_katana": item.icon = preload("res://game/inventory/icons/nori_katana_model.png")
-	elif id == "edamame_sword": item.icon = preload("res://game/inventory/icons/soypod_blade_model.png")
-	elif id == "sotjet": item.icon = preload("res://game/inventory/icons/soyjet_model.png")
-	elif id == "knife": item.icon = preload("res://game/inventory/icons/knife_model.png")
-	elif id == "sproutwood_staff": item.icon = preload("res://game/inventory/icons/sproutwood_staff.png")
+	if item_id == "nori_katana": item.icon = preload("res://game/inventory/icons/nori_katana_model.png")
+	elif item_id == "edamame_sword": item.icon = preload("res://game/inventory/icons/soypod_blade_model.png")
+	elif item_id == "sotjet": item.icon = preload("res://game/inventory/icons/soyjet_model.png")
+	elif item_id == "knife": item.icon = preload("res://game/inventory/icons/knife_model.png")
+	elif item_id == "sproutwood_staff": item.icon = preload("res://game/inventory/icons/sproutwood_staff.png")
 	else:
 		var atlas := AtlasTexture.new()
 		atlas.atlas = preload("res://assets/weapons/soy_gun/source/gun_above.png")
@@ -126,35 +128,35 @@ static func weapon(id: String) -> InventoryItem:
 		item.icon = atlas
 	return item
 
-static func backpack(id: String) -> InventoryItem:
-	if id not in ["factory_backpack", "seed_satchel", "traveler_backpack"]: return null
+static func backpack(item_id: String) -> InventoryItem:
+	if item_id not in ["factory_backpack", "seed_satchel", "traveler_backpack"]: return null
 	var item := InventoryItem.new()
-	item.id = id
-	item.name = {"factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel +4", "traveler_backpack": "Soypod Backpack"}[id]
+	item.id = item_id
+	item.name = {"factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel +4", "traveler_backpack": "Soypod Backpack"}[item_id]
 	item.description = {
 		"factory_backpack": "A standard backpack for carrying your items.",
 		"seed_satchel": "Adds four storage slots to your backpack.",
 		"traveler_backpack": "A roomy Soypod Backpack with twenty storage slots.",
-	}[id]
-	item.icon = preload("res://game/inventory/icons/soypod_backpack.png") if id == "traveler_backpack" else preload("res://game/inventory/icons/backpack.svg")
+	}[item_id]
+	item.icon = preload("res://game/inventory/icons/soypod_backpack.png") if item_id == "traveler_backpack" else preload("res://game/inventory/icons/backpack.svg")
 	item.category = "backpack"
 	item.max_stack = 1
-	item.storage_slots = {"factory_backpack": PlayerInventory.CAPACITY, "seed_satchel": PlayerInventory.CAPACITY + 4, "traveler_backpack": PlayerInventory.MAX_CAPACITY}[id]
+	item.storage_slots = {"factory_backpack": PlayerInventory.CAPACITY, "seed_satchel": PlayerInventory.CAPACITY + 4, "traveler_backpack": PlayerInventory.MAX_CAPACITY}[item_id]
 	item.healing_amount = 0.0
 	return item
 
-static func apparel(id: String) -> InventoryItem:
-	if id in CelestialItems.IDS.slice(0, 4): return CelestialItems.create(id)
-	if not id.begins_with("bright_leaf_") and not id.begins_with("dark_leaf_"): return null
-	var set_id := ApparelSetBonus.SOYPOD if id.begins_with("bright_leaf_") else ApparelSetBonus.NORI
-	var set_name := ApparelSetBonus.name_for(set_id)
-	var slot := id.trim_prefix("bright_leaf_").trim_prefix("dark_leaf_")
+static func apparel(item_id: String) -> InventoryItem:
+	if item_id in CelestialItems.IDS.slice(0, 4): return CelestialItems.create(item_id)
+	if not item_id.begins_with("bright_leaf_") and not item_id.begins_with("dark_leaf_"): return null
+	var set_id := ApparelSetBonus.SOYPOD if item_id.begins_with("bright_leaf_") else ApparelSetBonus.NORI
+	var outfit_name := ApparelSetBonus.name_for(set_id)
+	var slot := item_id.trim_prefix("bright_leaf_").trim_prefix("dark_leaf_")
 	if slot not in ["helmet", "armor", "legs", "boots"]: return null
 	var item := InventoryItem.new()
-	item.id = id
-	item.name = "%s %s" % [set_name, slot.capitalize()]
+	item.id = item_id
+	item.name = "%s %s" % [outfit_name, slot.capitalize()]
 	item.description = "Requires level 5. This piece reduces damage taken by 1%%. %s" % ApparelSetBonus.details(set_id)
-	var set_folder := "res://assets/equipment/bright_leaf_set/" if id.begins_with("bright_leaf_") else "res://assets/equipment/dark_leaf_set/"
+	var set_folder := "res://assets/equipment/bright_leaf_set/" if item_id.begins_with("bright_leaf_") else "res://assets/equipment/dark_leaf_set/"
 	item.icon = load(set_folder + slot + ".png") as Texture2D
 	item.category = slot
 	item.max_stack = 1
@@ -163,15 +165,17 @@ static func apparel(id: String) -> InventoryItem:
 	item.damage_reduction = 0.01
 	return item
 
-static func from_id(id: String) -> InventoryItem:
-	if id == MagicalTofufu.ID: return MagicalTofufu.create()
-	if id in CelestialItems.IDS: return CelestialItems.create(id)
-	if id in ["edamame", "mature_bean", "tofu_white_chunk", "toasted_tofu_chunk", "golden_tofu_chunk"]: return currency(id)
-	if id in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return weapon(id)
-	if id in ["factory_backpack", "seed_satchel", "traveler_backpack"]: return backpack(id)
-	if id.begins_with("bright_leaf_") or id.begins_with("dark_leaf_"): return apparel(id)
-	if id == "piece_of_shell": return shell_piece()
-	if id == "soy_milk": return soy_milk()
-	if id == "apple": return apple()
-	if id in MeadowFood.NAMES: return MeadowFood.create(id)
+static func from_id(item_id: String) -> InventoryItem:
+	if item_id == AngelBowItem.ID: return AngelBowItem.create()
+	if item_id == BengalPawsItem.ID: return BengalPawsItem.create()
+	if item_id == MagicalTofufu.ID: return MagicalTofufu.create()
+	if item_id in CelestialItems.IDS: return CelestialItems.create(item_id)
+	if item_id in ["edamame", "mature_bean", "tofu_white_chunk", "toasted_tofu_chunk", "golden_tofu_chunk"]: return currency(item_id)
+	if item_id in ["knife", "soy_gun", "sotjet", "sproutwood_staff", "edamame_sword", "nori_katana"]: return weapon(item_id)
+	if item_id in ["factory_backpack", "seed_satchel", "traveler_backpack"]: return backpack(item_id)
+	if item_id.begins_with("bright_leaf_") or item_id.begins_with("dark_leaf_"): return apparel(item_id)
+	if item_id == "piece_of_shell": return shell_piece()
+	if item_id == "soy_milk": return soy_milk()
+	if item_id == "apple": return apple()
+	if item_id in MeadowFood.NAMES: return MeadowFood.create(item_id)
 	return null

@@ -3,6 +3,7 @@ extends BeeSting
 ## Reusable golden tofu groat with the authority's swept collision contract.
 
 func _ready() -> void:
+	launch_speed = 32.0
 	top_level = true
 	for i in 3:
 		var grain := MeshInstance3D.new()

@@ -9,6 +9,7 @@ static func capture(game: Node3D) -> Dictionary:
 		"beans": encounters.beans, "kills": encounters.mobs, "harvests": encounters.props,
 		"experience": encounters.experience, "places": game.exploration.found_places(), "next_pickup": encounters.next_pickup_id, "world_items": game.world_items.pool.capture(), "factory": game.factory_dungeon.capture_world()}
 	for mob in encounters.mob_nodes: data.mobs.append(EncounterState.mob(mob))
+	data["mob_paralysis"] = encounters.mob_nodes.map(func(mob: TrainingMob) -> float: return mob.target.paralysis)
 	for prop in encounters.prop_nodes: data.props.append(EncounterState.prop(prop))
 	for dummy in encounters.dummy_nodes: data.dummies.append(EncounterState.dummy(dummy))
 	for index in game.world.apple_trees.size():
@@ -42,6 +43,8 @@ static func apply(game: Node3D, data: Dictionary, replica: bool, changes: Replic
 		game.castle_adventure.restore(data.castle, true)
 	game.weather.set_phase(float(data.get("weather_phase", 0.0)))
 	for i in data.mobs.size(): EncounterState.apply_mob(encounters.mob_nodes[i], data.mobs[i], replica)
+	for i in encounters.mob_nodes.size():
+		encounters.mob_nodes[i].target.paralysis = data.get("mob_paralysis", [])[i] if i < data.get("mob_paralysis", []).size() else 0.0
 	if changes == null or changes.changed("props", data.props):
 		for i in encounters.prop_nodes.size(): EncounterState.apply_prop(encounters.prop_nodes[i], data.props[i], replica)
 	if changes == null or changes.changed("dummies", data.dummies):

@@ -2,6 +2,8 @@ class_name InventoryControls
 extends Node
 ## Local modal input remains active when co-op replaces solo command handling.
 
+signal page_requested(character: bool)
+var character_open: bool = false
 var game: Node3D
 
 func _ready() -> void:
@@ -10,16 +12,24 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if not game.inventory_window.visible: return
-	if event.is_action_pressed("toggle_inventory") or event.is_action_pressed("ui_cancel"):
-		if not event.is_echo(): game.inventory_window.close()
-		get_viewport().set_input_as_handled()
+	var bag := event.is_action_pressed("toggle_inventory")
+	var character := event.is_action_pressed("toggle_character")
+	if not bag and not character and not event.is_action_pressed("ui_cancel"): return
+	if not event.is_echo():
+		if event.is_action_pressed("ui_cancel") or character == character_open:
+			game.inventory_window.close()
+		else:
+			page_requested.emit(character)
+	get_viewport().set_input_as_handled()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_echo() or not event.is_action_pressed("toggle_inventory"): return
+	var character := event.is_action_pressed("toggle_character")
+	if event.is_echo() or not (character or event.is_action_pressed("toggle_inventory")): return
 	if game.solo_arena != null and game.solo_arena.active(): return
 	var source: LocalPlayerInput = game.shooting_view.local_input
 	if source == null or not source.enabled or source.chat_blocked or not game.hud.visible: return
 	game.inventory_window.open()
+	page_requested.emit(character)
 	get_viewport().set_input_as_handled()
 
 func _opened() -> void:

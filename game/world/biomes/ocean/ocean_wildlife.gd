@@ -20,7 +20,7 @@ func _ready() -> void:
 		add_child(animal)
 		creatures.append(animal)
 		_kinds.append(kind)
-		var school := Vector2(-26 + (i / 11) * 18, -131 - (i % 3) * 18)
+		var school := Vector2(-26 + int(i / 11.0) * 18, -131 - (i % 3) * 18)
 		if school.x >= 46: school.x -= 44
 		if i >= 56: school = OceanIslands.CENTER - Vector2(3, 2)
 		_homes.append(school + Vector2(rng.randf_range(-3, 3), rng.randf_range(-3, 3)))

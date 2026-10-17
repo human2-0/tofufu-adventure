@@ -59,8 +59,8 @@ func set_celestial(value: bool, reach: float = 1.2, handle: float = 0.16) -> voi
 	if value:
 		# Match the star tip to the damage reach and put the grip at the real palm.
 		var scale_factor := (reach + handle) / (1.136 - _source_grip().y)
-		var basis := Basis(Vector3.RIGHT, -PI * 0.5).scaled(Vector3.ONE * scale_factor)
-		pose = Transform3D(basis, Vector3(0, 0, handle) - basis * _source_grip())
+		var weapon_basis := Basis(Vector3.RIGHT, -PI * 0.5).scaled(Vector3.ONE * scale_factor)
+		pose = Transform3D(weapon_basis, Vector3(0, 0, handle) - weapon_basis * _source_grip())
 	remove_child(_model)
 	_model.free()
 	_meshes.clear()
@@ -75,9 +75,9 @@ func _apply_pose() -> void:
 	if _has_hand and _attachment > 0.0:
 		var blade := (_plane.y + _plane.x * _outward * 0.25).normalized()
 		var width := blade.cross(_plane.z).normalized()
-		var basis := Basis(width, -blade.cross(width), -blade)
+		var weapon_basis := Basis(width, -blade.cross(width), -blade)
 		var contact := _hand + _plane.z * (0.035 if _front else -0.035)
-		var held := Transform3D(basis, contact - basis * (_model.transform * _source_grip()))
+		var held := Transform3D(weapon_basis, contact - weapon_basis * (_model.transform * _source_grip()))
 		global_transform = _pose.interpolate_with(held, _attachment)
 	grip.present(model_grip_position())
 

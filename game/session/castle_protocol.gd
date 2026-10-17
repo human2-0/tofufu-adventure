@@ -46,6 +46,7 @@ static func valid(value: Variant, live: bool = false) -> bool:
 
 static func _king(value: Variant) -> bool:
 	if not value is Dictionary or not _numbers(value.get("position"), 3, 1000): return false
+	if not CastleCombatProtocol.paralysis(value.get("paralysis", 0.0)): return false
 	if absf(value.position[0] - 316) > 25 or absf(value.position[2] - 334) > 25 or absf(value.position[1] - 28.4) > 1: return false
 	if not _number(value.get("health"), 4000) or not _number(value.get("maximum"), 4000): return false
 	if value.health < 0 or value.maximum < 1100 or value.health > value.maximum: return false

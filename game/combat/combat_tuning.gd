@@ -69,7 +69,8 @@ extends Resource
 @export var guard_half_angle: float = 55.0
 @export var punch_damage: float = 12.0
 @export var punch_reach: float = 1.35
-@export var punch_cooldown: float = 0.38
+@export var punch_cooldown: float = 0.24
+@export var punch_click_delay: float = 0.04
 
 @export_group("Soybean gun")
 @export var bean_damage: float = 20.0

@@ -2,6 +2,14 @@ class_name MeleeStart
 extends RefCounted
 ## Commits melee attacks only after resource payment, before touching attack state.
 
+static func secondary(combat: PlayerCombat, aim: Vector2, pressed: bool, held: bool) -> void:
+	if not pressed or combat.replica_view: return
+	if combat.active or held or combat.rules.cooldown > 0: return
+	if combat.equipment.staff_selected: combat._start_tornado(aim)
+	if combat.equipment.suppress_slash(): return
+	if combat.equipment.pod_selected: combat.podburst.fire(combat, aim)
+	if combat.equipment.nori_selected: combat.plunge.start(combat, aim)
+
 static func strike(combat: PlayerCombat, aim: Vector2, strength: float, airborne: bool) -> void:
 	var bounded := clampf(strength, 0.0, 1.0)
 	if bounded >= 1.0 and not combat.vitals.spend(VitalRules.SPECIAL_COST): return

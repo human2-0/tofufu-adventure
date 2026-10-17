@@ -1,5 +1,6 @@
 shader_type spatial;
 render_mode cull_disabled;
+uniform float wind_animation = 1.0;
 uniform vec2 wind_direction = vec2(1.0, 0.0);
 uniform float wind_strength : hint_range(0.0, 1.0) = 0.0;
 uniform float wetness : hint_range(0.0, 1.0) = 0.0;
@@ -24,6 +25,7 @@ void vertex() {
 	float flutter = sin(TIME * 4.2 + phase * 2.3 + INSTANCE_CUSTOM.g * 6.28);
 	vec2 breeze = wind_direction * (0.025 * gust + wind_strength * (0.13 + 0.075 * gust));
 	breeze += vec2(-wind_direction.y, wind_direction.x) * flutter * (0.006 + wind_strength * 0.018);
+	breeze *= wind_animation;
 	// Root is fixed. Curvature and tip droop retain wind even in a flattened trail.
 	float curve = blade_height * blade_height;
 	float blade_scale = length(MODEL_MATRIX[1].xyz);

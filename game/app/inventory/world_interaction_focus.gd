@@ -74,6 +74,17 @@ static func select_focus(items: WorldItems, source: LocalPlayerInput, pointer: V
 				items.focused_id = 0
 				items.focused_plot = -1
 
+	if items.game.soy_spots != null and items.game.soy_spots.available():
+		for index in items.game.soy_spots.spots.size():
+			if not items.game.soy_spots.reachable(items.game.player, index): continue
+			var spot: SoySaveSpot = items.game.soy_spots.spots[index]
+			var score := items._focus_score(spot.global_position + Vector3.UP * 1.4, origin, source, camera, pointer)
+			if score < best:
+				best = score
+				items.focused_kind = "soy_spot"
+				items.focused_id = 0
+				items.focused_plot = index
+
 	if items.game.castle_adventure != null:
 		var castle: CastleAdventure = items.game.castle_adventure
 		for action in 25:

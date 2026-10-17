@@ -82,10 +82,14 @@ func _run() -> void:
 	check(hunter.progression.progress.experience == prior + 50000, "guest repeated claim rejected")
 	check(sessions[1].roster.party[guest_key].quests.god_status == QuestState.Status.REWARDED, "guest receives rewarded quest snapshot")
 	var archer := game.encounters.mob_nodes[43] as TofufuArcher
+	archer.facing = Vector3.LEFT
+	archer.velocity = Vector3.LEFT * 1.2
 	archer.sting.launch(archer.position + Vector3.UP, Vector3.BACK)
 	await ticks(10)
 	var archer_mirror := sessions[1].game.encounters.mob_nodes[43] as TofufuArcher
 	check(archer_mirror.sting.active and not archer_mirror.is_physics_processing(), "groat projectile replicates without guest authority")
+	check(is_equal_approx(archer_mirror.sting.velocity.length(), 32.0), "guest receives the faster groat velocity")
+	check(archer_mirror.facing.distance_to(Vector3.LEFT) < 0.01, "guest receives wander facing instead of turning to its local player")
 	var owner: CoopActor = authority.roster.party[host_key]
 	var victim: CoopActor = authority.roster.party[guest_key]
 	var bee := game.encounters.mob_nodes[39] as WildBee

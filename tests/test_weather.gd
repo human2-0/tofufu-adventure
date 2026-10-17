@@ -32,7 +32,8 @@ func _run() -> void:
 	var bee_count := FarmCombatGrounds.BEE_SPAWNS.size()
 	var angel_count := Groatfields.spawns().size()
 	var guard_count := DofufuCity.GUARDS.size()
-	check(active_count() == 9 + forest_count + bee_count + angel_count + guard_count, "dry population includes camp snails, forest snails, southern bees and angels")
+	var bengal_count := BengalGrounds.spawns().size()
+	check(active_count() == 9 + forest_count + bee_count + angel_count + guard_count + bengal_count, "dry population includes camp snails, forest snails, southern bees, angels and Bengals")
 	await capture("clear")
 	scene.weather.set_phase(0.1)
 	check(scene.weather.condition == WeatherCycle.Condition.WINDY, "clock enters a directional windy spell")
@@ -75,11 +76,13 @@ func _run() -> void:
 		reserve._physics_process(reserve.tuning.rain_respawn - 0.1)
 		check(not reserve.visible, "rain recruits wait for respawn")
 		reserve._physics_process(0.11)
-	check(active_count() == 15 + forest_count + bee_count + angel_count + guard_count, "rain activates six additional camp snails and preserves bees and angels")
+	check(active_count() == 15 + forest_count + bee_count + angel_count + guard_count + bengal_count, "rain activates six additional camp snails and preserves bees, angels and Bengals")
 	for archer: TrainingMob in scene.encounters.mob_nodes.slice(43, 55):
 		check(archer.visible and archer.target.maximum == 420, "rain keeps southern angels active at authored strength")
-	for guard: TrainingMob in scene.encounters.mob_nodes.slice(55):
+	for guard: TrainingMob in scene.encounters.mob_nodes.slice(55, 59):
 		check(guard.visible and guard.target.maximum == 130, "city guards remain active at their authored strength in rain")
+	for bengal: TrainingMob in scene.encounters.mob_nodes.slice(59):
+		check(bengal.visible and bengal.target.maximum == 240, "rain retains jungle Bengals at their authored strength")
 	var hits: Array[float] = []
 	mob.attacked.connect(func(amount: float, _source: Vector3) -> void: hits.append(amount))
 	mob.position = mob._home
@@ -122,12 +125,13 @@ func _run() -> void:
 	scene.weather.set_phase(0.8)
 	scene.world.rain_effects._process(2.0)
 	check(not scene.world.rain_effects.is_raining() and scene.world.rain_effects.wetness < 0.1, "clearing rain drains the surface presentation")
-	check(active_count() == 9 + forest_count + bee_count + angel_count + guard_count and mob.target.maximum == 60 and mob.target.current == 30, "dry weather retires reserves and restores normal strength")
+	check(active_count() == 9 + forest_count + bee_count + angel_count + guard_count + bengal_count and mob.target.maximum == 60 and mob.target.current == 30, "dry weather retires reserves and restores normal strength")
 	check(scene.encounters.mob_nodes[9].target.current == 0, "retired reserves cannot be damaged for loot")
 	AdventureSnapshot.restore(scene, saved)
 	check(scene.weather.condition == WeatherCycle.Condition.RAIN, "solo load restores rain")
 	var legacy := snapshot.duplicate(true)
 	legacy.erase("weather_phase")
+	legacy.erase("mob_paralysis")
 	legacy.mobs.resize(9)
 	for row: Array in legacy.mobs: row[6] = minf(row[6], 60)
 	check(WorldProtocol.valid(legacy), "legacy nine-mob checkpoints validate")

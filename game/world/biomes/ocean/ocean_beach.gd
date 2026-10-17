@@ -25,5 +25,5 @@ static func build(ocean: OceanWorld) -> void:
 				var grass := MeadowGeometry.box(shore, at + Vector3(blade * 0.09, 0.23, 0), Vector3(0.055, 0.46, 0.035), Color("9fba76"))
 				grass.rotation.z = (blade - 1.5) * 0.19
 	for x in [-39.0, 57.0, 94.0]:
-		var log := MeadowGeometry.box(shore, ocean.point(x, -96, 0.16), Vector3(3.4, 0.32, 0.36), Color("b29b7a"))
-		log.rotation.y = x * 0.04
+		var timber := MeadowGeometry.box(shore, ocean.point(x, -96, 0.16), Vector3(3.4, 0.32, 0.36), Color("b29b7a"))
+		timber.rotation.y = x * 0.04

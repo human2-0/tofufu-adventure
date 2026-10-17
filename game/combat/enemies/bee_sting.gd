@@ -5,6 +5,7 @@ extends Node3D
 signal struck(victim: Node3D, source: Vector3)
 const SPEED: float = 16.0
 const LIFETIME: float = 1.5
+var launch_speed: float = SPEED
 var active: bool = false
 var velocity := Vector3.ZERO
 var remaining: float = 0.0
@@ -30,8 +31,8 @@ func _ready() -> void:
 
 func launch(at: Vector3, direction: Vector3) -> void:
 	global_position = at
-	velocity = direction * SPEED
-	remaining = LIFETIME
+	velocity = direction * launch_speed
+	remaining = LIFETIME * SPEED / launch_speed
 	active = true
 	visible = true
 	_face()
@@ -39,7 +40,8 @@ func launch(at: Vector3, direction: Vector3) -> void:
 func step(delta: float, protected_area: Rect2, shooter: RID) -> void:
 	if not active: return
 	var destination := global_position + velocity * minf(delta, remaining)
-	var source := global_position - velocity * (LIFETIME - remaining)
+	var duration := LIFETIME * SPEED / maxf(velocity.length(), 0.001)
+	var source := global_position - velocity * (duration - remaining)
 	remaining = maxf(0.0, remaining - delta)
 	# Sweeping the safe rectangle also blocks a bolt crossing it in one large tick.
 	if _crosses_protected(destination, protected_area):

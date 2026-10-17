@@ -26,10 +26,10 @@ var _pose_cell: int = -1
 func _ready() -> void:
 	name = "DirectionalArt"
 	for index in TEXTURES.size():
-		var frame := AtlasTexture.new()
-		frame.atlas = TEXTURES[index]
-		frame.region = BOUNDS[index].grow(8)
-		_frames.append(frame)
+		var atlas_frame := AtlasTexture.new()
+		atlas_frame.atlas = TEXTURES[index]
+		atlas_frame.region = BOUNDS[index].grow(8)
+		_frames.append(atlas_frame)
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	alpha_scissor_threshold = 0.4

@@ -33,7 +33,7 @@ func open(parent: Node, preferences: GamePreferences, data: Dictionary, online: 
 		if state != ResourceLoader.THREAD_LOAD_IN_PROGRESS:
 			_failed("The world could not be loaded. Return to title and try again.")
 			return null
-		view.stage("Gathering the world…", float(amounts[0]) * 75 if not amounts.is_empty() else 0)
+		view.stage("Gathering the world…", float(amounts[0]) * 75 if not amounts.is_empty() else 0.0)
 		await get_tree().process_frame
 	if generation != _generation: return null
 	var packed := ResourceLoader.load_threaded_get(path) as PackedScene
@@ -52,6 +52,7 @@ func open(parent: Node, preferences: GamePreferences, data: Dictionary, online: 
 	world.process_mode = Node.PROCESS_MODE_DISABLED
 	parent.add_child(world)
 	world.map.configure_preferences(preferences)
+	world.graphics_effects.configure(preferences.graphics)
 	view.stage("Restoring your adventure…", 95)
 	await get_tree().process_frame
 	await get_tree().process_frame

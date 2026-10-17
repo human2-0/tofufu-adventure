@@ -13,9 +13,9 @@ func _init() -> void:
 	for row in ROWS:
 		for column in STRIDE:
 			var at := VolcanicTerrain.BOUNDS.position + Vector2(column, row) * 2
-			var index := row * STRIDE + column
-			heights[index] = VolcanicTerrain.height_at(at.x, at.y)
-			colors[index] = VolcanicTerrain.color_at(at, heights[index]).srgb_to_linear()
+			var vertex_index := row * STRIDE + column
+			heights[vertex_index] = VolcanicTerrain.height_at(at.x, at.y)
+			colors[vertex_index] = VolcanicTerrain.color_at(at, heights[vertex_index]).srgb_to_linear()
 
 func index(at: Vector2) -> int:
 	return int((at.y - VolcanicTerrain.BOUNDS.position.y) / 2) * STRIDE + int((at.x - VolcanicTerrain.BOUNDS.position.x) / 2)

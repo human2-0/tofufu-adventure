@@ -23,10 +23,18 @@ func context() -> Dictionary:
 			return {"action": "aim"}
 		return {}
 	if combat.equipment.guarding: return {"action": "guard"}
-	if combat.equipment._punch_time > 0.18: return {"action": "thrust"}
 	if combat.active:
 		var progress: float = combat._elapsed / combat._attack_duration()
 		if progress < 0.22 or progress > 0.78: return {"action": "windup"}
 		return {"action": "thrust" if combat.attack_style == KnifeAttack.Style.STAB else "cut"}
 	if combat.rules.charge > 0.0: return {"action": "windup"}
 	return {}
+
+func unarmed_context() -> Dictionary:
+	var equipment := combat.equipment
+	var player := combat.actor as Player
+	if (player != null and player.transport_active) or _hurt_remaining > 0.0: return {}
+	if combat.active or combat.ranged_selected() or combat.claws.selected or equipment.guarding: return {}
+	var elapsed := combat.tuning.punch_cooldown - equipment._punch_time
+	if equipment.punch_sequence <= 0 or elapsed < 0.0 or elapsed >= PunchImpact.LIFETIME: return {}
+	return {"style": PunchImpact.variant(equipment.punch_sequence), "elapsed": elapsed, "duration": PunchImpact.LIFETIME, "aim": equipment.facing}

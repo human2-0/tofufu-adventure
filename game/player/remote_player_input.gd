@@ -7,7 +7,7 @@ var pending: Array[PlayerCommand] = []
 var _held := PlayerCommand.new()
 var _last_received: int = 0
 var _overflowed: bool = false
-const EDGES: Array[StringName] = [&"reload_pressed", &"jump_pressed", &"dash_pressed", &"drop_pressed", &"pickup_pressed", &"camp_pressed", &"time_pressed", &"use_healing_1", &"use_healing_2", &"use_healing_3", &"use_healing_4"]
+const EDGES: Array[StringName] = [&"attack_pressed", &"punch_pressed", &"reload_pressed", &"jump_pressed", &"dash_pressed", &"drop_pressed", &"pickup_pressed", &"camp_pressed", &"time_pressed", &"use_healing_1", &"use_healing_2", &"use_healing_3", &"use_healing_4"]
 
 func accept(command: PlayerCommand, sequence: int = 0) -> bool:
 	if pending.size() >= 12:

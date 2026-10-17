@@ -31,6 +31,6 @@ static func for_slot(source: Texture2D) -> Texture2D:
 	var square_edge := maxi(pixels.get_width(), pixels.get_height())
 	var square := Image.create(square_edge, square_edge, false, Image.FORMAT_RGBA8)
 	square.fill(Color.TRANSPARENT)
-	square.blit_rect(pixels, Rect2i(Vector2i.ZERO, pixels.get_size()), Vector2i((square_edge - pixels.get_width()) / 2, (square_edge - pixels.get_height()) / 2))
+	square.blit_rect(pixels, Rect2i(Vector2i.ZERO, pixels.get_size()), Vector2i(int((square_edge - pixels.get_width()) / 2.0), int((square_edge - pixels.get_height()) / 2.0)))
 	if square_edge > 1: square.generate_mipmaps()
 	return ImageTexture.create_from_image(square)

@@ -60,8 +60,8 @@ static func make_dock(window: InventoryWindow, root: Control, right: bool, width
 	if right: window._backpack_dock = panel
 	else: window._equipment_dock = panel
 	panel.set_anchors_preset(Control.PRESET_CENTER_RIGHT if right else Control.PRESET_CENTER_LEFT)
-	panel.offset_left = -width - 16 if right else 16
-	panel.offset_right = -16 if right else width + 16
+	panel.offset_left = -width - 16 if right else 16.0
+	panel.offset_right = -16.0 if right else width + 16
 	panel.offset_top = -210
 	panel.offset_bottom = 210
 	var style := StyleBoxFlat.new()
@@ -121,9 +121,9 @@ static func build_backpack(window: InventoryWindow, inv_box: VBoxContainer) -> v
 		InventoryWindowDescriptions.watch(window, btn)
 		inv_grid.add_child(btn)
 		window._inv_buttons.append(btn)
-	label(window, inv_box, "Shift-click near the Seed Bank to store. Drag outside to drop.\nR3 / Wheel · Toggle item details.\nI / B / Select / Esc · Close character hub", Color("c1d7cc"))
+	label(window, inv_box, "Shift-click near the Seed Bank to store. Drag outside to drop.\nR3 / Wheel · Toggle item details.\nB / Esc · Close bag    I / Select · Player info", Color("c1d7cc"))
 
-static func label(window: InventoryWindow, parent: Control, text: String, col: Color) -> void:
+static func label(_window: InventoryWindow, parent: Control, text: String, col: Color) -> void:
 	var l := Label.new()
 	l.text = text
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART

@@ -1,6 +1,6 @@
 class_name CharacterStatBar
 extends Control
-## Segments describe contributions on a row-specific scale, never an EXP bar.
+## A full contribution strip has no arbitrary cap. Negative gear overlays the loss.
 
 const BASE := Color("86d9c0")
 const TRAINING := Color("f4c75d")
@@ -9,7 +9,7 @@ const PENALTY := Color("ef927f")
 var values: Dictionary = {}
 
 func _ready() -> void:
-	custom_minimum_size = Vector2(0, 9)
+	custom_minimum_size = Vector2(0, maxf(4, custom_minimum_size.y))
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 func present(data: Dictionary) -> void:
@@ -22,14 +22,14 @@ func _draw() -> void:
 	var base: float = values.base
 	var training: float = values.training
 	var gear: float = values.gear
-	var scale := maxf(1.0, maxf(base * 1.5, (base + training + maxf(0, gear)) * 1.15))
+	var total_value := maxf(0.0001, base + training + maxf(0, gear))
 	var offset := 0.0
 	for segment in [[base, BASE], [training, TRAINING], [maxf(0, gear), EQUIPMENT]]:
-		var width: float = float(segment[0]) / scale * size.x
+		var width: float = float(segment[0]) / total_value * size.x
 		draw_rect(Rect2(offset, 0, width, size.y), segment[1])
 		offset += width
 	if gear < 0:
-		var width := -gear / scale * size.x
+		var width := -gear / total_value * size.x
 		draw_rect(Rect2(maxf(0, offset - width), 0, width, size.y), PENALTY)
 
 func _style(color: Color) -> StyleBoxFlat:

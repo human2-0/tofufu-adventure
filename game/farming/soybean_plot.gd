@@ -70,7 +70,7 @@ func present(focused: bool, text: String) -> void:
 	if pod:
 		var cell := Vector2(PODS.get_size()) / Vector2(4, 3)
 		var frame := crop.pod_frame()
-		region = Rect2(Vector2(frame % 4, frame / 4) * cell, cell)
+		region = Rect2(Vector2(frame % 4, int(frame / 4.0)) * cell, cell)
 	else:
 		var frame := int(phase) - 1
 		region = Rect2((frame % 3) * 512, 0 if frame < 3 else 400, 512, 400 if frame < 3 else 624)

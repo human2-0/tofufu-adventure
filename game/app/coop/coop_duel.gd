@@ -1,6 +1,6 @@
 class_name CoopDuel
 extends Node
-## Host-owned two-player arena loop and replica-friendly match presentation.
+## Host-owned two-player arena loop and replica-friendly match presentation. Helpers use the annotated signals/state.
 
 signal entry_started(participants: Array[String])
 
@@ -18,8 +18,8 @@ var notice: String = ""
 var notice_seq: int = 0
 var match_id: int = 0
 var agreement := CoopDuelAgreement.new()
-var _view: Dictionary = {}
-var _presented_notice: int = -1
+@warning_ignore("unused_private_class_variable") var _view: Dictionary = {}
+@warning_ignore("unused_private_class_variable") var _presented_notice: int = -1
 var _waiting_for_departure: bool = false
 var _complete_remaining: float = 0.0
 var _pads := CoopDuelPads.new()

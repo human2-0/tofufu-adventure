@@ -90,9 +90,9 @@ func bake(parent: Node3D) -> void:
 
 func _add(mesh: Mesh, transform: Transform3D, color: Color) -> void:
 	if not _surfaces.has(color):
-		var surface := SurfaceTool.new()
-		surface.begin(Mesh.PRIMITIVE_TRIANGLES)
-		_surfaces[color] = surface
+		var new_surface := SurfaceTool.new()
+		new_surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+		_surfaces[color] = new_surface
 	var surface := _surfaces[color]
 	var arrays := mesh.surface_get_arrays(0)
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]

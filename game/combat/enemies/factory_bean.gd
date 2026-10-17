@@ -70,6 +70,7 @@ func _ready() -> void:
 	nameplate.position.y = 1.4
 	add_child(nameplate)
 	target = Damageable.new()
+	target.paralysis_allowed = true
 	target.maximum = HEALTH[kind] * health_scale
 	target.trains_weapons = true
 	target.launch_immune = kind in [Kind.BRUISER, Kind.WARDEN, Kind.DOFUFU]
@@ -83,6 +84,7 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if not _alive or not is_instance_valid(quarry): return
+	if EnemyParalysis.hold(self, target, delta): return
 	if reaction.step(delta): return
 	_rest = maxf(0.0, _rest - delta)
 	var offset := quarry.global_position - global_position

@@ -27,11 +27,21 @@ func _create_visual() -> void:
 	art = ArcherVisuals.new()
 	add_child(art)
 
-func _present_visual(aim: Vector3, delta: float) -> void:
-	if is_physics_processing():
-		if _windup > 0.0: facing = Vector3(_sting_aim.x, 0, _sting_aim.z).normalized()
-		elif aim.length_squared() > 0.01: facing = Vector3(aim.x, 0, aim.z).normalized()
-	art.present(facing, _windup, delta)
+func _choose_direction(delta: float) -> Vector3:
+	var direction := super(delta)
+	if _windup > 0.0:
+		facing = Vector3(_sting_aim.x, 0, _sting_aim.z).normalized()
+	elif direction.length_squared() > 0.01:
+		facing = Vector3(direction.x, 0, direction.z).normalized()
+	elif not _returning and is_instance_valid(quarry) and not _protected(quarry.global_position):
+		var aim := quarry.global_position - global_position
+		if aim.length() <= SIGHT_RANGE:
+			facing = Vector3(aim.x, 0, aim.z).normalized()
+	return direction
+
+func _present_visual(_aim: Vector3, delta: float) -> void:
+	var moving := Vector2(velocity.x, velocity.z).length_squared() > 0.04
+	art.present(facing, _windup, delta, moving)
 
 func _flash_visual() -> void:
 	art.modulate = Color(3, 1, 0.8)

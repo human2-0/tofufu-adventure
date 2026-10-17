@@ -1,5 +1,5 @@
 extends Node
-## Entry composition: menus, preferences, saves and opt-in peer playtest.
+## Entry composition: menus, preferences, saves and opt-in peer playtest. Helpers use the annotated signals/state.
 
 var menu: LaunchMenu
 var game: Node3D
@@ -19,7 +19,7 @@ var _title: String = ""
 var _seconds: float = 0
 var _autosave: float = 0
 var _online: bool = false
-var _quitting: bool = false
+@warning_ignore("unused_private_class_variable") var _quitting: bool = false
 var _coop: CoopSession
 var _menu_layer: CanvasLayer
 var _input_flow := LaunchInput.new()

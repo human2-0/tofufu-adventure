@@ -60,6 +60,8 @@ Level growth retains 5% compounded maximum HP, 2% compounded SP, 1% additive dam
 
 Each physics tick: sample one fresh PlayerCommand; update the per-player PlayerMotor using velocity, grounded state and delta; apply its returned velocity through move_and_slide; present state and emit cooldown data. A command is an in-process value, not a wire-format object. Each motor holds its own timers; tuning may be shared read-only.
 
+App-owned `ActorCombatMotion` composes Nori and Bengal ability velocity through Player callables. Player applies command restrictions before its pure motor and collision-resolved ability motion afterward; ability dash presentation can temporarily pass actor bodies while preserving terrain collision. Paw movement, dash-cost and cooldown modifiers are per-motor values, never shared tuning mutations.
+
 Motor jump/dash signals drive presentation. Effects never determine hits, cooldown completion, or movement. The player coordinator owns engine physics; the motor owns movement rules. Combat lives in `game/combat/`: `MeleeRules` owns charge/cooldown, `Damageable` owns per-instance health, and `PlayerCombat` resolves swept blade-box overlaps against real colliders and checks world occlusion on the physics tick. `TrainingMob` and `HarvestProp` compose damage receivers; `SoybeanPickup` emits collection. Avoid extending the movement object into an all-purpose actor brain.
 
 The initial refactor preserves coyote time, buffered jump, faster falling, dash cooldown, and the trigger-tick dash order. Ghost timing now uses elapsed time, and ghost transforms are assigned after attachment to avoid parent-transform errors. Camera smoothing uses an exponential factor. HUD dependencies are explicit and zero-length cooldowns are supported.
@@ -165,6 +167,13 @@ Codex discovers instructions along its project-root/current-directory path; ther
 `app/bootstrap/launch.tscn` is the entry scene. It composes presentation-only `ui/menu/` views, the existing offline scene, settings/save flows and injected peer/dedicated transports selected explicitly in the lobby. `SessionConnection` retires and detaches the old transport before switching; selecting a mode alone opens no connection. The main gameplay scene remains independently instantiable for tests. Menus use the existing Fufu atlas with original mint, cream and ink vector scenery. Escape / controller Start opens the pause menu; solo pauses simulation, while online menus neutralize local intent without stopping the host world.
 
 `SaveStore` bounds and validates version-1 JSON, writes a sibling temporary file, flushes and atomically renames it into one of twelve slots per mode. Solo and co-op records live in separate folders; legacy flat records appear only in their recorded mode and remain untouched on save. Solo adventures cannot be hosted. Save failures offer retry or an explicit leave-without-saving action; the previous save remains safe. A new adventure uses an unused slot; deletion requires an explicit confirmation. Autosave runs every minute and on save/return/quit. Saves contain name, timestamp, elapsed playtime, opening-complete flag, position, health, time of day, progress/EXP, discoveries and owned/selected/dropped knife. Solo checkpoints regenerate encounters and loot and restart an incomplete opening. Shared records add a validated version-2 payload retaining encounters, loot, exact opening progress and characters keyed by persistent peer identity. `AdventureSnapshot` and `CoopCheckpoint` translate scene objects to values; the store receives an injected co-op validator. Transient swings and dashes reset safely on restore.
+
+`SoySaveSpots` composes eleven named soybean plants at authored destinations.
+`SoySpotOwnership` holds each character's unlock mask; `world/common/` owns the
+textured model and append-only sites. Shared aim focus selects an eligible plant;
+app authority checks proximity and occlusion before claiming it. Gold pods, a
+ring and motes present personal ownership. Normal solo/party saves retain claims
+through defeat; legacy saves default unowned. Respawn selection remains planned.
 
 `GamePreferences` persists window resolution/fullscreen, keyboard/mouse and controller bindings, and stick deadzone locally. Display changes require Keep within 15 seconds or revert. Fullscreen uses native display resolution. Escape/Enter/Start remain menu navigation keys. Stick movement is retained when remapping controller buttons. One local actor still owns all local devices. No runtime singleton or global event bus was added.
 
@@ -327,3 +336,22 @@ Recursion and caching are bounded; placeholders containing player/adventure name
 are opaque. Player chat/nameplate text opts out of automatic translation.
 [The localization guide](../LOCALIZATION.md) records vocabulary, editing rules and
 focused/rendered checks. No session schema or save migration is required.
+
+### Continuous mainland edges and local weather detail (implemented)
+
+`MainlandFringe` fills outside the original region floors with 48-metre shoulders
+that descend into a continuous outer sea. Its height query interpolates the same
+two-metre triangles used by collision and parrot landing. Existing biome floors,
+interior foundations and invisible traversal limits retain their ownership. The
+outer sea uses the existing bounded ocean shader with explicit region cutouts;
+it replaces the finite volcanic background rectangles. Immutable shoulder geometry is
+cached for up to four seeds, while materials and height-query dictionaries remain
+local to each world. Broad palette ecotones
+and a shared generated terrain grain soften the mainland crossings.
+
+`GraphicsPreferences` stores nine local cosmetic switches beside display settings.
+`GraphicsEffects` explicitly wires saved settings into weather, grass, sky, audio,
+puddles and particle presentation; menus apply them immediately. Disabled puddle
+and movement-particle updates stop, and hidden precipitation skips placement.
+The weather clock, wind movement modifiers, encounter rules, saves and replicated
+world state are unaffected by each player's visual choices.

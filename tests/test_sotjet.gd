@@ -113,13 +113,13 @@ func _run() -> void:
 	capped_progress.practice.shooting = CharacterProgress.threshold(99) * CharacterProgress.practice_cost_multiplier("shooting")
 	capped_progress.practice.attack_speed = CharacterProgress.threshold(99)
 	combat.sotjet.range_multiplier = capped_progress.shooting_range_multiplier()
-	combat.sotjet.attack_speed_multiplier = capped_progress.attack_multiplier()
+	combat.sotjet.attack_speed_multiplier = capped_progress.attack_multiplier() * 1.25
 	snapshot.jet_velocity = [0, 0, -combat.sotjet.launch_speed()]
-	check(ExplorationProtocol.combat(snapshot), "fully upgraded Soyjet speed survives network validation")
+	check(ExplorationProtocol.combat(snapshot), "fully upgraded celestial Soyjet speed survives network validation")
 	var valid_velocity: Array = snapshot.jet_velocity.duplicate()
 	snapshot.jet_velocity = [0, 0, -144]
 	check(ExplorationProtocol.combat(snapshot), "double-speed arena Soyjet velocity is accepted")
-	snapshot.jet_velocity = [0, 0, -201]
+	snapshot.jet_velocity = [0, 0, -241]
 	check(not ExplorationProtocol.combat(snapshot), "out-of-bounds Soyjet velocity is rejected")
 	snapshot.jet_velocity = valid_velocity
 	combat.sotjet.present(snapshot, Vector2.UP)

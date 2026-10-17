@@ -71,7 +71,7 @@ func _song(variant: int) -> AudioStreamWAV:
 	var bytes := PackedByteArray()
 	bytes.resize(int(rate * duration) * 2)
 	var phase := 0.0
-	for i in bytes.size() / 2:
+	for i in int(bytes.size() / 2.0):
 		var t := float(i) / rate
 		var syllable := fposmod(t, 0.32 if variant < 3 else 0.20)
 		var progress := clampf(syllable / (0.22 if variant < 3 else 0.13), 0, 1)

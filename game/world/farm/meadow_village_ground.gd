@@ -23,6 +23,8 @@ static func path_distance(at: Vector2) -> float:
 	return distance
 
 static func lawn(at: Vector2) -> bool:
+	# Leave room for neighbouring blades to sway without crossing the plinth.
+	if at.distance_to(MeadowVillage.FUFU_STUDY) < 1.35: return false
 	if Rect2(MeadowVillage.HOUSE - Vector2(5, 3.5), Vector2(10, 7)).grow(0.9).has_point(at): return false
 	if Rect2(MeadowVillage.BARN - Vector2(7, 14), Vector2(14, 28)).grow(0.7).has_point(at): return false
 	if Rect2(MeadowVillage.SHED - Vector2(6.5, 4), Vector2(13, 8)).grow(0.8).has_point(at): return false

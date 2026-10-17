@@ -12,6 +12,11 @@ var _active: ItemStack
 var _restoring: bool = false
 
 func _ready() -> void:
+	if combat.actor is Player:
+		var paws_view := ActorBengalPawsView.new()
+		paws_view.combat = combat
+		paws_view.sprite = (combat.actor as Player).visuals
+		add_child(paws_view)
 	var enhanced_view := ActorEnhancedWeaponView.new()
 	enhanced_view.combat = combat
 	add_child(enhanced_view)
@@ -40,6 +45,7 @@ func refresh(show_feedback: bool = true) -> void:
 	if _restoring: return
 	var actor := combat.actor as Player if combat != null else null
 	var full_set := equipment.complete_set()
+	if combat != null: combat.equipment.punch_outfit = full_set
 	if actor != null:
 		var completed := not full_set.is_empty() and actor.visuals.worn_set != full_set
 		actor.visuals.set_worn_set(full_set, show_feedback)
@@ -55,6 +61,8 @@ func refresh(show_feedback: bool = true) -> void:
 	_active = equipment.get_slot("combat_%d" % active_slot)
 	combat.reset()
 	var id := _active.item.id if _active != null and equipment.can_equip("combat_%d" % active_slot, _active) else ""
+	combat.claws.selected = id == BengalPawsItem.ID
+	if actor != null: ActorCombatMotion.equipment(actor, combat.claws.selected)
 	CelestialCombat.apply(combat, CelestialCombat.ITEMS.find(id) if id in CelestialCombat.ITEMS else 0)
 	combat.equipment.nori_selected = id == "nori_katana"
 	combat.sword.set_nori(combat.equipment.nori_selected)
@@ -67,9 +75,13 @@ func refresh(show_feedback: bool = true) -> void:
 	combat.equipment.knife_selected = id in ["knife", "edamame_sword", "nori_katana", "celestial_sword"]
 	combat.equipment.staff_selected = id in ["sproutwood_staff", "celestial_staff"]
 	combat.gun.selected = id in ["soy_gun", "soy_raygun"]
+	combat.bow.selected = id == AngelBowItem.ID
+	combat.bow.visual.visible = combat.bow.selected
 	combat.sotjet.selected = id == "sotjet"
 	combat.sword.visible = combat.equipment.knife_selected
 	combat.staff.visible = combat.equipment.staff_selected
+	combat.gun.visual.visible = combat.gun.selected
+	combat.sotjet.visual.visible = combat.sotjet.selected
 	ActorWeaponEnhancement.apply(combat, _active if not id.is_empty() else null)
 	if id == "sotjet": combat.sotjet.milk = _active.reserve
 

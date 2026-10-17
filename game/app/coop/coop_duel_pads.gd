@@ -12,11 +12,11 @@ func pair() -> Array[String]:
 		if member.health.current <= 0.0: continue
 		var pad: int = session.game.world.duel_arena.pad_for(member.actor.global_position)
 		if pad >= 0 and occupants[pad].is_empty(): occupants[pad] = key
-	var pair: Array[String] = []
+	var occupant_keys: Array[String] = []
 	if not occupants[0].is_empty() and not occupants[1].is_empty():
-		pair.append(occupants[0])
-		pair.append(occupants[1])
-	return pair
+		occupant_keys.append(occupants[0])
+		occupant_keys.append(occupants[1])
+	return occupant_keys
 
 func contains_pair(participants: Array[String]) -> bool:
 	if participants.size() != 2: return false

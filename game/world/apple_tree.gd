@@ -82,7 +82,7 @@ func apply_world_state(regrow: float) -> void:
 func _fall_apples(emit_drop: bool) -> void:
 	for index in apple_nodes.size():
 		var apple := apple_nodes[index]
-		var landing := Vector3((index % 2) * 0.36 - 0.18, 0.14, 1.55 + (index / 2) * 0.36 - 0.18)
+		var landing := Vector3((index % 2) * 0.36 - 0.18, 0.14, 1.55 + int(index / 2.0) * 0.36 - 0.18)
 		var fall := create_tween().set_parallel()
 		_fruit_fall_tweens.append(fall)
 		fall.tween_property(apple, "position", landing, 0.45).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)

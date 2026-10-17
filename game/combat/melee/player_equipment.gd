@@ -25,22 +25,31 @@ var pickup_item: Callable
 var select_item: Callable
 var _reflection_feedback: float = 0.0
 var _punch_time: float = 0.0
+var punch_sequence: int = 0
+var punch_outfit: String = ""
+var _punch_held: bool = false
+var _click_remaining: float = 0.0
 
 func punch_hit_rate() -> float:
-	var cd: float = combat.tuning.punch_cooldown if combat != null and combat.tuning != null else 0.38
+	var cd: float = combat.tuning.punch_click_delay if combat != null and combat.tuning != null else 0.04
 	var mult: float = combat.attack_speed_multiplier if combat != null else 1.0
+	if combat != null and combat.claws.selected: cd = BengalClaws.CADENCE
 	return mult / cd
 
 func punch_damage() -> int:
+	if combat != null and combat.claws.selected: return int(combat.claws.damage(combat))
 	var base: float = combat.tuning.punch_damage if combat != null and combat.tuning != null else 12.0
 	var mult: float = combat.fist_damage_multiplier if combat != null else 1.0
 	return int(base * mult)
 
-func step(aim: Vector2, guard: bool, punch: bool, drop: bool, pickup: bool, slot: int, delta: float, pickup_id: int = -1) -> void:
+func step(aim: Vector2, guard: bool, punch: bool, drop: bool, pickup: bool, slot: int, delta: float, pickup_id: int = -1, pressed: bool = false) -> void:
+	var clicked := pressed or (punch and not _punch_held)
+	_punch_held = punch
+	_click_remaining = maxf(0.0, _click_remaining - delta * combat.attack_speed_multiplier)
 	_reflection_feedback = maxf(0.0, _reflection_feedback - delta)
 	facing = aim.normalized() if not aim.is_zero_approx() else Vector2.DOWN
 	_punch_time = maxf(0.0, _punch_time - delta * combat.attack_speed_multiplier)
-	punch_cadence_updated.emit(_punch_time, combat.tuning.punch_cooldown if combat != null else 0.38, punch_damage(), punch_hit_rate())
+	punch_cadence_updated.emit(_punch_time, BengalClaws.CADENCE if combat.claws.selected else combat.tuning.punch_cooldown, punch_damage(), punch_hit_rate())
 	if slot != 0 and select_item.is_valid():
 		select_item.call(slot)
 	elif slot != 0 and not combat.active:
@@ -52,9 +61,11 @@ func step(aim: Vector2, guard: bool, punch: bool, drop: bool, pickup: bool, slot
 	if pickup and not combat.active:
 		_pickup(pickup_id)
 	guarding = guard and not pod_selected and not nori_selected and knife_owned and knife_selected and not combat.active and _punch_time <= 0.0
-	if punch and not combat.ranged_selected() and not combat.active and _punch_time <= 0.0:
+	if clicked and not combat.claws.busy() and not (combat.claws.selected and guard) and not combat.ranged_selected() and not combat.active and _click_remaining <= 0.0:
 		guarding = false
-		_punch_time = combat.tuning.punch_cooldown
+		_punch_time = BengalClaws.CADENCE if combat.claws.selected else combat.tuning.punch_cooldown
+		_click_remaining = BengalClaws.CADENCE if combat.claws.selected else combat.tuning.punch_click_delay
+		punch_sequence = (punch_sequence + 1) % 2147483647
 		_punch()
 	if guarding or not melee_selected() or _punch_time > 0.0:
 		combat.rules.cancel_charge()
@@ -84,9 +95,13 @@ func defend(source: Vector3, amount: float = 0.0) -> bool:
 	return true
 
 func _punch() -> void:
+	if combat.replica_view: return
+	if combat.claws.selected:
+		combat.claws.strike(combat)
+		return
 	var at := combat.actor.global_position + Vector3.UP * 0.55
 	var forward := Vector3(facing.x, 0, facing.y)
-	CombatEffects.punch(self, at + forward * 0.65)
+	CombatEffects.punch(self, at + forward * 0.65, punch_sequence, punch_outfit, facing, combat.attack_speed_multiplier)
 	var trained := false
 	for target in combat.targets:
 		if not is_instance_valid(target):
@@ -112,6 +127,8 @@ func _pickup(id: int = -1) -> void:
 func reset() -> void:
 	guarding = false
 	_punch_time = 0.0
+	_click_remaining = 0.0
+	_punch_held = false
 
 func restore_save(owned: bool, selected: bool, _at: Vector3) -> void:
 	knife_owned = owned

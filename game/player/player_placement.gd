@@ -11,7 +11,7 @@ static func relocate(actor: CharacterBody3D, collider: CollisionShape3D, desired
 	for index in 97:
 		var candidate := desired
 		if index > 0:
-			var ring := 1 + (index - 1) / 8
+			var ring := 1 + int((index - 1) / 8.0)
 			var angle := (index - 1) % 8 * TAU / 8.0
 			candidate += Vector3(cos(angle), 0, sin(angle)) * ring * 1.1
 			var floor_query := PhysicsRayQueryParameters3D.create(candidate + Vector3.UP * 2, candidate + Vector3.DOWN * 5, 1)

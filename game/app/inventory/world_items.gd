@@ -3,7 +3,7 @@ extends Node
 ## Wires shared world drops to actor equipment, local focus, and inventory grants.
 
 const DEATH_DROP_CHANCE: float = 0.10
-const NAMES := {"magical_tofufu_chunk": "Magical Tofufu Chunk", "celestial_helmet": "Celestial Laurel Helm", "celestial_armor": "Celestial Aegis", "celestial_legs": "Celestial Greaves", "celestial_boots": "Celestial Winged Boots", "celestial_sword": "Celestial Laurel Sword", "celestial_staff": "Olympian Star Staff", "soy_raygun": "Celestial Soy Raygun", "nori_katana": "Nori Katana", "edamame_sword": "Edamame Pod Sword", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Sotjet", "sproutwood_staff": "Sproutwood Staff", "factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel · +4 slots", "traveler_backpack": "Soypod Backpack", "edamame": "Edamame", "mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk", "piece_of_shell": "Piece of Shell", "soy_milk": "Soy Milk", "apple": "Apple", "potato": "Potato", "cucumber": "Cucumber", "red_berries": "Red Berries", "beetroot": "Beetroot", "forest_mushroom": "Forest Mushroom", "bright_leaf_helmet": "Soypod Helmet", "bright_leaf_armor": "Soypod Armor", "bright_leaf_legs": "Soypod Legs", "bright_leaf_boots": "Soypod Boots", "dark_leaf_helmet": "Nori Helmet", "dark_leaf_armor": "Nori Armor", "dark_leaf_legs": "Nori Legs", "dark_leaf_boots": "Nori Boots"}
+const NAMES := {"angel_bow": "Fallen Angel Bow", "bengal_paws": "Bengal Paws", "magical_tofufu_chunk": "Magical Tofufu Chunk", "celestial_helmet": "Celestial Laurel Helm", "celestial_armor": "Celestial Aegis", "celestial_legs": "Celestial Greaves", "celestial_boots": "Celestial Winged Boots", "celestial_sword": "Celestial Laurel Sword", "celestial_staff": "Olympian Star Staff", "soy_raygun": "Celestial Soy Raygun", "nori_katana": "Nori Katana", "edamame_sword": "Edamame Pod Sword", "knife": "Knife", "soy_gun": "Soybean gun", "sotjet": "Sotjet", "sproutwood_staff": "Sproutwood Staff", "factory_backpack": "Factory Backpack", "seed_satchel": "Seed Satchel · +4 slots", "traveler_backpack": "Soypod Backpack", "edamame": "Edamame", "mature_bean": "Mature Bean", "tofu_white_chunk": "White Tofu Chunk", "toasted_tofu_chunk": "Toasted Tofu Chunk", "golden_tofu_chunk": "Golden Tofu Chunk", "piece_of_shell": "Piece of Shell", "soy_milk": "Soy Milk", "apple": "Apple", "potato": "Potato", "cucumber": "Cucumber", "red_berries": "Red Berries", "beetroot": "Beetroot", "forest_mushroom": "Forest Mushroom", "bright_leaf_helmet": "Soypod Helmet", "bright_leaf_armor": "Soypod Armor", "bright_leaf_legs": "Soypod Legs", "bright_leaf_boots": "Soypod Boots", "dark_leaf_helmet": "Nori Helmet", "dark_leaf_armor": "Nori Armor", "dark_leaf_legs": "Nori Legs", "dark_leaf_boots": "Nori Boots"}
 
 signal backpack_claimed(item_id: String)
 var game: Node3D
@@ -15,6 +15,7 @@ var _inventories: Dictionary = {}
 var _loadouts: Dictionary = {}
 var _bag_drops: Array = []
 var magic_roll: Callable = func() -> float: return randf()
+var bengal_roll: Callable = func() -> float: return randf()
 var death_roll: Callable = func() -> float: return randf()
 
 func _ready() -> void:
@@ -38,9 +39,11 @@ func _drop_weapon(combat: PlayerCombat) -> bool:
 	var gear := combat.equipment
 	var id := "sotjet" if combat.sotjet.selected else ("soy_gun" if combat.gun.selected else ("sproutwood_staff" if gear.staff_selected else ("knife" if gear.knife_selected else "")))
 	if gear.nori_selected: id = "nori_katana"
+	if combat.claws.selected: id = BengalPawsItem.ID
+	if combat.bow.selected: id = AngelBowItem.ID
 	if gear.pod_selected: id = "edamame_sword"
 	if gear.celestial_weapon > 0: id = CelestialCombat.item_id(gear.celestial_weapon)
-	if id.is_empty() or not _owns(combat, id): return false
+	if id.is_empty() or not WorldWeaponOwnership.owns(combat, id): return false
 	var drop := BarnDisplay.spawn(self, combat, id, 1, combat.sotjet.milk if id == "sotjet" else 100.0)
 	if drop == null:
 		if combat == game.combat: game.hud.announce("No room to drop / Step away from the obstacle")
@@ -50,7 +53,7 @@ func _drop_weapon(combat: PlayerCombat) -> bool:
 	gear.dropped = drop
 	var loadout: ActorLoadout = _loadouts.get(combat)
 	if loadout != null: loadout.equipment.set_slot("combat_%d" % loadout.active_slot, null)
-	else: _set_owned(combat, id, false)
+	else: WorldWeaponOwnership.set_owned(combat, id, false)
 	combat.reset()
 	return true
 
@@ -120,26 +123,6 @@ func _backpack_empty(drop: WorldItemDrop) -> bool:
 	for row: Variant in drop.contents:
 		if row is Dictionary and not row.is_empty(): return false
 	return true
-
-func _owns(combat: PlayerCombat, id: String) -> bool:
-	if id in ["knife", "edamame_sword", "nori_katana", "celestial_sword"]: return combat.equipment.knife_owned
-	if id in ["soy_gun", "soy_raygun"]: return combat.equipment.gun_owned
-	if id == "sotjet": return combat.equipment.sotjet_owned
-	return combat.equipment.staff_owned
-
-func _set_owned(combat: PlayerCombat, id: String, value: bool) -> void:
-	if id == "knife":
-		combat.equipment.knife_owned = value
-		if not value: combat.equipment.knife_selected = false
-	elif id == "soy_gun":
-		combat.equipment.gun_owned = value
-		if not value: combat.gun.selected = false
-	elif id == "sotjet":
-		combat.equipment.sotjet_owned = value
-		if not value: combat.sotjet.selected = false
-	elif id == "sproutwood_staff":
-		combat.equipment.staff_owned = value
-		if not value: combat.equipment.staff_selected = false
 
 func _process(_delta: float) -> void:
 	WorldInteractionFocus.process(self, _delta)

@@ -10,11 +10,11 @@ func _run() -> void:
 	var rules := VitalRules.new()
 	check(rules.maximum == 100.0, "level one starts with 100 SP")
 	rules.set_level(3)
-	check(is_equal_approx(rules.maximum, 104.04), "SP grows by compounded two percent")
+	check(is_equal_approx(rules.maximum, 106.09), "SP grows by compounded three percent")
 	check(rules.spend(25.0), "special spends stamina")
 	var before := rules.current
 	rules.confirmed_hit()
-	check(is_equal_approx(rules.current - before, 1.0404), "normal hit restores one percent of maximum")
+	check(is_equal_approx(rules.current - before, 1.0609), "normal hit restores one percent of maximum")
 	before = rules.current
 	rules.confirmed_hit(false)
 	check(rules.current == before, "special hits do not refund stamina")
@@ -25,7 +25,7 @@ func _run() -> void:
 	rules.current = 10
 	check(not rules.spend(25) and rules.current == 10, "insufficient stamina cannot pay or go negative")
 	rules.step(1)
-	check(is_equal_approx(rules.current, 15.202), "stamina regenerates during battle")
+	check(is_equal_approx(rules.current, 15.3045), "stamina regenerates during battle")
 	var motor := PlayerMotor.new(PlayerTuning.new())
 	motor.spend_stamina = rules.spend
 	var command := PlayerCommand.new()
@@ -41,17 +41,29 @@ func _run() -> void:
 	root.add_child(game)
 	game.player.set_physics_process(false)
 	game.encounters.process_mode = Node.PROCESS_MODE_DISABLED
+	game.health.current = 25
+	game.combat.vitals.current = 10
 	game.progression.progress.award_experience(CharacterProgress.threshold(3, true))
-	check(is_equal_approx(game.health.maximum, 110.25), "HP compounds five percent per level")
+	check(game.health.current == game.health.maximum and game.combat.vitals.current == game.combat.vitals.maximum, "earned multi-level promotion fully restores HP and SP")
+	var blessing := game.player.get_node_or_null("LevelBlessing") as LevelBlessing
+	check(blessing != null and blessing.rings.size() == 3 and blessing.motes.size() == 12, "level-up attaches a bounded three-second blessing")
+	game.health.current = 30
+	game.combat.vitals.current = 20
+	game.progression.progress.restore(game.progression.progress.capture())
+	check(game.health.current == 30 and game.combat.vitals.current == 20, "save or snapshot restore cannot grant recovery")
+	blessing.set_process(false)
+	blessing._process(3.3)
+	check(blessing.is_queued_for_deletion(), "blessing retires after a few seconds")
+	check(is_equal_approx(game.health.maximum, 114.49), "HP compounds seven percent per level")
 	game.health.current = 50
 	game.player.threatened.emit()
 	game.progression._step_vitals(PlayerCommand.new(), 29)
 	check(game.health.current == 50, "targeted player cannot recover health")
 	game.progression._step_vitals(PlayerCommand.new(), 2)
-	check(is_equal_approx(game.health.current, 52.205), "health recovers gradually after delay")
+	check(is_equal_approx(game.health.current, 52.2898), "health recovers gradually after delay")
 	game.combat.vitals.current = 40
 	game.combat._damage(game.encounters.dummy_nodes[0].target)
-	check(is_equal_approx(game.combat.vitals.current, 41.0404) and game.combat.vitals.combat_remaining == 30, "real dummy hit restores SP and starts combat")
+	check(is_equal_approx(game.combat.vitals.current, 41.0609) and game.combat.vitals.combat_remaining == 30, "real dummy hit restores SP and starts combat")
 	var mob: TrainingMob = game.encounters.mob_nodes[0]
 	mob.position = game.player.position + Vector3(4, 0, 0)
 	mob._home = mob.position
@@ -96,6 +108,14 @@ func _run() -> void:
 	check(ExplorationProtocol.actor(actor_state), "level three health validates in co-op actor snapshot")
 	actor_state.progression = []
 	check(not ExplorationProtocol.actor(actor_state), "malformed progression rejected without conversion")
+	game.progression.progress.award_experience(CharacterProgress.threshold(99, true))
+	var capped_save := AdventureSnapshot.capture(game, "Cap", 0)
+	check(SaveStore.valid(JSON.parse_string(JSON.stringify(capped_save))), "level-99 full health and stamina survive JSON save bounds")
+	check(ExplorationProtocol.actor(JSON.parse_string(JSON.stringify(member.capture()))), "level-99 full resources survive co-op bounds")
+	var bad_cap := capped_save.duplicate(true)
+	bad_cap.health = game.health.maximum + 0.01
+	check(not SaveStore.valid(bad_cap), "JSON tolerance never accepts excess cap health")
+	check(not ExplorationProtocol.vitals({"stamina": game.combat.vitals.maximum + 0.01, "combat_remaining": 0}), "JSON tolerance never accepts excess cap SP")
 	member.free()
 	check(ExplorationProtocol.combat(CombatState.capture(game.combat)), "vitals validate in combat snapshot")
 	check(not ExplorationProtocol.vitals({"stamina": NAN, "combat_remaining": 0}), "nonfinite SP rejected")

@@ -4,7 +4,7 @@ extends CanvasLayer
 
 signal toggle_requested
 signal mini_zoom_changed(value: float)
-var mini := MapCanvas.new()
+var minimap := MapCanvas.new()
 var full := MapCanvas.new()
 var overlay := ColorRect.new()
 var expand_button := MangaButton.new()
@@ -21,8 +21,8 @@ func _ready() -> void:
 	_root.theme = MenuStyle.make_theme()
 	_root.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_root)
-	_root.add_child(mini)
-	mini.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_root.add_child(minimap)
+	minimap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	expand_button.text = "Map [M] · Expand"
 	expand_button.pressed.connect(toggle_requested.emit)
 	_root.add_child(expand_button)
@@ -52,7 +52,7 @@ func _build_mini_controls() -> void:
 			box.content_margin_bottom = 2
 			button.add_theme_stylebox_override(state, box)
 		mini_navigation.add_child(button)
-		button.pressed.connect(func() -> void: set_mini_zoom(mini.zoom * (1.25 if button == zoom_in else 0.8)))
+		button.pressed.connect(func() -> void: set_mini_zoom(minimap.zoom * (1.25 if button == zoom_in else 0.8)))
 
 func _build_overlay() -> void:
 	overlay.color = Color("102a25f2")
@@ -89,38 +89,38 @@ func _build_overlay() -> void:
 func _layout() -> void:
 	var viewport_size := _root.size
 	var side := minf(176, viewport_size.y * 0.27)
-	mini.position = Vector2(16, 90)
-	mini.size = Vector2.ONE * side
+	minimap.position = Vector2(16, 90)
+	minimap.size = Vector2.ONE * side
 	expand_button.position = Vector2(16, 92 + side)
 	expand_button.size = Vector2(side, 30)
-	mini_navigation.position = mini.position + Vector2(side - 68, side - 34)
+	mini_navigation.position = minimap.position + Vector2(side - 68, side - 34)
 	full.position = Vector2(24, 58)
 	full.size = Vector2(maxf(1, viewport_size.x - 48), maxf(1, viewport_size.y - 130))
 	close_button.position = Vector2(viewport_size.x - 182, 14)
 	close_button.size = Vector2(158, 34)
 	navigation.position = Vector2(viewport_size.x - 220, viewport_size.y - 50)
-	mini.queue_redraw()
+	minimap.queue_redraw()
 	full.queue_redraw()
 
 func set_expanded(value: bool) -> void:
 	overlay.visible = value
 	if value:
 		full.zoom = 6.0
-		full.center = mini.center
+		full.center = minimap.center
 		full._clamp_center()
 		full.queue_redraw()
 		close_button.grab_focus()
 	else: close_button.release_focus()
 
 func present(markers: Array[Dictionary]) -> void:
-	mini.markers = markers
+	minimap.markers = markers
 	full.markers = markers
-	mini.queue_redraw()
+	minimap.queue_redraw()
 	if overlay.visible: full.queue_redraw()
 
 func set_mini_zoom(value: float) -> void:
-	mini.zoom = clampf(value, 0.5, 2.5)
-	zoom_out.disabled = mini.zoom <= 0.5
-	zoom_in.disabled = mini.zoom >= 2.5
-	mini.queue_redraw()
-	mini_zoom_changed.emit(mini.zoom)
+	minimap.zoom = clampf(value, 0.5, 2.5)
+	zoom_out.disabled = minimap.zoom <= 0.5
+	zoom_in.disabled = minimap.zoom >= 2.5
+	minimap.queue_redraw()
+	mini_zoom_changed.emit(minimap.zoom)

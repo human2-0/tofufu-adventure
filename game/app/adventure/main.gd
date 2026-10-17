@@ -9,6 +9,7 @@ var shooting_view: ShootingView
 var chat: ProximityChat
 var opening: PodOpening
 var exploration: ExplorationSites
+var soy_spots: SoySaveSpots
 var farming: SoybeanFarming
 var map: MapFlow
 var parrot_travel: ParrotTravel
@@ -23,6 +24,7 @@ var progression: ActorProgression
 var combat: PlayerCombat
 var health: Damageable
 var encounters: SandboxEncounters
+var graphics_effects: GraphicsEffects
 var weather: WeatherCycle
 var weather_particles: WeatherParticles
 var weather_view: WeatherView
@@ -72,17 +74,21 @@ func _on_command(command: PlayerCommand, delta: float) -> void:
 	BarnPeace.prepare(self, player, combat, command)
 	if command.cancel_actions: combat.reset()
 	var moving := Vector2(player.velocity.x, player.velocity.z).length_squared() > 0.01
-	combat.equipment.step(command.aim, command.guard_held, command.punch_held or (command.attack_held and not combat.equipment.melee_selected() and not combat.ranged_selected()), command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id)
-	player.ability_velocity = combat.plunge.velocity
+	var primary_fist := not combat.equipment.melee_selected() and not combat.ranged_selected()
+	var punch_held := not command.cancel_actions and (command.punch_held or (command.attack_held and primary_fist))
+	var punch_pressed := not command.cancel_actions and (command.punch_pressed or (command.attack_pressed and primary_fist))
+	combat.equipment.step(command.aim, command.guard_held, punch_held, command.drop_pressed, command.pickup_pressed, command.weapon_slot, delta, command.pickup_id, punch_pressed)
 	combat.step(command.aim, command.attack_held, delta, command.move if moving and not command.face_aim else Vector2.ZERO, not player.is_on_floor(), command.guard_held)
 	combat.gun.targets = combat.targets
 	combat.gun.step(command.attack_held and not command.reload_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta, command.reload_pressed and not command.cancel_actions)
 	combat.sotjet.flow.targets = combat.targets
 	combat.sotjet.step(command.attack_held and not command.cancel_actions, command.guard_held, command.aim, command.aim_point, delta)
-	player.visuals.attack_facing = combat.attack_aim if combat.active else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
+	combat.bow.step(command.attack_held and not command.cancel_actions, command.guard_held and not command.cancel_actions, command.aim, command.aim_point, delta)
+	player.visuals.attack_facing = combat.attack_aim if combat.active or combat.claws.busy() else (command.aim if command.face_aim or combat.equipment.guarding or (combat.ranged_selected() and (command.attack_held or command.guard_held)) else Vector2.ZERO)
 	if moving and not command.face_aim and not command.attack_held and not command.guard_held:
 		combat.gun.visual.facing = command.move
 		combat.sotjet.visual.facing = command.move
+		combat.bow.visual.facing = command.move
 	if command.use_healing_1: healing.use_slot("support_1")
 	if command.use_healing_2: healing.use_slot("support_2")
 	if command.use_healing_3: healing.use_slot("support_3")

@@ -103,9 +103,9 @@ static func section(parent: Node, text: String, icon: Texture2D) -> void:
 	label(row, text, 20)
 
 static func focus_later(item: Control) -> void:
-	var reference: WeakRef = weakref(item)
+	var control_ref: WeakRef = weakref(item)
 	var focus := func() -> void:
-		var target: Control = reference.get_ref()
+		var target: Control = control_ref.get_ref()
 		if target != null and target.is_inside_tree(): target.grab_focus()
 	focus.call_deferred()
 

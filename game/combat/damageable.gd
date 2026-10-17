@@ -1,13 +1,13 @@
 class_name Damageable
 extends Node3D
-## Explicit hit/health contract. Attach to a body or a destructible prop.
+## Explicit hit/health contract. Attach to a body or a destructible prop. Helpers use the annotated signals/state.
 
 signal changed(current: float, maximum: float)
 signal hit(amount: float, direction: Vector3)
-signal reflected_hit(weapon: String)
-signal pushed(impulse: Vector3)
+@warning_ignore("unused_signal") signal reflected_hit(weapon: String)
+@warning_ignore("unused_signal") signal pushed(impulse: Vector3)
 signal engaged
-signal attack_confirmed(normal: bool)
+@warning_ignore("unused_signal") signal attack_confirmed(normal: bool)
 var guard_payment: Callable
 signal restored
 signal depleted
@@ -25,6 +25,15 @@ var projectile_guard: Callable
 var armor_multiplier: float = 1.0
 
 var trains_weapons: bool = false
+var paralysis_allowed: bool = false
+var paralysis: float = 0:
+	set(value):
+		paralysis = clampf(value, 0, 4)
+		if not is_inside_tree(): return
+		if paralysis > 0:
+			BengalRiftVFX.paralysis(self)
+		elif has_node("ParalysisSeal"):
+			get_node("ParalysisSeal").queue_free()
 
 @export var maximum: float = 60.0
 @export var body: CollisionObject3D
@@ -36,6 +45,11 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	invulnerability = maxf(0.0, invulnerability - delta)
+	paralysis = maxf(0, paralysis - delta) if current > 0 else 0.0
+
+func paralyze(seconds: float) -> void:
+	if paralysis_allowed and current > 0:
+		paralysis = maxf(paralysis, clampf(seconds, 0, 4))
 
 func damage(amount: float, direction: Vector3 = Vector3.ZERO, kind: HitKind = HitKind.MELEE, point: Vector3 = Vector3.INF) -> bool:
 	hit_absorbed = false
@@ -64,6 +78,7 @@ func heal(amount: float) -> void:
 		changed.emit(current, maximum)
 
 func restore() -> void:
+	paralysis = 0
 	current = maximum
 	restored.emit()
 	invulnerability = 2.0

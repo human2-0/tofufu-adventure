@@ -8,6 +8,9 @@ signal super_dashed
 
 var spend_stamina: Callable
 var walk_multiplier: float = 1.0
+var equipment_walk_multiplier: float = 1.0
+var dash_cooldown_multiplier: float = 1.0
+var dash_cost_multiplier: float = 1.0
 var surface_grip: float = 1.0
 var immersion: float = 0.0
 var endurance := RunEndurance.new()
@@ -45,7 +48,7 @@ func step(command: PlayerCommand, velocity: Vector3, grounded: bool, delta: floa
 		return _step_dash_charge(command, velocity, delta)
 	velocity = _step_jump(command, velocity, grounded, delta)
 	var speed := _tuning.run_speed if endurance.running else _tuning.walk_speed
-	velocity = PlanarMovement.step(command.move, velocity, speed * walk_multiplier, grounded, surface_grip, _tuning, delta)
+	velocity = PlanarMovement.step(command.move, velocity, speed * walk_multiplier * equipment_walk_multiplier, grounded, surface_grip, _tuning, delta)
 	if command.dash_pressed and cooldown_remaining <= 0.0:
 		if command.dash_held:
 			_start_dash_charge(command.dash_direction)
@@ -117,12 +120,12 @@ func _step_dash_charge(command: PlayerCommand, velocity: Vector3, delta: float) 
 func _start_dash(direction: Vector2, super_dash: bool = false) -> void:
 	cancel_jump()
 	cancel_dash_charge()
-	if spend_stamina.is_valid() and not spend_stamina.call(25.0 if super_dash else 15.0): return
+	if spend_stamina.is_valid() and not spend_stamina.call((25.0 if super_dash else 15.0) * dash_cost_multiplier): return
 	_dash_direction = _dash_vector(direction)
 	is_dashing = true
 	is_super_dashing = super_dash
 	dash_remaining = _tuning.dash_duration * (_tuning.super_dash_duration_multiplier if super_dash else 1.0)
-	cooldown_remaining = _tuning.dash_cooldown
+	cooldown_remaining = _tuning.dash_cooldown * dash_cooldown_multiplier
 	dashed.emit()
 	if super_dash: super_dashed.emit()
 
@@ -135,5 +138,5 @@ func _step_dash(delta: float) -> Vector3:
 	if dash_remaining <= 0.0:
 		is_dashing = false
 		is_super_dashing = false
-		return _dash_direction * _tuning.walk_speed * walk_multiplier * 1.25 * lerpf(1.0, 0.48, immersion)
+		return _dash_direction * _tuning.walk_speed * walk_multiplier * equipment_walk_multiplier * 1.25 * lerpf(1.0, 0.48, immersion)
 	return _dash_direction * _tuning.dash_speed * dash_distance_multiplier * lerpf(1.0, 0.48, immersion)

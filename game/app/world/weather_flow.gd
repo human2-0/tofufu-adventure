@@ -10,6 +10,7 @@ var ground: RainGroundEffects
 var wind: WindField
 var grass: ShaderMaterial
 var atmosphere: WeatherParticles
+var wind_effects: bool = true
 var focus: Node3D
 var _winter: bool = false
 
@@ -38,6 +39,8 @@ func _physics_process(delta: float) -> void:
 		_winter = cold
 		_changed(weather.condition)
 	wind.step(weather.phase, weather.condition == WeatherCycle.Condition.WINDY, delta)
+	var strength := wind.strength if wind_effects else 0.0
+	grass.set_shader_parameter("wind_animation", 1.0 if wind_effects else 0.0)
 	grass.set_shader_parameter("wind_direction", wind.direction)
-	grass.set_shader_parameter("wind_strength", wind.strength)
-	atmosphere.present_wind(wind.direction, wind.strength)
+	grass.set_shader_parameter("wind_strength", strength)
+	atmosphere.present_wind(wind.direction if wind_effects else Vector2.ZERO, strength)

@@ -46,8 +46,8 @@ func present(motion: Vector3, aim: Vector3, windup: float, shell_open: float, de
 	_shell.position.y = lerpf(0.72, 0.88, opening)
 	_shell.position.z = lerpf(-0.1, -0.20, opening)
 	_shell.rotation.x = lerpf(0.0, -0.24, opening)
-	var dodge := 1.0 + 0.13 * sin((1.0 - _dodge_left / 0.22) * PI) if _dodge_left > 0.0 else 1.0
-	_shell.scale = Vector3(1.0, 0.82, 1.0) * dodge
+	var dodge_scale := 1.0 + 0.13 * sin((1.0 - _dodge_left / 0.22) * PI) if _dodge_left > 0.0 else 1.0
+	_shell.scale = Vector3(1.0, 0.82, 1.0) * dodge_scale
 	_apply_flash()
 
 func dodge() -> void:

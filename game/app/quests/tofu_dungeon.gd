@@ -1,6 +1,6 @@
 class_name TofuDungeon
 extends Node
-## App composition for entry, encounter waves, processing timers, loot and unlock.
+## App composition for entry, encounter waves, processing timers, loot and unlock. Helpers use the annotated signals/state.
 
 signal puzzle_command_requested(command: TofuPuzzleCommand)
 var game: Node3D
@@ -22,17 +22,17 @@ var enabled: bool = true
 var cooperative: bool = false
 var party: Dictionary = {}
 var _carrying: Dictionary = {}
-var _connected: Array[Player] = []
+@warning_ignore("unused_private_class_variable") var _connected: Array[Player] = []
 var _inside: bool = false
 var _cooldown: float = 0.0
-var _party_cooldowns: Dictionary = {}
+@warning_ignore("unused_private_class_variable") var _party_cooldowns: Dictionary = {}
 var _recovery := DungeonRecovery.new()
-var _spawned_stage: int = -1
-var _enemies: Array[FactoryBean] = []
-var _enemy_reward_ids: Dictionary = {}
-var _crates: Array[FactoryCrate] = []
-var _replica_enemies: Array[FactoryBean] = []
-var _replica_crates: Array[FactoryCrate] = []
+@warning_ignore("unused_private_class_variable") var _spawned_stage: int = -1
+@warning_ignore("unused_private_class_variable") var _enemies: Array[FactoryBean] = []
+@warning_ignore("unused_private_class_variable") var _enemy_reward_ids: Dictionary = {}
+@warning_ignore("unused_private_class_variable") var _crates: Array[FactoryCrate] = []
+@warning_ignore("unused_private_class_variable") var _replica_enemies: Array[FactoryBean] = []
+@warning_ignore("unused_private_class_variable") var _replica_crates: Array[FactoryCrate] = []
 func _ready() -> void:
 	factory = game.world.tofu_factory
 	puzzle.configure(1, 1, randi())

@@ -23,7 +23,7 @@ func configure(character_name: String, returning: bool) -> void:
 	status = MenuStyle.paragraph(self, "Welcome back, " + character_name + "." if returning else "Choose a name to start.")
 	MenuStyle.paragraph(self, "No password needed. This device remembers your character. Keep a backup of your game data to carry it to another device.")
 	MenuStyle.button(self, "Back", back_requested.emit, MenuIcons.ARROW)
-	MenuStyle.focus_later(connect_button if returning else name_field)
+	MenuStyle.focus_later((connect_button as Control) if returning else name_field)
 
 func show_status(message: String, connecting: bool = false) -> void:
 	status.text = message

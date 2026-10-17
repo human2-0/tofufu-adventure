@@ -20,3 +20,7 @@ Constraints: genuine transparent background, no labels, no text, no watermark, n
 
 Edit this atlas only: preserve EXACT 5 columns x4 rows, all 20 complete character silhouettes, costumes, colors, five views, framing and positions. Remove ALL background to genuine RGBA transparency with alpha=0 between sprites, no scenery/shadows. Change all visible eyes to very small narrow angular cartoon slits (half the current height), tiny dark pupils, strong brows; this is a fictional tofu faction visual trait, not human racial anatomy. Preserve faces otherwise. All back views remain without eyes. Production sprite atlas transparent background mandatory.
 
+
+## Atlas cut calibration
+
+The authored rows are not uniform 256-pixel cells. Runtime row boundaries are Y=0, 263, 520, 772, 1024; sole baselines are Y=258, 518, 768, 1018. The original RGBA source remains intact. Each clipped atlas frame uses its own sole pivot so preceding feet never appear above another character.

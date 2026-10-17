@@ -1,5 +1,7 @@
 shader_type spatial;
 render_mode cull_disabled;
+uniform bool horizon_water = false;
+uniform vec4 dry_regions[8];
 uniform float dive_view = 0.0;
 uniform vec2 bed_encoding = vec2(16.0, -8.0);
 uniform vec3 color_shallow : source_color = vec3(0.20, 0.66, 0.65);
@@ -9,6 +11,11 @@ varying float bed;
 varying float crest;
 void vertex() {
 	world = VERTEX;
+	if (horizon_water) {
+		float north = smoothstep(-244.0, -220.0, world.z) * (1.0 - smoothstep(-108.0, -84.0, world.z));
+		VERTEX.y += north * 0.78;
+		world.y = VERTEX.y;
+	}
 	bed = COLOR.r * bed_encoding.x + bed_encoding.y;
 	float shallow = 1.0 - smoothstep(0.0, 5.0, world.y - bed);
 	float phase = world.z * 0.72 + sin(world.x * 0.09) * 0.8 - TIME * 1.55;
@@ -19,6 +26,12 @@ void vertex() {
 	world.y = VERTEX.y;
 }
 void fragment() {
+	if (horizon_water) {
+		for (int i = 0; i < 8; i++) {
+			vec4 r = dry_regions[i];
+			if (world.x >= r.x && world.z >= r.y && world.x <= r.z && world.z <= r.w) discard;
+		}
+	}
 	float depth = world.y - bed;
 	if (depth < 0.025) discard;
 	vec2 p = world.xz;

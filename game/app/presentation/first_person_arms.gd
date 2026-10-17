@@ -48,3 +48,16 @@ func present(hands: Array[MeshInstance3D], tint: Color, celestial: bool = false)
 		if across.is_zero_approx(): across = Vector3.RIGHT
 		arm.global_transform = Transform3D(Basis(across, along * reach.length(), across.cross(along)), (start + wrist) * 0.5)
 		_cuffs[index].global_transform = Transform3D(arm.global_basis.orthonormalized(), wrist - along * 0.12)
+
+func build_hands(parent: Node3D) -> Array[MeshInstance3D]:
+	var hands: Array[MeshInstance3D] = []
+	for index in 2:
+		var hand := MeshInstance3D.new()
+		var sphere := SphereMesh.new()
+		sphere.radius = 0.075
+		sphere.height = 0.15
+		hand.mesh = sphere
+		hand.material_override = material
+		parent.add_child(hand)
+		hands.append(hand)
+	return hands

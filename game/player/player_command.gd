@@ -15,6 +15,8 @@ var dash_held: bool = false
 
 var jump_held: bool = false
 var attack_held: bool = false
+var attack_pressed: bool = false
+var punch_pressed: bool = false
 var reload_pressed: bool = false
 var reload_held: bool = false
 

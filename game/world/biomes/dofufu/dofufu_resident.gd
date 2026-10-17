@@ -49,7 +49,7 @@ func _process(delta: float) -> void:
 	if distance > 6400: return
 	elapsed += delta
 	art.position.y = absf(sin(elapsed * (4.0 if sparring else 1.5))) * (0.16 if sparring else 0.025)
-	art.rotation.z = sin(elapsed * 4) * 0.12 if sparring else 0
+	art.rotation.z = sin(elapsed * 4) * 0.12 if sparring else 0.0
 	if sparring: art.position.z = maxf(0, sin(elapsed * 4)) * facing.y * 0.45
 	greeting.visible = is_instance_valid(view_focus) and view_focus.global_position.distance_squared_to(global_position) < 25
 	if greeting.visible and not sparring:

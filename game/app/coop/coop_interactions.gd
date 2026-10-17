@@ -19,6 +19,9 @@ static func build(session: CoopSession) -> void:
 	var parrots := CoopParrotTravel.new()
 	parrots.session = session
 	session.add_child(parrots)
+	var soy_spots := CoopSoySaveSpots.new()
+	soy_spots.session = session
+	session.add_child(soy_spots)
 	var apples := CoopAppleHarvest.new()
 	apples.session = session
 	session.add_child(apples)

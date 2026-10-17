@@ -81,6 +81,7 @@ static func inventory(game: AdventureGame) -> void:
 	game.add_child(inventory_controls)
 	var details := CharacterDetailsFlow.new()
 	details.game = game
+	details.controls = inventory_controls
 	game.add_child(details)
 	game.seed_storage = SeedStorage.new()
 	game.seed_storage.game = game
@@ -95,6 +96,7 @@ static func encounters(game: AdventureGame) -> void:
 	game.encounters.inventory = game.inventory
 	game.encounters.shell_drop = game.world_items.spawn_mob_loot
 	game.encounters.magic_drop = func(at: Vector3) -> void: MagicalMobLoot.drop(game.world_items, at)
+	game.encounters.bengal_drop = func(at: Vector3) -> void: BengalMobLoot.drop(game.world_items, at)
 	game.encounters.loot_chance = func(base: float, _at: Vector3) -> float: return ApparelSetBonus.drop_chance(game.character_equipment.complete_set(), base)
 	game.encounters.experience_awarded.connect(game.progression.progress.award_experience)
 	game.encounters.ground_point = game.world.ground_point
@@ -148,6 +150,9 @@ static func weather(game: AdventureGame) -> void:
 	var life := WorldLife.new()
 	life.game = game
 	game.add_child(life)
+	game.graphics_effects = GraphicsEffects.new()
+	game.graphics_effects.setup(game, weather_flow, life)
+	game.add_child(game.graphics_effects)
 
 static func exploration(game: AdventureGame) -> void:
 	game.exploration = ExplorationSites.new()

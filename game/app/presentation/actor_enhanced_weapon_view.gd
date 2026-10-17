@@ -7,10 +7,12 @@ var orbit := MagicalTofufuOrbit.new()
 
 func _ready() -> void:
 	orbit.center = _center
-	orbit.enabled = func() -> bool: return combat.equipment.weapon_enhanced and (combat.equipment.melee_selected() or combat.ranged_selected())
+	orbit.enabled = func() -> bool: return combat.equipment.weapon_enhanced and (combat.equipment.melee_selected() or combat.ranged_selected() or combat.claws.selected)
 	add_child(orbit)
 
 func _center() -> Vector3:
+	if combat.bow.selected: return combat.bow.visual.global_position
+	if combat.claws.selected: return combat.actor.global_position + Vector3.UP * 0.7
 	if combat.gun.selected:
 		if combat.gun.celestial: return combat.gun.visual.celestial_view.global_position.lerp(combat.gun.visual.muzzle_position(), 0.5)
 		return combat.gun.visual.global_position.lerp(combat.gun.visual.muzzle_position(), 0.5)

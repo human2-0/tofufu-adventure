@@ -5,11 +5,11 @@ extends RefCounted
 const SEA_EDGE: float = 82.0
 const WATER_LEVEL: float = 1.2
 
-static func shore_x(z: float, seed: int) -> float:
-	return 64.0 + WorldContours.noise(Vector2(z / 28.0, 4.2), seed + 816) * 3.0
+static func shore_x(z: float, noise_seed: int) -> float:
+	return 64.0 + WorldContours.noise(Vector2(z / 28.0, 4.2), noise_seed + 816) * 3.0
 
-static func height_at(x: float, z: float, inland: float, seed: int) -> float:
-	var shore := shore_x(z, seed)
+static func height_at(x: float, z: float, inland: float, noise_seed: int) -> float:
+	var shore := shore_x(z, noise_seed)
 	var beach := lerpf(2.4, -8.0, smoothstep(shore, SEA_EDGE, x))
 	var entry_blend := smoothstep(JungleTerrain.SOUTH_START, JungleTerrain.SOUTH_START + 14, z)
 	var blend := smoothstep(52.0, shore - 3.0, x) * entry_blend

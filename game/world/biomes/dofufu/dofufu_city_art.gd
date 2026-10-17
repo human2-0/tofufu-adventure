@@ -3,6 +3,8 @@ extends Sprite3D
 ## Five complete authored views mirrored into eight camera-relative directions.
 
 const SHEET: Texture2D = preload("res://assets/characters/dofufu_city/city-directions.png")
+const ROWS: Array[int] = [0, 263, 520, 772, 1024]
+const SOLES: Array[int] = [258, 518, 768, 1018]
 const CELLS: Array[int] = [2, 1, 0, 1, 2, 3, 4, 3]
 var role: int = 0
 var height: float = 1.9
@@ -12,18 +14,18 @@ var _frames: Array[AtlasTexture] = []
 
 func _ready() -> void:
 	for column in 5:
-		var frame := AtlasTexture.new()
-		frame.atlas = SHEET
-		frame.region = Rect2(roundf(column * 307.2), role * 256, 307, 256)
-		frame.filter_clip = true
-		_frames.append(frame)
+		var atlas_frame := AtlasTexture.new()
+		atlas_frame.atlas = SHEET
+		atlas_frame.region = Rect2(roundf(column * 307.2), ROWS[role], 307, ROWS[role + 1] - ROWS[role])
+		atlas_frame.filter_clip = true
+		_frames.append(atlas_frame)
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	alpha_scissor_threshold = 0.3
 	shaded = false
 	cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-	pixel_size = height / 245
-	offset.y = 116
+	pixel_size = height / float(SOLES[role] - ROWS[role])
+	offset.y = float(SOLES[role] - ROWS[role]) - texture_height() * 0.5
 	present_direction(2)
 
 func _process(_delta: float) -> void:
@@ -42,3 +44,6 @@ func present_direction(direction: int) -> void:
 	current_cell = CELLS[posmod(direction, 8)]
 	flip_h = direction in [3, 4, 5]
 	texture = _frames[current_cell]
+
+func texture_height() -> float:
+	return float(ROWS[role + 1] - ROWS[role])

@@ -102,8 +102,8 @@ func _choose_direction(delta: float) -> Vector3:
 		return Vector3.ZERO
 	if _rush > 0.0:
 		_rush -= delta
-		var offset := quarry.global_position - global_position
-		if not _rush_hit and offset.length() < 1.5 and offset.normalized().dot(_rush_aim) > 0.2 and _can_reach_quarry():
+		var rush_offset := quarry.global_position - global_position
+		if not _rush_hit and rush_offset.length() < 1.5 and rush_offset.normalized().dot(_rush_aim) > 0.2 and _can_reach_quarry():
 			_rush_hit = true
 			attacked.emit((tuning.rain_damage if raining else tuning.dry_damage) * armored_tuning.rush_damage_multiplier, global_position)
 		if _rush <= 0.0 or is_on_wall():

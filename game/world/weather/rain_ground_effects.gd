@@ -151,3 +151,10 @@ func _sync_surface_materials() -> void:
 	for material in _puddle_materials:
 		material.set_shader_parameter("wetness", wetness)
 		material.set_shader_parameter("age", _age)
+
+func set_effects_enabled(enabled: bool) -> void:
+	visible = enabled
+	set_process(enabled)
+	if not enabled:
+		wetness = 0.0
+		_sync_surface_materials()

@@ -1,16 +1,17 @@
 class_name PlayerCombat
 extends Node
-## Wind-up, cutting arc and recovery. Only the swept steel deals damage.
-signal weapon_trained(weapon: String)
+## Wind-up, cutting arc and recovery. Only the swept steel deals damage. Helpers use the annotated signals/state.
+@warning_ignore("unused_signal") signal weapon_trained(weapon: String)
+@warning_ignore("unused_signal") signal speed_gear_trained(units: int)
 var sword_damage_multiplier: float = 1.0
 var fist_damage_multiplier: float = 1.0
 var attack_speed_multiplier: float = 1.0
 var incoming_damage_multiplier: float = 1.0
-var _trained: bool = false
+@warning_ignore("unused_private_class_variable") var _trained: bool = false
 signal charge_changed(value: float)
-signal struck(strength: float, hits: int)
+@warning_ignore("unused_signal") signal struck(strength: float, hits: int)
 signal combo_changed(count: int, critical_chance: float)
-signal clashed
+@warning_ignore("unused_signal") signal clashed
 @export var actor: Node3D
 @export var tuning: CombatTuning = CombatTuning.new()
 var vitals := VitalRules.new()
@@ -23,8 +24,10 @@ var clash: MeleeClash
 var owner_health: Damageable
 var sotjet: Sotjet
 var gun: SoyGun
+var bow: AngelBow
 var sword: SwordVisual
 var podburst := Podburst.new()
+var claws := BengalClaws.new()
 var plunge := NoriPlunge.new()
 var staff: StaffVisual
 var active: bool = false
@@ -39,8 +42,8 @@ var _queued_aim := Vector2.DOWN
 var _strength: float = 0.0
 var _hit_targets: Array[Damageable] = []
 var _shape: BoxShape3D
-var _previous_at: Vector3
-var _previous_progress: float = 0.0
+@warning_ignore("unused_private_class_variable") var _previous_at: Vector3
+@warning_ignore("unused_private_class_variable") var _previous_progress: float = 0.0
 var _trail: SwordTrail
 var attack_style: int = KnifeAttack.Style.SLASH
 var critical_roll: Callable
@@ -62,22 +65,18 @@ func _ready() -> void:
 	add_child(staff)
 	_trail = SwordTrail.new()
 	add_child(_trail)
-	gun = SoyGun.new()
-	gun.actor = actor as CollisionObject3D
-	gun.tuning = tuning
-	add_child(gun)
-	sotjet = Sotjet.new()
-	sotjet.actor = actor as CollisionObject3D
-	add_child(sotjet)
+	PlayerRangedSetup.build(self)
 	_shape = BoxShape3D.new()
 	_shape.size = Vector3(tuning.blade_width, tuning.blade_thickness, tuning.blade_length)
 func step(aim: Vector2, held: bool, delta: float, resting_aim: Vector2 = Vector2.ZERO, airborne: bool = false, secondary_held: bool = false) -> void:
 	_previous_elapsed = _elapsed
 	podburst.cooldown = maxf(0.0, podburst.cooldown - delta)
+	claws.step(self, aim, secondary_held, delta)
+	if claws.busy(): return
 	if plunge.active and not secondary_held: plunge.released = true
 	plunge.step(self, delta)
 	if plunge.active or plunge.recovery > 0.0:
-		sword.present(plunge.pose(actor.global_position), aim, 1.0, true, 0.0)
+		sword.present(NoriPlunge.pose(actor.global_position), aim, 1.0, true, 0.0)
 		return
 	held = held and not equipment.suppress_slash()
 	if not active and combo.step(delta):
@@ -86,13 +85,8 @@ func step(aim: Vector2, held: bool, delta: float, resting_aim: Vector2 = Vector2
 	if rules.released: _queued_aim = aim
 	var secondary_pressed := secondary_held and not _secondary_was_held
 	_secondary_was_held = secondary_held
-	if secondary_pressed and equipment.staff_selected and not active and not held and rules.cooldown <= 0.0:
-		_start_tornado(aim)
-	if secondary_pressed and equipment.pod_selected and not active and not held and not equipment.suppress_slash() and rules.cooldown <= 0.0:
-		podburst.fire(self, aim)
-	if secondary_pressed and equipment.nori_selected and not active and not held and not equipment.suppress_slash() and rules.cooldown <= 0.0:
-		plunge.start(self, aim)
-		if plunge.active: return
+	MeleeStart.secondary(self, aim, secondary_pressed, held)
+	if plunge.active: return
 	charge_changed.emit(rules.charge)
 	if strength >= 0.0 and not active:
 		strike(_queued_aim, strength, airborne)
@@ -127,16 +121,20 @@ func _start_tornado(aim: Vector2) -> void:
 	MeleeStart.tornado(self, aim)
 
 func interrupt() -> void:
+	bow.cancel()
 	active = false
 	hit_pause = 0.0
 	rules.cancel_charge()
 	combo.reset()
 	clash.clear()
 	plunge.cancel()
+	claws.cancel()
 	_emit_combo()
 
 func reset() -> void:
+	bow.cancel()
 	plunge.cancel()
+	claws.cancel()
 	equipment.reset()
 	gun.reset()
 	sotjet.reset()
@@ -167,7 +165,7 @@ func _emit_combo() -> void:
 	combo_changed.emit(combo.count, combo.critical_chance())
 
 func ranged_selected() -> bool:
-	return gun.selected or sotjet.selected
+	return gun.selected or sotjet.selected or bow.selected
 
 func _set_melee_shape() -> void:
 	_shape.size = Vector3(_melee_width(), tuning.blade_thickness, _melee_length())

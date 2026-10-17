@@ -2,7 +2,7 @@ class_name ExplorationProtocol
 extends RefCounted
 ## Version-2 co-op input and actor schema. Host identity comes from the transport.
 
-const INPUT_FLAGS: Array[String] = ["run_held", "face_aim", "jump_held", "jump_pressed", "dash_pressed", "dash_held", "attack_held", "reload_pressed", "reload_held", "guard_held", "punch_held", "drop_pressed", "pickup_pressed", "camp_pressed", "time_pressed", "cancel_actions", "use_healing_1", "use_healing_2", "use_healing_3", "use_healing_4"]
+const INPUT_FLAGS: Array[String] = ["run_held", "face_aim", "jump_held", "jump_pressed", "dash_pressed", "dash_held", "attack_held", "attack_pressed", "punch_pressed", "reload_pressed", "reload_held", "guard_held", "punch_held", "drop_pressed", "pickup_pressed", "camp_pressed", "time_pressed", "cancel_actions", "use_healing_1", "use_healing_2", "use_healing_3", "use_healing_4"]
 
 static func valid_input(data: Dictionary) -> bool:
 	if not sequence(data.get("sequence")) or not sequence(data.get("ack")): return false
@@ -11,7 +11,8 @@ static func valid_input(data: Dictionary) -> bool:
 		var value: Array = data[field]
 		if Vector2(value[0], value[1]).length_squared() > 1.01: return false
 	for field in INPUT_FLAGS:
-		if not data.get(field, false if field == "run_held" else null) is bool: return false
+		if field in ["run_held", "attack_pressed", "punch_pressed"] and not data.has(field): continue
+		if not data.get(field) is bool: return false
 	if data.get("castle_action", -1) != -1 and (not sequence(data.castle_action) or data.castle_action > 24): return false
 	if not sequence(data.get("castle_revision", 0)): return false
 	if data.has("pickup_id") and data.pickup_id != -1 and not sequence(data.pickup_id): return false
@@ -21,14 +22,15 @@ static func valid_input(data: Dictionary) -> bool:
 static func valid_snapshot(data: Dictionary, members: Array) -> bool:
 	if not sequence(data.get("sequence")) or not data.get("actors") is Dictionary: return false
 	if data.actors.size() > 4 or data.actors.is_empty(): return false
-	for key: Variant in data.actors:
-		if key not in members or not data.actors[key] is Dictionary or not actor(data.actors[key]): return false
+	for member_key: Variant in data.actors:
+		if member_key not in members or not data.actors[member_key] is Dictionary or not actor(data.actors[member_key]): return false
 	if data.has("world") and (not data.world is Dictionary or not WorldProtocol.valid(data.world)): return false
 	if data.has("duel") and not DuelProtocol.valid(data.duel, members): return false
 	return data.get("opening") is Dictionary and WorldProtocol.opening(data.opening)
 
 static func actor(state: Dictionary) -> bool:
 	if not InventoryProtocol.valid(state): return false
+	if not sequence(state.get("soy_spots", 0)) or state.get("soy_spots", 0) > 2047: return false
 	if state.has("impact") and not impact(state.impact): return false
 	if state.has("parrot_rest") and (not state.parrot_rest is Array or (not state.parrot_rest.is_empty() and not vector(state.parrot_rest, 3, 1000))): return false
 	if state.has("endurance") and not endurance(state.endurance): return false
@@ -45,7 +47,8 @@ static func actor(state: Dictionary) -> bool:
 		if not number(state.get(field), 100) or state[field] < 0: return false
 	if state.has("progression") and not progression(state.progression): return false
 	var level := _character_level(state.get("progression", {}))
-	if not number(state.get("health"), 100.0 * pow(1.05, level - 1)) or state.health < 0: return false
+	# JSON decimal rounding can exceed a compounded maximum by a fraction of a ULP.
+	if not number(state.get("health"), 100.0 * pow(1.07, level - 1) + 0.000001) or state.health < 0: return false
 	if state.charge > 1: return false
 	if state.has("clearance") and not number(state.clearance, 100): return false
 	for field in ["respawns", "blocks", "input_ack"]:
@@ -58,6 +61,9 @@ static func actor(state: Dictionary) -> bool:
 	return state.get("combat") is Dictionary and combat(state.combat)
 
 static func combat(data: Dictionary) -> bool:
+	if not AngelBowProtocol.valid(data): return false
+	if not BengalCombatProtocol.valid(data): return false
+	if not sequence(data.get("punch_sequence", 0)): return false
 	if not sequence(data.get("celestial", 0)) or data.get("celestial", 0) > 3: return false
 	if data.get("celestial", 0) == 1 and (not data.get("selected", false) or data.get("nori", false) or data.get("pod", false)): return false
 	if data.get("celestial", 0) == 2 and not data.get("staff", false): return false
@@ -92,7 +98,7 @@ static func combat(data: Dictionary) -> bool:
 	if data.has("milk") and (not number(data.milk, 100) or data.milk < 0): return false
 	if data.has("jet_sequence") and not sequence(data.jet_sequence): return false
 	if data.has("jet_origin") and not vector(data.jet_origin, 3, 1000): return false
-	if data.has("jet_velocity") and not vector(data.jet_velocity, 3, 200): return false
+	if data.has("jet_velocity") and not vector(data.jet_velocity, 3, 240): return false
 	if data.has("shot") and not sequence(data.shot): return false
 	if data.has("clash") and not sequence(data.clash): return false
 	if data.has("shot_origin") and not vector(data.shot_origin, 3, 1000): return false
@@ -162,7 +168,7 @@ static func _progress_counter(value: Variant) -> bool:
 	return (value is int or value is float) and is_finite(float(value)) and value >= 0 and value <= 100000000 and float(value) == floorf(value)
 
 static func vitals(data: Variant) -> bool:
-	return data is Dictionary and number(data.get("stamina"), 100.0 * pow(1.02, 98)) and data.stamina >= 0 and number(data.get("combat_remaining"), 30.0) and data.combat_remaining >= 0
+	return data is Dictionary and number(data.get("stamina"), 100.0 * pow(1.03, 98) + 0.000001) and data.stamina >= 0 and number(data.get("combat_remaining"), 30.0) and data.combat_remaining >= 0
 
 static func endurance(data: Variant) -> bool:
 	return data is Dictionary and number(data.get("current"), 100.0) and data.current >= 0 and number(data.get("rest"), 1.2) and data.rest >= 0 and data.get("exhausted") is bool

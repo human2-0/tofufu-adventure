@@ -7,7 +7,7 @@ var _stride: int
 var _heights := PackedFloat32Array()
 var _colors := PackedColorArray()
 
-func _init(bounds: Rect2i, sample: Callable, seed: int) -> void:
+func _init(bounds: Rect2i, sample: Callable, noise_seed: int) -> void:
 	_bounds = bounds
 	_stride = bounds.size.x + 1
 	_heights.resize(_stride * (bounds.size.y + 1))
@@ -18,7 +18,7 @@ func _init(bounds: Rect2i, sample: Callable, seed: int) -> void:
 			var z := bounds.position.y + row
 			var index := row * _stride + column
 			_heights[index] = float(sample.call(float(x), float(z)))
-			_colors[index] = BiomePalette.color_at(Vector2(x, z), _heights[index], seed)
+			_colors[index] = BiomePalette.color_at(Vector2(x, z), _heights[index], noise_seed)
 
 func height(x: float, z: float) -> float:
 	return _heights[(int(z) - _bounds.position.y) * _stride + int(x) - _bounds.position.x]

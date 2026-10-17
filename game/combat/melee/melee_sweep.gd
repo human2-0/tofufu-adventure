@@ -58,15 +58,15 @@ static func unobstructed(combat: PlayerCombat, at: Vector3, target: Damageable) 
 static func damage(combat: PlayerCombat, target: Damageable, point: Vector3 = Vector3.INF) -> void:
 	var base_damage := combat._melee_damage()
 	var critical := combat._attack_critical_chance > 0.0 and critical_roll(combat) < combat._attack_critical_chance
-	var damage := base_damage * combat.sword_damage_multiplier * (1.2 if combat.equipment.weapon_enhanced else 1.0)
+	var hit_damage := base_damage * combat.sword_damage_multiplier * (1.2 if combat.equipment.weapon_enhanced else 1.0)
 	if critical:
-		damage *= combat.tuning.combo_critical_damage_multiplier
+		hit_damage *= combat.tuning.combo_critical_damage_multiplier
 	var impulse := KnifeAttack.impulse(combat.attack_style, combat.attack_aim, combat.tuning)
 	if combat.attack_style == StaffAttack.TORNADO:
 		var outward := target.global_position - combat.actor.global_position
 		impulse = Vector3(outward.x, 0.0, outward.z).normalized() * 5.0
 	var kind := Damageable.HitKind.MELEE if combat.equipment.staff_selected else Damageable.HitKind.KNIFE
-	if target.damage(damage, impulse, kind, point):
+	if target.damage(hit_damage, impulse, kind, point):
 		if point.is_finite(): MeleeContact.flash(combat, point, KnifeAttack.powered(combat.attack_style))
 		if combat._hit_targets.is_empty():
 			combat.hit_pause = combat.tuning.heavy_hit_pause if KnifeAttack.powered(combat.attack_style) else combat.tuning.light_hit_pause
@@ -77,7 +77,7 @@ static func damage(combat: PlayerCombat, target: Damageable, point: Vector3 = Ve
 		if target.trains_weapons and not combat._trained:
 			combat._trained = true
 			combat.weapon_trained.emit("sword")
-		var text := "CRIT! %d" % int(damage) if critical else str(int(damage))
+		var text := "CRIT! %d" % int(hit_damage) if critical else str(int(hit_damage))
 		CombatEffects.burst(combat, target.global_position, text, Color("ff8f7f") if critical else Color(1, 0.86, 0.4))
 		combat.struck.emit(1.0 if KnifeAttack.powered(combat.attack_style) else combat._strength, 1)
 

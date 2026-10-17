@@ -31,11 +31,11 @@ func _step(command: PlayerCommand, delta: float) -> void:
 	_last = at
 	if not enabled or progression.combat.replica_view or not previous.is_finite(): return
 	if command.move.is_zero_approx() or command.cancel_actions or not actor.is_on_floor(): return
-	if actor.transport_active or actor.motor.is_dashing or actor.motor.impact.remaining > 0.0: return
+	if actor.transport_active or actor.motor.is_dashing or progression.combat.claws.dashing or actor.motor.impact.remaining > 0.0: return
 	if progression.combat.owner_health.current <= 0.0: return
 	var distance := Vector2(at.x - previous.x, at.z - previous.z).length()
 	# Teleports, air travel and collision pushes cannot buy walking milestones.
-	if distance > actor.tuning.run_speed * actor.motor.walk_multiplier * delta * 1.5 + 0.05: return
+	if distance > actor.tuning.run_speed * actor.motor.walk_multiplier * actor.motor.equipment_walk_multiplier * delta * 1.5 + 0.05: return
 	_metres += distance
 	if _metres >= 10.0:
 		var units := floori(_metres)

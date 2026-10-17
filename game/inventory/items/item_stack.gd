@@ -47,16 +47,16 @@ static func restore(data: Dictionary) -> ItemStack:
 	if not (raw_count is int or raw_count is float): return null
 	if not is_finite(float(raw_count)) or raw_count < 1 or raw_count > 100 or float(raw_count) != floor(float(raw_count)): return null
 	var id: String = raw_id
-	var count: int = int(raw_count)
-	var item: InventoryItem
-	item = InventoryItem.from_id(id)
-	if item == null: return null
-	if count > item.max_stack: return null
-	var stack := ItemStack.new(item, count)
-	var reserve: Variant = data.get("reserve", 100.0)
-	if not (reserve is int or reserve is float) or not is_finite(float(reserve)) or reserve < 0 or reserve > 100: return null
+	var restored_count: int = int(raw_count)
+	var restored_item: InventoryItem
+	restored_item = InventoryItem.from_id(id)
+	if restored_item == null: return null
+	if restored_count > restored_item.max_stack: return null
+	var stack := ItemStack.new(restored_item, restored_count)
+	var restored_reserve: Variant = data.get("reserve", 100.0)
+	if not (restored_reserve is int or restored_reserve is float) or not is_finite(float(restored_reserve)) or restored_reserve < 0 or restored_reserve > 100: return null
 	var upgraded: Variant = data.get("enhanced", false)
-	if not upgraded is bool or (upgraded and item.category != "combat"): return null
+	if not upgraded is bool or (upgraded and restored_item.category != "combat"): return null
 	stack.enhanced = upgraded
-	stack.reserve = float(reserve)
+	stack.reserve = float(restored_reserve)
 	return stack

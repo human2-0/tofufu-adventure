@@ -139,6 +139,7 @@ func abort(participants: Array[String]) -> void:
 	saved_actions.clear()
 
 func _clear_shots(member: CoopActor) -> void:
+	member.combat.bow.clear_flights()
 	for child in member.combat.gun.get_children():
 		if child is SoyProjectile: child.queue_free()
 	member.combat.sotjet.flow.clear()

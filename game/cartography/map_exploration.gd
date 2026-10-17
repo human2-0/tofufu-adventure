@@ -4,7 +4,7 @@ extends RefCounted
 
 const BOUNDS := Rect2(-982, -369, 1688, 960)
 const GRID := Vector2i(844, 480)
-const BYTE_COUNT: int = (844 * 480 + 7) / 8
+const BYTE_COUNT: int = (844 * 480 + 7) >> 3
 const RADIUS: float = 10.0
 var _bits := PackedByteArray()
 var _pixels := PackedByteArray()
@@ -26,8 +26,8 @@ func reveal(point: Vector2) -> bool:
 			if at.distance_to(point) > RADIUS: continue
 			var index := y * GRID.x + x
 			var mask := 1 << (index % 8)
-			if _bits[index / 8] & mask: continue
-			_bits[index / 8] |= mask
+			if _bits[index >> 3] & mask: continue
+			_bits[index >> 3] |= mask
 			_pixels[index] = 255
 			changed = true
 	if changed: revision += 1
@@ -42,7 +42,7 @@ func _cell(point: Vector2) -> Vector2i:
 	return Vector2i((point - BOUNDS.position) / BOUNDS.size * Vector2(GRID))
 
 func _seen(index: int) -> bool:
-	return (_bits[index / 8] & (1 << (index % 8))) != 0
+	return (_bits[index >> 3] & (1 << (index % 8))) != 0
 
 func mask_image() -> Image:
 	# Movement only updates newly visited pixels; native upload copies this cached mask.
@@ -66,8 +66,8 @@ func restore(value: Variant) -> void:
 func _restore_legacy(decoded: PackedByteArray, old_grid: Vector2i, old_size: Vector2) -> void:
 	# Older atlases retain discoveries at their original world cell centers.
 	for index in old_grid.x * old_grid.y:
-		if decoded[index / 8] & (1 << (index % 8)) == 0: continue
-		var point := Vector2(-142, -369) + (Vector2(index % old_grid.x, index / old_grid.x) + Vector2.ONE * 0.5) * old_size / Vector2(old_grid)
+		if decoded[index >> 3] & (1 << (index % 8)) == 0: continue
+		var point := Vector2(-142, -369) + (Vector2(index % old_grid.x, int(index / float(old_grid.x))) + Vector2.ONE * 0.5) * old_size / Vector2(old_grid)
 		var cell := _cell(point)
 		var new_index := cell.y * GRID.x + cell.x
-		_bits[new_index / 8] |= 1 << (new_index % 8)
+		_bits[new_index >> 3] |= 1 << (new_index % 8)

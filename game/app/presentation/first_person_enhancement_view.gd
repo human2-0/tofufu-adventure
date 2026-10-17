@@ -3,6 +3,8 @@ extends RefCounted
 ## Camera-space orbit centered on the selected rendered weapon.
 
 static func center(view: FirstPersonWeapon) -> Vector3:
+	if view.combat.bow.selected: return view._bow.model.global_position
+	if view.combat.claws.selected: return view._hands[0].global_position
 	var at := Vector3(0, 0.08, 0.04)
 	if view.combat.equipment.knife_selected:
 		var point: Vector3 = WeaponModelCatalog.TIPS[view._melee_item_id] * 0.5

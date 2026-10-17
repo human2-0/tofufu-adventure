@@ -26,8 +26,8 @@ static func restore(attempt: TofuDungeonAttempt, data: Dictionary, live: bool) -
 	if not _progression(data, next_sort, next_lab, next_press, next_cut, next_pack): return false
 	attempt.run_id = int(data.run_id)
 	attempt.attempt_id = int(data.attempt_id)
-	attempt.stage = int(data.stage)
-	attempt.phase = int(data.phase)
+	attempt.stage = int(data.stage) as TofuPuzzleContract.Stage
+	attempt.phase = int(data.phase) as TofuPuzzleContract.Phase
 	if not live and attempt.phase == TofuPuzzleContract.Phase.OPERATING: attempt.phase = TofuPuzzleContract.Phase.READY
 	attempt.mistakes = int(data.mistakes)
 	attempt.encounter_id = data.encounter_id

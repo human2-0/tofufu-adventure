@@ -55,11 +55,11 @@ static func dive_pose(at: Vector3, aim: Vector2, progress: float, tuning: Combat
 	var hand := at + radial * tuning.hand_radius + Vector3.UP * tuning.hand_height
 	return Transform3D(basis, hand + blade * tuning.grip_length)
 
-static func tip(pose: Transform3D, tuning: CombatTuning) -> Vector3:
-	return pose * Vector3(0, 0, -tuning.blade_length)
+static func tip(weapon_pose: Transform3D, tuning: CombatTuning) -> Vector3:
+	return weapon_pose * Vector3(0, 0, -tuning.blade_length)
 
-static func blade_transform(pose: Transform3D, tuning: CombatTuning) -> Transform3D:
-	return pose.translated_local(Vector3(0, 0, -tuning.blade_length * 0.5))
+static func blade_transform(weapon_pose: Transform3D, tuning: CombatTuning) -> Transform3D:
+	return weapon_pose.translated_local(Vector3(0, 0, -tuning.blade_length * 0.5))
 
 static func guard_pose(at: Vector3, aim: Vector2, _tuning: CombatTuning) -> Transform3D:
 	var forward := Vector3(aim.x, 0, aim.y).normalized()

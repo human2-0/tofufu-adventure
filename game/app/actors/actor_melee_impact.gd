@@ -11,6 +11,8 @@ static func receive(_amount: float, direction: Vector3, actor: Player, combat: P
 static func prepare(actor: Player, command: PlayerCommand) -> void:
 	if actor.motor.impact.remaining <= 0.0: return
 	command.attack_held = false
+	command.attack_pressed = false
+	command.punch_pressed = false
 	command.guard_held = false
 	command.punch_held = false
 	command.drop_pressed = false

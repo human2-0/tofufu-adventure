@@ -1,4 +1,5 @@
 shader_type spatial;
+uniform sampler2D ground_grain : source_color, repeat_enable, filter_linear_mipmap;
 render_mode diffuse_burley;
 // The submerged sand shares the offshore floor's lighting and subtle grain.
 varying vec3 world;
@@ -7,7 +8,7 @@ void vertex() {
 }
 void fragment() {
 	float grain = sin(world.x * 7.7 + sin(world.z * 5.1)) * sin(world.z * 8.3 + world.x * 2.1);
-	ALBEDO = COLOR.rgb * (1.0 + grain * 0.045);
+	ALBEDO = COLOR.rgb * (1.0 + grain * 0.045) * mix(vec3(0.94), vec3(1.06), texture(ground_grain, world.xz / 9.0).rgb);
 	ROUGHNESS = 0.95;
 	SPECULAR = 0.15;
 }

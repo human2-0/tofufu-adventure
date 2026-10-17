@@ -1,5 +1,62 @@
 # Co-op architecture
 
+### Jungle Bengals and Bengal Paws (implemented; live version 61)
+
+Twelve level-15 Bengals append after the 59 existing encounter slots. They use
+240 HP, 30-damage committed claws, 5.6 m/s pursuit and 18-second respawns in both
+weather states. Five painted views cover eight observer-relative facings by
+mirroring; separate idle, two running strides and claw poses are cosmetic.
+Bengal records contain twelve values: the existing nine mob values, two facing
+components and a bounded 0..0.25-second claw pose. The 59-slot and older supported
+checkpoints remain valid. `WorldMobProtocol` owns fixed-roster validation.
+
+Each authoritative Bengal defeat makes exactly one unmodified 1% roll for Bengal
+Paws, alongside the separate existing Magical Tofufu roll. The level-15 weapon
+uses the normal inventory, personal deposits, enhancement, world-drop and
+save/checkpoint contracts; Grandpa Fufu also stocks it for free playtesting. Confirmed claws
+train fist and attack-speed practice once each per attack, including a successful
+Super Claw. Misses and replicas grant no training. Existing practice counters
+require no migration.
+
+Paws deal 16 base fist-scaled damage at a 0.33-second base cadence. Holding
+RMB for two seconds automatically commits a 20-SP dash, starting an eight-second
+cooldown that survives swaps and saves. Early release cancels without cost.
+Aim can change while charging and locks at launch. The dash travels at 20 m/s
+for at most 0.36 seconds, shortening its route to approach the aimed target.
+Collision-resolved segments hit each target once for normal damage. The separate
+frontal rift finisher deals three times normal damage and paralyzes surviving
+enemies for four seconds. Both stages check terrain occlusion; solid walls end
+the dash. The complete skill grants each practice type at most once.
+
+Selected paws multiply walking/running by 1.15 and ordinary dash cooldown/SP
+costs by 0.75. These are per-actor modifiers, composed with progression and
+outfits without changing shared tuning; stowing paws removes them. App-owned
+`ActorCombatMotion` injects ability velocity, command restrictions and actor-pass
+presentation into Player. Physics still uses move_and_slide against terrain.
+Guest movement follows received dash velocity without resolving combat.
+
+Actor snapshots add optional bounded paw selection, charge, charging/dashing
+flags, remaining dash time, cooldown, launch/finisher sequences, origin and aim.
+Restoring authority cancels transient attacks and retains cooldown, preventing
+saved attacks from replaying. Solo saves optionally retain the same bounded
+cooldown; legacy records default to zero. Replicas display charging claws,
+dash trails and the received finisher sequence without executing attacks.
+The world's optional `mob_paralysis` array carries one 0..4-second timer per
+captured mob; factory live rows accept an optional sixth timer, and castle
+guardian/king records an optional bounded timer. Older records default to zero.
+Player combat and static harvest/practice targets do not receive enemy paralysis.
+Version 61 peers are required for charged-dash presentation and the new mechanics.
+Actor-health validation permits only 0.000001 HP of decimal-rounding tolerance
+above the computed level maximum, and authority restoration clamps to that exact
+maximum. This preserves full-health level-15 characters across JSON transport.
+
+The special's local VFX lasts 1.05 seconds: an expanding triple rake opens a
+painted cosmic slit, with animated rim/chromatic shimmer and twelve batched glass
+shards, then collapses. The effect uses depth testing and no full-screen overlay
+or gameplay light. Three small fractured bonds follow a paralyzed enemy until
+its received status expires. These components do not resolve hits, alter status
+timers or spend resources; they share the existing cast sequence on all peers.
+
 ## Implemented scope
 
 The existing adventure supports a solo host with up to three joining friends: the shared pod escape, movement, knife/fist/soybean-gun combat, directional guarding, dropped-knife recovery, damage/respawn, mobs, dummies, harvesting, Edamame ground pickups, discoveries, EXP and day/night. Guests can join during play and rejoin their saved character. The host saves the party and world. Offline play remains independent of the networking runtime.
@@ -375,8 +432,9 @@ Version 47 adds manufacturing stash intent and a bounded permanent claim mask. T
 An eighth joined cloud island adds an open working terrace, three 500-HP celestial
 practice targets and four marble personal-deposit access points. The targets append
 after the three original Meadow records, retaining legacy indices. Authority restores
-cloud targets on depletion or six seconds after the first hit in a recovery interval;
-continuing hits do not postpone recovery. Guests present the existing four-value
+cloud targets two seconds after depletion or six seconds after the first hit in a recovery interval;
+continuing hits do not postpone recovery. Depletion replaces the periodic timer with
+a fresh two-second delay; replicas show the depleted state until authority restores HP. Guests present the existing four-value
 records without running recovery. World validation accepts legacy three-target saves
 and current six-target records, with per-target health/timer bounds. Cloud chests reuse
 the existing identity-keyed deposits and authenticated transfer intents, with full
@@ -480,3 +538,79 @@ onto the sampled surface before collision-aware placement. Version 56 prevents j
 ### Character hub and journey mastery (implemented; live version 57)
 
 Progression capture version 3 adds optional bounded integer `journey` counters (`trail` 0..7500, `rhythm` 0..750, `care` 0..2250). Versions 1/2 remain accepted and start with zero medals. Solo saves, actor snapshots and co-op checkpoints use the existing progression record. Host collision-resolved ground travel, confirmed training events and effective consumable healing earn credit; guest prediction and replica presentation award none. Both duel and solo equalized arena compositions suspend care/travel measurements and preserve the saved progression ledger. Recovery rewards change regeneration rates, leaving existing maximum-health/stamina protocol bounds intact. Matching version 57 peers are required for changed movement/defence balance. The character tab routes investment through the existing authenticated, sequenced allocation intent.
+
+### Groat flight and angel travel facing (implemented; live version 59)
+
+Angel shots now travel at 32 m/s; ordinary bee stings remain at 16 m/s. Flight
+duration scales inversely with speed to retain the same 24-metre travel limit.
+The existing 18-value records retain their shape. Only angel slots 43–54 accept
+projectile velocity components up to 32; ordinary stings remain bounded to 16.
+Saved 16 m/s flights still restore, with their original source position computed
+from captured velocity and remaining travel time. Matching version 59 peers
+are required. Host physics supplies the angel's travel/committed-aim facing via
+the existing facing fields. Guests select the eight-direction walking atlas
+and stride locally without running AI or deciding damage.
+
+### Fallen Angel Bow (implemented; live version 62)
+
+Optional bounded bow fields carry selection, a 0..2s reload, 0..1.25s charge,
+0..6s skill cooldown, shot/burst sequence counters, positions and 96 m/s arrow
+velocity. Existing saves default absent fields safely; solo saves also retain
+reload and skill cooldown. `angel_bow` is a single-item combat stack in inventory,
+world drops, deposits and checkpoints, including per-instance enhancement.
+Matching version 62 peers are required. The host sweeps arrows, spends 25 SP for
+a completed RMB charge, applies direct damage and a single occlusion-checked
+3.5m spherical flame pulse. It excludes the primary target from that pulse.
+Replicas render sequenced arrows/flame spheres and never apply damage, spend SP
+or train shooting. Initial snapshots seed event counters without replaying old
+shots. Normal arrows deal 2.5 times soybean body/head damage; enhanced arrows
+retain one-arrow reloads. Arena transitions clear outstanding bow projectiles.
+
+### Stronger progression and click punches (implemented; live version 63)
+
+Matching version 63 peers use the stronger authored progression: +5% general
+power per level, +8% weapon power per skill rank, +2% walking speed per level
+(capped at 1.75 before trail/gear), and +1.5% attack pace per level with +2.5%
+per trained speed rank (combined cap 3.5). Defence uses diminishing rating with
+an 80% progression-only reduction cap. HP compounds by 7% and SP by 3%; save
+and wire maximum bounds cover level 99. Existing progression counters and saved
+current resources remain compatible.
+
+Local input carries one-tick `attack_pressed` and `punch_pressed` flags. Remote
+coalescing preserves each pending press once and never turns a held button into
+repeated punches. Bare fists accept fresh clicks after 0.04 seconds, scaled by
+attack speed, independently of their 0.24-second visual recovery; Bengal Paws
+retain their authored 0.33-second cadence. Optional bounded `punch_sequence`
+drives alternating glove presentation and seeds old records at zero. The host
+still resolves all hits, training and resource changes.
+
+Only EXP awards crossing a level emit recovery: authority fills HP/SP after
+applying the new maxima. Restore/allocation/equipment updates grant no refill.
+Replicas compare consecutive authoritative progression snapshots to display a
+3.2-second textured blessing; first synchronization never replays one. The
+blessing changes no gameplay state. Both existing merchants offer the factory's
+original Soy Milk through ordinary validated purchases and support consumption.
+
+Soyjet stream hit cadence also receives the character attack-speed bonus. Its
+existing launch-speed scaling can reach 234.675 m/s with capped progression,
+shooting range and the celestial outfit; the finite wire velocity bound is now
+240 m/s. Fixed special-charge and manual-reload durations retain their authored
+requirements.
+
+### Personal soybean save spots (implemented claiming; live version 64)
+
+Eleven fixed, append-only site IDs cover the nursery, Fufufarm village, regional
+parrot arrivals, Dofufu gate and Groatfields approach. Each character has an
+optional `soy_spots` integer bitmask bounded to 0..2047 in actor snapshots, solo
+saves and party checkpoints. Absent legacy values mean no claimed plants. Defeat
+retains ownership; plants display the local character's state. Matching version
+64 peers use the added authored plants and claim intent.
+
+`soy_spot_claim` carries only a bounded site index and monotonically increasing
+sequence. Authority binds the sender to a party actor, queues one request per
+member and checks live play, completed opening, health, spectator/duel/transport
+restrictions, 3.2-metre proximity and world occlusion before granting an unlock.
+Guests present authoritative ownership without granting it locally. Repeated
+claims are idempotent. Claiming does not change resources or force an autosave;
+the normal adventure save flow retains ownership. Death destination selection
+and checkpoint respawning remain planned.

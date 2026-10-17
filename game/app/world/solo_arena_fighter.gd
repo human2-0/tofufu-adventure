@@ -2,7 +2,7 @@ class_name SoloArenaFighter
 extends RefCounted
 ## Temporary solo match equipment and actor state, also used by save capture.
 
-const SAVE_FIELDS: Array[String] = ["position", "health", "vitals", "endurance", "progression", "inventory", "equipment", "active_slot", "pending_items", "knife_owned", "knife_selected", "gun_owned", "gun_selected", "sotjet_owned", "sotjet_selected", "soymilk", "dropped_position"]
+const SAVE_FIELDS: Array[String] = ["position", "health", "vitals", "claw_cooldown", "bow_reload", "bow_cooldown", "endurance", "progression", "inventory", "equipment", "active_slot", "pending_items", "knife_owned", "knife_selected", "gun_owned", "gun_selected", "sotjet_owned", "sotjet_selected", "soymilk", "dropped_position"]
 var saved: Dictionary = {}
 var combat_state: Dictionary = {}
 var targets: Array[Damageable] = []
@@ -76,6 +76,7 @@ static func stop_motion(actor: Player) -> void:
 	actor.ability_velocity = Callable()
 
 static func clear_projectiles(game: AdventureGame) -> void:
+	game.combat.bow.clear_flights()
 	for child in game.combat.gun.get_children():
 		if child is SoyProjectile: child.queue_free()
 	game.combat.sotjet.flow.clear()

@@ -12,15 +12,26 @@ resolution scaling cannot remove CPU bottlenecks.
 
 ## Implemented strategy
 
+- Settings → Weather and effects offers nine independent local switches: wind
+  animation/leaves, rain, snow, lightning, thunder, puddles/splashes,
+  fireflies/movement particles, atmospheric fog, and wind/rain sounds. Changes
+  apply immediately and persist on this device. Disabled precipitation skips
+  placement and drawing; puddles, movement particles and fireflies skip their
+  update work. Weather audio stops its loops when disabled. Weather clocks,
+  encounter conditions, wind movement modifiers and co-op authority retain
+  their existing behavior.
+
 - Both seas now use the original Ocean biome water shader through a shared
   `OceanMaterial`. Authored swells, shore foam, shallow/deep colors and lighting
   remain. Water uses encoded seabed depth rather than framebuffer copies or
   screen-space reflection tracing. The downloaded MIT SSR package was already
   inactive at the start of this pass and remains reference source. Its download
   alone was not the remaining runtime cost.
-- Water is indexed and split into independently culled 64-metre tiles, replacing
-  whole-sea draws. Terrain retains its 24-metre visual tiles and original physical
-  surfaces. This is particularly useful around the enlarged volcanic island.
+- Nearby biome water is indexed and split into independently culled 64-metre
+  tiles. The continuous outer sea uses a coarse grid in 512-metre tiles with
+  region cutouts. Terrain retains its 24-metre visual tiles and physical surfaces.
+  The 48-metre coastal shoulders use the same triangles for collision, map queries
+  and landing; immutable shoulder geometry is cached for up to four world seeds.
 - Grass retains its density and near ribbon geometry; medium/far index sets use
   six/two triangles per tuft instead of ten. Distant tree leaves flatten their
   folds without dropping leaf silhouettes. Decorative soy/wheat fields retain

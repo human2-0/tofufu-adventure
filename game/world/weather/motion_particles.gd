@@ -37,6 +37,7 @@ func _ready() -> void:
 		multimesh.set_instance_transform(i, Transform3D(Basis.IDENTITY.scaled(Vector3.ZERO), Vector3.ZERO))
 
 func burst(at: Vector3, motion: Vector3, amount: int, wet: bool, strength: float = 1.0) -> void:
+	if not visible: return
 	for n in mini(amount, CAPACITY):
 		var i := _cursor
 		_cursor = (_cursor + 1) % CAPACITY

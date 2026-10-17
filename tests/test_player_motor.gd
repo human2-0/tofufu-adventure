@@ -9,6 +9,7 @@ func _initialize() -> void:
 	_test_jump_windows()
 	_test_dash_and_isolation()
 	_test_super_dash()
+	_test_equipment_mobility()
 	_test_wind_resistance()
 	print("Player motor tests: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
@@ -137,3 +138,29 @@ func _test_wind_resistance() -> void:
 	var crosswind := Vector2(-wind.direction.y, wind.direction.x)
 	check(wind.movement_multiplier(headwind) < 0.75, "walking into wind is meaningfully slower")
 	check(wind.movement_multiplier(crosswind) > 0.99, "crosswind preserves ordinary walking speed")
+
+func _test_equipment_mobility() -> void:
+	var tuning := PlayerTuning.new()
+	var motor := PlayerMotor.new(tuning)
+	var other := PlayerMotor.new(tuning)
+	motor.equipment_walk_multiplier = 1.15
+	motor.dash_cooldown_multiplier = 0.75
+	motor.dash_cost_multiplier = 0.75
+	var costs: Array[float] = []
+	motor.spend_stamina = func(cost: float) -> bool: costs.append(cost); return true
+	var command := PlayerCommand.new()
+	command.move = Vector2.RIGHT
+	var velocity := Vector3.ZERO
+	for tick in 120: velocity = motor.step(command, velocity, true, DT)
+	check(is_equal_approx(velocity.x, tuning.walk_speed * 1.15), "equipment boosts walking speed")
+	command.run_held = true
+	for tick in 120: velocity = motor.step(command, velocity, true, DT)
+	check(is_equal_approx(velocity.x, tuning.run_speed * 1.15), "same equipment bonus boosts running")
+	command.dash_pressed = true
+	command.dash_direction = Vector2.RIGHT
+	motor.step(command, velocity, true, DT)
+	check(costs == [11.25] and is_equal_approx(motor.cooldown_remaining, tuning.dash_cooldown * 0.75), "paws reduce dash cost and recovery by one quarter")
+	motor.is_dashing = false
+	motor._start_dash(Vector2.RIGHT, true)
+	check(costs == [11.25, 18.75], "charged movement dash also receives cheaper SP cost")
+	check(other.equipment_walk_multiplier == 1.0 and other.dash_cost_multiplier == 1.0 and tuning.dash_cooldown == 0.7, "mobility bonuses cannot mutate shared tuning or another actor")

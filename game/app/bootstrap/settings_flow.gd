@@ -16,7 +16,10 @@ func show_settings() -> void:
 	var content := menu.clear_page("Make yourself at home", "A comfortable view. Controls that feel like you.")
 	panel = SettingsPanel.new()
 	content.add_child(panel)
-	panel.build(GamePreferences.RESOLUTIONS, preferences.resolution, preferences.fullscreen, preferences.deadzone, GamePreferences.ACTIONS, preferences.frame_limit, preferences.render_scale, preferences.vsync, preferences.adaptive_resolution)
+	panel.build(GamePreferences.RESOLUTIONS, preferences.resolution, preferences.fullscreen, preferences.deadzone, GamePreferences.ACTIONS, preferences.frame_limit, preferences.render_scale, preferences.vsync, preferences.adaptive_resolution, _effect_options())
+	panel.effect_requested.connect(func(key: String, value: bool) -> void:
+		preferences.graphics.set_enabled(key, value)
+		panel.message.text = "Effects saved." if preferences.save() == OK else "Could not save preferences.")
 	panel.language_requested.connect(func(locale: String) -> void:
 		preferences.apply_language(locale)
 		_refresh_bindings()
@@ -94,3 +97,9 @@ func _revert_display() -> void:
 	preferences.apply_display(_old_resolution, _old_fullscreen)
 	if is_instance_valid(_confirm): _confirm.queue_free()
 	show_settings()
+
+func _effect_options() -> Dictionary:
+	var result := {}
+	for key: String in GraphicsPreferences.LABELS:
+		result[key] = [GraphicsPreferences.LABELS[key], preferences.graphics.enabled(key)]
+	return result

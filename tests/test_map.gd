@@ -54,7 +54,7 @@ func _run() -> void:
 	check(canvas.bounds.has_point(Vector2(-40, -156)), "map includes expanded northern underwater world")
 	check(canvas.bounds.has_point(Vector2(40, -320)), "map includes expanded northern frozen land")
 	game.map.view.set_mini_zoom(1.0)
-	var mini: MapCanvas = game.map.view.mini
+	var mini: MapCanvas = game.map.view.minimap
 	check(mini.visible_bounds().size == Vector2(44, 44), "minimap shows a local crop")
 	game.map.view.zoom_in.pressed.emit()
 	check(mini.visible_bounds().size.x < 44, "+ button narrows minimap")

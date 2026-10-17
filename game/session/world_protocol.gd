@@ -2,9 +2,9 @@ class_name WorldProtocol
 extends RefCounted
 ## Fixed-content world schema; no arbitrary resource paths or object deserialization.
 
-const ITEM_LIMITS := {"magical_tofufu_chunk": 50, "celestial_helmet": 1, "celestial_armor": 1, "celestial_legs": 1, "celestial_boots": 1, "celestial_sword": 1, "celestial_staff": 1, "soy_raygun": 1, "nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const ITEM_LIMITS := {"angel_bow": 1, "bengal_paws": 1, "magical_tofufu_chunk": 50, "celestial_helmet": 1, "celestial_armor": 1, "celestial_legs": 1, "celestial_boots": 1, "celestial_sword": 1, "celestial_staff": 1, "soy_raygun": 1, "nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
 const BACKPACK_CONTENT_LIMIT: int = 20
-const CURRENT_MOB_COUNT: int = 59
+const CURRENT_MOB_COUNT: int = 71
 
 static func valid(data: Dictionary) -> bool:
 	if data.has("castle") and not CastleProtocol.valid(data.castle, true): return false
@@ -15,19 +15,12 @@ static func valid(data: Dictionary) -> bool:
 	if data.has("world_items") and not world_items(data.world_items): return false
 	if data.has("apple_trees") and not _rows(data.apple_trees, 20, 20, 2): return false
 	if not data.get("mobs") is Array or not _rows(data.get("props"), 24, 24, 2): return false
-	if data.mobs.size() not in [9, 15, 27, 39, 43, 55, CURRENT_MOB_COUNT]: return false
+	if data.mobs.size() not in [9, 15, 27, 39, 43, 55, 59, CURRENT_MOB_COUNT]: return false
 	if data.has("weather_phase") and (not ExplorationProtocol.number(data.weather_phase, 1) or data.weather_phase < 0): return false
 	if data.has("seed_satchel_claimed") and not data.seed_satchel_claimed is bool: return false
 	var wet: bool = data.get("weather_phase", 0.0) >= 1.0 / 3.0 and data.get("weather_phase", 0.0) < 2.0 / 3.0
 	if not _rows(data.get("dummies"), 3, 6, 4) or not _rows(data.get("pickups"), 0, 128, 10, 11): return false
-	for index in data.mobs.size():
-		var row: Variant = data.mobs[index]
-		if not row is Array or row.size() not in [9, 12, 18]: return false
-		if index >= 43 and index < 55 and row.size() != 18: return false
-		if index >= 55 and row.size() != 9: return false
-		if row.size() == 12 and (not _numeric(row.slice(9), 65) or row[9] < 0 or absf(row[10]) > 1 or absf(row[11]) > 1): return false
-		if row.size() == 18 and (not _mob_numbers(row) or absf(row[9]) > 1 or absf(row[10]) > 1 or not ExplorationProtocol.vector(row.slice(14, 17), 3, 16) or row[17] < 0 or row[17] > 1.5): return false
-		if not _mob_numbers(row) or row[6] < 0 or row[6] > (130 if index >= 55 else (420 if index >= 43 else (180 if wet else 130))) or row[7] < 0 or row[8] < 0: return false
+	if not WorldMobProtocol.valid(data, wet): return false
 	for row: Array in data.props:
 		if not _numeric(row, 100) or row[0] < 0 or row[1] < 0: return false
 	if data.dummies.size() not in [3, 6]: return false
@@ -84,8 +77,9 @@ static func factory(value: Variant) -> bool:
 			member_ids.append(key)
 	if value.has("reward_ledger") and not _factory_ledger(value.reward_ledger): return false
 	if not ExplorationProtocol.number(value.get("processing"), 30) or value.processing < 0: return false
-	if not _rows(value.get("enemies"), 0, 8, 5) or not _rows(value.get("crates"), 0, 12, 3): return false
+	if not _rows(value.get("enemies"), 0, 8, 5, 6) or not _rows(value.get("crates"), 0, 12, 3): return false
 	for row: Array in value.enemies:
+		if row.size() == 6 and (not ExplorationProtocol.number(row[5], 4) or row[5] < 0): return false
 		if not ExplorationProtocol.sequence(row[0]) or row[0] > 4: return false
 		if not ExplorationProtocol.vector(row.slice(1, 4), 3, 1000): return false
 		if not ExplorationProtocol.number(row[4], 2500) or row[4] < 0: return false
@@ -154,9 +148,6 @@ static func _rows(value: Variant, minimum: int, maximum: int, width: int, altern
 	for row: Variant in value:
 		if not row is Array or (row.size() != width and row.size() != alternate_width): return false
 	return true
-
-static func _mob_numbers(row: Array) -> bool:
-	return ExplorationProtocol.vector(row.slice(0, 3), 3, 1000) and _numeric(row.slice(3), 500)
 
 static func _numeric(row: Array, bound: float) -> bool:
 	for value: Variant in row:

@@ -17,7 +17,7 @@ func _run() -> void:
 	game.player.set_physics_process(false)
 	game.weather.set_physics_process(false)
 	for mob in game.encounters.mob_nodes: mob.set_physics_process(false)
-	check(game.encounters.mob_nodes.size() == 59, "twelve archers appended after legacy roster")
+	check(game.encounters.mob_nodes.size() == WorldProtocol.CURRENT_MOB_COUNT, "encounter roster matches the shared protocol")
 	var quest := game.quest_giver.quest
 	game.encounters.angel_defeated.emit(Vector3.ZERO)
 	check(quest.god_count == 0, "kills before acceptance do not count")
@@ -66,14 +66,30 @@ func _run() -> void:
 	var archer := game.encounters.mob_nodes[43] as TofufuArcher
 	game.player.position = archer.position + Vector3.BACK * 6
 	archer.quarry = game.player
+	_wandering_facings(game, archer)
+	_eight_views(game, archer)
 	archer._choose_direction(0.01)
 	check(archer._windup == 0.9, "readable bow telegraph")
 	var locked := archer._sting_aim
 	game.player.position.x += 3
 	archer._choose_direction(0.91)
 	check(archer.sting.active and archer.sting.velocity.normalized().distance_to(locked) < 0.01, "locked groat aim permits sidestepping")
+	check(is_equal_approx(archer.sting.velocity.length(), 32.0) and is_equal_approx(archer.sting.remaining, 0.75), "groats fly twice as fast with unchanged travel distance")
+	await _shot_collisions(game, archer)
 	var world := CoopWorld.capture(game)
 	check(WorldProtocol.valid(world), "expanded authoritative world validates")
+	var invalid_flight := world.duplicate(true)
+	invalid_flight.mobs[43][14] = 33.0
+	check(not WorldProtocol.valid(invalid_flight), "angel speed above the new bound is rejected")
+	invalid_flight = world.duplicate(true)
+	invalid_flight.mobs[39][14] = 32.0
+	check(not WorldProtocol.valid(invalid_flight), "ordinary bee shots retain their original speed bound")
+	var legacy_flight := world.duplicate(true)
+	legacy_flight.mobs[43][14] = 16.0
+	legacy_flight.mobs[43][15] = 0.0
+	legacy_flight.mobs[43][16] = 0.0
+	legacy_flight.mobs[43][17] = 1.5
+	check(WorldProtocol.valid(legacy_flight), "older slower saved groat flights remain valid")
 	var before_exp := game.encounters.experience
 	archer.target.damage(9999)
 	check(game.encounters.experience == before_exp + 450, "grinding EXP per kill")
@@ -97,8 +113,78 @@ func _run() -> void:
 	var celestial_damage := armored - game.health.current
 	check(game.progression.progress.level() == 20 and game.character_equipment.complete_set() == "celestial", "recommended level and set compose correctly")
 	check(naked_damage > 0 and is_equal_approx(celestial_damage * 2, naked_damage), "celestial set halves real groat damage")
-	check(celestial_damage < armored * 0.25 and celestial_damage > armored * 0.1, "one groat remains threatening at the recommended build")
+	var tuning := CharacterProgress.TUNING
+	var level := game.progression.progress.level()
+	var defence := game.progression.progress.effective_defence()
+	var expected := 88.0 * maxf(0.2, 1.0 / (1.0 + tuning.character_defence * (level - 1) + tuning.defence_reduction * (defence - 1))) * 0.5
+	check(is_equal_approx(celestial_damage, expected) and celestial_damage > 0 and celestial_damage < armored * 0.25, "groat damage follows stronger level defence and outfit protection")
 	game.queue_free()
 	await process_frame
 	print("Groatfields: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
+
+func _wandering_facings(game: AdventureGame, archer: TofufuArcher) -> void:
+	var player_at := game.player.position
+	game.player.position = archer.position + Vector3.BACK * 40
+	archer._destination = archer.position + Vector3.LEFT * 2
+	archer._timer = 1.0
+	var travel := archer._choose_direction(0.01)
+	check(travel.dot(Vector3.LEFT) > 1 and archer.facing.dot(Vector3.LEFT) > 0.99, "wander faces travel instead of the distant player")
+	archer.velocity = travel
+	archer._present_visual(Vector3.BACK * 40, 0.1)
+	check(archer.facing.dot(Vector3.LEFT) > 0.99, "presentation cannot overwrite authoritative travel facing")
+	archer._destination = archer.position
+	archer._choose_direction(0.01)
+	check(archer.facing.dot(Vector3.LEFT) > 0.99, "idle wandering retains the last travel facing")
+	archer.velocity = Vector3.ZERO
+	game.player.position = player_at
+
+func _eight_views(game: AdventureGame, archer: TofufuArcher) -> void:
+	var forward := game.camera.global_basis.z
+	forward.y = 0.0
+	forward = forward.normalized()
+	var right := Vector3(forward.z, 0, -forward.x)
+	for index in 8:
+		var angle := index * PI / 4
+		var facing := forward * cos(angle) - right * sin(angle)
+		archer.art.present(facing, 0, 0, true)
+		check(archer.art.direction_index == index, "eight observer-relative walking directions")
+		check(archer.art.flip_h == (index in [1, 2, 3]), "left-facing views mirror the matching right views")
+		check((archer.art.texture as AtlasTexture).filter_clip, "isolated frames prevent neighbouring sprite bleed")
+	archer.art.elapsed = 0.01
+	archer.art.present(forward, 0, 0, true)
+	check(archer.art.walk_phase == 0, "first walking stride")
+	archer.art.present(forward, 0, 0.18, true)
+	check(archer.art.walk_phase == 1, "second walking stride")
+	archer.art.present(forward, 0.9, 0)
+	check((archer.art.texture as AtlasTexture).atlas == ArcherVisuals.BOW, "bow draw retains the original authored attack art")
+
+func _shot_collisions(game: AdventureGame, archer: TofufuArcher) -> void:
+	var enemy_at := archer.position
+	var player_at := game.player.position
+	var health := game.health.current
+	archer.position = Vector3(200, 20, 100)
+	game.player.position = archer.position + Vector3.BACK * 6
+	await physics_frame
+	await physics_frame
+	var start := archer.position + Vector3.UP * archer.shot_height
+	var aim := (game.player.position + Vector3.UP * 0.7 - start).normalized()
+	var impacts: Array[Vector3] = []
+	var contact := func(victim: Node3D, source: Vector3) -> void:
+		if victim == game.player: impacts.append(source)
+	archer.sting.struck.connect(contact)
+	for speed in [32.0, 16.0]:
+		game.health.current = game.health.maximum
+		game.health.invulnerability = 0
+		var motion: Vector3 = aim * speed
+		# The slower flight emulates an old saved projectile on the new client.
+		archer.sting.apply([start.x, start.y, start.z, motion.x, motion.y, motion.z, 24.0 / speed])
+		archer.sting.step(0.08, archer.protected_area, archer.get_rid())
+		archer.sting.step(6.2 / speed - 0.08, archer.protected_area, archer.get_rid())
+		check(not archer.sting.active and game.health.current < game.health.maximum, "fast and saved groats sweep into real actor collision")
+	check(impacts.size() == 2 and impacts.all(func(at: Vector3) -> bool: return at.distance_to(start) < 0.01), "both flight speeds preserve the original damage source for guarding")
+	archer.sting.struck.disconnect(contact)
+	archer.position = enemy_at
+	game.player.position = player_at
+	game.health.current = health
+	archer.sting.launch(enemy_at + Vector3.UP * archer.shot_height, aim)

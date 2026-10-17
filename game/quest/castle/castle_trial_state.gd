@@ -22,7 +22,7 @@ var treasure_claims: Dictionary = {}
 
 func operate(action: int) -> bool:
 	if action < 0 or action >= 12: return false
-	var deck := action / 4
+	var deck := int(action / 4.0)
 	var control := action % 4
 	if solved[deck]: return false
 	last_action = action
@@ -66,7 +66,7 @@ func guard_defeated(index: int) -> void:
 	if index < 0 or index >= 9 or defeated_guards & (1 << index) != 0: return
 	defeated_guards |= 1 << index
 	revision += 1
-	if gate_open(index / 3): message = "Royal seal released. The return shortcut is now open."
+	if gate_open(int(index / 3.0)): message = "Royal seal released. The return shortcut is now open."
 
 func all_open() -> bool:
 	return gate_open(0) and gate_open(1) and gate_open(2)

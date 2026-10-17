@@ -67,14 +67,14 @@ func _run() -> void:
 	button(JOY_BUTTON_X, true)
 	await physics_frame
 	command = source.sample(Vector3.ZERO)
-	check(command.jump_pressed and command.jump_held and command.dash_pressed and command.attack_held,
+	check(command.jump_pressed and command.jump_held and command.dash_pressed and command.attack_held and command.attack_pressed,
 		"controller simultaneous actions and initial edges")
 	check(command.reload_pressed and command.reload_held and not command.camp_pressed, "Square carries reload intent without returning to camp")
 	await physics_frame
 	await process_frame
 	await physics_frame
 	command = source.sample(Vector3.ZERO)
-	check(command.jump_held and not command.jump_pressed and not command.dash_pressed,
+	check(command.jump_held and not command.jump_pressed and not command.dash_pressed and not command.attack_pressed,
 		"held buttons do not retrigger edges")
 	check(command.reload_held and not command.reload_pressed, "held Square does not retrigger reload")
 	button(JOY_BUTTON_A, false)

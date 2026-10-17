@@ -90,7 +90,7 @@ func _run() -> void:
 	var other_seed := DofufuTerrain.new(FarmTerrain.new(42))
 	check(absf(other_seed.point(-475, 120).y - mountains.point(-475, 120).y) > 0.1, "mountain ridges change with seed")
 	var world := CoopWorld.capture(game)
-	check(WorldProtocol.valid(world) and world.mobs.size() == 59, "guard roster validates for saves and co-op")
+	check(WorldProtocol.valid(world) and world.mobs.size() == WorldProtocol.CURRENT_MOB_COUNT, "guard roster validates for saves and co-op")
 	var guard := game.encounters.mob_nodes[55] as DofufuCityGuard
 	game.player.position = guard.position + Vector3.RIGHT * 1.3
 	guard.quarry = game.player
@@ -122,6 +122,12 @@ func _run() -> void:
 		for view in 8:
 			npc.art.present_direction(view)
 			check(npc.art.current_cell == DofufuCityArt.CELLS[view] and npc.art.texture != null, "five views select for every observer direction")
+	var sheet := DofufuCityArt.SHEET.get_image()
+	for row in [1, 2, 3]:
+		var stray := false
+		for x in sheet.get_width():
+			stray = stray or sheet.get_pixel(x, DofufuCityArt.ROWS[row]).a >= 0.3
+		check(not stray, "city role %d starts in its own transparent gutter" % row)
 	var adventure := AdventureSnapshot.capture(game, "Western Dofufu visit", 360)
 	check(SaveStore.valid(adventure), "western position and expanded map form a valid adventure save")
 	check(JSON.stringify(adventure).to_utf8_buffer().size() < 98304, "expanded atlas fits the adventure save cap")

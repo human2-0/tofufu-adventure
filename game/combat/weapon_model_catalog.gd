@@ -40,9 +40,9 @@ static func scene_for(item_id: String) -> PackedScene:
 	return null
 
 static func calibration(item_id: String, reach: float) -> Transform3D:
-	var tip: Vector3 = TIPS.get(item_id, Vector3.ZERO)
+	var tip_point: Vector3 = TIPS.get(item_id, Vector3.ZERO)
 	var guard: Vector3 = GUARDS.get(item_id, Vector3.ZERO)
-	var source_length := tip.distance_to(guard)
+	var source_length := tip_point.distance_to(guard)
 	if source_length <= 0.0: return Transform3D.IDENTITY
 	var scale_factor := reach / source_length
 	var correction := _source_to_weapon_axis(item_id)

@@ -79,7 +79,7 @@ func _run() -> void:
 		check(worn != null and worn.item.id == apparel_id, "%s purchase equips and synchronizes from Grandpa Fufu" % apparel_id)
 	check(remote.actor.visuals.worn_set == "bright_leaf" and replica.actor.visuals.worn_set == "bright_leaf" and is_equal_approx(remote.health.armor_multiplier, 0.90), "host equipment sync shows the complete set and protection on both players")
 	# Derive the fixture independently of the runtime damage multiplier under test.
-	var expected_level_defence: float = 1.0 - CharacterProgress.TUNING.character_defence * 4.0
+	var expected_level_defence: float = 1.0 / (1.0 + CharacterProgress.TUNING.character_defence * 4.0 + CharacterProgress.TUNING.defence_reduction * int(4.0 / CharacterProgress.TUNING.character_levels_per_defence))
 	var expected_guest_mitigation: float = expected_level_defence * 0.90
 	check(remote.progression.progress.skill("defence") == 1 and replica.progression.progress.skill("defence") == 1, "level-five guest has no trained defence bonus yet")
 	check(is_equal_approx(remote.combat.incoming_damage_multiplier, expected_level_defence) and is_equal_approx(replica.combat.incoming_damage_multiplier, expected_level_defence), "level-five defence agrees on authority and replica")

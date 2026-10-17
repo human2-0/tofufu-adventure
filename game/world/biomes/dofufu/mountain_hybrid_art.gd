@@ -11,11 +11,11 @@ var _frames: Array[AtlasTexture] = []
 
 func _ready() -> void:
 	for region in REGIONS:
-		var frame := AtlasTexture.new()
-		frame.atlas = SHEET
-		frame.region = region
-		frame.filter_clip = true
-		_frames.append(frame)
+		var atlas_frame := AtlasTexture.new()
+		atlas_frame.atlas = SHEET
+		atlas_frame.region = region
+		atlas_frame.filter_clip = true
+		_frames.append(atlas_frame)
 	billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	alpha_cut = SpriteBase3D.ALPHA_CUT_DISCARD
 	alpha_scissor_threshold = 0.3

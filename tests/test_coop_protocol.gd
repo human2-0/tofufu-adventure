@@ -52,6 +52,17 @@ func _initialize() -> void:
 	check(remote.sample(Vector3.ZERO).reload_pressed, "queued reload edge survives coalescing")
 	var held_reload := remote.sample(Vector3.ZERO)
 	check(held_reload.reload_held and not held_reload.reload_pressed, "remote reload edge is consumed once while Square stays held")
+	var press := PlayerCommand.new()
+	press.attack_pressed = true
+	press.punch_pressed = true
+	press.attack_held = true
+	remote.accept(press)
+	var release := PlayerCommand.new()
+	remote.accept(release)
+	var short_click := remote.sample(Vector3.ZERO)
+	check(short_click.attack_pressed and short_click.punch_pressed and not short_click.attack_held, "short click survives press/release coalescing")
+	var consumed := remote.sample(Vector3.ZERO)
+	check(not consumed.attack_pressed and not consumed.punch_pressed, "click edges never repeat on subsequent host ticks")
 	remote._last_received = Time.get_ticks_msec() - 300
 	var stopped := remote.sample(Vector3.ZERO)
 	check(stopped.move.is_zero_approx() and not stopped.attack_held and stopped.cancel_actions, "silent guest cancels holds without releasing an attack")

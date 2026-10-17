@@ -15,12 +15,12 @@ const MAP_PIXELS_PER_UNIT: float = 0.75
 
 func _ready() -> void:
 	add_child(view)
-	view.mini.bounds = MapExploration.BOUNDS
-	view.full.bounds = view.mini.bounds
+	view.minimap.bounds = MapExploration.BOUNDS
+	view.full.bounds = view.minimap.bounds
 	view.full.reset_overview()
 	_refresh_fog()
 	var texture := _terrain_texture()
-	view.mini.terrain_texture = texture
+	view.minimap.terrain_texture = texture
 	view.full.terrain_texture = texture
 	view.toggle_requested.connect(toggle)
 
@@ -38,13 +38,13 @@ func _process(_delta: float) -> void:
 	view.expand_button.disabled = not _available()
 	view.expand_button.text = "Map [%s] · Expand" % GamePreferences.binding_text("toggle_map", "keyboard")
 	var at := _map_position(game.player)
-	view.mini.center = at
+	view.minimap.center = at
 	var source: LocalPlayerInput = game.shooting_view.local_input
 	var direction: Vector2 = source.focus_direction() if is_instance_valid(source) else game.combat.equipment.facing
 	if game.shooting_view.shoulder:
 		var forward: Vector3 = -game.camera.global_basis.z
 		direction = Vector2(forward.x, forward.z).normalized()
-	view.mini.heading = direction
+	view.minimap.heading = direction
 	view.full.heading = direction
 	if game.hud.visible and at.distance_to(_last_reveal) >= 0.75:
 		_last_reveal = at
@@ -83,7 +83,7 @@ func _refresh_fog() -> void:
 	var image := exploration.mask_image()
 	if _mask == null: _mask = ImageTexture.create_from_image(image)
 	else: _mask.update(image)
-	view.mini.fog_texture = _mask
+	view.minimap.fog_texture = _mask
 	view.full.fog_texture = _mask
 
 func restore_exploration(value: Variant) -> void:

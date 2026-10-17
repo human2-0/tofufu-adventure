@@ -8,7 +8,7 @@ var extra_validator: Callable
 var last_error: String = ""
 var size_limit: int = 98304
 const MAX_SLOTS: int = 12
-const WORLD_ITEM_LIMITS := {"magical_tofufu_chunk": 50, "celestial_helmet": 1, "celestial_armor": 1, "celestial_legs": 1, "celestial_boots": 1, "celestial_sword": 1, "celestial_staff": 1, "soy_raygun": 1, "nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
+const WORLD_ITEM_LIMITS := {"angel_bow": 1, "bengal_paws": 1, "magical_tofufu_chunk": 50, "celestial_helmet": 1, "celestial_armor": 1, "celestial_legs": 1, "celestial_boots": 1, "celestial_sword": 1, "celestial_staff": 1, "soy_raygun": 1, "nori_katana": 1, "edamame_sword": 1, "knife": 1, "soy_gun": 1, "sotjet": 1, "sproutwood_staff": 1, "factory_backpack": 1, "seed_satchel": 1, "traveler_backpack": 1, "edamame": 100, "mature_bean": 100, "tofu_white_chunk": 100, "toasted_tofu_chunk": 100, "golden_tofu_chunk": 100, "soy_milk": 10, "apple": 50, "potato": 50, "cucumber": 50, "red_berries": 50, "beetroot": 50, "forest_mushroom": 50, "piece_of_shell": 50, "bright_leaf_helmet": 1, "bright_leaf_armor": 1, "bright_leaf_legs": 1, "bright_leaf_boots": 1, "dark_leaf_helmet": 1, "dark_leaf_armor": 1, "dark_leaf_legs": 1, "dark_leaf_boots": 1}
 const BACKPACK_CONTENT_LIMIT: int = 20
 
 func list_saves() -> Array[Dictionary]:
@@ -48,6 +48,14 @@ func _path(slot: int) -> String:
 	return SaveSlotFiles.path(directory, mode, slot)
 
 static func valid(data: Dictionary) -> bool:
+	if not _progress_counter(data.get("soy_spots", 0)) or data.get("soy_spots", 0) > 2047: return false
+	for field in {"bow_reload": 2.0, "bow_cooldown": 6.0}:
+		if not data.has(field): continue
+		var clock: Variant = data[field]
+		if not (clock is int or clock is float) or not is_finite(float(clock)) or clock < 0 or clock > (2.0 if field == "bow_reload" else 6.0): return false
+	if data.has("claw_cooldown"):
+		var cooldown: Variant = data.claw_cooldown
+		if not (cooldown is float or cooldown is int) or not is_finite(float(cooldown)) or cooldown < 0.0 or cooldown > 8.0: return false
 	if not InventorySaveValidation.valid(data): return false
 	if data.has("castle") and not CastleSaveValidation.valid(data.castle): return false
 	if data.has("parrot_rest"):
@@ -105,10 +113,10 @@ static func valid(data: Dictionary) -> bool:
 		if not data.vitals is Dictionary: return false
 		for key in ["stamina", "combat_remaining"]:
 			var value: Variant = data.vitals.get(key)
-			var limit := 30.0 if key == "combat_remaining" else 100.0 * pow(1.02, 98)
+			var limit := 30.0 if key == "combat_remaining" else 100.0 * pow(1.03, 98) + 0.000001
 			if not (value is int or value is float) or not is_finite(float(value)) or value < 0 or value > limit: return false
 	if data.has("endurance") and not EnduranceSaveValidation.valid(data.endurance): return false
-	if data.health > 100.0 * pow(1.05, 98) or data.phase > 1:
+	if data.health > 100.0 * pow(1.07, 98) + 0.000001 or data.phase > 1:
 		return false
 	if not data.get("knife_owned") is bool or not data.get("knife_selected") is bool:
 		return false

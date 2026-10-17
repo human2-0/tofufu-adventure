@@ -25,7 +25,7 @@ static func build(garden: Node3D, seed_value: int) -> void:
 				var radius := sqrt(float(flower + 1) / 43) * 0.85
 				var at := center + Vector3(cos(angle) * radii.x * radius, 0, sin(angle) * radii.y * radius)
 				at += Vector3(rng.randf_range(-0.12, 0.12), 0, rng.randf_range(-0.12, 0.12))
-				var species := (row + side * 2 + flower / 7) % 5
+				var species := (row + side * 2 + int(flower / 7.0)) % 5
 				var size := rng.randf_range(0.70, 1.15)
 				blooms[species].append(Transform3D(Basis(Vector3.UP, rng.randf_range(0, TAU)).scaled(Vector3.ONE * size), at))
 	_instances(garden, _ellipsoid(Color("67513c")), soil, "RoundedPlantingBeds")

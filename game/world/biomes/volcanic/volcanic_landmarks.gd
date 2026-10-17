@@ -38,7 +38,7 @@ static func _harbor(site: Node3D) -> void:
 
 static func _gardens(site: Node3D) -> void:
 	for i in 4:
-		var center := Vector3((i % 2) * 11 - 5.5, 0.06, (i / 2) * 10 - 5)
+		var center := Vector3((i % 2) * 11 - 5.5, 0.06, int(i / 2.0) * 10 - 5)
 		var pool := _disc(site, center, 4.1, 0.12, Color("5e9182"))
 		var water := ShaderMaterial.new()
 		water.shader = preload("res://game/world/biomes/volcanic/thermal_water.gdshader")
@@ -105,8 +105,8 @@ static func _camp(site: Node3D) -> void:
 		var angle := i * TAU / 10
 		MeadowGeometry.rock(site, Vector3(cos(angle) * 1.4, 0.2, sin(angle) * 1.4), Vector3(0.4, 0.25, 0.4), Color("635861"))
 	for side in [-1.0, 1.0]:
-		var log := MeadowGeometry.box(site, Vector3(0, 0.2, 0), Vector3(1.7, 0.25, 0.3), Color("b2754c"))
-		log.rotation.y = side * 0.6
+		var timber := MeadowGeometry.box(site, Vector3(0, 0.2, 0), Vector3(1.7, 0.25, 0.3), Color("b2754c"))
+		timber.rotation.y = side * 0.6
 	_disc(site, Vector3(0, 0.32, 0), 0.65, 0.06, Color("e59243"))
 	MeadowGeometry.box(site, Vector3(0, 0.5, 8), Vector3(4, 1, 1.6), Color("8e7966"), true)
 

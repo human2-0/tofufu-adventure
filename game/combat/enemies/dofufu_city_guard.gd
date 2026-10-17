@@ -28,7 +28,7 @@ func _reaction_visual() -> Node3D:
 func _present_visual(aim: Vector3, _delta: float) -> void:
 	var direction := velocity if velocity.length_squared() > 0.1 else aim
 	if direction.length_squared() > 0.1: art.set("facing", Vector2(direction.x, direction.z).normalized())
-	art.rotation.z = sin(Time.get_ticks_msec() * 0.009) * 0.055 if velocity.length_squared() > 0.1 else 0
+	art.rotation.z = sin(Time.get_ticks_msec() * 0.009) * 0.055 if velocity.length_squared() > 0.1 else 0.0
 
 func _flash_visual() -> void:
 	art.modulate = Color(3, 1.0, 0.8)

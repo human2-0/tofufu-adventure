@@ -55,10 +55,10 @@ func _process(delta: float) -> void:
 		_settles[id] = left
 		var bounce: float = sin(left / 0.42 * TAU) * left / 0.42 * 0.09
 		var prop: Node3D = _props.get_node(id)
-		var scale: float = float(prop.get_meta("factory_carried_scale", 1.0))
-		prop.scale = Vector3(1.0 + bounce * 0.5, 1.0 - bounce, 1.0 + bounce * 0.5) * scale
+		var scale_factor: float = float(prop.get_meta("factory_carried_scale", 1.0))
+		prop.scale = Vector3(1.0 + bounce * 0.5, 1.0 - bounce, 1.0 + bounce * 0.5) * scale_factor
 		if left == 0.0:
-			prop.scale = Vector3.ONE * scale
+			prop.scale = Vector3.ONE * scale_factor
 			_settles.erase(id)
 
 func _build_pour() -> void:

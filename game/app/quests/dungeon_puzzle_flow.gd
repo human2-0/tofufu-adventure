@@ -69,7 +69,7 @@ func _spawn(dungeon: TofuDungeon) -> void:
 	var center: Vector3 = TofuFactory.CENTERS[clampi(int(dungeon.puzzle.stage), 0, 5)]
 	var scale: float = TofuPuzzleContract.penalty_multiplier(dungeon.puzzle.mistakes) if spawned_encounter.begins_with("penalty_") else 1.0
 	for index in count:
-		var enemy: FactoryBean = Dofufu.new() if boss else FactorySoyFighter.new()
+		var enemy: FactoryBean = (Dofufu.new() as FactoryBean) if boss else FactorySoyFighter.new()
 		if boss: (enemy as Dofufu).combat_participants = maxi(1, dungeon.boss_members.size())
 		else: enemy.kind = FactoryBean.Kind.DOFU if spawned_encounter == "lab_curd" else FactoryBean.Kind.SCOUT if index % 2 == 0 else FactoryBean.Kind.BRUISER
 		enemy.health_scale = scale

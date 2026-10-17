@@ -62,7 +62,8 @@ func _dictionary(before: Variant, patch: Array, depth: int) -> Variant:
 		var value: Variant = _apply(before.get(key), patch[1][key], depth + 1)
 		if value == null: return null
 		result[key] = value
-	return result if result.size() <= 256 else null
+	if result.size() > 256: return null
+	return result
 
 func _array(before: Variant, patch: Array, depth: int) -> Variant:
 	if not before is Array or patch.size() != 2 or not patch[1] is Dictionary or patch[1].size() > 512: return null

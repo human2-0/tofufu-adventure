@@ -71,16 +71,13 @@ func _hit(amount: float, direction: Vector3) -> void:
 	_show_status()
 
 func _depleted() -> void:
-	if periodic_recovery:
-		target.restore()
-		target.invulnerability = 0.0
-		_reset_in = 0.0
-		_show_status()
-		return
-	_reset_in = 1.5
-	_label.text = "NICE HIT!\nResetting…"
+	_reset_in = 2.0 if periodic_recovery else 1.5
+	_show_status()
 
 func _show_status() -> void:
+	if target.current <= 0.0:
+		_label.text = "NICE HIT!\nResetting…"
+		return
 	_label.text = "%s · %d / %d\n%s" % [title, int(target.current), int(target.maximum), "Knife / fists / soy gun" if hit_count == 0 else "Last hit: %d" % int(last_damage)]
 
 func _create_figure() -> void:

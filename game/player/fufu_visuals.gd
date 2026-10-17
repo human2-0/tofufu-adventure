@@ -30,6 +30,9 @@ var charge_animation := FufuChargeAnimation.new()
 var worn_appearance := FufuWornAppearance.new()
 var celestial_art := CelestialFufuArt.new()
 var celestial_pose: Callable
+var unarmed_pose: Callable
+var unarmed_art := FufuUnarmedArt.new()
+var _using_unarmed_frame: bool = false
 var celestial_aura := CelestialAura.new()
 var _using_charge_frame: bool = false
 var _using_jump_frame: bool = false
@@ -53,12 +56,14 @@ func _ready() -> void:
 	_set_frame(false)
 
 func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing: bool, delta: float, jump_charge: float = 0.0, clearance: float = INF) -> void:
+	var strike: Dictionary = unarmed_pose.call() if unarmed_pose.is_valid() else {}
 	var walking := command.move.length_squared() > 0.01 and Vector2(velocity.x, velocity.z).length_squared() > 0.01
 	var direction := command.move if walking else command.aim
 	if command.attack_held or command.face_aim:
 		direction = command.aim
 	if not attack_facing.is_zero_approx():
 		direction = attack_facing
+	if not strike.is_empty(): direction = strike.aim
 	var camera := get_viewport().get_camera_3d()
 	if camera != null:
 		var world := Vector3(direction.x, 0, direction.y)
@@ -79,6 +84,7 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 	jump_animation.step(grounded, velocity.y, jump_charge > 0.0, clearance, delta)
 	_using_charge_frame = false
 	_using_jump_frame = false
+	_using_unarmed_frame = false
 	if worn_set == "celestial":
 		celestial_art.present(self, walking, grounded, dashing, jump_charge, delta, celestial_pose.call() if celestial_pose.is_valid() else {})
 	elif worn_set.is_empty() and grounded and jump_charge > 0.0:
@@ -89,6 +95,7 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 		else:
 			worn_appearance.apply_jump(self, worn_set, int(current_facing), jump_animation.frame)
 		_using_jump_frame = true
+	_using_unarmed_frame = grounded and not dashing and jump_charge <= 0.0 and jump_animation.frame < 0 and unarmed_art.apply(self, strike)
 	if dashing:
 		_ghost_timer -= delta
 		if _ghost_timer <= 0.0:
@@ -103,9 +110,11 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 	else:
 		scale.x = move_toward(scale.x, 1.0 - sin(idle_bob_time) * 0.02, delta * 3.0)
 		scale.y = move_toward(scale.y, 1.0 + sin(idle_bob_time) * 0.035, delta * 3.0)
+	if _using_unarmed_frame: unarmed_art.follow_through(self, strike)
 	_present_hand()
 
 func _set_frame(walking: bool) -> void:
+	_using_unarmed_frame = false
 	material_override = null
 	flip_h = false
 	offset = Vector2.ZERO
@@ -160,26 +169,7 @@ func set_worn_set(set_id: String, animate: bool = true) -> void:
 		_outfit_tween.tween_property(self, "modulate:a", 1.0, 0.35)
 
 func _present_hand() -> void:
-	var camera := get_viewport().get_camera_3d()
-	if camera == null:
-		return
-	var point := FufuRightHand.point(self)
-	var cell := Vector2(texture.get_size()) / Vector2(hframes, vframes)
-	if flip_h:
-		point.x = cell.x - point.x
-	var local := Vector3(point.x - cell.x * 0.5 + offset.x, cell.y * 0.5 - point.y + offset.y, 0) * pixel_size
-	var plane := global_basis.orthonormalized()
-	if billboard == BaseMaterial3D.BILLBOARD_ENABLED:
-		plane = camera.global_basis.orthonormalized()
-	elif billboard == BaseMaterial3D.BILLBOARD_FIXED_Y:
-		var normal := Vector3(camera.global_basis.z.x, 0, camera.global_basis.z.z).normalized()
-		plane = Basis(Vector3.UP.cross(normal), Vector3.UP, normal)
-	var hand := global_position + plane * (local * global_basis.get_scale())
-	# Anatomical right is near in E/SE/S/NE, far in W/SW/N/NW.
-	var in_front := int(current_facing) in [0, 1, 2, 7]
-	var outward := -1.0 if int(current_facing) in [1, 2, 3, 4] else 1.0
-	hand_tint_presented.emit(FufuRightHand.tint(worn_set))
-	hand_presented.emit(hand, plane, outward, in_front)
+	FufuRightHand.present(self)
 
 func show_jump() -> void:
 	jump_animation.launch()

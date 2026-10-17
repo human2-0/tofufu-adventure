@@ -2,8 +2,8 @@ class_name VitalRules
 extends RefCounted
 ## Per-actor stamina and combat recovery clock. Configuration is shared read-only.
 const BASE_SP: float = 100.0
-const SP_GROWTH: float = 1.02
-const HP_GROWTH: float = 1.05
+const SP_GROWTH: float = 1.03
+const HP_GROWTH: float = 1.07
 const DASH_COST: float = 15.0
 const SUPER_COST: float = 25.0
 const SPECIAL_COST: float = 25.0

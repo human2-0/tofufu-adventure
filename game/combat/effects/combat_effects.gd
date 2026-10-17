@@ -77,17 +77,8 @@ static func sparks(parent: Node, at: Vector3, show_label: bool = true) -> void:
 		tween.tween_property(spark, "scale", Vector3.ZERO, 0.42)
 		tween.chain().tween_callback(spark.queue_free)
 
-static func punch(parent: Node, at: Vector3) -> void:
-	var fist := Sprite3D.new()
-	fist.texture = preload("res://assets/combat/fist.svg")
-	fist.pixel_size = 0.006
-	fist.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	parent.add_child(fist)
-	fist.global_position = at
-	var tween := fist.create_tween().set_parallel(true)
-	tween.tween_property(fist, "scale", Vector3.ONE * 1.4, 0.18)
-	tween.tween_property(fist, "modulate:a", 0.0, 0.22)
-	tween.chain().tween_callback(fist.queue_free)
+static func punch(parent: Node, at: Vector3, sequence: int = 1, outfit: String = "", aim: Vector2 = Vector2.DOWN, speed: float = 1.0) -> PunchImpact:
+	return PunchImpact.spawn(parent, at, sequence, outfit, aim, speed)
 
 static func damage_number(parent: Node, receiver: Damageable, amount: float) -> void:
 	# Aggregate rapid liquid hits into one readable number beside this target.
