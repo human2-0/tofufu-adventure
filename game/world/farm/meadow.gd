@@ -26,6 +26,7 @@ var rain_effects: RainGroundEffects
 var grass_material: ShaderMaterial
 var grass_imprint: GrassImprint
 var interiors: Array[Node3D] = []
+var city_rooms: Array[Node3D] = []
 var produce: Array[MeadowProduce] = []
 var apple_trees: Array[AppleTree] = []
 var _rng := RandomNumberGenerator.new()
@@ -101,7 +102,7 @@ func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
 		return Vector3(x, MainlandFringe.height_at(self, Vector2(x, z)) + lift, z)
 	if dofufu_highlands != null and DofufuTerrain.contains(Vector2(x, z)): return dofufu_highlands.point(x, z, lift)
 	if volcanic != null and VolcanicTerrain.contains(Vector2(x, z)): return volcanic.point(x, z, lift)
-	if x >= 84 and x <= 184 and z >= -44 and z <= 56: return Vector3(x, lift, z)
+	if GigalopolisTerrain.contains(Vector2(x, z)): return GigalopolisTerrain.point(Vector2(x, z), lift)
 	if z <= FrostTerrain.NORTH_START and frost != null: return frost.point(x, z, lift)
 	if z <= OceanTerrain.NORTH_START and ocean != null: return ocean.point(x, z, lift)
 	if z >= Groatfields.START and groatfields != null: return groatfields.point(x, z, lift)
@@ -110,6 +111,7 @@ func ground_point(x: float, z: float, lift: float = 0.0) -> Vector3:
 	return terrain.point(x, z, lift)
 
 func is_water(at: Vector3) -> bool:
+	if GigalopolisTerrain.contains(Vector2(at.x, at.z)): return GigalopolisTerrain.is_water(at)
 	if MainlandFringe.contains(Vector2(at.x, at.z)): return at.y < MainlandFringe.water_level(Vector2(at.x, at.z))
 	if DofufuTerrain.contains(Vector2(at.x, at.z)): return false
 	if at.y >= CloudTerrain.ALTITUDE - 2.0 and CloudTerrain.contains(Vector2(at.x, at.z)): return false

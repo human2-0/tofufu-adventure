@@ -1,0 +1,158 @@
+{
+  "passed": true,
+  "scope": "Three OS processes and real encrypted Holepunch over an isolated loopback DHT; abrupt host kill, paused recovery, new authority, plant reservation and duo settings, selected actor count and CPU difficulty, CPU replacement, consumed backpack apples, ongoing healing and opened chest/drop recovery. Not WAN/NAT acceptance.",
+  "duos": true,
+  "effective_cpus": 3,
+  "requested_cpus": 3,
+  "difficulty": "hard",
+  "actor_count": 6,
+  "before": {
+    "p0": {
+      "apple_seconds": 24.35,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 76,
+      "cpus": 3,
+      "deployment_stage": 2,
+      "drop_slots": 8,
+      "host": "1e506aa77ff3c3b0db68504dd2a62c6ae6983bc984174e8a88ec17dfa99c99ee",
+      "key": "1e506aa77ff3c3b0db68504dd2a62c6ae6983bc984174e8a88ec17dfa99c99ee",
+      "opened_chests": 2,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0,
+        0,
+        1,
+        1,
+        68,
+        68
+      ],
+      "term": 0,
+      "time": 13.65
+    },
+    "p1": {
+      "apple_seconds": 24.383,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 76,
+      "cpus": 3,
+      "deployment_stage": 2,
+      "drop_slots": 8,
+      "host": "1e506aa77ff3c3b0db68504dd2a62c6ae6983bc984174e8a88ec17dfa99c99ee",
+      "key": "afe38589f8df5833aac69fa45e5d2e62195b09199dc452b33a91a116048174a2",
+      "opened_chests": 2,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 0,
+      "time": 13.6166666666667
+    },
+    "p2": {
+      "apple_seconds": 24.383,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 76,
+      "cpus": 3,
+      "deployment_stage": 2,
+      "drop_slots": 8,
+      "host": "1e506aa77ff3c3b0db68504dd2a62c6ae6983bc984174e8a88ec17dfa99c99ee",
+      "key": "e9c8f849580460d06a44e2933050ea960704fba9b75a47633bb6a431483479ae",
+      "opened_chests": 2,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 0,
+      "time": 13.6166666666667
+    }
+  },
+  "after": {
+    "p1": {
+      "apple_seconds": 24.95,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 78,
+      "cpus": 4,
+      "deployment_stage": 2,
+      "drop_slots": 4,
+      "host": "afe38589f8df5833aac69fa45e5d2e62195b09199dc452b33a91a116048174a2",
+      "key": "afe38589f8df5833aac69fa45e5d2e62195b09199dc452b33a91a116048174a2",
+      "opened_chests": 1,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 1,
+      "time": 13.05
+    },
+    "p2": {
+      "apple_seconds": 24.95,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 78,
+      "cpus": 4,
+      "deployment_stage": 2,
+      "drop_slots": 4,
+      "host": "afe38589f8df5833aac69fa45e5d2e62195b09199dc452b33a91a116048174a2",
+      "key": "e9c8f849580460d06a44e2933050ea960704fba9b75a47633bb6a431483479ae",
+      "opened_chests": 1,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 1,
+      "time": 13.05
+    }
+  },
+  "observed_paused": [
+    "p1",
+    "p2"
+  ],
+  "logs": "/var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-battle-peers-5bi6s4zn"
+}

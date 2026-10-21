@@ -1,0 +1,37 @@
+[
+  {
+    "attachment": 1,
+    "name": "Crispy Tofufu",
+    "directory": "crispy_tofufu"
+  },
+  {
+    "attachment": 2,
+    "name": "Firm Tofufu",
+    "directory": "smoked_tofufu_green_headband"
+  },
+  {
+    "attachment": 3,
+    "name": "Panko Tofufu",
+    "directory": "panko_tofufu"
+  },
+  {
+    "attachment": 4,
+    "name": "Golden Tofufu",
+    "directory": "golden_tofufu"
+  },
+  {
+    "attachment": 5,
+    "name": "Smoked Tofufu (steam)",
+    "directory": "smoked_tofufu_steam"
+  },
+  {
+    "attachment": 6,
+    "name": "Silken Tofufu",
+    "directory": "silken_tofufu"
+  },
+  {
+    "attachment": 7,
+    "name": "Burnt Tofufu",
+    "directory": "burnt_tofufu"
+  }
+]

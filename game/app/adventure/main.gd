@@ -14,6 +14,7 @@ var farming: SoybeanFarming
 var map: MapFlow
 var parrot_travel: ParrotTravel
 var solo_arena: SoloArena
+var skin_test: MeadowSkinTest
 
 @onready var player: Player = $Player
 @onready var hud: HUD = $HUD
@@ -37,6 +38,7 @@ var loadout: ActorLoadout
 var merchant: WeaponMerchant
 var god_hunt: GodHunt
 var quest_giver: QuestGiver
+var city_loot: CityLoot
 var world_items: WorldItems
 var inventory_window: InventoryWindow
 var seed_storage: SeedStorage

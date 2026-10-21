@@ -1,0 +1,23 @@
+{
+	"cpus": 7,
+	"difficulty": "normal",
+	"draw_calls": 203.0,
+	"engine_fps": 118.0,
+	"hunts": 0,
+	"hunts_enabled": false,
+	"maximum_awake_hunts": 0,
+	"measured_ticks": 360,
+	"minimum_alive": 8,
+	"render_scale": 0.899999976158142,
+	"renderer": "macOS",
+	"scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+	"simulation_max_ms": 7.19,
+	"simulation_p50_ms": 1.764,
+	"simulation_p95_ms": 6.361,
+	"survivors": 8,
+	"viewport": [
+		2560,
+		1440
+	],
+	"warmup_ticks": 120
+}

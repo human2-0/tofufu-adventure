@@ -19,7 +19,7 @@ func fire(combat: PlayerCombat, aim: Vector2) -> void:
 		var planar := Vector3(offset.x, 0, offset.z)
 		if absf(offset.y) > 1.5 or planar.length() > 3.6 or planar.normalized().dot(forward) < 0.55: continue
 		if not combat._unobstructed(combat.actor.global_position, target): continue
-		if target.damage(8.0 * combat.sword_damage_multiplier * (1.2 if combat.equipment.weapon_enhanced else 1.0), forward * PUSH_SPEED, Damageable.HitKind.MELEE):
+		if target.receive_attack(8.0 * combat.sword_damage_multiplier * (1.2 if combat.equipment.weapon_enhanced else 1.0), forward * PUSH_SPEED, Damageable.HitKind.MELEE, Vector3.INF, combat.owner_health):
 			target.pushed.emit(forward * PUSH_SPEED)
 			combat.vitals.confirmed_hit(false)
 			combat._hit_targets.append(target)

@@ -50,6 +50,7 @@ static func apply_building(factory: Node3D) -> void:
 	for child in factory.get_children():
 		if not child is MeshInstance3D: continue
 		var visual := child as MeshInstance3D
+		if visual.has_meta("gigalopolis_surface"): continue
 		if visual.has_meta("factory_collision_support") or visual.has_meta("factory_surface"): continue
 		if not visual.mesh is BoxMesh: continue
 		var size: Vector3 = (visual.mesh as BoxMesh).size

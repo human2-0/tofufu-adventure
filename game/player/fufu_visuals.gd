@@ -37,11 +37,13 @@ var celestial_aura := CelestialAura.new()
 var _using_charge_frame: bool = false
 var _using_jump_frame: bool = false
 var worn_set: String = ""
+var test_skin := TofufuTestArt.new()
 var _outfit_tween: Tween
+var presentation_enabled: bool = true
 
 func _ready() -> void:
 	add_child(celestial_aura)
-	celestial_aura.set_active(worn_set == "celestial")
+	celestial_aura.set_active(worn_set == "celestial" and not test_skin.active())
 	alpha_cut = Sprite3D.ALPHA_CUT_DISCARD
 	alpha_scissor_threshold = 0.5
 	shaded = false
@@ -56,6 +58,7 @@ func _ready() -> void:
 	_set_frame(false)
 
 func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing: bool, delta: float, jump_charge: float = 0.0, clearance: float = INF) -> void:
+	if not presentation_enabled: return
 	var strike: Dictionary = unarmed_pose.call() if unarmed_pose.is_valid() else {}
 	var walking := command.move.length_squared() > 0.01 and Vector2(velocity.x, velocity.z).length_squared() > 0.01
 	var direction := command.move if walking else command.aim
@@ -85,7 +88,9 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 	_using_charge_frame = false
 	_using_jump_frame = false
 	_using_unarmed_frame = false
-	if worn_set == "celestial":
+	if test_skin.active():
+		_using_unarmed_frame = test_skin.present(self, walking, grounded, dashing, jump_charge, strike)
+	elif worn_set == "celestial":
 		celestial_art.present(self, walking, grounded, dashing, jump_charge, delta, celestial_pose.call() if celestial_pose.is_valid() else {})
 	elif worn_set.is_empty() and grounded and jump_charge > 0.0:
 		_using_charge_frame = charge_animation.apply(self, current_facing, int(anim_timer) % 6 if walking else 0)
@@ -95,7 +100,7 @@ func present(command: PlayerCommand, velocity: Vector3, grounded: bool, dashing:
 		else:
 			worn_appearance.apply_jump(self, worn_set, int(current_facing), jump_animation.frame)
 		_using_jump_frame = true
-	_using_unarmed_frame = grounded and not dashing and jump_charge <= 0.0 and jump_animation.frame < 0 and unarmed_art.apply(self, strike)
+	if not test_skin.active(): _using_unarmed_frame = grounded and not dashing and jump_charge <= 0.0 and jump_animation.frame < 0 and unarmed_art.apply(self, strike)
 	if dashing:
 		_ghost_timer -= delta
 		if _ghost_timer <= 0.0:
@@ -118,6 +123,9 @@ func _set_frame(walking: bool) -> void:
 	material_override = null
 	flip_h = false
 	offset = Vector2.ZERO
+	if test_skin.active():
+		test_skin.apply(self, "locomotion", anim_frame + 1 if walking else 0)
+		return
 	if worn_set == "celestial":
 		celestial_art.apply(self, int(current_facing), "walk" if walking else "idle", anim_frame if walking else 0)
 		return
@@ -161,12 +169,19 @@ func set_worn_set(set_id: String, animate: bool = true) -> void:
 	if animate and not set_id.is_empty() and is_inside_tree():
 		OutfitEquipEffect.spawn(self, Color("e6bb5a") if set_id == "celestial" else (Color("adf46c") if set_id == "bright_leaf" else Color("85d8c0")))
 	worn_set = set_id
-	celestial_aura.set_active(set_id == "celestial")
+	celestial_aura.set_active(set_id == "celestial" and not test_skin.active())
 	_set_frame(false)
 	if animate and not set_id.is_empty() and is_inside_tree():
 		modulate.a = 0.0
 		_outfit_tween = create_tween()
 		_outfit_tween.tween_property(self, "modulate:a", 1.0, 0.35)
+
+func set_test_skin(id: String) -> bool:
+	if not test_skin.select(id): return false
+	celestial_aura.set_active(worn_set == "celestial" and not test_skin.active())
+	scale = Vector3.ONE
+	_set_frame(false)
+	return true
 
 func _present_hand() -> void:
 	FufuRightHand.present(self)
@@ -177,5 +192,5 @@ func show_jump() -> void:
 
 func show_dash() -> void:
 	scale = Vector3(1.35, 0.7, 1.35)
-	DashGhost.spawn(self)
+	if presentation_enabled: DashGhost.spawn(self)
 	_ghost_timer = 0.04

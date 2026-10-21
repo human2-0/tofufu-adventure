@@ -9,6 +9,10 @@ static func outdoor(game: AdventureGame, at: Vector3) -> bool:
 		var size: Vector2 = building.get_meta("map_footprint")
 		var local := building.to_local(at)
 		if absf(local.x) < size.x * 0.5 + 0.7 and absf(local.z) < size.y * 0.5 + 0.7: return false
+	for room in game.world.city_rooms:
+		var local := room.to_local(at)
+		var size: Vector3 = room.get_meta("city_size")
+		if absf(local.x) < size.x / 2 and absf(local.z) < size.z / 2 and local.y < size.y - 0.3: return false
 	return true
 
 static func surface(game: AdventureGame, actor: Player) -> Vector3:
@@ -41,6 +45,8 @@ static func safe_position(game: AdventureGame, at: Vector3) -> bool:
 static func height(game: AdventureGame, at: Vector3) -> float:
 	var local := game.world.to_local(at)
 	var ground := game.world.ground_point(local.x, local.z).y
+	if GigalopolisTerrain.contains(Vector2(local.x, local.z)) and GigalopolisTerrain.is_water(Vector3(local.x, ground, local.z)):
+		ground = maxf(ground, VolcanicTerrain.WATER_LEVEL)
 	if MainlandFringe.contains(Vector2(local.x, local.z)): ground = maxf(ground, MainlandFringe.water_level(Vector2(local.x, local.z)))
 	if game.world.jungle != null and JungleCoast.is_water(Vector3(local.x, ground, local.z), game.world.jungle.desert):
 		ground = maxf(ground, JungleCoast.WATER_LEVEL)

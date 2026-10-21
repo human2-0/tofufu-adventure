@@ -1,0 +1,323 @@
+{
+  "implemented": [
+    "Ranged attacks on every finite hunt with committed lead, cover, reflection, bounded projectiles and shot-origin radar markers",
+    "Common/Rare/Legendary match-only gear, deterministic region-independent chest weights, distinct weapon roles and CPU tier upgrades",
+    "Celestial full-set peak: 25% protection, +20% damage, +12% attack/fire speed and +10% movement",
+    "Bounded battle protocol 10; cosmetic guest bolts and cancellation during paused host migration"
+  ],
+  "validation": {
+    "architecture_runtime_scripts": 736,
+    "python_checks": 15,
+    "full_registered_scenarios": 158,
+    "parallel_full_passed": 156,
+    "parallel_full_failures": [
+      "sotjet",
+      "sotjet_coop"
+    ],
+    "isolated_reruns_passed": [
+      "sotjet",
+      "sotjet_coop"
+    ],
+    "final_covered_scenarios": 158,
+    "final_focused_scenarios": [
+      "battle_migration",
+      "battle_combat",
+      "battle_radar",
+      "battle_mobs",
+      "battle_inventory",
+      "battle_game",
+      "scene",
+      "sotjet",
+      "sotjet_coop"
+    ],
+    "sidecar_tests_passed": 19,
+    "native_screenshots": 40,
+    "native_locales": [
+      "en",
+      "pl"
+    ],
+    "native_sizes": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "real_holepunch_local_recovery": {
+      "passed": true,
+      "scope": "Three OS processes and real encrypted Holepunch over an isolated loopback DHT; abrupt host kill, paused recovery, new authority, plant reservation and duo settings, selected actor count and CPU difficulty, CPU replacement, consumed backpack apples, ongoing healing, opened chest/drop recovery and finite hunt death/credit recovery. Not WAN/NAT acceptance.",
+      "duos": true,
+      "effective_cpus": 3,
+      "requested_cpus": 3,
+      "difficulty": "hard",
+      "actor_count": 6,
+      "before": {
+        "p0": {
+          "apple_seconds": 24.5666666666667,
+          "apples": 6,
+          "bodies": 6,
+          "checkpoint": 77,
+          "cpus": 3,
+          "deployment_stage": 2,
+          "drop_slots": 6,
+          "first_mob_dead": true,
+          "host": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+          "hunt_claims": 1,
+          "key": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+          "mob_count": 21,
+          "opened_chests": 1,
+          "options": [
+            3,
+            2,
+            1
+          ],
+          "phase": "playing",
+          "plants": [
+            0,
+            0,
+            1,
+            1,
+            68,
+            68
+          ],
+          "term": 0,
+          "time": 13.4333333333334
+        },
+        "p1": {
+          "apple_seconds": 24.55,
+          "apples": 6,
+          "bodies": 6,
+          "checkpoint": 77,
+          "cpus": 3,
+          "deployment_stage": 2,
+          "drop_slots": 6,
+          "first_mob_dead": true,
+          "host": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+          "hunt_claims": 1.0,
+          "key": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+          "mob_count": 21,
+          "opened_chests": 1,
+          "options": [
+            3,
+            2,
+            1
+          ],
+          "phase": "playing",
+          "plants": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            68.0,
+            68.0
+          ],
+          "term": 0,
+          "time": 13.45
+        },
+        "p2": {
+          "apple_seconds": 24.55,
+          "apples": 6,
+          "bodies": 6,
+          "checkpoint": 77,
+          "cpus": 3,
+          "deployment_stage": 2,
+          "drop_slots": 6,
+          "first_mob_dead": true,
+          "host": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+          "hunt_claims": 1.0,
+          "key": "99dc1bdbb33b5aef52dffbcb5346d7df5c8ac76db4aa477e06f97cd57c363119",
+          "mob_count": 21,
+          "opened_chests": 1,
+          "options": [
+            3,
+            2,
+            1
+          ],
+          "phase": "playing",
+          "plants": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            68.0,
+            68.0
+          ],
+          "term": 0,
+          "time": 13.45
+        }
+      },
+      "after": {
+        "p1": {
+          "apple_seconds": 24.95,
+          "apples": 6,
+          "bodies": 6,
+          "checkpoint": 79,
+          "cpus": 4,
+          "deployment_stage": 2,
+          "drop_slots": 6,
+          "first_mob_dead": true,
+          "host": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+          "hunt_claims": 1.0,
+          "key": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+          "mob_count": 21,
+          "opened_chests": 1,
+          "options": [
+            3,
+            2,
+            1
+          ],
+          "phase": "playing",
+          "plants": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            68.0,
+            68.0
+          ],
+          "term": 1,
+          "time": 13.05
+        },
+        "p2": {
+          "apple_seconds": 24.9,
+          "apples": 6,
+          "bodies": 6,
+          "checkpoint": 79,
+          "cpus": 4,
+          "deployment_stage": 2,
+          "drop_slots": 6,
+          "first_mob_dead": true,
+          "host": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+          "hunt_claims": 1.0,
+          "key": "99dc1bdbb33b5aef52dffbcb5346d7df5c8ac76db4aa477e06f97cd57c363119",
+          "mob_count": 21,
+          "opened_chests": 1,
+          "options": [
+            3,
+            2,
+            1
+          ],
+          "phase": "playing",
+          "plants": [
+            0.0,
+            0.0,
+            1.0,
+            1.0,
+            68.0,
+            68.0
+          ],
+          "term": 1,
+          "time": 13.1
+        }
+      },
+      "observed_paused": [
+        "p1",
+        "p2"
+      ],
+      "logs": "/var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-battle-peers-pyelaylz"
+    }
+  },
+  "performance": {
+    "benchmark-50": {
+      "cpus": 50,
+      "difficulty": "normal",
+      "draw_calls": 233.0,
+      "engine_fps": 68.0,
+      "hunts": 23,
+      "hunts_enabled": true,
+      "maximum_awake_hunts": 23,
+      "measured_ticks": 360,
+      "minimum_alive": 51,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "simulation_max_ms": 14.907,
+      "simulation_p50_ms": 7.076,
+      "simulation_p95_ms": 10.924,
+      "survivors": 51,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    },
+    "benchmark-7-without-hunts": {
+      "cpus": 7,
+      "difficulty": "normal",
+      "draw_calls": 203.0,
+      "engine_fps": 118.0,
+      "hunts": 0,
+      "hunts_enabled": false,
+      "maximum_awake_hunts": 0,
+      "measured_ticks": 360,
+      "minimum_alive": 8,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "simulation_max_ms": 7.241,
+      "simulation_p50_ms": 1.768,
+      "simulation_p95_ms": 6.308,
+      "survivors": 8,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    },
+    "benchmark-7": {
+      "cpus": 7,
+      "difficulty": "normal",
+      "draw_calls": 220.0,
+      "engine_fps": 113.0,
+      "hunts": 23,
+      "hunts_enabled": true,
+      "maximum_awake_hunts": 18,
+      "measured_ticks": 360,
+      "minimum_alive": 8,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "simulation_max_ms": 7.994,
+      "simulation_p50_ms": 2.676,
+      "simulation_p95_ms": 6.895,
+      "survivors": 8,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    },
+    "benchmark-50-without-hunts": {
+      "cpus": 50,
+      "difficulty": "normal",
+      "draw_calls": 233.0,
+      "engine_fps": 81.0,
+      "hunts": 0,
+      "hunts_enabled": false,
+      "maximum_awake_hunts": 0,
+      "measured_ticks": 360,
+      "minimum_alive": 51,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "simulation_max_ms": 13.417,
+      "simulation_p50_ms": 5.887,
+      "simulation_p95_ms": 9.717,
+      "survivors": 51,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    }
+  },
+  "limitations": [
+    "Human balance/playtest acceptance remains unmeasured.",
+    "50 CPUs plus 23 active hunts measured 68 FPS on this M1 at 1440p with 90% render scale; the 120 FPS target is not met.",
+    "Peer acceptance uses isolated local Holepunch processes, not separate-device/WAN/NAT proof.",
+    "The initial full run had two Soyjet failures; both passed when rerun alone without source changes. Initial failure logs are retained."
+  ]
+}

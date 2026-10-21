@@ -1,0 +1,8 @@
+{
+  "prompt": "Use case: identity-preserve. Input1 is EDIT TARGET atlas, input2 is original CHARACTER IDENTITY/ACCESSORY reference. Edit ONLY described errors. Preserve the exact character identity, illustration style, all other poses, atlas column and row counts, full body bounds, size and spacing. Real transparent alpha no matte. Fix BLUE SASH anatomical sidedness only. TOP TWO rows (N,NW) sash knot and both trailing blue tails must be on SCREEN LEFT in EVERY sprite. Bottom three rows keep knot screen RIGHT. Top row column 4 and 5 currently switch side; row2 some lose tails. Ensure every frame has one knot and two tails. Preserve poses and faces. All outlines clean dark green/black, no colored fringe artifacts. All sprites completely in frame. Do not add labels or effects.",
+  "references": [
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/blue_sash/locomotion.png",
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/blue_sash/source/walk-original.png"
+  ],
+  "source": "/Users/mat-dwor/.codex/generated_images/01a153cd-faf0-75f1-b429-cde7636c6570/exec-827588e7-dc86-4f71-bcc2-9714fe98da1b.png"
+}

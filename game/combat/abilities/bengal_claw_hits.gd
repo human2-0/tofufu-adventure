@@ -57,7 +57,7 @@ func _hit(combat: PlayerCombat, target: Damageable, reality: bool, normal: bool)
 	var aim := combat.claws.aim if not normal else combat.equipment.facing
 	# Dash contact leaves the victim in place for the separate finishing cut.
 	var impulse := Vector3(aim.x, 0, aim.y) * (3.0 if reality or normal else 0.0)
-	if not target.damage(amount, impulse, Damageable.HitKind.MELEE): return false
+	if not target.receive_attack(amount, impulse, Damageable.HitKind.MELEE, Vector3.INF, combat.owner_health): return false
 	if reality: target.paralyze(BengalClaws.PARALYSIS)
 	combat.vitals.confirmed_hit(normal)
 	combat.struck.emit(1.0 if reality else 0.0, 1)

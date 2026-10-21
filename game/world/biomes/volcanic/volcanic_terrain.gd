@@ -23,7 +23,7 @@ static func coast_radius(at: Vector2) -> float:
 static func height_at(x: float, z: float) -> float:
 	var at := Vector2(x, z)
 	var radius := coast_radius(at)
-	if radius > 1.12: return -8.0
+	if radius > 1.12: return GigalopolisTerrain.coastal_height(at, -8.0)
 	var land := lerpf(-8.0, 4.0, 1.0 - smoothstep(0.86, 1.12, radius))
 	var noise := WorldContours.noise(at / 18.0, SEED)
 	land += noise * 3.8 * (1.0 - smoothstep(0.7, 0.91, radius))
@@ -42,7 +42,7 @@ static func height_at(x: float, z: float) -> float:
 	if radius > 0.84:
 		land = maxf(land, lerpf(2.4, land, smoothstep(2.8, 6.0, VolcanicRoutes.distance(at))))
 	if radius < 0.9 and cone > 20.0 and VolcanicLava.river_distance(at) < 2.8: land -= 0.8
-	return land
+	return GigalopolisTerrain.coastal_height(at, land)
 
 static func _foundations(at: Vector2, land: float) -> float:
 	for index in VolcanicLandmarks.SITES.size():
@@ -65,6 +65,8 @@ static func point(at: Vector2, lift: float = 0.0) -> Vector3:
 
 static func color_at(at: Vector2, sampled_height: float = INF) -> Color:
 	var height := height_at(at.x, at.y) if sampled_height == INF else sampled_height
+	if GigalopolisTerrain.COAST_BOUNDS.has_point(at) and at.x < 242:
+		return Color("d9c393") if height < 2.1 else GigalopolisTerrain.color_at(at, height)
 	if height < WATER_LEVEL + 1.2: return Color("b5a38c")
 	if VolcanicLava.river_distance(at) < 6.0: return Color("302932")
 	var trail := VolcanicRoutes.distance(at)

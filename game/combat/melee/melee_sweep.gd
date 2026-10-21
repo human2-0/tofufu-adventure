@@ -66,7 +66,7 @@ static func damage(combat: PlayerCombat, target: Damageable, point: Vector3 = Ve
 		var outward := target.global_position - combat.actor.global_position
 		impulse = Vector3(outward.x, 0.0, outward.z).normalized() * 5.0
 	var kind := Damageable.HitKind.MELEE if combat.equipment.staff_selected else Damageable.HitKind.KNIFE
-	if target.damage(hit_damage, impulse, kind, point):
+	if target.receive_attack(hit_damage, impulse, kind, point, combat.owner_health):
 		if point.is_finite(): MeleeContact.flash(combat, point, KnifeAttack.powered(combat.attack_style))
 		if combat._hit_targets.is_empty():
 			combat.hit_pause = combat.tuning.heavy_hit_pause if KnifeAttack.powered(combat.attack_style) else combat.tuning.light_hit_pause

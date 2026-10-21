@@ -5,13 +5,17 @@
 
 [ext_resource type="Script" path="res://networking/oracle/oracle_transport.gd" id="3"]
 
-[node name="Launch" type="Node" node_paths=PackedStringArray("transport", "server_transport")]
+[node name="Launch" type="Node" node_paths=PackedStringArray("transport", "server_transport", "battle_transport")]
 script = ExtResource("1")
 transport = NodePath("Transport")
 server_transport = NodePath("ServerTransport")
+battle_transport = NodePath("BattleTransport")
 
 [node name="Transport" type="Node" parent="."]
 script = ExtResource("2")
 
 [node name="ServerTransport" type="Node" parent="."]
 script = ExtResource("3")
+
+[node name="BattleTransport" type="Node" parent="."]
+script = ExtResource("2")

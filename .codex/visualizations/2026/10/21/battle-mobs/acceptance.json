@@ -1,0 +1,205 @@
+{
+  "implemented": "Finite adventure-enemy hunts in the separate Battle Royale mode.",
+  "features": [
+    "Up to 24 spaced dry hunt sites with plant clearance; adventure snails, armored snails and wild bees.",
+    "Normal weapon, shell, guard, armour and dash rules; CPUs can hunt through bounded nearby perception.",
+    "Guaranteed apples or milk plus armour, weapons or upgraded backpacks; ordinary chest odds unchanged.",
+    "Finite pending/paid public loot claims, no respawns or storm rewards, separate hunt counts and adventure-save isolation.",
+    "Bounded compressed ordered deltas, one-second checkpoints, paused recovery and transient-attack cancellation."
+  ],
+  "validation": {
+    "architecture": {
+      "passed": true,
+      "runtime_scripts": 731,
+      "maximum_runtime_lines": 200
+    },
+    "full_run": {
+      "registered": 158,
+      "initially_passed": 156,
+      "seconds": 1425.94,
+      "initial_failures": [
+        "battle_mobs",
+        "battle_game"
+      ],
+      "manifest": "verification/full-verification.json"
+    },
+    "final_focused_repairs": {
+      "passed": true,
+      "scope": "Architecture, import, Python tooling checks and 14 selected Godot scenarios after JSON credit validation and checkpoint fixture repairs. Full suite results are retained separately.",
+      "architecture_scripts": 731,
+      "seconds": 350.7,
+      "scenarios": [
+        "battle_migration",
+        "battle_royale",
+        "battle_combat",
+        "battle_radar",
+        "battle_mobs",
+        "battle_loop",
+        "battle_squad",
+        "battle_rematch",
+        "battle_inventory",
+        "battle_cpu",
+        "battle_game",
+        "localization",
+        "update_log",
+        "scene"
+      ],
+      "logs": ".codex/visualizations/2026/10/21/battle-mobs/verification/focused",
+      "additional_loot_tuning_rerun": {
+        "passed": true,
+        "scenario": "battle_mobs",
+        "seconds": 29.8,
+        "scope": "Upgraded backpack rewards, airborne floor landing, finite hunt credits and survivor victory isolation."
+      }
+    },
+    "all_registered_scenarios_validated_after_repairs": true,
+    "unresolved": [],
+    "visuals": {
+      "renderer": "Native Godot Metal / Apple M1",
+      "dimensions": [
+        "1280x720",
+        "640x360"
+      ],
+      "locales": [
+        "en",
+        "pl"
+      ],
+      "images": [
+        "hunt-loot-1280-en.png",
+        "hunt-loot-1280-pl.png",
+        "hunt-loot-640-en.png",
+        "hunt-loot-640-pl.png",
+        "hunts-1280-en.png",
+        "hunts-1280-pl.png",
+        "hunts-640-en.png",
+        "hunts-640-pl.png",
+        "lobby-1280-en.png",
+        "lobby-1280-pl.png",
+        "lobby-640-en.png",
+        "lobby-640-pl.png",
+        "recap-1280-en.png",
+        "recap-1280-pl.png",
+        "recap-640-en.png",
+        "recap-640-pl.png"
+      ]
+    },
+    "real_peers": {
+      "passed": true,
+      "scope": "Three OS processes and real encrypted Holepunch over an isolated loopback DHT; abrupt host kill, paused recovery, new authority, plant reservation and duo settings, selected actor count and CPU difficulty, CPU replacement, consumed backpack apples, ongoing healing, opened chest/drop recovery and finite hunt death/credit recovery. Not WAN/NAT acceptance.",
+      "actor_count": 6,
+      "observed_paused": [
+        "p1",
+        "p2"
+      ],
+      "manifest": "real-peers/result.json"
+    },
+    "resolved_scenarios": 158
+  },
+  "isolated_performance": {
+    "7": {
+      "control": {
+        "cpus": 7,
+        "difficulty": "normal",
+        "draw_calls": 203.0,
+        "engine_fps": 118.0,
+        "hunts": 0,
+        "hunts_enabled": false,
+        "maximum_awake_hunts": 0,
+        "measured_ticks": 360,
+        "minimum_alive": 8,
+        "render_scale": 0.899999976158142,
+        "renderer": "macOS",
+        "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+        "simulation_max_ms": 7.19,
+        "simulation_p50_ms": 1.764,
+        "simulation_p95_ms": 6.361,
+        "survivors": 8,
+        "viewport": [
+          2560,
+          1440
+        ],
+        "warmup_ticks": 120
+      },
+      "hunts": {
+        "cpus": 7,
+        "difficulty": "normal",
+        "draw_calls": 203.0,
+        "engine_fps": 118.0,
+        "hunts": 23,
+        "hunts_enabled": true,
+        "maximum_awake_hunts": 14,
+        "measured_ticks": 360,
+        "minimum_alive": 8,
+        "render_scale": 0.899999976158142,
+        "renderer": "macOS",
+        "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+        "simulation_max_ms": 7.731,
+        "simulation_p50_ms": 2.401,
+        "simulation_p95_ms": 6.89,
+        "survivors": 8,
+        "viewport": [
+          2560,
+          1440
+        ],
+        "warmup_ticks": 120
+      },
+      "additional_simulation_p95_ms": 0.529
+    },
+    "50": {
+      "control": {
+        "cpus": 50,
+        "difficulty": "normal",
+        "draw_calls": 229.0,
+        "engine_fps": 84.0,
+        "hunts": 0,
+        "hunts_enabled": false,
+        "maximum_awake_hunts": 0,
+        "measured_ticks": 360,
+        "minimum_alive": 51,
+        "render_scale": 0.899999976158142,
+        "renderer": "macOS",
+        "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+        "simulation_max_ms": 13.445,
+        "simulation_p50_ms": 5.897,
+        "simulation_p95_ms": 9.598,
+        "survivors": 51,
+        "viewport": [
+          2560,
+          1440
+        ],
+        "warmup_ticks": 120
+      },
+      "hunts": {
+        "cpus": 50,
+        "difficulty": "normal",
+        "draw_calls": 228.0,
+        "engine_fps": 74.0,
+        "hunts": 23,
+        "hunts_enabled": true,
+        "maximum_awake_hunts": 22,
+        "measured_ticks": 360,
+        "minimum_alive": 51,
+        "render_scale": 0.899999976158142,
+        "renderer": "macOS",
+        "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+        "simulation_max_ms": 14.66,
+        "simulation_p50_ms": 6.94,
+        "simulation_p95_ms": 10.71,
+        "survivors": 51,
+        "viewport": [
+          2560,
+          1440
+        ],
+        "warmup_ticks": 120
+      },
+      "additional_simulation_p95_ms": 1.112
+    }
+  },
+  "limitations": [
+    "Player authority is trusted; this is not trustless anti-cheat or deterministic distributed physics.",
+    "Real-peer evidence uses an isolated loopback DHT; separate-device/WAN/NAT acceptance remains unmeasured.",
+    "Performance is an eight-second native offline benchmark at adaptive 1440p with invulnerable survivors, not a locked-FPS guarantee or online fanout benchmark.",
+    "Rewards, ammunition risk, encounter density and PvP interruptions need human balance playtests.",
+    "As with the existing migration design, recovery can roll back to the last agreed one-second checkpoint."
+  ]
+}

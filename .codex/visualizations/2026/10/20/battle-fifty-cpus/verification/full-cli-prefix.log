@@ -1,0 +1,19 @@
+Full verification: architecture, import, 149 Godot tests
+Architecture check: PASS (690 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.024s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.009s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-pn19zz9e
+import: PASS (6.9s)
+tofufu_alignment: PASS (2.4s)
+battle_migration: PASS (0.7s)
+battle_royale: PASS (4.4s)
+battle_combat: PASS (3.0s)
+battle_inventory: PASS (23.0s)

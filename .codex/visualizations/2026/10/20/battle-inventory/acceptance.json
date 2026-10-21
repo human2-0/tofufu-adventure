@@ -1,0 +1,83 @@
+{
+  "implemented": [
+    "Seeded spaced chests with equal-weight common loot and four distinct choices",
+    "Temporary per-survivor 10/14/20-slot backpacks, equipment and actual match stats",
+    "Soypod/Nori/Celestial sets with protection and power caps",
+    "Finite milk, apples and vegetables using adventure healing",
+    "Atomic authenticated inventory actions, selective pickup and whole-bag death drops",
+    "CPU looting, equipment and finite food",
+    "Compact healing-only and world loot deltas; paused inventory/healing recovery"
+  ],
+  "controls": {
+    "E": "Open nearby chest and choose loot",
+    "B": "Backpack and worn equipment",
+    "I": "Match stats",
+    "3-6": "Use support slots",
+    "Shift-click": "Equip from backpack",
+    "Right-click food": "Use from backpack",
+    "Q": "Drop active weapon"
+  },
+  "verification": {
+    "architecture_scripts": 685,
+    "scenario_matrix": {
+      "passed": 148,
+      "total": 148,
+      "execution": "Serial --full prefix, focused checks, bounded parallel remainder, isolated launch retry; not one uninterrupted full CLI run."
+    },
+    "latest_quick_checks": "Architecture, import, real battle inventories and guest sets, localization, update journal and scene smoke passed. Final spawn-clearance inventory scenario also passed.",
+    "native_UI": [
+      "1280x720 and 640x360",
+      "English and Polish",
+      "Actual Godot Metal renders, full bags, chest choices, stats and retained toolbar buttons"
+    ],
+    "network": "Three OS processes and real encrypted Holepunch over an isolated loopback DHT; abrupt host kill, paused recovery, new authority, twenty actors, CPU replacement, consumed backpack apples, ongoing healing and opened chest/drop recovery. Not WAN/NAT acceptance.",
+    "maximum_inventory_checkpoint_bytes": 43050,
+    "local_render_benchmark": {
+      "adaptive_resolution": true,
+      "loot_stress": true,
+      "measured_frames_per_profile": 360,
+      "renderer": "macOS",
+      "results": [
+        {
+          "cpu_seats": 19,
+          "draw_calls": 180.0,
+          "elapsed_wall_seconds": 5.993347,
+          "engine_fps": 105.0,
+          "human_seats": 1,
+          "json_upload_bytes_per_simulated_second": 0.0,
+          "minimum_alive": 20,
+          "render_scale": 0.899999976158142,
+          "rendered_objects": 630.0,
+          "simulation_and_json_max_ms": 34.069,
+          "simulation_and_json_p95_ms": 7.863
+        },
+        {
+          "cpu_seats": 0,
+          "draw_calls": 177.0,
+          "elapsed_wall_seconds": 6.00599,
+          "engine_fps": 109.0,
+          "human_seats": 20,
+          "json_upload_bytes_per_simulated_second": 3205629.33333333,
+          "minimum_alive": 20,
+          "render_scale": 0.850000023841858,
+          "rendered_objects": 627.0,
+          "simulation_and_json_max_ms": 32.827,
+          "simulation_and_json_p95_ms": 8.418
+        }
+      ],
+      "scope": "Production render budget, one shared IPC serialization per broadcast and one local map; nineteen recipients are serialized fakes. Actual encrypted twenty-peer traffic is a separate sidecar test. No separate-device or WAN FPS guarantee.",
+      "target_fps": 120,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_frames_per_profile": 120
+    }
+  },
+  "limits": [
+    "Twenty separate human devices, WAN/NAT connectivity and WAN performance have not been accepted.",
+    "Tofufu variants retain their embedded art with armour badges and Celestial aura; Fufu uses existing worn outfit artwork.",
+    "Authority is trusted; equal starting stats and shared input delay do not make peer hosting cheat-proof."
+  ],
+  "release_batch": 9
+}

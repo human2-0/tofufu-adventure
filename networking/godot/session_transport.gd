@@ -7,11 +7,18 @@ extends Node
 
 @warning_ignore("unused_signal") signal event_received(event: Dictionary)
 
+## Local composition selects an isolated discovery topic before start().
+var discovery_channel: String = ""
+
 @abstract
 func start(display_name: String) -> void
 
 @abstract
 func send_packet(key: String, data: Dictionary) -> void
+
+## Optional fanout optimization. Every backend retains ordinary endpoint semantics.
+func send_packets(keys: Array[String], data: Dictionary) -> void:
+	for key: String in keys: send_packet(key, data)
 
 ## Idempotent; immediately stop events/delivery, then retire owned resources.
 @abstract

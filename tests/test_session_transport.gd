@@ -45,6 +45,7 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 func _run() -> void:
+	await _batch_bridge()
 	var host := LocalTransport.new()
 	var guest := LocalTransport.new()
 	host.key = "a".repeat(64)
@@ -68,6 +69,8 @@ func _run() -> void:
 		deliveries.append({"key": key, "data": data}))
 	guest_room.send_game(host.key, {"type": "ping"})
 	check(deliveries.size() == 1 and deliveries[0].key == guest.key, "authenticated sender and gameplay packet reach room")
+	guest.send_packets([host.key], {"type": "ping", "epoch": guest_room.epoch})
+	check(deliveries.size() == 2, "alternate backends inherit endpoint-preserving batch delivery")
 	guest_connection.disconnect_session()
 	check(host_room.members.size() == 1, "disconnect removes guest from authority roster")
 	check(guest_room.local_key.is_empty() and guest_room.peers.is_empty() and guest_room.names.is_empty(), "disconnect clears discovery and names")
@@ -93,6 +96,45 @@ func _run() -> void:
 	await check_launch_injection()
 	print("Session transport: ", "PASS" if failures == 0 else "FAIL")
 	quit(0 if failures == 0 else 1)
+
+func _batch_bridge() -> void:
+	var server := TCPServer.new()
+	check(server.listen(0, "127.0.0.1") == OK, "local batch framing listener opens")
+	var client := StreamPeerTCP.new()
+	client.connect_to_host("127.0.0.1", server.get_local_port())
+	for tick in 120:
+		client.poll()
+		if server.is_connection_available() and client.get_status() == StreamPeerTCP.STATUS_CONNECTED: break
+		await process_frame
+	check(server.is_connection_available(), "local batch framing connects")
+	if not server.is_connection_available(): server.stop(); return
+	var receiver := server.take_connection()
+	var adapter := HolepunchTransport.new()
+	adapter._socket = client
+	adapter._authenticated = true
+	var keys: Array[String] = []
+	for i in 19: keys.append("%064x" % (i + 1))
+	adapter.send_packets(keys, {"seq": 7, "actors": [[1, 2, 3]], "label": "Tofufu · żółć"})
+	var bytes := PackedByteArray()
+	for tick in 120:
+		receiver.poll()
+		if receiver.get_available_bytes() > 0: bytes.append_array(receiver.get_data(receiver.get_available_bytes())[1])
+		if bytes.size() >= 4:
+			var header := bytes.slice(0, 4)
+			header.reverse()
+			if bytes.size() >= 4 + int(header.decode_u32(0)): break
+		await process_frame
+	check(bytes.size() > 4, "batch produces one framed loopback message")
+	if bytes.size() > 4:
+		var header := bytes.slice(0, 4)
+		header.reverse()
+		check(int(header.decode_u32(0)) == bytes.size() - 4, "nineteen recipients share one serialized IPC frame")
+		var packet := JSON.parse_string(bytes.slice(4).get_string_from_utf8()) as Dictionary
+		check(packet.get("type") == "send_many" and packet.get("keys") == keys and packet.data.label == "Tofufu · żółć", "batch preserves destinations and UTF-8 payload")
+	adapter.close()
+	adapter.free()
+	receiver.disconnect_from_host()
+	server.stop()
 
 func connect_room(transport: SessionTransport, room: PlaytestRoom) -> SessionConnection:
 	root.add_child(transport)

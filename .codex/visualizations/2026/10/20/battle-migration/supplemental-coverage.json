@@ -1,0 +1,130 @@
+{
+  "personal_map_transfer": {
+    "passed": true,
+    "seconds": 4.74
+  },
+  "map_exploration": {
+    "passed": true,
+    "seconds": 0.56
+  },
+  "input": {
+    "passed": true,
+    "seconds": 0.36
+  },
+  "motor": {
+    "passed": true,
+    "seconds": 0.36
+  },
+  "render_budget": {
+    "passed": true,
+    "seconds": 0.9
+  },
+  "occlusion": {
+    "passed": true,
+    "seconds": 0.53
+  },
+  "scenery_batch": {
+    "passed": true,
+    "seconds": 0.5
+  },
+  "mob_rest": {
+    "passed": true,
+    "seconds": 0.77
+  },
+  "actor_collisions": {
+    "passed": true,
+    "seconds": 6.01
+  },
+  "jump": {
+    "passed": true,
+    "seconds": 0.84
+  },
+  "progression": {
+    "passed": true,
+    "seconds": 0.47
+  },
+  "combat": {
+    "passed": true,
+    "seconds": 0.84
+  },
+  "knife_combo": {
+    "passed": true,
+    "seconds": 0.37
+  },
+  "melee_flow": {
+    "passed": true,
+    "seconds": 3.62
+  },
+  "melee_clash": {
+    "passed": true,
+    "seconds": 0.84
+  },
+  "nori_katana": {
+    "passed": true,
+    "seconds": 2.68
+  },
+  "edamame_sword": {
+    "passed": true,
+    "seconds": 1.32
+  },
+  "staff_combat": {
+    "passed": true,
+    "seconds": 2.85
+  },
+  "backpack": {
+    "passed": true,
+    "seconds": 0.67
+  },
+  "inventory": {
+    "passed": true,
+    "seconds": 0.66
+  },
+  "currency": {
+    "passed": true,
+    "seconds": 0.93
+  },
+  "factory_presentation": {
+    "passed": true,
+    "seconds": 0.65
+  },
+  "factory_surfaces": {
+    "passed": true,
+    "seconds": 0.56
+  },
+  "factory_reactivity": {
+    "passed": true,
+    "seconds": 0.55
+  },
+  "factory_stashes": {
+    "passed": true,
+    "seconds": 0.27
+  },
+  "tofu_production_views": {
+    "passed": true,
+    "seconds": 0.36
+  },
+  "tofu_sorting_lab_rules": {
+    "passed": true,
+    "seconds": 0.36
+  },
+  "tofu_production_rules": {
+    "passed": true,
+    "seconds": 0.36
+  },
+  "tofu_dungeon_attempt": {
+    "passed": true,
+    "seconds": 0.35
+  },
+  "tofu_reward_ledger": {
+    "passed": true,
+    "seconds": 0.36
+  },
+  "tofu_puzzle_protocol": {
+    "passed": true,
+    "seconds": 0.36
+  },
+  "dungeon_ui": {
+    "passed": true,
+    "seconds": 4.94
+  }
+}

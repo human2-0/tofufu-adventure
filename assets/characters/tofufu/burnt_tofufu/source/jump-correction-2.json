@@ -1,0 +1,8 @@
+{
+  "prompt": "Use case: precise-object-edit. Input 1 EDIT TARGET 10-column x5-row jump sprite atlas; input2 exact original Burnt Tofufu identity. ONLY edit the TWENTY sprites in rows THREE and FOUR, counted from top. In those two rows the torch staff is currently located at the RIGHT edge of EACH sprite cell. MOVE the complete flaming staff AND holding hand to the LEFT EDGE of EACH of those 20 cells, in front of the face, matching the left-walking row at bottom of input2. Redraw arms as needed. Keep torso and face still pointing screenLEFT, not mirrored. Put headband knot at right edge in these two rows. All20 cells must show staff on their left and knot on right; not a single staff on right in those two rows. Keep rows1,2,5 unchanged. Keep identical lava crust tofu body, flames, stern face, jump poses, grid, sizes. True transparent background, all sprites intact.",
+  "references": [
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/burnt_tofufu/jump.png",
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/burnt_tofufu/source/walk-original.png"
+  ],
+  "source": "/Users/mat-dwor/.codex/generated_images/01a153cd-faf0-75f1-b429-cde7636c6570/exec-9ad51199-fe18-4749-8867-0c5bf89fe252.png"
+}

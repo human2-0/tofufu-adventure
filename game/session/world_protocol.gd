@@ -7,6 +7,7 @@ const BACKPACK_CONTENT_LIMIT: int = 20
 const CURRENT_MOB_COUNT: int = 71
 
 static func valid(data: Dictionary) -> bool:
+	if data.has("city_loot") and (not ExplorationProtocol.sequence(data.city_loot) or data.city_loot > 262143): return false
 	if data.has("castle") and not CastleProtocol.valid(data.castle, true): return false
 	if data.has("produce") and not BarnProtocol.produce(data.produce): return false
 	if data.has("barn") and not BarnProtocol.valid(data.barn, ITEM_LIMITS): return false

@@ -54,6 +54,24 @@ def run_stage(godot, name, args, logs, timeout_seconds=60, verbose=False):
 
 
 def test_stages():
+    yield "tofufu_alignment", ["--script", "res://tests/test_tofufu_alignment.gd"], 60
+    yield "battle_migration", ["--script", "res://tests/test_battle_migration.gd"], 60
+    yield "battle_royale", ["--script", "res://tests/test_battle_royale.gd"], 60
+    yield "battle_combat", ["--script", "res://tests/test_battle_combat.gd"], 60
+    yield "battle_radar", ["--script", "res://tests/test_battle_radar.gd"], 60
+    yield "battle_mobs", ["--script", "res://tests/test_battle_mobs.gd"], 180
+    yield "battle_loop", ["--script", "res://tests/test_battle_loop.gd"], 90
+    yield "battle_squad", ["--script", "res://tests/test_battle_squad.gd"], 90
+    yield "battle_rematch", ["--script", "res://tests/test_battle_rematch.gd"], 300
+    yield "battle_inventory", ["--script", "res://tests/test_battle_inventory.gd"], 180
+    yield "battle_deployment", ["--script", "res://tests/test_battle_deployment.gd"], 180
+    yield "battle_cpu", ["--script", "res://tests/test_battle_cpu.gd"], 180
+    yield "battle_game", ["--script", "res://tests/test_battle_game.gd"], 180
+    yield "gigalopolis", ["--script", "res://tests/test_gigalopolis.gd"], 180
+    yield "city_loot", ["--script", "res://tests/test_city_loot.gd"], 240
+    yield "coop_city_loot", ["--script", "res://tests/test_coop_city_loot.gd"], 180
+    yield "gigalopolis_east", ["--script", "res://tests/test_gigalopolis_east.gd"], 180
+    yield "skin_test", ["--script", "res://tests/test_skin_test.gd"], 90
     yield "unarmed_art", ["--script", "res://tests/test_unarmed_art.gd"], 60
     yield "fufu_3d", ["--script", "res://tests/test_fufu_3d.gd"], 90
     yield "angel_bow", ["--script", "res://tests/test_angel_bow.gd"], 90
@@ -74,7 +92,8 @@ def test_stages():
     yield "soy_save_spots", ["--script", "res://tests/test_soy_save_spots.gd"], 150
     yield "coop_soy_save_spots", ["--script", "res://tests/test_coop_soy_save_spots.gd"], 240
     yield "soy_plant", ["--script", "res://tests/test_soy_plant.gd"], 60
-    yield "coop_parrot_travel", ["--script", "res://tests/test_coop_parrot_travel.gd"], 60
+    # Builds two complete adventure worlds before the tick-based flight scenario.
+    yield "coop_parrot_travel", ["--script", "res://tests/test_coop_parrot_travel.gd"], 120
     yield "parrot_travel", ["--script", "res://tests/test_parrot_travel.gd"], 60
     yield "parrot_art", ["--script", "res://tests/test_parrot_art.gd"], 60
     yield "cloud_realm", ["--script", "res://tests/test_cloud_realm.gd"], 120

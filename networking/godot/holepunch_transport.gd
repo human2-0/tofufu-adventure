@@ -55,12 +55,16 @@ func start(display_name: String) -> void:
 		_fail("Could not launch the Holepunch runtime.")
 		return
 	var pipe: FileAccess = _child.stdio
-	pipe.store_string(JSON.stringify({"port": _server.get_local_port(), "token": _token, "name": display_name, "identity": ProjectSettings.globalize_path(identity_path)}) + "\n")
+	pipe.store_string(JSON.stringify({"port": _server.get_local_port(), "token": _token, "name": display_name, "identity": ProjectSettings.globalize_path(identity_path), "channel": discovery_channel}) + "\n")
 	_deadline = Time.get_ticks_msec() / 1000.0 + 12
 	_active = true
 
 func send_packet(key: String, data: Dictionary) -> void:
 	_send({"type": "send", "key": key, "data": data})
+
+func send_packets(keys: Array[String], data: Dictionary) -> void:
+	if keys.is_empty(): return
+	_send({"type": "send_many", "keys": keys, "data": data})
 
 func _send(value: Dictionary) -> void:
 	if _socket == null or not _authenticated:

@@ -1,0 +1,420 @@
+{
+  "total_scenarios": 146,
+  "serial_passes": [
+    "actor_collisions",
+    "angel_bow",
+    "backpack",
+    "battle_game",
+    "battle_migration",
+    "battle_royale",
+    "bengal",
+    "bengal_dash",
+    "bengal_vfx",
+    "castle_stairs",
+    "celestial",
+    "cloud_heaven",
+    "cloud_realm",
+    "cloud_realm_art",
+    "combat",
+    "coop_angel_bow",
+    "coop_bengal",
+    "coop_castle",
+    "coop_farming",
+    "coop_parrot_travel",
+    "coop_soy_save_spots",
+    "currency",
+    "dungeon_ui",
+    "edamame_sword",
+    "factory_presentation",
+    "factory_reactivity",
+    "factory_stashes",
+    "factory_surfaces",
+    "farming",
+    "fufu_3d",
+    "gigalopolis",
+    "input",
+    "inventory",
+    "item_tooltip",
+    "jump",
+    "knife_combo",
+    "lava_king_art",
+    "localization",
+    "map_exploration",
+    "meadow_meshes",
+    "meadow_reorg",
+    "melee_clash",
+    "melee_flow",
+    "mob_rest",
+    "motor",
+    "nori_katana",
+    "occlusion",
+    "parrot_art",
+    "parrot_travel",
+    "personal_map_transfer",
+    "progression",
+    "render_budget",
+    "save_modes",
+    "scene",
+    "scenery_batch",
+    "skin_test",
+    "soy_plant",
+    "soy_save_spots",
+    "staff_combat",
+    "tofu_dungeon_attempt",
+    "tofu_production_rules",
+    "tofu_production_views",
+    "tofu_puzzle_protocol",
+    "tofu_reward_ledger",
+    "tofu_sorting_lab_rules",
+    "tofufu_alignment",
+    "unarmed_art",
+    "volcanic_expansion",
+    "weapon_enhancement"
+  ],
+  "parallel_results": {
+    "scene": {
+      "passed": true,
+      "initial_attempt": {
+        "passed": false,
+        "error": "scene failed (exit 1); inspect /Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/20/battle-migration/matrix-logs"
+      },
+      "recheck": "scene-hold-recheck.log"
+    },
+    "lobby": {
+      "passed": true,
+      "seconds": 5.27
+    },
+    "landing": {
+      "passed": true,
+      "seconds": 5.49
+    },
+    "update_log": {
+      "passed": true,
+      "seconds": 4.8
+    },
+    "frontend": {
+      "passed": true,
+      "seconds": 84.03
+    },
+    "coop_scene": {
+      "passed": true,
+      "seconds": 58.48
+    },
+    "chat": {
+      "passed": true,
+      "seconds": 39.91
+    },
+    "coop_opening": {
+      "passed": true,
+      "seconds": 63.44
+    },
+    "coop_launch": {
+      "passed": true,
+      "seconds": 73.0
+    },
+    "coop_response": {
+      "passed": true,
+      "seconds": 69.06
+    },
+    "coop_gameplay": {
+      "passed": true,
+      "seconds": 78.4
+    },
+    "arena": {
+      "passed": true,
+      "seconds": 5.41
+    },
+    "snapshot_channel": {
+      "passed": true,
+      "seconds": 0.36
+    },
+    "coop_protocol": {
+      "passed": true,
+      "seconds": 0.36
+    },
+    "solo_arena": {
+      "passed": true,
+      "seconds": 42.9
+    },
+    "public_multiplayer": {
+      "passed": true,
+      "seconds": 63.7
+    },
+    "session_transport": {
+      "passed": true,
+      "seconds": 5.05
+    },
+    "oracle": {
+      "passed": true,
+      "seconds": 84.86
+    },
+    "pod_escape": {
+      "passed": true,
+      "seconds": 50.62
+    },
+    "weather_exposure": {
+      "passed": true,
+      "seconds": 41.38
+    },
+    "sky": {
+      "passed": true,
+      "seconds": 0.37
+    },
+    "river": {
+      "passed": true,
+      "seconds": 37.8
+    },
+    "weather": {
+      "passed": true,
+      "seconds": 67.42
+    },
+    "ocean": {
+      "passed": true,
+      "seconds": 57.21
+    },
+    "coop_ocean": {
+      "passed": true,
+      "seconds": 69.46
+    },
+    "world_contours": {
+      "passed": true,
+      "seconds": 46.92
+    },
+    "snail": {
+      "passed": true,
+      "seconds": 41.45
+    },
+    "wild_bee": {
+      "passed": true,
+      "seconds": 41.17
+    },
+    "coop_wild_bee": {
+      "passed": true,
+      "seconds": 60.5
+    },
+    "farm_combat": {
+      "passed": true,
+      "seconds": 50.27
+    },
+    "armored_shell": {
+      "passed": true,
+      "seconds": 39.1
+    },
+    "sword": {
+      "passed": true,
+      "seconds": 1.8
+    },
+    "right_hand": {
+      "passed": true,
+      "seconds": 1.89
+    },
+    "sandbox": {
+      "passed": true,
+      "seconds": 56.71
+    },
+    "sotjet_coop": {
+      "passed": true,
+      "seconds": 69.36
+    },
+    "gun_run_pose": {
+      "passed": true,
+      "seconds": 41.43
+    },
+    "sotjet": {
+      "passed": true,
+      "seconds": 66.54
+    },
+    "soy_gun": {
+      "passed": true,
+      "seconds": 5.62
+    },
+    "soy_reload": {
+      "passed": true,
+      "seconds": 41.07
+    },
+    "soy_flight": {
+      "passed": true,
+      "seconds": 40.73
+    },
+    "gun_recoil": {
+      "passed": true,
+      "seconds": 0.27
+    },
+    "first_person": {
+      "passed": true,
+      "seconds": 41.51
+    },
+    "tofu_dungeon_active": {
+      "passed": true,
+      "seconds": 57.6
+    },
+    "dofufu": {
+      "passed": true,
+      "seconds": 0.84
+    },
+    "factory_soy_fighter": {
+      "passed": true,
+      "seconds": 0.75
+    },
+    "tofu_dungeon_active_coop": {
+      "passed": true,
+      "seconds": 92.88
+    },
+    "dungeon_ui": {
+      "passed": true,
+      "seconds": 4.79
+    },
+    "dungeon_puzzle_runtime": {
+      "passed": true,
+      "seconds": 38.84
+    },
+    "factory_handling": {
+      "passed": true,
+      "seconds": 70.69
+    },
+    "factory_recovery": {
+      "passed": true,
+      "seconds": 40.78
+    },
+    "tofu_dungeon_coop": {
+      "passed": true,
+      "seconds": 65.76
+    },
+    "tofu_boss_coop": {
+      "passed": true,
+      "seconds": 86.92
+    },
+    "tofu_dungeon": {
+      "passed": true,
+      "seconds": 42.61
+    },
+    "coop_storage": {
+      "passed": true,
+      "seconds": 68.92
+    },
+    "seed_storage": {
+      "passed": true,
+      "seconds": 40.34
+    },
+    "inventory_input": {
+      "passed": true,
+      "seconds": 44.41
+    },
+    "factory_route": {
+      "passed": true,
+      "seconds": 189.21
+    },
+    "depot_focus": {
+      "passed": true,
+      "seconds": 49.54
+    },
+    "world_items": {
+      "passed": true,
+      "seconds": 50.83
+    },
+    "loadout_shop": {
+      "passed": true,
+      "seconds": 49.8
+    },
+    "equipment": {
+      "passed": true,
+      "seconds": 46.74
+    },
+    "vitals": {
+      "passed": true,
+      "seconds": 46.48
+    },
+    "character_details": {
+      "passed": true,
+      "seconds": 52.67
+    },
+    "apple_trees": {
+      "passed": true,
+      "seconds": 31.41
+    },
+    "apple_pickup": {
+      "passed": true,
+      "seconds": 47.19
+    },
+    "world_life": {
+      "passed": true,
+      "seconds": 48.5
+    },
+    "grass": {
+      "passed": true,
+      "seconds": 50.95
+    },
+    "heavy_movement": {
+      "passed": true,
+      "seconds": 46.21
+    },
+    "map": {
+      "passed": true,
+      "seconds": 44.62
+    },
+    "northern_biomes": {
+      "passed": true,
+      "seconds": 45.79
+    },
+    "waterfall": {
+      "passed": true,
+      "seconds": 48.01
+    },
+    "jungle": {
+      "passed": true,
+      "seconds": 56.57
+    },
+    "coop_groatfields": {
+      "passed": true,
+      "seconds": 69.22
+    },
+    "groatfields": {
+      "passed": true,
+      "seconds": 43.31
+    },
+    "mountain_retreat": {
+      "passed": true,
+      "seconds": 45.29
+    },
+    "dofufu_city": {
+      "passed": true,
+      "seconds": 81.68
+    },
+    "castle_challenge": {
+      "passed": true,
+      "seconds": 52.08
+    },
+    "castle_adventure": {
+      "passed": true,
+      "seconds": 49.15
+    },
+    "volcanic": {
+      "passed": true,
+      "seconds": 156.96
+    }
+  },
+  "failed": [],
+  "elapsed_seconds": 1883.58,
+  "scope": "146-scenario regression matrix followed by current affected battle, atlas, transport, protocol, launch and scene checks; real three-process encrypted Holepunch migration on an isolated DHT. Benchmark has twenty active actors and nineteen simulated recipients with the production adaptive render budget. WAN/separate-device acceptance remains unverified.",
+  "initial_failures": {
+    "scene": "Held test input was released by extra catch-up ticks.",
+    "coop_farming": "A transient harvest phase was sampled after expiry."
+  },
+  "rechecks": {
+    "scene": "scene-hold-recheck.log",
+    "coop_farming": "coop-farming-recheck.log",
+    "battle_migration": "migration-final.log"
+  },
+  "final_focused": [
+    "battle_game-accepted.log",
+    "battle_migration-accepted.log",
+    "tofufu_alignment-accepted.log",
+    "batch-callers-final.log",
+    "public-consolidation.log",
+    "transport-batch-recheck.log"
+  ],
+  "benchmark": "benchmark-1440p.json",
+  "real_peers": "real-peer-migration.json",
+  "sidecar_tests": 19,
+  "sidecar_log": "sidecar-batch.log"
+}

@@ -1,0 +1,8 @@
+{
+  "prompt": "Use case: identity-preserve. Input1 is EDIT TARGET atlas, input2 is original CHARACTER IDENTITY/ACCESSORY reference. Edit ONLY described errors. Preserve the exact character identity, illustration style, all other poses, atlas column and row counts, full body bounds, size and spacing. Real transparent alpha no matte. Fix TORCH and HEADBAND KNOT handedness ONLY. Row3 W and row4 SW must have torch staff on SCREEN LEFT and band knot SCREEN RIGHT, as reference2 original left-walking view. Keep those bodies facing SCREEN LEFT, do NOT mirror into right-facing bodies. Row1/2 keep torchRIGHT knotLEFT. Row5 keep torchLEFT knotRIGHT. Keep all50 jump poses. All outlines clean dark green/black, no colored fringe artifacts. All sprites completely in frame. Do not add labels or effects.",
+  "references": [
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/ember_staff/jump.png",
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/ember_staff/source/walk-original.png"
+  ],
+  "source": "/Users/mat-dwor/.codex/generated_images/01a153cd-faf0-75f1-b429-cde7636c6570/exec-6faf2e35-617b-4407-886f-c069e0af1b07.png"
+}

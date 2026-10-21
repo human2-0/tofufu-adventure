@@ -1,0 +1,755 @@
+{
+  "total": 148,
+  "completed": 148,
+  "passed": 148,
+  "full_cli_completed": false,
+  "scope": "All 148 registered scenarios, using a serial --full prefix, final focused runs, a three-worker remainder, and an isolated uninterrupted launch retry. The full CLI was not completed uninterrupted. Architecture/import and visual/network checks are separate.",
+  "scenarios": {
+    "tofufu_alignment": {
+      "passed": true,
+      "seconds": 2.3,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "battle_migration": {
+      "passed": true,
+      "seconds": 0.7,
+      "source": "/tmp/battle-pack-delta-check.log"
+    },
+    "battle_royale": {
+      "passed": true,
+      "seconds": 3.9,
+      "source": "/tmp/battle-pack-delta-check.log"
+    },
+    "battle_combat": {
+      "passed": true,
+      "seconds": 3.0,
+      "source": "/tmp/battle-pack-delta-check.log"
+    },
+    "battle_inventory": {
+      "passed": true,
+      "seconds": 22.9,
+      "source": "/tmp/battle-pack-final-layout.log"
+    },
+    "battle_game": {
+      "passed": true,
+      "seconds": 48.7,
+      "source": "/tmp/battle-pack-acceptance.log"
+    },
+    "gigalopolis": {
+      "passed": true,
+      "seconds": 64.0,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "skin_test": {
+      "passed": true,
+      "seconds": 35.1,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "unarmed_art": {
+      "passed": true,
+      "seconds": 1.4,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "fufu_3d": {
+      "passed": true,
+      "seconds": 19.7,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "angel_bow": {
+      "passed": true,
+      "seconds": 1.4,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "coop_angel_bow": {
+      "passed": true,
+      "seconds": 53.9,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "bengal_dash": {
+      "passed": true,
+      "seconds": 5.1,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "bengal_vfx": {
+      "passed": true,
+      "seconds": 0.6,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "bengal": {
+      "passed": true,
+      "seconds": 32.8,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "coop_bengal": {
+      "passed": true,
+      "seconds": 53.2,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "localization": {
+      "passed": true,
+      "seconds": 1.0,
+      "source": "/tmp/battle-pack-acceptance.log"
+    },
+    "weapon_enhancement": {
+      "passed": true,
+      "seconds": 68.0,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "item_tooltip": {
+      "passed": true,
+      "seconds": 0.9,
+      "source": "/tmp/battle-pack-final-focused.log"
+    },
+    "save_modes": {
+      "passed": true,
+      "seconds": 0.5,
+      "source": "/tmp/battle-pack-final-focused.log"
+    },
+    "coop_farming": {
+      "passed": true,
+      "seconds": 181.2,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "meadow_reorg": {
+      "passed": true,
+      "seconds": 35.7,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "meadow_meshes": {
+      "passed": true,
+      "seconds": 0.5,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "farming": {
+      "passed": true,
+      "seconds": 36.2,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "soy_save_spots": {
+      "passed": true,
+      "seconds": 32.5,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "coop_soy_save_spots": {
+      "passed": true,
+      "seconds": 88.2,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "soy_plant": {
+      "passed": true,
+      "seconds": 0.9,
+      "source": "/tmp/battle-pack-full.log"
+    },
+    "vitals": {
+      "passed": true,
+      "seconds": 32.8,
+      "source": "/tmp/battle-pack-final-focused.log"
+    },
+    "equipment": {
+      "passed": true,
+      "seconds": 32.7,
+      "source": "/tmp/battle-pack-final-focused.log"
+    },
+    "loadout_shop": {
+      "passed": true,
+      "seconds": 34.1,
+      "source": "/tmp/battle-pack-final-focused.log"
+    },
+    "backpack": {
+      "passed": true,
+      "seconds": 0.6,
+      "source": "/tmp/battle-pack-final-focused.log"
+    },
+    "inventory": {
+      "passed": true,
+      "seconds": 0.5,
+      "source": "/tmp/battle-pack-final-focused.log"
+    },
+    "update_log": {
+      "passed": true,
+      "seconds": 5.6,
+      "source": "/tmp/battle-pack-acceptance.log"
+    },
+    "scene": {
+      "passed": true,
+      "seconds": 37.7,
+      "source": "/tmp/battle-pack-acceptance.log"
+    },
+    "parrot_art": {
+      "passed": true,
+      "seconds": 0.3699428749969229,
+      "source": "three-worker remainder"
+    },
+    "parrot_travel": {
+      "passed": true,
+      "seconds": 44.191187333002745,
+      "source": "three-worker remainder"
+    },
+    "cloud_realm_art": {
+      "passed": true,
+      "seconds": 0.4638672079963726,
+      "source": "three-worker remainder"
+    },
+    "cloud_heaven": {
+      "passed": true,
+      "seconds": 2.4652955000055954,
+      "source": "three-worker remainder"
+    },
+    "coop_parrot_travel": {
+      "passed": true,
+      "seconds": 62.08001220800361,
+      "source": "three-worker remainder"
+    },
+    "lava_king_art": {
+      "passed": true,
+      "seconds": 0.6558708329976071,
+      "source": "three-worker remainder"
+    },
+    "cloud_realm": {
+      "passed": true,
+      "seconds": 67.30402775000402,
+      "source": "three-worker remainder"
+    },
+    "celestial": {
+      "passed": true,
+      "seconds": 34.46882712500519,
+      "source": "three-worker remainder"
+    },
+    "volcanic_expansion": {
+      "passed": true,
+      "seconds": 48.24486474999867,
+      "source": "three-worker remainder"
+    },
+    "coop_castle": {
+      "passed": true,
+      "seconds": 57.48719179199543,
+      "source": "three-worker remainder"
+    },
+    "castle_adventure": {
+      "passed": true,
+      "seconds": 33.198240166995674,
+      "source": "three-worker remainder"
+    },
+    "castle_stairs": {
+      "passed": true,
+      "seconds": 99.65066800000204,
+      "source": "three-worker remainder"
+    },
+    "castle_challenge": {
+      "passed": true,
+      "seconds": 34.72326770799555,
+      "source": "three-worker remainder"
+    },
+    "mountain_retreat": {
+      "passed": true,
+      "seconds": 36.39130116599699,
+      "source": "three-worker remainder"
+    },
+    "dofufu_city": {
+      "passed": true,
+      "seconds": 72.61785645799682,
+      "source": "three-worker remainder"
+    },
+    "groatfields": {
+      "passed": true,
+      "seconds": 33.48548429099901,
+      "source": "three-worker remainder"
+    },
+    "volcanic": {
+      "passed": true,
+      "seconds": 142.09902449999936,
+      "source": "three-worker remainder"
+    },
+    "jungle": {
+      "passed": true,
+      "seconds": 43.365439083994715,
+      "source": "three-worker remainder"
+    },
+    "coop_groatfields": {
+      "passed": true,
+      "seconds": 53.43160579200048,
+      "source": "three-worker remainder"
+    },
+    "personal_map_transfer": {
+      "passed": true,
+      "seconds": 3.810255500000494,
+      "source": "three-worker remainder"
+    },
+    "map_exploration": {
+      "passed": true,
+      "seconds": 0.4716335409975727,
+      "source": "three-worker remainder"
+    },
+    "waterfall": {
+      "passed": true,
+      "seconds": 35.20123116699688,
+      "source": "three-worker remainder"
+    },
+    "input": {
+      "passed": true,
+      "seconds": 0.37110854200000176,
+      "source": "three-worker remainder"
+    },
+    "northern_biomes": {
+      "passed": true,
+      "seconds": 35.010949833005725,
+      "source": "three-worker remainder"
+    },
+    "motor": {
+      "passed": true,
+      "seconds": 0.27202145799674327,
+      "source": "three-worker remainder"
+    },
+    "render_budget": {
+      "passed": true,
+      "seconds": 0.7769237920001615,
+      "source": "three-worker remainder"
+    },
+    "occlusion": {
+      "passed": true,
+      "seconds": 0.27497458300058497,
+      "source": "three-worker remainder"
+    },
+    "scenery_batch": {
+      "passed": true,
+      "seconds": 0.26240658299502684,
+      "source": "three-worker remainder"
+    },
+    "mob_rest": {
+      "passed": true,
+      "seconds": 0.7625326670022332,
+      "source": "three-worker remainder"
+    },
+    "map": {
+      "passed": true,
+      "seconds": 36.10600062499725,
+      "source": "three-worker remainder"
+    },
+    "heavy_movement": {
+      "passed": true,
+      "seconds": 36.30574037500628,
+      "source": "three-worker remainder"
+    },
+    "grass": {
+      "passed": true,
+      "seconds": 36.6744767919954,
+      "source": "three-worker remainder"
+    },
+    "world_life": {
+      "passed": true,
+      "seconds": 35.312653000000864,
+      "source": "three-worker remainder"
+    },
+    "actor_collisions": {
+      "passed": true,
+      "seconds": 5.7113508749971515,
+      "source": "three-worker remainder"
+    },
+    "jump": {
+      "passed": true,
+      "seconds": 0.6660453329968732,
+      "source": "three-worker remainder"
+    },
+    "progression": {
+      "passed": true,
+      "seconds": 0.36091812499944353,
+      "source": "three-worker remainder"
+    },
+    "apple_trees": {
+      "passed": true,
+      "seconds": 23.355541625001933,
+      "source": "three-worker remainder"
+    },
+    "combat": {
+      "passed": true,
+      "seconds": 0.6584662909954204,
+      "source": "three-worker remainder"
+    },
+    "knife_combo": {
+      "passed": true,
+      "seconds": 0.2541582920021028,
+      "source": "three-worker remainder"
+    },
+    "melee_flow": {
+      "passed": true,
+      "seconds": 3.4762117080026655,
+      "source": "three-worker remainder"
+    },
+    "melee_clash": {
+      "passed": true,
+      "seconds": 0.6650807080004597,
+      "source": "three-worker remainder"
+    },
+    "nori_katana": {
+      "passed": true,
+      "seconds": 2.461363500005973,
+      "source": "three-worker remainder"
+    },
+    "edamame_sword": {
+      "passed": true,
+      "seconds": 1.185817584002507,
+      "source": "three-worker remainder"
+    },
+    "staff_combat": {
+      "passed": true,
+      "seconds": 2.6737433329981286,
+      "source": "three-worker remainder"
+    },
+    "apple_pickup": {
+      "passed": true,
+      "seconds": 35.281082207999134,
+      "source": "three-worker remainder"
+    },
+    "character_details": {
+      "passed": true,
+      "seconds": 40.910092041995085,
+      "source": "three-worker remainder"
+    },
+    "world_items": {
+      "passed": true,
+      "seconds": 37.943065667001065,
+      "source": "three-worker remainder"
+    },
+    "depot_focus": {
+      "passed": true,
+      "seconds": 36.556932207997306,
+      "source": "three-worker remainder"
+    },
+    "inventory_input": {
+      "passed": true,
+      "seconds": 35.70148391700059,
+      "source": "three-worker remainder"
+    },
+    "currency": {
+      "passed": true,
+      "seconds": 0.7568714170047315,
+      "source": "three-worker remainder"
+    },
+    "seed_storage": {
+      "passed": true,
+      "seconds": 34.8775333329977,
+      "source": "three-worker remainder"
+    },
+    "coop_storage": {
+      "passed": true,
+      "seconds": 54.99515375000192,
+      "source": "three-worker remainder"
+    },
+    "tofu_dungeon": {
+      "passed": true,
+      "seconds": 35.07862104200467,
+      "source": "three-worker remainder"
+    },
+    "tofu_dungeon_coop": {
+      "passed": true,
+      "seconds": 56.61175441699743,
+      "source": "three-worker remainder"
+    },
+    "tofu_boss_coop": {
+      "passed": true,
+      "seconds": 70.046552916996,
+      "source": "three-worker remainder"
+    },
+    "factory_presentation": {
+      "passed": true,
+      "seconds": 0.4552973340032622,
+      "source": "three-worker remainder"
+    },
+    "factory_surfaces": {
+      "passed": true,
+      "seconds": 0.46282445899851155,
+      "source": "three-worker remainder"
+    },
+    "factory_reactivity": {
+      "passed": true,
+      "seconds": 0.4486170839954866,
+      "source": "three-worker remainder"
+    },
+    "factory_stashes": {
+      "passed": true,
+      "seconds": 0.26348179100023117,
+      "source": "three-worker remainder"
+    },
+    "factory_recovery": {
+      "passed": true,
+      "seconds": 33.4869361250021,
+      "source": "three-worker remainder"
+    },
+    "tofu_production_views": {
+      "passed": true,
+      "seconds": 0.2552630409991252,
+      "source": "three-worker remainder"
+    },
+    "tofu_sorting_lab_rules": {
+      "passed": true,
+      "seconds": 0.2632789999988745,
+      "source": "three-worker remainder"
+    },
+    "tofu_production_rules": {
+      "passed": true,
+      "seconds": 0.2631938340055058,
+      "source": "three-worker remainder"
+    },
+    "tofu_dungeon_attempt": {
+      "passed": true,
+      "seconds": 0.2554759999984526,
+      "source": "three-worker remainder"
+    },
+    "tofu_reward_ledger": {
+      "passed": true,
+      "seconds": 0.2493776249975781,
+      "source": "three-worker remainder"
+    },
+    "tofu_puzzle_protocol": {
+      "passed": true,
+      "seconds": 0.2540787499965518,
+      "source": "three-worker remainder"
+    },
+    "dungeon_puzzle_runtime": {
+      "passed": true,
+      "seconds": 80.3847379170038,
+      "source": "three-worker remainder"
+    },
+    "dungeon_ui": {
+      "passed": true,
+      "seconds": 3.6556936249980936,
+      "source": "three-worker remainder"
+    },
+    "factory_soy_fighter": {
+      "passed": true,
+      "seconds": 0.6508606250063167,
+      "source": "three-worker remainder"
+    },
+    "dofufu": {
+      "passed": true,
+      "seconds": 0.6537452080010553,
+      "source": "three-worker remainder"
+    },
+    "factory_handling": {
+      "passed": true,
+      "seconds": 107.3795694579967,
+      "source": "three-worker remainder"
+    },
+    "factory_route": {
+      "passed": true,
+      "seconds": 236.5360287500007,
+      "source": "three-worker remainder"
+    },
+    "gun_recoil": {
+      "passed": true,
+      "seconds": 0.26531483299913816,
+      "source": "three-worker remainder"
+    },
+    "tofu_dungeon_active": {
+      "passed": true,
+      "seconds": 47.88871058299992,
+      "source": "three-worker remainder"
+    },
+    "first_person": {
+      "passed": true,
+      "seconds": 35.00779445799708,
+      "source": "three-worker remainder"
+    },
+    "soy_gun": {
+      "passed": true,
+      "seconds": 4.884891999994579,
+      "source": "three-worker remainder"
+    },
+    "soy_flight": {
+      "passed": true,
+      "seconds": 35.39799662499718,
+      "source": "three-worker remainder"
+    },
+    "tofu_dungeon_active_coop": {
+      "passed": true,
+      "seconds": 76.68649199999345,
+      "source": "three-worker remainder"
+    },
+    "soy_reload": {
+      "passed": true,
+      "seconds": 35.19416049999563,
+      "source": "three-worker remainder"
+    },
+    "gun_run_pose": {
+      "passed": true,
+      "seconds": 35.059542540999246,
+      "source": "three-worker remainder"
+    },
+    "right_hand": {
+      "passed": true,
+      "seconds": 1.7521517920031329,
+      "source": "three-worker remainder"
+    },
+    "sword": {
+      "passed": true,
+      "seconds": 1.5771753340013674,
+      "source": "three-worker remainder"
+    },
+    "sotjet": {
+      "passed": true,
+      "seconds": 55.54068795799685,
+      "source": "three-worker remainder"
+    },
+    "sotjet_coop": {
+      "passed": true,
+      "seconds": 60.613512875002925,
+      "source": "three-worker remainder"
+    },
+    "sandbox": {
+      "passed": true,
+      "seconds": 51.35670887499873,
+      "source": "three-worker remainder"
+    },
+    "armored_shell": {
+      "passed": true,
+      "seconds": 34.82775412500632,
+      "source": "three-worker remainder"
+    },
+    "farm_combat": {
+      "passed": true,
+      "seconds": 46.12380229200062,
+      "source": "three-worker remainder"
+    },
+    "wild_bee": {
+      "passed": true,
+      "seconds": 37.76762079100445,
+      "source": "three-worker remainder"
+    },
+    "coop_wild_bee": {
+      "passed": true,
+      "seconds": 60.93295795899758,
+      "source": "three-worker remainder"
+    },
+    "snail": {
+      "passed": true,
+      "seconds": 41.427224917002604,
+      "source": "three-worker remainder"
+    },
+    "world_contours": {
+      "passed": true,
+      "seconds": 45.60834954099846,
+      "source": "three-worker remainder"
+    },
+    "river": {
+      "passed": true,
+      "seconds": 31.139113750003162,
+      "source": "three-worker remainder"
+    },
+    "sky": {
+      "passed": true,
+      "seconds": 0.2630570830006036,
+      "source": "three-worker remainder"
+    },
+    "ocean": {
+      "passed": true,
+      "seconds": 47.92579570900125,
+      "source": "three-worker remainder"
+    },
+    "coop_ocean": {
+      "passed": true,
+      "seconds": 55.93052304100274,
+      "source": "three-worker remainder"
+    },
+    "weather_exposure": {
+      "passed": true,
+      "seconds": 34.05254341700493,
+      "source": "three-worker remainder"
+    },
+    "session_transport": {
+      "passed": true,
+      "seconds": 4.166361125004187,
+      "source": "three-worker remainder"
+    },
+    "weather": {
+      "passed": true,
+      "seconds": 51.85090404099901,
+      "source": "three-worker remainder"
+    },
+    "pod_escape": {
+      "passed": true,
+      "seconds": 43.84401975000219,
+      "source": "three-worker remainder"
+    },
+    "coop_protocol": {
+      "passed": true,
+      "seconds": 0.3559697920063627,
+      "source": "three-worker remainder"
+    },
+    "snapshot_channel": {
+      "passed": true,
+      "seconds": 0.35442466699896613,
+      "source": "three-worker remainder"
+    },
+    "arena": {
+      "passed": true,
+      "seconds": 4.71431929100072,
+      "source": "three-worker remainder"
+    },
+    "solo_arena": {
+      "passed": true,
+      "seconds": 41.666149084005156,
+      "source": "three-worker remainder"
+    },
+    "public_multiplayer": {
+      "passed": true,
+      "seconds": 60.87125845799892,
+      "source": "three-worker remainder"
+    },
+    "oracle": {
+      "passed": true,
+      "seconds": 77.90824620799685,
+      "source": "three-worker remainder"
+    },
+    "coop_response": {
+      "passed": true,
+      "seconds": 56.69162083399715,
+      "source": "three-worker remainder"
+    },
+    "coop_gameplay": {
+      "passed": true,
+      "seconds": 66.36910062500101,
+      "source": "three-worker remainder"
+    },
+    "coop_opening": {
+      "passed": true,
+      "seconds": 62.2815522910023,
+      "source": "three-worker remainder"
+    },
+    "chat": {
+      "passed": true,
+      "seconds": 34.11836091699661,
+      "source": "three-worker remainder"
+    },
+    "landing": {
+      "passed": true,
+      "seconds": 4.2923773339935,
+      "source": "three-worker remainder"
+    },
+    "lobby": {
+      "passed": true,
+      "seconds": 4.4686165420062025,
+      "source": "three-worker remainder"
+    },
+    "coop_scene": {
+      "passed": true,
+      "seconds": 100.13320620900049,
+      "source": "three-worker remainder"
+    },
+    "frontend": {
+      "passed": true,
+      "seconds": 115.98544079100247,
+      "source": "three-worker remainder"
+    },
+    "coop_launch": {
+      "passed": true,
+      "source": "isolated uninterrupted retry",
+      "seconds": 66.4,
+      "previous_attempt": {
+        "passed": false,
+        "error": "coop_launch timed out; inspect /Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/20/battle-inventory/verification",
+        "source": "three-worker remainder"
+      },
+      "retry_reason": "Worker suspension for the isolated render benchmark exceeded the test internal 30-second wall-clock loading deadline."
+    }
+  }
+}

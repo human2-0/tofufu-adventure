@@ -1,0 +1,2127 @@
+{
+  "authored_directions": [
+    "n",
+    "nw",
+    "w",
+    "sw",
+    "s"
+  ],
+  "mirrored_directions": {
+    "ne": "nw",
+    "e": "w",
+    "se": "sw"
+  },
+  "mirror_property": "flip_h",
+  "target_standing_height_world": 1.12,
+  "horizontal_anchor": "solid torso center; feet define vertical baseline only",
+  "jump_phases": [
+    "takeoff",
+    "push_off",
+    "ascent",
+    "apex",
+    "fall_start",
+    "mid_fall",
+    "pre_landing",
+    "landing_impact",
+    "rebound",
+    "settled"
+  ],
+  "sheets": {
+    "locomotion": [
+      {
+        "direction": "n",
+        "phase": 0,
+        "region": [
+          36,
+          24,
+          201,
+          205
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          195,
+          199
+        ],
+        "center": 111.5,
+        "foot_center": 121.5,
+        "feet": 201,
+        "edge_contact": false,
+        "phase_name": "idle",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "n",
+        "phase": 1,
+        "region": [
+          287,
+          25,
+          194,
+          208
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          188,
+          202
+        ],
+        "center": 100.0,
+        "foot_center": 77.0,
+        "feet": 204,
+        "edge_contact": false,
+        "phase_name": "walk_0",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "n",
+        "phase": 2,
+        "region": [
+          535,
+          25,
+          185,
+          212
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          179,
+          206
+        ],
+        "center": 94.0,
+        "foot_center": 102.5,
+        "feet": 208,
+        "edge_contact": false,
+        "phase_name": "walk_1",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "n",
+        "phase": 3,
+        "region": [
+          768,
+          25,
+          199,
+          211
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          193,
+          205
+        ],
+        "center": 102.5,
+        "foot_center": 88.0,
+        "feet": 207,
+        "edge_contact": false,
+        "phase_name": "walk_2",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "n",
+        "phase": 4,
+        "region": [
+          1023,
+          24,
+          187,
+          213
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          181,
+          207
+        ],
+        "center": 95.5,
+        "foot_center": 86.0,
+        "feet": 209,
+        "edge_contact": false,
+        "phase_name": "walk_3",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "nw",
+        "phase": 0,
+        "region": [
+          37,
+          258,
+          192,
+          209
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          186,
+          203
+        ],
+        "center": 106.5,
+        "foot_center": 93.0,
+        "feet": 205,
+        "edge_contact": false,
+        "phase_name": "idle",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "nw",
+        "phase": 1,
+        "region": [
+          297,
+          258,
+          178,
+          212
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          172,
+          206
+        ],
+        "center": 92.0,
+        "foot_center": 71.0,
+        "feet": 208,
+        "edge_contact": false,
+        "phase_name": "walk_0",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "nw",
+        "phase": 2,
+        "region": [
+          539,
+          258,
+          177,
+          216
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          171,
+          210
+        ],
+        "center": 91.5,
+        "foot_center": 97.0,
+        "feet": 212,
+        "edge_contact": false,
+        "phase_name": "walk_1",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "nw",
+        "phase": 3,
+        "region": [
+          782,
+          258,
+          184,
+          213
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          178,
+          207
+        ],
+        "center": 90.0,
+        "foot_center": 70.0,
+        "feet": 209,
+        "edge_contact": false,
+        "phase_name": "walk_2",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "nw",
+        "phase": 4,
+        "region": [
+          1024,
+          258,
+          178,
+          216
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          172,
+          210
+        ],
+        "center": 91.0,
+        "foot_center": 86.0,
+        "feet": 212,
+        "edge_contact": false,
+        "phase_name": "walk_3",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "w",
+        "phase": 0,
+        "region": [
+          65,
+          500,
+          179,
+          216
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          173,
+          210
+        ],
+        "center": 69.5,
+        "foot_center": 85.0,
+        "feet": 212,
+        "edge_contact": false,
+        "phase_name": "idle",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "w",
+        "phase": 1,
+        "region": [
+          314,
+          498,
+          181,
+          216
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          175,
+          210
+        ],
+        "center": 69.0,
+        "foot_center": 39.0,
+        "feet": 212,
+        "edge_contact": false,
+        "phase_name": "walk_0",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "w",
+        "phase": 2,
+        "region": [
+          555,
+          499,
+          183,
+          221
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          177,
+          215
+        ],
+        "center": 69.5,
+        "foot_center": 86.0,
+        "feet": 217,
+        "edge_contact": false,
+        "phase_name": "walk_1",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "w",
+        "phase": 3,
+        "region": [
+          798,
+          499,
+          182,
+          219
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          176,
+          213
+        ],
+        "center": 70.0,
+        "foot_center": 39.0,
+        "feet": 215,
+        "edge_contact": false,
+        "phase_name": "walk_2",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "w",
+        "phase": 4,
+        "region": [
+          1041,
+          499,
+          183,
+          221
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          177,
+          215
+        ],
+        "center": 70.0,
+        "foot_center": 77.0,
+        "feet": 217,
+        "edge_contact": false,
+        "phase_name": "walk_3",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "sw",
+        "phase": 0,
+        "region": [
+          44,
+          744,
+          211,
+          212
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          205,
+          206
+        ],
+        "center": 86.5,
+        "foot_center": 98.0,
+        "feet": 208,
+        "edge_contact": false,
+        "phase_name": "idle",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "sw",
+        "phase": 1,
+        "region": [
+          290,
+          744,
+          211,
+          220
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          205,
+          214
+        ],
+        "center": 88.0,
+        "foot_center": 74.0,
+        "feet": 216,
+        "edge_contact": false,
+        "phase_name": "walk_0",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "sw",
+        "phase": 2,
+        "region": [
+          535,
+          744,
+          207,
+          220
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          201,
+          214
+        ],
+        "center": 86.0,
+        "foot_center": 84.0,
+        "feet": 216,
+        "edge_contact": false,
+        "phase_name": "walk_1",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "sw",
+        "phase": 3,
+        "region": [
+          778,
+          744,
+          209,
+          219
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          203,
+          213
+        ],
+        "center": 86.5,
+        "foot_center": 71.5,
+        "feet": 215,
+        "edge_contact": false,
+        "phase_name": "walk_2",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "sw",
+        "phase": 4,
+        "region": [
+          1022,
+          744,
+          211,
+          220
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          205,
+          214
+        ],
+        "center": 86.5,
+        "foot_center": 97.0,
+        "feet": 216,
+        "edge_contact": false,
+        "phase_name": "walk_3",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "s",
+        "phase": 0,
+        "region": [
+          47,
+          986,
+          209,
+          210
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          203,
+          204
+        ],
+        "center": 87.0,
+        "foot_center": 96.0,
+        "feet": 206,
+        "edge_contact": false,
+        "phase_name": "idle",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "s",
+        "phase": 1,
+        "region": [
+          294,
+          986,
+          210,
+          219
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          204,
+          213
+        ],
+        "center": 87.5,
+        "foot_center": 100.0,
+        "feet": 215,
+        "edge_contact": false,
+        "phase_name": "walk_0",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "s",
+        "phase": 2,
+        "region": [
+          534,
+          986,
+          213,
+          220
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          207,
+          214
+        ],
+        "center": 89.5,
+        "foot_center": 95.0,
+        "feet": 216,
+        "edge_contact": false,
+        "phase_name": "walk_1",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "s",
+        "phase": 3,
+        "region": [
+          779,
+          986,
+          210,
+          220
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          204,
+          214
+        ],
+        "center": 87.5,
+        "foot_center": 90.0,
+        "feet": 216,
+        "edge_contact": false,
+        "phase_name": "walk_2",
+        "pixel_size": 0.005490196078431373
+      },
+      {
+        "direction": "s",
+        "phase": 4,
+        "region": [
+          1024,
+          986,
+          209,
+          220
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          203,
+          214
+        ],
+        "center": 87.0,
+        "foot_center": 100.0,
+        "feet": 216,
+        "edge_contact": false,
+        "phase_name": "walk_3",
+        "pixel_size": 0.005490196078431373
+      }
+    ],
+    "jump": [
+      {
+        "direction": "n",
+        "phase": 0,
+        "region": [
+          12,
+          44,
+          153,
+          142
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          147,
+          136
+        ],
+        "center": 85.5,
+        "foot_center": 92.5,
+        "feet": 138,
+        "edge_contact": false,
+        "phase_name": "takeoff",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 1,
+        "region": [
+          171,
+          24,
+          154,
+          159
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          148,
+          153
+        ],
+        "center": 85.0,
+        "foot_center": 81.0,
+        "feet": 155,
+        "edge_contact": false,
+        "phase_name": "push_off",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 2,
+        "region": [
+          340,
+          35,
+          156,
+          152
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          150,
+          146
+        ],
+        "center": 87.0,
+        "foot_center": 88.0,
+        "feet": 148,
+        "edge_contact": false,
+        "phase_name": "ascent",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 3,
+        "region": [
+          513,
+          23,
+          162,
+          156
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          156,
+          150
+        ],
+        "center": 89.5,
+        "foot_center": 89.0,
+        "feet": 152,
+        "edge_contact": false,
+        "phase_name": "apex",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 4,
+        "region": [
+          685,
+          37,
+          158,
+          149
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          152,
+          143
+        ],
+        "center": 88.5,
+        "foot_center": 86.0,
+        "feet": 145,
+        "edge_contact": false,
+        "phase_name": "fall_start",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 5,
+        "region": [
+          855,
+          32,
+          158,
+          159
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          152,
+          153
+        ],
+        "center": 89.0,
+        "foot_center": 90.0,
+        "feet": 155,
+        "edge_contact": false,
+        "phase_name": "mid_fall",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 6,
+        "region": [
+          1027,
+          45,
+          159,
+          149
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          153,
+          143
+        ],
+        "center": 89.5,
+        "foot_center": 83.0,
+        "feet": 145,
+        "edge_contact": false,
+        "phase_name": "pre_landing",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 7,
+        "region": [
+          1213,
+          69,
+          172,
+          125
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          166,
+          119
+        ],
+        "center": 94.5,
+        "foot_center": 96.0,
+        "feet": 121,
+        "edge_contact": false,
+        "phase_name": "landing_impact",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 8,
+        "region": [
+          1406,
+          42,
+          158,
+          150
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          152,
+          144
+        ],
+        "center": 89.0,
+        "foot_center": 76.0,
+        "feet": 146,
+        "edge_contact": false,
+        "phase_name": "rebound",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "n",
+        "phase": 9,
+        "region": [
+          1580,
+          41,
+          157,
+          152
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          151,
+          146
+        ],
+        "center": 89.0,
+        "foot_center": 103.0,
+        "feet": 148,
+        "edge_contact": false,
+        "phase_name": "settled",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 0,
+        "region": [
+          13,
+          209,
+          154,
+          147
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          148,
+          141
+        ],
+        "center": 85.5,
+        "foot_center": 71.0,
+        "feet": 143,
+        "edge_contact": false,
+        "phase_name": "takeoff",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 1,
+        "region": [
+          174,
+          199,
+          155,
+          158
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          149,
+          152
+        ],
+        "center": 86.5,
+        "foot_center": 83.0,
+        "feet": 154,
+        "edge_contact": false,
+        "phase_name": "push_off",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 2,
+        "region": [
+          346,
+          205,
+          156,
+          154
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          150,
+          148
+        ],
+        "center": 86.5,
+        "foot_center": 79.5,
+        "feet": 150,
+        "edge_contact": false,
+        "phase_name": "ascent",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 3,
+        "region": [
+          514,
+          194,
+          158,
+          155
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          152,
+          149
+        ],
+        "center": 89.0,
+        "foot_center": 89.0,
+        "feet": 151,
+        "edge_contact": false,
+        "phase_name": "apex",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 4,
+        "region": [
+          689,
+          207,
+          158,
+          152
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          152,
+          146
+        ],
+        "center": 88.0,
+        "foot_center": 84.0,
+        "feet": 148,
+        "edge_contact": false,
+        "phase_name": "fall_start",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 5,
+        "region": [
+          859,
+          205,
+          157,
+          157
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          151,
+          151
+        ],
+        "center": 87.0,
+        "foot_center": 90.0,
+        "feet": 153,
+        "edge_contact": false,
+        "phase_name": "mid_fall",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 6,
+        "region": [
+          1032,
+          217,
+          155,
+          147
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          149,
+          141
+        ],
+        "center": 86.5,
+        "foot_center": 79.5,
+        "feet": 143,
+        "edge_contact": false,
+        "phase_name": "pre_landing",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 7,
+        "region": [
+          1217,
+          246,
+          171,
+          119
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          165,
+          113
+        ],
+        "center": 90.5,
+        "foot_center": 89.0,
+        "feet": 115,
+        "edge_contact": false,
+        "phase_name": "landing_impact",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 8,
+        "region": [
+          1408,
+          211,
+          158,
+          151
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          152,
+          145
+        ],
+        "center": 88.5,
+        "foot_center": 77.0,
+        "feet": 147,
+        "edge_contact": false,
+        "phase_name": "rebound",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "nw",
+        "phase": 9,
+        "region": [
+          1583,
+          212,
+          157,
+          153
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          151,
+          147
+        ],
+        "center": 89.0,
+        "foot_center": 100.0,
+        "feet": 149,
+        "edge_contact": false,
+        "phase_name": "settled",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 0,
+        "region": [
+          45,
+          379,
+          136,
+          158
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          130,
+          152
+        ],
+        "center": 51.5,
+        "foot_center": 42.0,
+        "feet": 154,
+        "edge_contact": false,
+        "phase_name": "takeoff",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 1,
+        "region": [
+          206,
+          371,
+          138,
+          160
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          132,
+          154
+        ],
+        "center": 50.0,
+        "foot_center": 51.0,
+        "feet": 156,
+        "edge_contact": false,
+        "phase_name": "push_off",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 2,
+        "region": [
+          377,
+          374,
+          140,
+          158
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          134,
+          152
+        ],
+        "center": 52.5,
+        "foot_center": 56.0,
+        "feet": 154,
+        "edge_contact": false,
+        "phase_name": "ascent",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 3,
+        "region": [
+          539,
+          363,
+          152,
+          155
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          146,
+          149
+        ],
+        "center": 61.0,
+        "foot_center": 69.0,
+        "feet": 151,
+        "edge_contact": false,
+        "phase_name": "apex",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 4,
+        "region": [
+          715,
+          381,
+          147,
+          156
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          141,
+          150
+        ],
+        "center": 58.5,
+        "foot_center": 62.0,
+        "feet": 152,
+        "edge_contact": false,
+        "phase_name": "fall_start",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 5,
+        "region": [
+          894,
+          378,
+          139,
+          164
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          133,
+          158
+        ],
+        "center": 52.0,
+        "foot_center": 55.0,
+        "feet": 160,
+        "edge_contact": false,
+        "phase_name": "mid_fall",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 6,
+        "region": [
+          1054,
+          390,
+          151,
+          152
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          145,
+          146
+        ],
+        "center": 59.0,
+        "foot_center": 76.0,
+        "feet": 148,
+        "edge_contact": false,
+        "phase_name": "pre_landing",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 7,
+        "region": [
+          1229,
+          424,
+          174,
+          120
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          168,
+          114
+        ],
+        "center": 77.0,
+        "foot_center": 74.0,
+        "feet": 116,
+        "edge_contact": false,
+        "phase_name": "landing_impact",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 8,
+        "region": [
+          1430,
+          384,
+          149,
+          157
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          143,
+          151
+        ],
+        "center": 62.5,
+        "foot_center": 69.0,
+        "feet": 153,
+        "edge_contact": false,
+        "phase_name": "rebound",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "w",
+        "phase": 9,
+        "region": [
+          1611,
+          386,
+          142,
+          158
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          136,
+          152
+        ],
+        "center": 54.5,
+        "foot_center": 70.0,
+        "feet": 154,
+        "edge_contact": false,
+        "phase_name": "settled",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 0,
+        "region": [
+          33,
+          557,
+          151,
+          151
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          145,
+          145
+        ],
+        "center": 64.0,
+        "foot_center": 75.0,
+        "feet": 147,
+        "edge_contact": false,
+        "phase_name": "takeoff",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 1,
+        "region": [
+          199,
+          547,
+          150,
+          150
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          144,
+          144
+        ],
+        "center": 68.0,
+        "foot_center": 53.0,
+        "feet": 146,
+        "edge_contact": false,
+        "phase_name": "push_off",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 2,
+        "region": [
+          364,
+          545,
+          151,
+          147
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          145,
+          141
+        ],
+        "center": 70.5,
+        "foot_center": 61.0,
+        "feet": 143,
+        "edge_contact": false,
+        "phase_name": "ascent",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 3,
+        "region": [
+          535,
+          532,
+          155,
+          152
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          149,
+          146
+        ],
+        "center": 69.5,
+        "foot_center": 66.0,
+        "feet": 148,
+        "edge_contact": false,
+        "phase_name": "apex",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 4,
+        "region": [
+          708,
+          551,
+          152,
+          154
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          146,
+          148
+        ],
+        "center": 64.5,
+        "foot_center": 67.0,
+        "feet": 150,
+        "edge_contact": false,
+        "phase_name": "fall_start",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 5,
+        "region": [
+          887,
+          552,
+          147,
+          156
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          141,
+          150
+        ],
+        "center": 60.0,
+        "foot_center": 62.0,
+        "feet": 152,
+        "edge_contact": false,
+        "phase_name": "mid_fall",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 6,
+        "region": [
+          1056,
+          563,
+          157,
+          144
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          151,
+          138
+        ],
+        "center": 67.0,
+        "foot_center": 65.5,
+        "feet": 140,
+        "edge_contact": false,
+        "phase_name": "pre_landing",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 7,
+        "region": [
+          1233,
+          594,
+          175,
+          117
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          169,
+          111
+        ],
+        "center": 78.5,
+        "foot_center": 77.0,
+        "feet": 113,
+        "edge_contact": false,
+        "phase_name": "landing_impact",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 8,
+        "region": [
+          1430,
+          555,
+          159,
+          151
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          153,
+          145
+        ],
+        "center": 68.0,
+        "foot_center": 55.0,
+        "feet": 147,
+        "edge_contact": false,
+        "phase_name": "rebound",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "sw",
+        "phase": 9,
+        "region": [
+          1604,
+          555,
+          151,
+          153
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          145,
+          147
+        ],
+        "center": 64.5,
+        "foot_center": 75.0,
+        "feet": 149,
+        "edge_contact": false,
+        "phase_name": "settled",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 0,
+        "region": [
+          34,
+          713,
+          153,
+          151
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          147,
+          145
+        ],
+        "center": 64.0,
+        "foot_center": 76.0,
+        "feet": 147,
+        "edge_contact": false,
+        "phase_name": "takeoff",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 1,
+        "region": [
+          201,
+          704,
+          155,
+          159
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          149,
+          153
+        ],
+        "center": 73.0,
+        "foot_center": 70.0,
+        "feet": 155,
+        "edge_contact": false,
+        "phase_name": "push_off",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 2,
+        "region": [
+          370,
+          699,
+          154,
+          154
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          148,
+          148
+        ],
+        "center": 65.5,
+        "foot_center": 65.0,
+        "feet": 150,
+        "edge_contact": false,
+        "phase_name": "ascent",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 3,
+        "region": [
+          533,
+          696,
+          161,
+          157
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          155,
+          151
+        ],
+        "center": 69.0,
+        "foot_center": 72.0,
+        "feet": 153,
+        "edge_contact": false,
+        "phase_name": "apex",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 4,
+        "region": [
+          708,
+          707,
+          155,
+          157
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          149,
+          151
+        ],
+        "center": 64.5,
+        "foot_center": 66.0,
+        "feet": 153,
+        "edge_contact": false,
+        "phase_name": "fall_start",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 5,
+        "region": [
+          885,
+          708,
+          150,
+          157
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          144,
+          151
+        ],
+        "center": 62.0,
+        "foot_center": 54.0,
+        "feet": 153,
+        "edge_contact": false,
+        "phase_name": "mid_fall",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 6,
+        "region": [
+          1053,
+          717,
+          161,
+          145
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          155,
+          139
+        ],
+        "center": 69.5,
+        "foot_center": 67.5,
+        "feet": 141,
+        "edge_contact": false,
+        "phase_name": "pre_landing",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 7,
+        "region": [
+          1234,
+          737,
+          176,
+          127
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          170,
+          121
+        ],
+        "center": 78.0,
+        "foot_center": 73.5,
+        "feet": 123,
+        "edge_contact": false,
+        "phase_name": "landing_impact",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 8,
+        "region": [
+          1429,
+          715,
+          155,
+          149
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          149,
+          143
+        ],
+        "center": 65.0,
+        "foot_center": 78.0,
+        "feet": 145,
+        "edge_contact": false,
+        "phase_name": "rebound",
+        "pixel_size": 0.00761904761904762
+      },
+      {
+        "direction": "s",
+        "phase": 9,
+        "region": [
+          1601,
+          715,
+          155,
+          150
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          149,
+          144
+        ],
+        "center": 65.0,
+        "foot_center": 76.0,
+        "feet": 146,
+        "edge_contact": false,
+        "phase_name": "settled",
+        "pixel_size": 0.00761904761904762
+      }
+    ],
+    "melee": [
+      {
+        "direction": "n",
+        "phase": 0,
+        "region": [
+          25,
+          17,
+          243,
+          229
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          237,
+          223
+        ],
+        "center": 129.0,
+        "foot_center": 79.0,
+        "feet": 225,
+        "edge_contact": false,
+        "phase_name": "jab",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "n",
+        "phase": 1,
+        "region": [
+          297,
+          17,
+          250,
+          229
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          244,
+          223
+        ],
+        "center": 120.0,
+        "foot_center": 160.0,
+        "feet": 225,
+        "edge_contact": false,
+        "phase_name": "cross",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "n",
+        "phase": 2,
+        "region": [
+          579,
+          17,
+          228,
+          229
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          222,
+          223
+        ],
+        "center": 128.5,
+        "foot_center": 83.0,
+        "feet": 225,
+        "edge_contact": false,
+        "phase_name": "uppercut",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "n",
+        "phase": 3,
+        "region": [
+          864,
+          17,
+          235,
+          236
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          229,
+          230
+        ],
+        "center": 125.5,
+        "foot_center": 115.0,
+        "feet": 232,
+        "edge_contact": false,
+        "phase_name": "kick",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "nw",
+        "phase": 0,
+        "region": [
+          31,
+          279,
+          234,
+          227
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          228,
+          221
+        ],
+        "center": 126.5,
+        "foot_center": 90.0,
+        "feet": 223,
+        "edge_contact": false,
+        "phase_name": "jab",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "nw",
+        "phase": 1,
+        "region": [
+          312,
+          279,
+          231,
+          238
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          225,
+          232
+        ],
+        "center": 122.0,
+        "foot_center": 145.0,
+        "feet": 234,
+        "edge_contact": false,
+        "phase_name": "cross",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "nw",
+        "phase": 2,
+        "region": [
+          601,
+          279,
+          217,
+          237
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          211,
+          231
+        ],
+        "center": 102.5,
+        "foot_center": 96.0,
+        "feet": 233,
+        "edge_contact": false,
+        "phase_name": "uppercut",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "nw",
+        "phase": 3,
+        "region": [
+          876,
+          277,
+          224,
+          238
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          218,
+          232
+        ],
+        "center": 115.0,
+        "foot_center": 124.5,
+        "feet": 234,
+        "edge_contact": false,
+        "phase_name": "kick",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "w",
+        "phase": 0,
+        "region": [
+          31,
+          539,
+          230,
+          248
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          224,
+          242
+        ],
+        "center": 111.0,
+        "foot_center": 81.0,
+        "feet": 244,
+        "edge_contact": false,
+        "phase_name": "jab",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "w",
+        "phase": 1,
+        "region": [
+          317,
+          540,
+          225,
+          245
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          219,
+          239
+        ],
+        "center": 104.0,
+        "foot_center": 71.0,
+        "feet": 241,
+        "edge_contact": false,
+        "phase_name": "cross",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "w",
+        "phase": 2,
+        "region": [
+          596,
+          537,
+          228,
+          250
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          222,
+          244
+        ],
+        "center": 101.0,
+        "foot_center": 81.0,
+        "feet": 246,
+        "edge_contact": false,
+        "phase_name": "uppercut",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "w",
+        "phase": 3,
+        "region": [
+          879,
+          538,
+          218,
+          247
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          212,
+          241
+        ],
+        "center": 112.0,
+        "foot_center": 125.0,
+        "feet": 243,
+        "edge_contact": false,
+        "phase_name": "kick",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "sw",
+        "phase": 0,
+        "region": [
+          25,
+          799,
+          244,
+          245
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          238,
+          239
+        ],
+        "center": 117.5,
+        "foot_center": 89.0,
+        "feet": 241,
+        "edge_contact": false,
+        "phase_name": "jab",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "sw",
+        "phase": 1,
+        "region": [
+          319,
+          798,
+          235,
+          247
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          229,
+          241
+        ],
+        "center": 104.0,
+        "foot_center": 71.0,
+        "feet": 243,
+        "edge_contact": false,
+        "phase_name": "cross",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "sw",
+        "phase": 2,
+        "region": [
+          602,
+          799,
+          230,
+          249
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          224,
+          243
+        ],
+        "center": 98.0,
+        "foot_center": 78.0,
+        "feet": 245,
+        "edge_contact": false,
+        "phase_name": "uppercut",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "sw",
+        "phase": 3,
+        "region": [
+          906,
+          801,
+          212,
+          246
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          206,
+          240
+        ],
+        "center": 94.0,
+        "foot_center": 95.0,
+        "feet": 242,
+        "edge_contact": false,
+        "phase_name": "kick",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "s",
+        "phase": 0,
+        "region": [
+          31,
+          1070,
+          246,
+          241
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          240,
+          235
+        ],
+        "center": 111.5,
+        "foot_center": 86.0,
+        "feet": 237,
+        "edge_contact": false,
+        "phase_name": "jab",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "s",
+        "phase": 1,
+        "region": [
+          316,
+          1070,
+          243,
+          247
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          237,
+          241
+        ],
+        "center": 112.0,
+        "foot_center": 142.0,
+        "feet": 243,
+        "edge_contact": false,
+        "phase_name": "cross",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "s",
+        "phase": 2,
+        "region": [
+          605,
+          1070,
+          230,
+          244
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          224,
+          238
+        ],
+        "center": 94.5,
+        "foot_center": 71.0,
+        "feet": 240,
+        "edge_contact": false,
+        "phase_name": "uppercut",
+        "pixel_size": 0.004765957446808511
+      },
+      {
+        "direction": "s",
+        "phase": 3,
+        "region": [
+          895,
+          1070,
+          219,
+          248
+        ],
+        "painted_bounds": [
+          3,
+          3,
+          213,
+          242
+        ],
+        "center": 94.5,
+        "foot_center": 113.0,
+        "feet": 244,
+        "edge_contact": false,
+        "phase_name": "kick",
+        "pixel_size": 0.004765957446808511
+      }
+    ]
+  }
+}

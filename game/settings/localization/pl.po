@@ -8290,3 +8290,819 @@ msgstr "Doskok Super Claw i pikowanie Nori działają poprawnie także po walkac
 
 msgid "In the behind-the-player view, stopping now keeps Fufu facing the direction you were walking."
 msgstr "W widoku zza pleców Fufu po zatrzymaniu patrzy w kierunku, w którym szedł."
+
+msgid "CHARACTER SKIN TEST"
+msgstr "TEST WYGLĄDU POSTACI"
+
+msgid "Choose a skin, then walk, jump and punch to inspect it."
+msgstr "Wybierz wygląd, a potem spaceruj, skacz i walcz na pięści, by go sprawdzić."
+
+msgid "Testing only · This session · Local appearance"
+msgstr "Tylko do testów · Na tę sesję · Wygląd lokalny"
+
+msgid "Current skin: %s"
+msgstr "Obecny wygląd: %s"
+
+msgid "Fufu · Original appearance"
+msgstr "Fufu · Oryginalny wygląd"
+
+msgid "Crispy Tofufu"
+msgstr "Chrupiący Tofufu"
+
+msgid "Firm Tofufu"
+msgstr "Twardy Tofufu"
+
+msgid "Panko Tofufu"
+msgstr "Tofufu w panko"
+
+msgid "Golden Tofufu"
+msgstr "Złocisty Tofufu"
+
+msgid "Smoked Tofufu · Steam"
+msgstr "Wędzony Tofufu · Para"
+
+msgid "Silken Tofufu"
+msgstr "Jedwabisty Tofufu"
+
+msgid "Burnt Tofufu"
+msgstr "Przypalony Tofufu"
+
+msgid "[%s] Fufu display · Test character skins"
+msgstr "[%s] Figurka Fufu · Testuj wygląd postaci"
+
+msgid "Meadow skin testing"
+msgstr "Testowanie wyglądu na łące"
+
+msgid "Interact with the 3D Fufu display near Grandma to test seven Tofufu character skins."
+msgstr "Podejdź do figurki 3D Fufu obok Babci, by przetestować siedem wyglądów Tofufu."
+
+msgid "Try their standing, walking, jumping and melee poses, then switch back to Fufu at the display."
+msgstr "Sprawdź pozy stania, chodu, skoku i walki wręcz, a potem wróć do wyglądu Fufu przy figurce."
+
+msgid "Gigalopolis reaches the coast"
+msgstr "Gigalopolis dociera do wybrzeża"
+
+msgid "Explore a much larger Gigalopolis with matching city textures, market streets and stairways to rooftop camps and lookouts."
+msgstr "Odkryj znacznie większe Gigalopolis ze spójnymi teksturami miasta, targowymi uliczkami i schodami na dachy z obozowiskami i punktami widokowymi."
+
+msgid "Follow the new beach road from the city to Embercrown, then scout the volcano from the southern watchtower."
+msgstr "Przejdź nową plażową drogą z miasta do Embercrown, a potem obejrzyj wulkan z południowej wieży obserwacyjnej."
+
+msgid "Gigalopolis · Factory Watch"
+msgstr "Gigalopolis · Fabryczna czatownia"
+
+msgid "Gigalopolis · Rooftop Camp"
+msgstr "Gigalopolis · Obóz na dachu"
+
+msgid "Gigalopolis · South Terrace"
+msgstr "Gigalopolis · Południowy taras"
+
+msgid "Gigalopolis · Sea Lookout"
+msgstr "Gigalopolis · Morski punkt widokowy"
+
+msgid "Gigalopolis · Shore Camp"
+msgstr "Gigalopolis · Nadbrzeżny obóz"
+
+msgid "Gigalopolis · Volcano Watch"
+msgstr "Gigalopolis · Wulkaniczna czatownia"
+
+msgid "ROOFTOP CAMP  ↑"
+msgstr "OBÓZ NA DACHU  ↑"
+
+msgid "SOUTH WARDS · SHORE  ↓"
+msgstr "POŁUDNIOWE DZIELNICE · WYBRZEŻE  ↓"
+
+msgid "SHORE CAMP · VOLCANO WATCH  ↓"
+msgstr "NADBRZEŻNY OBÓZ · WULKANICZNA CZATOWNIA  ↓"
+
+msgid "EMBERCROWN BEACH  >"
+msgstr "PLAŻA EMBERCROWN  >"
+
+msgid "<  GIGALOPOLIS · COAST ROAD"
+msgstr "<  GIGALOPOLIS · NADBRZEŻNA DROGA"
+
+msgid "Battle Royale"
+msgstr "Tofufu: Ostatni Kiełek"
+
+msgid "Battle Royale · 20 players"
+msgstr "Ostatni Kiełek · 20 graczy"
+
+msgid "TOFUFU ROYALE  /  20 PLAYERS"
+msgstr "TOFUFU: OSTATNI KIEŁEK  /  20 GRACZY"
+
+msgid "20 beans. One survivor. Scavenge, outrun the storm and claim the crown."
+msgstr "20 fasolek. Jeden zwycięzca. Zbieraj łupy, uciekaj przed burzą i zgarnij koronę."
+
+msgid "Find a Battle Royale match"
+msgstr "Znajdź mecz Ostatniego Kiełka"
+
+msgid "Host friends · Invite code"
+msgstr "Zaproś znajomych · Kod zaproszenia"
+
+msgid "Paste a Battle Royale invite"
+msgstr "Wklej zaproszenie do Ostatniego Kiełka"
+
+msgid "Join invite"
+msgstr "Dołącz z zaproszenia"
+
+msgid "CPU practice · Play offline"
+msgstr "Trening z botami · Graj offline"
+
+msgid "Copy friend invite"
+msgstr "Kopiuj zaproszenie dla znajomych"
+
+msgid "Start now · Fill empty seats with CPUs"
+msgstr "Zacznij teraz · Uzupełnij wolne miejsca botami"
+
+msgid "WASD move · Shift dash · Space jump · LMB attack · F punch · E loot · R reload · 3 heal · Tab map · Esc leave"
+msgstr "WASD ruch · Shift zryw · Spacja skok · LPM atak · F cios · E łup · R przeładuj · 3 leczenie · Tab mapa · Esc wyjście"
+
+msgid "Direct peer play · Some networks block connections · Authority loss ends the match"
+msgstr "Gra bezpośrednia P2P · Niektóre sieci blokują połączenia · Utrata gospodarza kończy mecz"
+
+msgid "Players: %d / 20 · CPU fill: %d"
+msgstr "Gracze: %d / 20 · Boty: %d"
+
+msgid "Resume match"
+msgstr "Wznów mecz"
+
+msgid "Next survivor"
+msgstr "Następny ocalały"
+
+msgid "Leave Battle Royale"
+msgstr "Opuść Ostatniego Kiełka"
+
+msgid "Alive: %d / 20 · KOs: %d · Storm %d · %ds"
+msgstr "Pozostali: %d / 20 · Nokauty: %d · Burza %d · %ds"
+
+msgid "HP %d · Armour %d · %s · Ammo %d · Heals %d"
+msgstr "PŻ %d · Pancerz %d · %s · Amunicja %d · Leczenie %d"
+
+msgid "CPU %d · %s"
+msgstr "Bot %d · %s"
+
+msgid "%s was eliminated"
+msgstr "%s odpada"
+
+msgid "Preparing the map · Waiting for peers"
+msgstr "Przygotowywanie mapy · Czekamy na graczy"
+
+msgid "Deploying · %ds · Loot unlocks when the match begins"
+msgstr "Rozstawianie · %ds · Łupy odblokują się na początku meczu"
+
+msgid "Tofufu Royale! %s wins"
+msgstr "Tofufu Royale! Wygrywa %s"
+
+msgid "The storm claimed every bean · Draw"
+msgstr "Burza porwała wszystkie fasolki · Remis"
+
+msgid "Placed #%d · Spectating %s · N for next survivor"
+msgstr "Miejsce #%d · Obserwujesz %s · N: następny ocalały"
+
+msgid "Storm damage! Follow the radar line to safety"
+msgstr "Burza zadaje obrażenia! Idź za linią na radarze do bezpiecznej strefy"
+
+msgid "Bare fists"
+msgstr "Gołe piąstki"
+
+msgid "Finding reachable Battle Royale players…"
+msgstr "Szukamy dostępnych graczy Ostatniego Kiełka…"
+
+msgid "Waiting for players · Empty seats become CPUs"
+msgstr "Czekamy na graczy · Wolne miejsca zajmą boty"
+
+msgid "The match authority disconnected. Return to the lobby to play again."
+msgstr "Gospodarz meczu utracił połączenie. Wróć do lobby, aby zagrać ponownie."
+
+msgid "Could not join this match. Retry discovery or use CPU practice."
+msgstr "Nie udało się dołączyć do meczu. Ponów wyszukiwanie lub wybierz trening z botami."
+
+msgid "Match loading timed out. Return to the lobby and retry."
+msgstr "Przekroczono czas wczytywania meczu. Wróć do lobby i spróbuj ponownie."
+
+msgid "The match authority stopped responding. Return to the lobby and retry."
+msgstr "Gospodarz meczu nie odpowiada. Wróć do lobby i spróbuj ponownie."
+
+msgid "This Battle Royale invite is invalid. Copy the complete invite from your friend."
+msgstr "Zaproszenie do Ostatniego Kiełka jest nieprawidłowe. Skopiuj całe zaproszenie od znajomego."
+
+msgid "Invite copied · Send it to your friends"
+msgstr "Zaproszenie skopiowane · Wyślij je znajomym"
+
+msgid "Choose a Tofufu and a match type"
+msgstr "Wybierz Tofufu i rodzaj meczu"
+
+msgid "CPU fill starts in %ds"
+msgstr "Uzupełnienie botami za %ds"
+
+msgid "Building the Battle Royale map…"
+msgstr "Budujemy mapę Ostatniego Kiełka…"
+
+msgid "Tofufu Royale arrives"
+msgstr "Nadchodzi Ostatni Kiełek"
+
+msgid "Battle Royale brings 20 survivors to the adventure map, with all seven Tofufu skins, scavenged gear and a closing storm."
+msgstr "Ostatni Kiełek sprowadza na mapę przygody 20 ocalałych, siedem skórek Tofufu, łupy i zaciskającą się burzę."
+
+msgid "Find a peer match, invite friends with a private code or practise offline; CPUs fill the empty seats."
+msgstr "Znajdź mecz P2P, zaproś znajomych prywatnym kodem lub trenuj offline; boty zajmą wolne miejsca."
+
+msgid "Battle matches use equal starting stats and separate temporary gear, leaving your adventures untouched."
+msgstr "Mecze zaczynają się z równymi statystykami i osobnym tymczasowym ekwipunkiem, zachowując stan twoich przygód."
+
+msgid "E loot · R reload · 3 heal · Tab map · Esc leave"
+msgstr "E łup · R przeładuj · 3 leczenie · Tab mapa · Esc wyjście"
+
+msgid "HP %d · Armour %d · %s · Ammo %d / %d · Heals %d"
+msgstr "PŻ %d · Pancerz %d · %s · Amunicja %d / %d · Leczenie %d"
+
+msgid "Keep the Royale going"
+msgstr "Royale trwa dalej"
+
+msgid "If the Battle Royale host leaves, the match pauses while connected players choose a replacement and restore a shared checkpoint."
+msgstr "Gdy host Battle Royale opuści grę, mecz zostaje wstrzymany, a połączeni gracze wybierają następcę i przywracają wspólny punkt kontrolny."
+
+msgid "Movement, combat and the storm stay paused during recovery; departed players become CPUs when play resumes."
+msgstr "Podczas odzyskiwania meczu ruch, walka i burza są wstrzymane; po wznowieniu gry nieobecnych graczy zastępują boty."
+
+msgid "Match paused · Finding a new host"
+msgstr "Mecz wstrzymany · Szukanie nowego hosta"
+
+msgid "Match paused · Restoring the shared checkpoint"
+msgstr "Mecz wstrzymany · Przywracanie wspólnego punktu kontrolnego"
+
+msgid "New host found · Resuming shortly"
+msgstr "Nowy host znaleziony · Za chwilę wracamy do gry"
+
+msgid "Movement, combat and the storm are paused. Resuming from the last shared checkpoint."
+msgstr "Ruch, walka i burza są wstrzymane. Gra zostanie wznowiona od ostatniego wspólnego punktu kontrolnego."
+
+msgid "The host left before a recovery checkpoint was shared. Please start a new match."
+msgstr "Host opuścił grę przed udostępnieniem punktu kontrolnego. Rozpocznij nowy mecz."
+
+msgid "Not enough connected players could agree on a new host. Please start a new match."
+msgstr "Zbyt mało połączonych graczy mogło uzgodnić nowego hosta. Rozpocznij nowy mecz."
+
+msgid "Your connection was replaced by a CPU during host recovery. Please return to the lobby."
+msgstr "Podczas zmiany hosta twoją postać przejął bot. Wróć do lobby."
+
+msgid "Direct peer play · Some networks block connections · Host recovery pauses the match"
+msgstr "Bezpośrednia gra między graczami · Niektóre sieci blokują połączenia · Zmiana hosta wstrzymuje mecz"
+
+msgid "The replacement host disconnected during recovery. Please start a new match."
+msgstr "Nowy host rozłączył się podczas odzyskiwania meczu. Rozpocznij nowy mecz."
+
+msgid "Tofufu animation frames stay centred, and Battle Royale walking faces the direction you move."
+msgstr "Klatki animacji Tofufu pozostają wyśrodkowane, a podczas chodzenia w Battle Royale postać patrzy w kierunku ruchu."
+
+msgid "1 / 2 weapons · LMB attack · RMB aim / special · F punch · E loot · R reload · 3 heal · Tab map"
+msgstr "1 / 2 broń · LPM atak · PPM cel / zdolność · F pięść · E łup · R przeładuj · 3 lecz · Tab mapa"
+
+msgid "HP %d · Armour %d · SP %d · %s · Magazine %d · Reload %.1fs · Milk %d · Heals %d"
+msgstr "HP %d · Pancerz %d · SP %d · %s · Magazynek %d · Przeładowanie %.1fs · Mleko %d · Leczenie %d"
+
+msgid "Adventure combat in the Royale"
+msgstr "Przygodowa walka w Royale"
+
+msgid "Battle Royale now uses adventure shooting, recoil, reloads, directional guarding, melee combos and weapon specials."
+msgstr "Battle Royale korzysta teraz z przygodowego strzelania, odrzutu, przeładowania, kierunkowej gardy, kombinacji ciosów i specjalnych zdolności broni."
+
+msgid "Everyone starts with the same knife, soybean gun, health, armour and stamina; scavenged adventure weapons use match balance without saved levels or enhancements."
+msgstr "Każdy zaczyna z takim samym nożem, pistoletem sojowym, zdrowiem, pancerzem i wytrzymałością; zdobyta przygodowa broń ma balans meczowy bez zapisanych poziomów i ulepszeń."
+
+msgid "Host recovery preserves ammunition, stamina, milk and special cooldowns, then clears unfinished attacks before play resumes."
+msgstr "Odzyskiwanie gospodarza zachowuje amunicję, wytrzymałość, mleko i czasy odnowienia zdolności, a przed wznowieniem gry usuwa niedokończone ataki."
+
+msgid "RMB: guard · Release LMB: melee combo"
+msgstr "PPM: garda · Puść LPM: kombinacja ciosów"
+
+msgid "RMB: precision aim · Hold LMB: ricochet"
+msgstr "PPM: dokładne celowanie · Przytrzymaj LPM: rykoszet"
+
+msgid "RMB: precision aim · LMB: pressure stream"
+msgstr "PPM: dokładne celowanie · LPM: strumień ciśnieniowy"
+
+msgid "Hold RMB: flame arrow · Special %.1fs"
+msgstr "Przytrzymaj PPM: ognista strzała · Zdolność %.1fs"
+
+msgid "Hold RMB: Super Claw · Special %.1fs"
+msgstr "Przytrzymaj PPM: Super Szpon · Zdolność %.1fs"
+
+msgid "RMB: Nori plunge · Special %.1fs"
+msgstr "PPM: pikowanie Nori · Zdolność %.1fs"
+
+msgid "RMB: Podburst · Special %.1fs"
+msgstr "PPM: Wybuch Strąka · Zdolność %.1fs"
+
+msgid "RMB: tornado · Special %.1fs"
+msgstr "PPM: tornado · Zdolność %.1fs"
+
+msgid "1/2 gear · LMB attack · RMB special · E loot · R reload · 3 heal"
+msgstr "1/2 broń · LPM atak · PPM zdolność · E łup · R przeładuj · 3 lecz"
+
+msgid "1 / 2 weapons · LMB attack · RMB aim / special · F punch · E loot · Q drop · R reload · 3 heal · Tab map"
+msgstr "1 / 2 broń · LPM atak · PPM cel / zdolność · F pięść · E łup · Q upuść · R przeładuj · 3 lecz · Tab mapa"
+
+msgid "Loot, pack and survive"
+msgstr "Zbieraj, pakuj i przetrwaj"
+
+msgid "Random chests are spread across the Battle Royale map, with the same chances of weapons, armour, backpacks and food everywhere."
+msgstr "Losowe skrzynie są rozmieszczone po mapie Battle Royale. Wszędzie masz takie same szanse na broń, pancerz, plecaki i jedzenie."
+
+msgid "Choose nearby drops, manage your temporary backpack, wear matching armour sets and inspect your match stats."
+msgstr "Wybieraj pobliskie łupy, zarządzaj tymczasowym plecakiem, zakładaj pasujące części pancerza i sprawdzaj statystyki meczu."
+
+msgid "Soy Milk, apples and vegetables restore health during the match; eliminated survivors drop their gear, and host recovery preserves loot and healing."
+msgstr "Mleko sojowe, jabłka i warzywa przywracają zdrowie w meczu. Pokonani gracze upuszczają ekwipunek, a zmiana gospodarza zachowuje łupy i leczenie."
+
+msgid "Temporary match armour. Four matching pieces activate a set bonus; protection is capped at 25%."
+msgstr "Tymczasowy pancerz na mecz. Cztery pasujące części włączają premię zestawu. Ochrona wynosi najwyżej 25%."
+
+msgid "Per piece: %d%% protection."
+msgstr "Każda część: %d%% ochrony."
+
+msgid "Full set: 25% protection, damage +15%, attack speed +10%. Divine aura."
+msgstr "Pełny zestaw: 25% ochrony, obrażenia +15%, szybkość ataku +10%. Boska aura."
+
+msgid "Armour %d / 4"
+msgstr "Pancerz %d / 4"
+
+msgid "HP %.0f / 100 · Armour %.0f / 100 · SP %.0f / 100"
+msgstr "PŻ %.0f / 100 · Osłona %.0f / 100 · PW %.0f / 100"
+
+msgid "Backpack: %d / %d slots · Protection: %d%%"
+msgstr "Plecak: %d / %d miejsc · Ochrona: %d%%"
+
+msgid "Run speed %.1f · Melee ×%.2f · Ranged ×%.2f · Attack speed ×%.2f"
+msgstr "Szybkość biegu %.1f · Walka wręcz ×%.2f · Atak dystansowy ×%.2f · Szybkość ataku ×%.2f"
+
+msgid "Complete set: %s"
+msgstr "Pełny zestaw: %s"
+
+msgid "Healing pending: %.0f HP · Apple regeneration: %.0fs"
+msgstr "Pozostałe leczenie: %.0f PŻ · Regeneracja z jabłek: %.0fs"
+
+msgid "Everything in this backpack and all equipment disappear when this match ends."
+msgstr "Zawartość plecaka i cały ekwipunek znikają po zakończeniu tego meczu."
+
+msgid "Match stats"
+msgstr "Statystyki meczu"
+
+msgid "← Match stats"
+msgstr "← Statystyki meczu"
+
+msgid "Your equipment changes these stats for this match."
+msgstr "Twój ekwipunek zmienia te statystyki tylko w tym meczu."
+
+msgid "Nearby loot"
+msgstr "Pobliskie łupy"
+
+msgid "Choose what to carry. All chests share the same item chances."
+msgstr "Wybierz, co zabierzesz. Każda skrzynia ma takie same szanse na przedmioty."
+
+msgid "No loose items in reach. Move closer to a chest or a dropped item."
+msgstr "Brak przedmiotów w zasięgu. Podejdź do skrzyni lub upuszczonego łupu."
+
+msgid "Checking item…"
+msgstr "Sprawdzanie przedmiotu…"
+
+msgid "Item action complete."
+msgstr "Gotowe."
+
+msgid "Could not move this item. Check your space, distance and current equipment."
+msgstr "Nie można przenieść przedmiotu. Sprawdź wolne miejsce, odległość i założony ekwipunek."
+
+msgid "Backpack · B"
+msgstr "Plecak · B"
+
+msgid "Take"
+msgstr "Zabierz"
+
+msgid "B bag · I stats · E loot · 1/2 gear · 3–6 support"
+msgstr "B plecak · I statystyki · E łup · 1/2 broń · 3–6 wsparcie"
+
+msgid "B backpack · I match stats · E chest / loot · 1 / 2 weapons · 3–6 support · Q drop · R reload · Tab map"
+msgstr "B plecak · I statystyki · E skrzynia / łup · 1 / 2 broń · 3–6 wsparcie · Q upuść · R przeładuj · Tab mapa"
+
+msgid "Shift-click to equip. Right-click food to use it.\nDrag outside to drop. B / Esc closes the bag.\nI opens match stats. The match keeps running."
+msgstr "Shift + klik, by założyć. PPM na jedzeniu, by użyć.\nPrzeciągnij poza okno, by upuścić. B / Esc zamyka plecak.\nI otwiera statystyki meczu. Mecz trwa dalej."
+
+msgid "Run speed %.1f · Melee damage ×%.2f · Ranged damage ×%.2f\nMelee speed ×%.2f · Fire rate ×%.2f"
+msgstr "Szybkość biegu %.1f · Obrażenia wręcz ×%.2f · Obrażenia dystansowe ×%.2f\nSzybkość walki wręcz ×%.2f · Szybkostrzelność ×%.2f"
+
+msgid "Hold and release LMB for melee combos. RMB guards. Match weapons have no saved level or training bonuses."
+msgstr "Przytrzymaj i puść LPM, aby wykonać kombo wręcz. PPM blokuje. Broń w meczu nie korzysta z zapisanych premii poziomu ani treningu."
+
+msgid "LMB fires soybeans. R reloads the nine-shot magazine; RMB aims precisely. Hold LMB for a charged ricochet."
+msgstr "LPM strzela soją. R przeładowuje magazynek na dziewięć strzałów; PPM celuje precyzyjnie. Przytrzymaj LPM, aby naładować rykoszet."
+
+msgid "Melee combos with a pushing Podburst on RMB. Podburst has a three-second cooldown."
+msgstr "Kombo wręcz i odpychający Strąkopodmuch pod PPM. Strąkopodmuch odnawia się przez trzy sekundy."
+
+msgid "Long-reaching melee combos. Hold RMB to rise and steer, then release to plunge: 75 SP, triple damage in a 2.6m radius."
+msgstr "Długie kombo wręcz. Przytrzymaj PPM, aby wznieść się i sterować, a potem puść, aby pikować: 75 PW, potrójne obrażenia w promieniu 2,6 m."
+
+msgid "Hold and release LMB for charged melee strikes. RMB performs a sweeping tornado attack."
+msgstr "Przytrzymaj i puść LPM, aby wykonać ładowane uderzenia wręcz. PPM wywołuje szeroki atak tornadem."
+
+msgid "LMB: unarmed combos. Hold RMB for a Super Claw dash and rift cut: 20 SP, eight-second cooldown. Held Paws improve movement and reduce dash cost."
+msgstr "LPM: kombo bez broni. Przytrzymaj PPM, aby wykonać doskok Super Szponu i cięcie szczeliną: 20 PW, osiem sekund odnowienia. Założone Łapy przyspieszają ruch i zmniejszają koszt doskoku."
+
+msgid "A pressure stream fuelled by a milk tank. RMB aims precisely; release LMB to let the tank refill."
+msgstr "Strumień pod ciśnieniem zasilany zbiornikiem mleka. PPM celuje precyzyjnie; puść LPM, aby zbiornik się uzupełnił."
+
+msgid "LMB fires an arrow, followed by a two-second reload. Hold RMB for a flame arrow: 25 SP, six-second special cooldown."
+msgstr "LPM wystrzeliwuje strzałę, a potem następuje dwusekundowe przeładowanie. Przytrzymaj PPM, aby wystrzelić płonącą strzałę: 25 PW, sześć sekund odnowienia zdolności."
+
+msgid "HP %d · Armour %d · SP %d · %s · Magazine %d · Reload %.1fs · Food %d"
+msgstr "PŻ %d · Pancerz %d · PW %d · %s · Magazynek %d · Przeład. %.1fs · Jedzenie %d"
+
+msgid " · Milk tank %d"
+msgstr " · Zbiornik mleka %d"
+
+msgid "Up to 20 beans. One survivor. Scavenge, outrun the storm and claim the crown."
+msgstr "Do 20 fasolek. Jeden zwycięzca. Zbieraj sprzęt, umykaj przed burzą i zgarnij koronę."
+
+msgid "CPU opponents"
+msgstr "Przeciwnicy CPU"
+
+msgid "CPU difficulty"
+msgstr "Poziom CPU"
+
+msgid "Easy"
+msgstr "Łatwy"
+
+msgid "Normal"
+msgstr "Normalny"
+
+msgid "Hard"
+msgstr "Trudny"
+
+msgid "The host chooses CPU settings."
+msgstr "Ustawienia CPU wybiera gospodarz."
+
+msgid "Up to 20 survivors total. Fewer CPUs reduce simulation work. Difficulty changes reactions and aim; health and damage stay equal."
+msgstr "Łącznie do 20 uczestników. Mniej CPU odciąża symulację. Poziom zmienia reakcje i celność; zdrowie i obrażenia pozostają równe."
+
+msgid "CPUs this match: %d · Total survivors: %d / 20"
+msgstr "CPU w meczu: %d · Łącznie uczestników: %d / 20"
+
+msgid "Start match"
+msgstr "Rozpocznij mecz"
+
+msgid "Players: %d / 20"
+msgstr "Gracze: %d / 20"
+
+msgid "Waiting for players · Choose CPUs or invite friends"
+msgstr "Czekamy na graczy · Wybierz CPU lub zaproś znajomych"
+
+msgid "Add a CPU or invite a friend to start the match."
+msgstr "Dodaj CPU lub zaproś znajomego, aby rozpocząć mecz."
+
+msgid "Match starts in %ds"
+msgstr "Mecz zacznie się za %ds"
+
+msgid "Choose your Royale rivals"
+msgstr "Wybierz rywali w Royale"
+
+msgid "Choose 0–19 CPUs for Battle Royale, capped at 20 survivors with friends; smaller matches simulate fewer opponents."
+msgstr "Wybierz 0–19 CPU w Battle Royale, do 20 uczestników łącznie ze znajomymi; mniejsze mecze symulują mniej przeciwników."
+
+msgid "Pick Easy, Normal or Hard CPU reactions and aim, with equal health and damage; host recovery keeps the selected settings."
+msgstr "Wybierz łatwe, normalne lub trudne CPU o różnych reakcjach i celności, z równym zdrowiem i obrażeniami; zmiana gospodarza zachowuje ustawienia."
+
+msgid "Battle Royale · Up to 50 CPUs"
+msgstr "Ostatni Kiełek · Do 50 CPU"
+
+msgid "TOFUFU ROYALE  /  50 CPUs"
+msgstr "TOFUFU: OSTATNI KIEŁEK  /  50 CPU"
+
+msgid "Up to 50 CPU rivals. One survivor. Scavenge, outrun the storm and claim the crown."
+msgstr "Do 50 rywali CPU. Jeden zwycięzca. Zbieraj sprzęt, umykaj przed burzą i zgarnij koronę."
+
+msgid "Up to 50 CPUs and 20 players. Fewer CPUs reduce simulation work. Difficulty changes reactions and aim; health and damage stay equal."
+msgstr "Do 50 CPU i 20 graczy. Mniej CPU odciąża symulację. Poziom zmienia reakcje i celność; zdrowie i obrażenia pozostają równe."
+
+msgid "CPUs this match: %d · Total survivors: %d"
+msgstr "CPU w meczu: %d · Łącznie uczestników: %d"
+
+msgid "Alive: %d / %d · KOs: %d · Storm %d · %ds"
+msgstr "Pozostali: %d / %d · KO: %d · Burza %d · %ds"
+
+msgid "A bigger Royale rumble"
+msgstr "Większa rozróba w Royale"
+
+msgid "Battle Royale now supports up to 50 CPUs alongside your friends, with Easy, Normal and Hard difficulty."
+msgstr "Ostatni Kiełek obsługuje teraz do 50 CPU obok znajomych, z łatwym, normalnym i trudnym poziomem."
+
+msgid "Larger matches spread their starting positions, display the actual survivor total and preserve every fighter and item during host recovery."
+msgstr "Większe mecze rozpraszają pozycje startowe, pokazują rzeczywistą liczbę uczestników i zachowują wszystkich wojowników oraz przedmioty przy zmianie gospodarza."
+
+msgid "Team mode"
+msgstr "Tryb drużynowy"
+
+msgid "Solo"
+msgstr "Solo"
+
+msgid "Duos"
+msgstr "Duety"
+
+msgid "Duos pair players in lobby order. CPUs complete pairs; the CPU total adjusts to keep teams even. At least two teams are needed."
+msgstr "W duetach gracze łączą się w pary według kolejności w lobby. Boty uzupełniają pary, a ich liczba dostosowuje się do równych drużyn. Potrzebne są co najmniej dwie drużyny."
+
+msgid "Duos need two teams. Add more CPUs or invite more friends."
+msgstr "Duety wymagają dwóch drużyn. Dodaj więcej botów lub zaproś kolejnych znajomych."
+
+msgid "Up to 50 CPUs. Survive solo or with your duo, scavenge gear and outrun the storm."
+msgstr "Do 50 botów. Przetrwaj solo lub w duecie, zbieraj wyposażenie i uciekaj przed burzą."
+
+msgid "Duo %d"
+msgstr "Duet %d"
+
+msgid "Choose your soybean plant"
+msgstr "Wybierz swoją roślinę soi"
+
+msgid "Pick a green plant on the map or use the list. Gold is yours; grey is taken."
+msgstr "Wybierz zieloną roślinę na mapie lub z listy. Złota jest twoja, szara jest zajęta."
+
+msgid "Blue marks your teammate. Teammates may share a plant."
+msgstr "Niebieska oznacza partnera. Możecie wyjść z tej samej rośliny."
+
+msgid "Emerge here"
+msgstr "Wyjdź tutaj"
+
+msgid "Leave"
+msgstr "Wyjdź"
+
+msgid "Soybean plant #%d"
+msgstr "Roślina soi nr %d"
+
+msgid "Taken"
+msgstr "Zajęta"
+
+msgid "Teammate"
+msgstr "Partner"
+
+msgid "Plant confirmed · Waiting for the other players"
+msgstr "Roślina potwierdzona · Czekamy na pozostałych graczy"
+
+msgid "Choose, then confirm your plant"
+msgstr "Wybierz i potwierdź roślinę"
+
+msgid "Auto deployment in %ds"
+msgstr "Automatyczne wyjście za %ds"
+
+msgid "This plant is taken or already confirmed. Choose another available plant."
+msgstr "Ta roślina jest zajęta lub wybór został już potwierdzony. Wybierz inną wolną roślinę."
+
+msgid "Could not safely deploy at this plant. Please start a new match."
+msgstr "Nie udało się bezpiecznie wyjść z tej rośliny. Rozpocznij nowy mecz."
+
+msgid "Your soybean plant is opening · Get ready!"
+msgstr "Twój strąk soi się otwiera · Przygotuj się!"
+
+msgid "Tofufu Royale! %s and %s win"
+msgstr "Tofufu Royale! Wygrywają %s i %s"
+
+msgid "Duo partner: %s · %d HP · Teams left: %d"
+msgstr "Partner: %s · %d PŻ · Pozostałe drużyny: %d"
+
+msgid "Your duo is still in the match · Spectating %s"
+msgstr "Twój duet nadal gra · Obserwujesz: %s"
+
+msgid "Sprout together in the Royale"
+msgstr "Wykiełkujcie razem w Royale"
+
+msgid "Choose a soybean plant before the Royale begins; rivals reserve different plants, and everyone emerges before combat starts."
+msgstr "Przed rozpoczęciem Royale wybierz roślinę soi. Rywale rezerwują różne rośliny, a wszyscy wychodzą z nich przed rozpoczęciem walki."
+
+msgid "Play Duos with a friend against CPU teams, share a plant if you like, and win together with friendly damage disabled."
+msgstr "Graj w duecie ze znajomym przeciw drużynom botów. Możecie wyjść z jednej rośliny i wspólnie wygrać bez obrażeń od sojuszników."
+
+msgid "Host recovery preserves plant reservations, the deployment countdown and your duo."
+msgstr "Zmiana gospodarza zachowuje rezerwacje roślin, odliczanie do wyjścia i skład duetu."
+
+msgid "Gigalopolis spreads east"
+msgstr "Gigalopolis rozrasta się na wschód"
+
+msgid "Gigalopolis now stretches east across the width of Embercrown, with connected avenues, planted squares and a wider shoreline."
+msgstr "Gigalopolis rozciąga się teraz na wschód na szerokość Embercrown, z połączonymi alejami, zielonymi skwerami i szerszym wybrzeżem."
+
+msgid "Explore new terraced homes, vaulted depots, workshops, market arcades, courtyard halls and towers with matching textures and more rooftop camps."
+msgstr "Odkryj nowe szeregowce, magazyny ze sklepieniami, warsztaty, targowe arkady, gmachy z dziedzińcami i wieże ze spójnymi teksturami oraz kolejnymi obozowiskami na dachach."
+
+msgid "Gigalopolis · Grand Market"
+msgstr "Gigalopolis · Wielki targ"
+
+msgid "Gigalopolis · Civic Courtyard"
+msgstr "Gigalopolis · Miejski dziedziniec"
+
+msgid "Gigalopolis · East Clocktower"
+msgstr "Gigalopolis · Wschodnia wieża zegarowa"
+
+msgid "EASTERN ROOFTOP CAMP  ↑"
+msgstr "WSCHODNI OBÓZ NA DACHU  ↑"
+
+msgid "GIGALOPOLIS · EASTERN QUARTERS  >"
+msgstr "GIGALOPOLIS · WSCHODNIE DZIELNICE  >"
+
+msgid "Open supply chest"
+msgstr "Otwórz skrzynię z zapasami"
+
+msgid "Gigalopolis doors are open"
+msgstr "Drzwi Gigalopolis stoją otworem"
+
+msgid "Walk into Gigalopolis homes, shops, workshops and civic buildings, with furnished rooms and roof cutaways."
+msgstr "Wejdź do domów, sklepów, warsztatów i gmachów Gigalopolis, z urządzonymi wnętrzami i dachami odsłaniającymi widok środka."
+
+msgid "Discover 18 one-time supply chests with modest food, materials and occasional basic equipment. Opened chests and remaining loot persist in solo and co-op saves."
+msgstr "Odkryj 18 jednorazowych skrzyń z niewielkimi zapasami żywności, materiałów i sporadycznym podstawowym ekwipunkiem. Otwarte skrzynie i niepodniesione łupy pozostają w zapisach solo oraz kooperacji."
+msgid "Gunfire · 100 m · 2 s"
+msgstr "Strzały · 100 m · 2 s"
+
+msgid "Watch for nearby gunfire"
+msgstr "Wypatruj pobliskich strzałów"
+
+msgid "Nearby enemy shots leave a fading red dot on your Battle Royale map for two seconds within 100 metres; each dot stays at the shot's origin."
+msgstr "Strzały wrogów w promieniu 100 metrów zostawiają na mapie Battle Royale czerwoną kropkę, która znika po dwóch sekundach i pozostaje w miejscu oddania strzału."
+
+msgid "Armour regenerates to 50 after 8 seconds without damage. Health needs food."
+msgstr "Pancerz odnawia się do 50 po 8 sekundach bez obrażeń. Zdrowie wymaga jedzenia."
+
+msgid "Match results"
+msgstr "Wyniki meczu"
+
+msgid "Ready for rematch"
+msgstr "Gotowość do rewanżu"
+
+msgid "Play again"
+msgstr "Zagraj ponownie"
+
+msgid "Cancel ready"
+msgstr "Cofnij gotowość"
+
+msgid "Spectate"
+msgstr "Obserwuj"
+
+msgid "Goals · Chests %d/3 · Damage %d/100 · Survive %ds/90s"
+msgstr "Cele · Skrzynie %d/3 · Obrażenia %d/100 · Przetrwaj %ds/90s"
+
+msgid "Storm closing · %ds · Next zone %dm"
+msgstr "Burza się zwęża · %ds · Następna strefa %dm"
+
+msgid "Storm moves in %ds · Next zone %dm"
+msgstr "Burza ruszy za %ds · Następna strefa %dm"
+
+msgid "Final showdown · %d teams · Next zone %dm"
+msgstr "Finał · Drużyny: %d · Następna strefa %dm"
+
+msgid "TOFUFU ROYALE! Victory"
+msgstr "TOFUFU ROYALE! Zwycięstwo"
+
+msgid "Your round · Placed #%d"
+msgstr "Twój mecz · Miejsce #%d"
+
+msgid "KOs: %d · Damage: %d · Chests: %d\nSurvived: %ds · Goals completed: %d/3"
+msgstr "KO: %d · Obrażenia: %d · Skrzynie: %d\nCzas przetrwania: %ds · Ukończone cele: %d/3"
+
+msgid "Match XP +%d · Cosmetic career progress only"
+msgstr "PD za mecz +%d · Wyłącznie kosmetyczny postęp kariery"
+
+msgid "The round is still running. Spectate, or leave with your earned progress."
+msgstr "Mecz nadal trwa. Obserwuj lub wyjdź, zachowując zdobyty postęp."
+
+msgid "Royale level %d · %d / %d XP"
+msgstr "Poziom Royale %d · %d / %d PD"
+
+msgid "Practice: %d rounds · %d wins | Peers: %d rounds · %d wins"
+msgstr "Trening: %d meczów · %d zwycięstw | P2P: %d meczów · %d zwycięstw"
+
+msgid "Rematch ready: %d / %d · Waiting for everyone"
+msgstr "Gotowość do rewanżu: %d / %d · Czekamy na wszystkich"
+
+msgid "One more Royale"
+msgstr "Jeszcze jedno Royale"
+
+msgid "Royale storms now lead to different dry finale clearings, with next-circle previews, rotation guidance and clearer combat feedback."
+msgstr "Burze Royale prowadzą teraz do różnych suchych polan finałowych. Zobaczysz następny krąg, wskazówki dojścia i czytelniejsze efekty trafień."
+
+msgid "Complete looting, damage and survival goals, review your round and build a cosmetic Royale career with separate practice and peer records."
+msgstr "Wykonuj cele zbierania łupów, zadawania obrażeń i przetrwania. Sprawdzaj wyniki i rozwijaj kosmetyczną karierę Royale z osobnymi rekordami treningu i P2P."
+
+msgid "Ready up for another round with your connected friends. Armour recovers between fights, and CPUs handle cover and regroup with their duo."
+msgstr "Zgłoście gotowość do kolejnego meczu ze znajomymi w pokoju. Pancerz odnawia się między walkami, a boty omijają osłony i wracają do partnera."
+
+msgid "Armour: 50 after 8s · Health: food"
+msgstr "Pancerz: 50 po 8s · Zdrowie: jedzenie"
+
+msgid "Dashed ring: next zone"
+msgstr "Przerywany krąg: następna strefa"
+
+msgid "Go here · %s"
+msgstr "Tędy · %s"
+
+msgid "Danger · %s"
+msgstr "Niebezpieczeństwo · %s"
+
+msgid "B bag · I stats · E loot · 1/2 gear · 3–6 support · G/H mark"
+msgstr "B plecak · I statystyki · E łup · 1/2 broń · 3–6 wsparcie · G/H znacznik"
+
+msgid "B backpack · I match stats · E chest / loot · 1 / 2 weapons · 3–6 support · Q drop · R reload · Tab map · G route / H danger"
+msgstr "B plecak · I statystyki · E skrzynia / łup · 1 / 2 broń · 3–6 wsparcie · Q upuść · R przeładuj · Tab mapa · G trasa / H zagrożenie"
+
+msgid "Mark a route with G or danger with H; only your duo sees these brief callouts."
+msgstr "Oznacz trasę klawiszem G lub zagrożenie klawiszem H. Te krótkie znaczniki widzi tylko twój duet."
+
+msgid "After this round: %s"
+msgstr "Po tym meczu: %s"
+
+#: Battle Royale hunts
+msgid "Up to 50 CPUs. Survive solo or with your duo, scavenge gear, hunt adventure mobs and outrun the storm."
+msgstr "Do 50 botów. Przetrwaj solo lub w duecie, zbieraj sprzęt, poluj na potwory z przygody i uciekaj przed burzą."
+
+#: Battle Royale hunts
+msgid "Hunts completed: %d"
+msgstr "Ukończone polowania: %d"
+
+#: Battle Royale hunts
+msgid "Risk a Royale hunt"
+msgstr "Zaryzykuj polowanie w Royale"
+
+#: Battle Royale hunts
+msgid "Roaming snails, armored snails and wild bees now threaten Royale survivors and CPUs. Hunt them for guaranteed food and useful temporary gear."
+msgstr "Wędrujące ślimaki, ślimaki pancerne i dzikie pszczoły zagrażają teraz graczom i botom w Royale. Poluj na nie, by zdobyć gwarantowane jedzenie i przydatny sprzęt na tę rundę."
+
+#: Battle Royale hunts
+msgid "Hunts are spread across the map, never respawn during a round and survive paused host recovery without duplicating rewards."
+msgstr "Cele polowań są rozsiane po mapie, nie odradzają się w trakcie rundy, a zmiana gospodarza z pauzą zachowuje ich stan bez powielania nagród."
+
+#: game/ui/menu/update_log.gd
+msgid "Meet Firm Tofufu"
+msgstr "Poznaj Twardego Tofufu"
+
+#: game/ui/menu/update_log.gd
+msgid "The green-headband character is Firm Tofufu in the skin selector and Battle Royale."
+msgstr "Postać z zieloną opaską to Twardy Tofufu w wyborze wyglądu i Battle Royale."
+
+msgid "Common"
+msgstr "Pospolity"
+
+msgid "Rare"
+msgstr "Rzadki"
+
+msgid "Legendary"
+msgstr "Legendarny"
+
+msgid "RANGED!"
+msgstr "STRZAŁ!"
+
+msgid "Common · Fast, dependable melee combos and projectile reflection with guard."
+msgstr "Pospolity · Szybkie, niezawodne kombinacje wręcz i odbijanie pocisków gardą."
+
+msgid "Common · Reliable automatic fire: 18 body damage, nine shots, 90m range. Reload and headshots keep it competitive."
+msgstr "Pospolity · Niezawodny ogień automatyczny: 18 obrażeń w korpus, dziewięć strzałów, zasięg 90 m. Przeładowanie i trafienia w głowę pozwalają skutecznie walczyć."
+
+msgid "Rare · Melee damage +12%. Podburst controls nearby enemies and creates space."
+msgstr "Rzadki · Obrażenia wręcz +12%. Strączkowy Wybuch odpycha pobliskich wrogów i daje przestrzeń."
+
+msgid "Rare · Melee damage +8%, attack speed +4%. Longer reach and a powerful aerial plunge."
+msgstr "Rzadki · Obrażenia wręcz +8%, szybkość ataku +4%. Większy zasięg i potężne uderzenie z powietrza."
+
+msgid "Rare · Melee damage +5%. Charged sweeps and tornado cover an area."
+msgstr "Rzadki · Obrażenia wręcz +5%. Ładowane zamachy i tornado rażą cały obszar."
+
+msgid "Rare · Fist damage +4%, attack speed +8%. Mobility, cheaper dashes and Super Claw close the distance."
+msgstr "Rzadki · Obrażenia pięści +4%, szybkość ataku +8%. Mobilność, tańsze doskoki i Super Pazur pomagają skrócić dystans."
+
+msgid "Rare · Sustained pressure without magazine reloads; limited reach and a milk tank reward close combat."
+msgstr "Rzadki · Ciągły ostrzał bez przeładowywania magazynka; ograniczony zasięg i zbiornik mleka sprzyjają walce z bliska."
+
+msgid "Rare · Arrow damage +12%. Long-range precision and flame bursts; two-second reload between arrows."
+msgstr "Rzadki · Obrażenia strzał +12%. Celność na dużym dystansie i ogniste wybuchy; dwie sekundy przeładowania między strzałami."
+
+msgid "Legendary · Melee damage +30%, attack speed +8%. The strongest sword; guard still reflects incoming shots."
+msgstr "Legendarny · Obrażenia wręcz +30%, szybkość ataku +8%. Najsilniejszy miecz; garda nadal odbija nadlatujące pociski."
+
+msgid "Legendary · Melee damage +25%, attack speed +4%. Strong charged sweeps and tornado control."
+msgstr "Legendarny · Obrażenia wręcz +25%, szybkość ataku +4%. Mocne ładowane zamachy i kontrola obszaru tornadem."
+
+msgid "Legendary · Shot damage +22%, projectile speed and range +15%, fire rate -6%. Nine-shot magazine and reload still apply."
+msgstr "Legendarny · Obrażenia strzałów +22%, prędkość i zasięg pocisków +15%, szybkostrzelność -6%. Nadal obowiązują dziewięciostrzałowy magazynek i przeładowanie."
+
+msgid "Full set: 25% protection, damage +20%, attack speed +12%, movement +10%. Divine aura."
+msgstr "Pełny zestaw: 25% ochrony, obrażenia +20%, szybkość ataku +12%, mobilność +10%. Boska aura."
+
+msgid "Full set: 12% protection, melee damage +10%, ranged damage -5%, movement -5%."
+msgstr "Pełny zestaw: 12% ochrony, obrażenia wręcz +10%, obrażenia dystansowe -5%, mobilność -5%."
+
+msgid "Full set: 20% protection, movement and fire rate +10%, melee damage -10%."
+msgstr "Pełny zestaw: 20% ochrony, mobilność i szybkostrzelność +10%, obrażenia wręcz -10%."
+
+msgid "Royale hunts fight back"
+msgstr "Polowania Royale stawiają opór"
+
+msgid "Every Royale hunt can now fire a warned, dodgeable ranged attack. Cover, guard reflection and changing direction help you survive."
+msgstr "Każdy przeciwnik na polowaniu Royale potrafi teraz strzelać z dystansu po ostrzeżeniu. Osłony, odbijanie gardą i zmiana kierunku pomagają przetrwać."
+
+msgid "Find Common, Rare and Legendary gear across the map. Weapons have distinct strengths, CPUs keep upgrading, and a complete Celestial set is the strongest loadout."
+msgstr "Znajduj pospolity, rzadki i legendarny ekwipunek na całej mapie. Bronie mają różne atuty, CPU ulepszają wyposażenie, a pełny Niebiański zestaw jest najsilniejszy."

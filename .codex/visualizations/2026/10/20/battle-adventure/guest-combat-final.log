@@ -1,0 +1,16 @@
+Focused verification: architecture, import, 1 Godot tests
+Architecture check: PASS (667 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.021s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.009s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-4mtn4qfo
+Focused checks passed in 59.0s (1 Godot tests). Visual/NAT checks remain separate.
+Slowest stages: battle_game 39.7s, import 5.8s
+Full suite was not run.

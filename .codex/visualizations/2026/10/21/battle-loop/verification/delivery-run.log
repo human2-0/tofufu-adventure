@@ -1,0 +1,13 @@
+final-scoped: starting
+final-scoped: PASS
+native-delivery: starting
+native-delivery: PASS
+benchmark-7: starting
+benchmark-7: PASS
+{"cpus": 7, "simulation_p50_ms": 1.782, "simulation_p95_ms": 6.403, "engine_fps": 119.0, "render_scale": 0.899999976158142}
+benchmark-50: starting
+benchmark-50: PASS
+{"cpus": 50, "simulation_p50_ms": 5.897, "simulation_p95_ms": 9.535, "engine_fps": 84.0, "render_scale": 0.899999976158142}
+real-holepunch: starting
+real-holepunch: PASS
+Delivery verification complete

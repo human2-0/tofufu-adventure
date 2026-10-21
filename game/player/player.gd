@@ -63,7 +63,7 @@ func _physics_process(delta: float) -> void:
 	collision_mask = 1 if motor.is_super_dashing or skill_dash else 3
 	move_and_slide()
 	command_sampled.emit(command, delta)
-	visuals.present(command, velocity, is_on_floor(), motor.is_dashing or skill_dash, delta, motor.jump_charge, _ground_clearance())
+	visuals.present(command, velocity, is_on_floor(), motor.is_dashing or skill_dash, delta, motor.jump_charge, _ground_clearance() if visuals.presentation_enabled else INF)
 	jump_charge_updated.emit(motor.jump_charge)
 	dash_cooldown_updated.emit(motor.cooldown_remaining, tuning.dash_cooldown * motor.dash_cooldown_multiplier)
 

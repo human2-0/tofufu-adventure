@@ -11,9 +11,13 @@ func _run() -> void:
 	var factory := TofuFactory.new()
 	root.add_child(factory)
 	factory.ensure_interior()
+	var themed_shell: int = 0
 	for child in factory.get_children():
 		if not child is MeshInstance3D: continue
 		var visual := child as MeshInstance3D
+		if visual.has_meta("gigalopolis_surface"):
+			themed_shell += 1
+			_check(_material(visual).albedo_texture == GigalopolisMaterials.surface(visual.get_meta("gigalopolis_surface")).albedo_texture, "opening the interior preserves the matching generated city exterior")
 		if visual.has_meta("factory_collision_support"):
 			_check(not visual.visible, "overlapping floor collision keeps its visual hidden")
 			_check((visual.get_child(0) as StaticBody3D).collision_layer == 1, "hidden floor keeps capsule collision")
@@ -25,6 +29,7 @@ func _run() -> void:
 		if visual.has_meta("factory_floor_surface"):
 			_check(painted.next_pass == null, "floor tile texture never introduces an expanded outline")
 			_check(painted.uv1_scale == Vector3.ONE * 0.5, "tile size is consistent on both decks and landing extensions")
+	_check(themed_shell >= 7, "factory exterior keeps its complete city material theme")
 	var ramp: MeshInstance3D = factory.get_node("RampSurface")
 	_check(_material(ramp).next_pass == null, "ramp remains free of an ink overlap at its flush landings")
 	_check((ramp.mesh as BoxMesh).size == Vector3(6, 0.5, 26.37), "texturing preserves real ramp dimensions")

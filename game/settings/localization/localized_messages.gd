@@ -11,6 +11,11 @@ var _cache: Dictionary[StringName, StringName] = {}
 var _prepared: bool = false
 var _slots := RegEx.create_from_string("\\{([0-9]+)\\}")
 const OPAQUE := {
+	"%s was eliminated": [0], "Tofufu Royale! %s wins": [0],
+	"Tofufu Royale! %s and %s win": [0, 1],
+	"Duo partner: %s · %d HP · Teams left: %d": [0],
+	"Your duo is still in the match · Spectating %s": [0],
+	"Placed #%d · Spectating %s · N for next survivor": [1],
 	"Playing as %s": [0], "Welcome back, %s": [0], "Continue · %s": [0],
 	"Adventure saved · %s": [0], "Adventure saved / %s": [0],
 	"%s\n%s  ·  %d min  ·  %d EXP": [0], "Connecting to %s…": [0],

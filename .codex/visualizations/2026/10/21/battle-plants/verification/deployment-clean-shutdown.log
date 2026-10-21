@@ -1,0 +1,646 @@
+WorkerThreadPool: 8 threads, 2 max low-priority.
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+TextServer: Added interface "Dummy"
+TextServer: Added interface "ICU / HarfBuzz / Graphite (Built-in)"
+SDL: Init OK!
+Using "default" pen tablet driver...
+
+Loading resource: res://game/settings/localization/pl.po remapped: res://game/settings/localization/pl.po
+Completed load for: 'res://game/settings/localization/pl.po' remapped 'res://game/settings/localization/pl.po' at thread -1
+TextServer: Primary interface set to: "ICU / HarfBuzz / Graphite (Built-in)".
+Loading resource: res://assets/ui/frontend/tofufu_theme.tres remapped: res://assets/ui/frontend/tofufu_theme.tres
+Completed load for: 'res://assets/ui/frontend/tofufu_theme.tres' remapped 'res://assets/ui/frontend/tofufu_theme.tres' at thread -1
+CORE API HASH: 2004498165
+EDITOR API HASH: 1696660745
+Loading resource: res://tests/test_battle_deployment.gd remapped: res://tests/test_battle_deployment.gd
+Loading resource: res://game/world/common/soy_save_spot.tscn remapped: res://game/world/common/soy_save_spot.tscn
+Loading resource: res://game/world/common/soy_save_spot.gd remapped: res://game/world/common/soy_save_spot.gd
+Loading resource: res://assets/environment/soy_save_spot/surfaces.png remapped: res://assets/environment/soy_save_spot/surfaces.png
+Loading resource: res://.godot/imported/surfaces.png-1c0c3536d2cc9bba8b879151d6daf790.ctex remapped: res://.godot/imported/surfaces.png-1c0c3536d2cc9bba8b879151d6daf790.ctex
+Completed load for: 'res://assets/environment/soy_save_spot/surfaces.png' remapped 'res://assets/environment/soy_save_spot/surfaces.png' at thread -1
+Completed load for: 'res://game/world/common/soy_save_spot.gd' remapped 'res://game/world/common/soy_save_spot.gd' at thread -1
+Completed load for: 'res://game/world/common/soy_save_spot.tscn' remapped 'res://game/world/common/soy_save_spot.tscn' at thread -1
+Loading resource: res://assets/characters/fufu/soybean_fufu-idle-eight.png remapped: res://assets/characters/fufu/soybean_fufu-idle-eight.png
+Loading resource: res://.godot/imported/soybean_fufu-idle-eight.png-45c3d1093154e5b8058d94e872891e9a.ctex remapped: res://.godot/imported/soybean_fufu-idle-eight.png-45c3d1093154e5b8058d94e872891e9a.ctex
+Completed load for: 'res://assets/characters/fufu/soybean_fufu-idle-eight.png' remapped 'res://assets/characters/fufu/soybean_fufu-idle-eight.png' at thread -1
+Loading resource: res://assets/characters/fufu/soybean_fufu-walk.png remapped: res://assets/characters/fufu/soybean_fufu-walk.png
+Loading resource: res://.godot/imported/soybean_fufu-walk.png-961c66e22f6c79bda0eec9bf3df06a1b.ctex remapped: res://.godot/imported/soybean_fufu-walk.png-961c66e22f6c79bda0eec9bf3df06a1b.ctex
+Completed load for: 'res://assets/characters/fufu/soybean_fufu-walk.png' remapped 'res://assets/characters/fufu/soybean_fufu-walk.png' at thread -1
+Loading resource: res://assets/characters/fufu/soybean_fufu-diagonal.png remapped: res://assets/characters/fufu/soybean_fufu-diagonal.png
+Loading resource: res://.godot/imported/soybean_fufu-diagonal.png-9ada4dfc5b47d5306561e88b3b9d6974.ctex remapped: res://.godot/imported/soybean_fufu-diagonal.png-9ada4dfc5b47d5306561e88b3b9d6974.ctex
+Completed load for: 'res://assets/characters/fufu/soybean_fufu-diagonal.png' remapped 'res://assets/characters/fufu/soybean_fufu-diagonal.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_01_takeoff.png remapped: res://assets/characters/fufu/jump/frame_01_takeoff.png
+Loading resource: res://.godot/imported/frame_01_takeoff.png-d4b97f09d2749c8390dda4206021d716.ctex remapped: res://.godot/imported/frame_01_takeoff.png-d4b97f09d2749c8390dda4206021d716.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_01_takeoff.png' remapped 'res://assets/characters/fufu/jump/frame_01_takeoff.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_02_push_off.png remapped: res://assets/characters/fufu/jump/frame_02_push_off.png
+Loading resource: res://.godot/imported/frame_02_push_off.png-52fb6940f45ad881389ccd2af33f91e6.ctex remapped: res://.godot/imported/frame_02_push_off.png-52fb6940f45ad881389ccd2af33f91e6.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_02_push_off.png' remapped 'res://assets/characters/fufu/jump/frame_02_push_off.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_03_ascent.png remapped: res://assets/characters/fufu/jump/frame_03_ascent.png
+Loading resource: res://.godot/imported/frame_03_ascent.png-596d04a6358536a423ab0bc91e054787.ctex remapped: res://.godot/imported/frame_03_ascent.png-596d04a6358536a423ab0bc91e054787.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_03_ascent.png' remapped 'res://assets/characters/fufu/jump/frame_03_ascent.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_04_apex.png remapped: res://assets/characters/fufu/jump/frame_04_apex.png
+Loading resource: res://.godot/imported/frame_04_apex.png-a054e3aa05f6ed6849f9c9e1ef25a8b2.ctex remapped: res://.godot/imported/frame_04_apex.png-a054e3aa05f6ed6849f9c9e1ef25a8b2.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_04_apex.png' remapped 'res://assets/characters/fufu/jump/frame_04_apex.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_05_fall_start.png remapped: res://assets/characters/fufu/jump/frame_05_fall_start.png
+Loading resource: res://.godot/imported/frame_05_fall_start.png-aa41f138c4e7f1a97f01d06ed89a0a1f.ctex remapped: res://.godot/imported/frame_05_fall_start.png-aa41f138c4e7f1a97f01d06ed89a0a1f.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_05_fall_start.png' remapped 'res://assets/characters/fufu/jump/frame_05_fall_start.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_06_mid_fall.png remapped: res://assets/characters/fufu/jump/frame_06_mid_fall.png
+Loading resource: res://.godot/imported/frame_06_mid_fall.png-d1acbc9fdf213ca2630f2ff4247d380a.ctex remapped: res://.godot/imported/frame_06_mid_fall.png-d1acbc9fdf213ca2630f2ff4247d380a.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_06_mid_fall.png' remapped 'res://assets/characters/fufu/jump/frame_06_mid_fall.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_07_pre_landing.png remapped: res://assets/characters/fufu/jump/frame_07_pre_landing.png
+Loading resource: res://.godot/imported/frame_07_pre_landing.png-31c31e66f92eb87aa2bad34ed267cafa.ctex remapped: res://.godot/imported/frame_07_pre_landing.png-31c31e66f92eb87aa2bad34ed267cafa.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_07_pre_landing.png' remapped 'res://assets/characters/fufu/jump/frame_07_pre_landing.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_08_landing_impact.png remapped: res://assets/characters/fufu/jump/frame_08_landing_impact.png
+Loading resource: res://.godot/imported/frame_08_landing_impact.png-6bb5bae439267fba2f3831578a6686fa.ctex remapped: res://.godot/imported/frame_08_landing_impact.png-6bb5bae439267fba2f3831578a6686fa.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_08_landing_impact.png' remapped 'res://assets/characters/fufu/jump/frame_08_landing_impact.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_09_rebound.png remapped: res://assets/characters/fufu/jump/frame_09_rebound.png
+Loading resource: res://.godot/imported/frame_09_rebound.png-305ec21fd03505b362477c9a88ce64f7.ctex remapped: res://.godot/imported/frame_09_rebound.png-305ec21fd03505b362477c9a88ce64f7.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_09_rebound.png' remapped 'res://assets/characters/fufu/jump/frame_09_rebound.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/frame_10_settled.png remapped: res://assets/characters/fufu/jump/frame_10_settled.png
+Loading resource: res://.godot/imported/frame_10_settled.png-89307c76a7b97a93999a9ab396242a5e.ctex remapped: res://.godot/imported/frame_10_settled.png-89307c76a7b97a93999a9ab396242a5e.ctex
+Completed load for: 'res://assets/characters/fufu/jump/frame_10_settled.png' remapped 'res://assets/characters/fufu/jump/frame_10_settled.png' at thread -1
+Loading resource: res://assets/characters/fufu/jump/directional/atlas.png remapped: res://assets/characters/fufu/jump/directional/atlas.png
+Loading resource: res://.godot/imported/atlas.png-e58f7ceaf52fb0345f506212fc3886e0.ctex remapped: res://.godot/imported/atlas.png-e58f7ceaf52fb0345f506212fc3886e0.ctex
+Completed load for: 'res://assets/characters/fufu/jump/directional/atlas.png' remapped 'res://assets/characters/fufu/jump/directional/atlas.png' at thread -1
+Loading resource: res://game/player/jump_atlas.gdshader remapped: res://game/player/jump_atlas.gdshader
+Completed load for: 'res://game/player/jump_atlas.gdshader' remapped 'res://game/player/jump_atlas.gdshader' at thread -1
+Loading resource: res://assets/characters/fufu/soybean_fufu-charge-walk-source.png remapped: res://assets/characters/fufu/soybean_fufu-charge-walk-source.png
+Loading resource: res://.godot/imported/soybean_fufu-charge-walk-source.png-e08c5c541c32bc19b163a81a9a1f9f05.ctex remapped: res://.godot/imported/soybean_fufu-charge-walk-source.png-e08c5c541c32bc19b163a81a9a1f9f05.ctex
+Completed load for: 'res://assets/characters/fufu/soybean_fufu-charge-walk-source.png' remapped 'res://assets/characters/fufu/soybean_fufu-charge-walk-source.png' at thread -1
+Loading resource: res://assets/characters/fufu/sets/bright_leaf_walk.png remapped: res://assets/characters/fufu/sets/bright_leaf_walk.png
+Loading resource: res://.godot/imported/bright_leaf_walk.png-2b8e84632cdf759acba44e1ccdd9f9fa.ctex remapped: res://.godot/imported/bright_leaf_walk.png-2b8e84632cdf759acba44e1ccdd9f9fa.ctex
+Completed load for: 'res://assets/characters/fufu/sets/bright_leaf_walk.png' remapped 'res://assets/characters/fufu/sets/bright_leaf_walk.png' at thread -1
+Loading resource: res://assets/characters/fufu/sets/dark_leaf_walk.png remapped: res://assets/characters/fufu/sets/dark_leaf_walk.png
+Loading resource: res://.godot/imported/dark_leaf_walk.png-dd3c4e7c4bdeedba50863ef51208fa1d.ctex remapped: res://.godot/imported/dark_leaf_walk.png-dd3c4e7c4bdeedba50863ef51208fa1d.ctex
+Completed load for: 'res://assets/characters/fufu/sets/dark_leaf_walk.png' remapped 'res://assets/characters/fufu/sets/dark_leaf_walk.png' at thread -1
+Loading resource: res://assets/characters/fufu/sets/bright_leaf_standing.png remapped: res://assets/characters/fufu/sets/bright_leaf_standing.png
+Loading resource: res://.godot/imported/bright_leaf_standing.png-9ee688d321cff6b47a8c28ac4fb0497b.ctex remapped: res://.godot/imported/bright_leaf_standing.png-9ee688d321cff6b47a8c28ac4fb0497b.ctex
+Completed load for: 'res://assets/characters/fufu/sets/bright_leaf_standing.png' remapped 'res://assets/characters/fufu/sets/bright_leaf_standing.png' at thread -1
+Loading resource: res://assets/characters/fufu/sets/dark_leaf_standing.png remapped: res://assets/characters/fufu/sets/dark_leaf_standing.png
+Loading resource: res://.godot/imported/dark_leaf_standing.png-244f51b8f2cf82ded18f41fb99099406.ctex remapped: res://.godot/imported/dark_leaf_standing.png-244f51b8f2cf82ded18f41fb99099406.ctex
+Completed load for: 'res://assets/characters/fufu/sets/dark_leaf_standing.png' remapped 'res://assets/characters/fufu/sets/dark_leaf_standing.png' at thread -1
+Loading resource: res://assets/characters/fufu/sets/green_leaf_knight_jump_sprite_sheet.png remapped: res://assets/characters/fufu/sets/green_leaf_knight_jump_sprite_sheet.png
+Loading resource: res://.godot/imported/green_leaf_knight_jump_sprite_sheet.png-a5b939e16402e857abce755ca71bb1ae.ctex remapped: res://.godot/imported/green_leaf_knight_jump_sprite_sheet.png-a5b939e16402e857abce755ca71bb1ae.ctex
+Completed load for: 'res://assets/characters/fufu/sets/green_leaf_knight_jump_sprite_sheet.png' remapped 'res://assets/characters/fufu/sets/green_leaf_knight_jump_sprite_sheet.png' at thread -1
+Loading resource: res://assets/characters/fufu/sets/dark_sprout_soldier_jump_sprite_sheet.png remapped: res://assets/characters/fufu/sets/dark_sprout_soldier_jump_sprite_sheet.png
+Loading resource: res://.godot/imported/dark_sprout_soldier_jump_sprite_sheet.png-9cef89cfca6d746c97cbcea7e5922076.ctex remapped: res://.godot/imported/dark_sprout_soldier_jump_sprite_sheet.png-9cef89cfca6d746c97cbcea7e5922076.ctex
+Completed load for: 'res://assets/characters/fufu/sets/dark_sprout_soldier_jump_sprite_sheet.png' remapped 'res://assets/characters/fufu/sets/dark_sprout_soldier_jump_sprite_sheet.png' at thread -1
+Loading resource: res://assets/weapons/bengal_paws/reality-rift.png remapped: res://assets/weapons/bengal_paws/reality-rift.png
+Loading resource: res://.godot/imported/reality-rift.png-f09a6040dbfab11aa918fc8381aa143f.ctex remapped: res://.godot/imported/reality-rift.png-f09a6040dbfab11aa918fc8381aa143f.ctex
+Completed load for: 'res://assets/weapons/bengal_paws/reality-rift.png' remapped 'res://assets/weapons/bengal_paws/reality-rift.png' at thread -1
+Loading resource: res://assets/combat/fufu_strikes/strikes.png remapped: res://assets/combat/fufu_strikes/strikes.png
+Loading resource: res://.godot/imported/strikes.png-82e159e3bf6b93db389b6f420f145c07.ctex remapped: res://.godot/imported/strikes.png-82e159e3bf6b93db389b6f420f145c07.ctex
+Completed load for: 'res://assets/combat/fufu_strikes/strikes.png' remapped 'res://assets/combat/fufu_strikes/strikes.png' at thread -1
+Loading resource: res://assets/weapons/sotjet/source/Soyjet_gun_texture.glb remapped: res://assets/weapons/sotjet/source/Soyjet_gun_texture.glb
+Loading resource: res://.godot/imported/Soyjet_gun_texture.glb-48d8a7bb3b9b051ff5eadef6b34491f8.scn remapped: res://.godot/imported/Soyjet_gun_texture.glb-48d8a7bb3b9b051ff5eadef6b34491f8.scn
+Loading resource: res://assets/weapons/sotjet/source/Soyjet_gun_texture_0.jpg remapped: res://assets/weapons/sotjet/source/Soyjet_gun_texture_0.jpg
+Loading resource: res://.godot/imported/Soyjet_gun_texture_0.jpg-750fe2773e5dd4639f3e1a05af6ba48d.s3tc.ctex remapped: res://.godot/imported/Soyjet_gun_texture_0.jpg-750fe2773e5dd4639f3e1a05af6ba48d.s3tc.ctex
+Completed load for: 'res://assets/weapons/sotjet/source/Soyjet_gun_texture_0.jpg' remapped 'res://assets/weapons/sotjet/source/Soyjet_gun_texture_0.jpg' at thread -1
+Loading resource: res://assets/weapons/sotjet/source/Soyjet_gun_texture_1.jpg remapped: res://assets/weapons/sotjet/source/Soyjet_gun_texture_1.jpg
+Loading resource: res://.godot/imported/Soyjet_gun_texture_1.jpg-e85ac800e59b352ee6c892d05e39f9c1.s3tc.ctex remapped: res://.godot/imported/Soyjet_gun_texture_1.jpg-e85ac800e59b352ee6c892d05e39f9c1.s3tc.ctex
+Completed load for: 'res://assets/weapons/sotjet/source/Soyjet_gun_texture_1.jpg' remapped 'res://assets/weapons/sotjet/source/Soyjet_gun_texture_1.jpg' at thread -1
+Loading resource: res://assets/weapons/sotjet/source/Soyjet_gun_texture_2.jpg remapped: res://assets/weapons/sotjet/source/Soyjet_gun_texture_2.jpg
+Loading resource: res://.godot/imported/Soyjet_gun_texture_2.jpg-d2473053419ab117e11ff4ca4488440a.s3tc.ctex remapped: res://.godot/imported/Soyjet_gun_texture_2.jpg-d2473053419ab117e11ff4ca4488440a.s3tc.ctex
+Completed load for: 'res://assets/weapons/sotjet/source/Soyjet_gun_texture_2.jpg' remapped 'res://assets/weapons/sotjet/source/Soyjet_gun_texture_2.jpg' at thread -1
+Completed load for: 'res://assets/weapons/sotjet/source/Soyjet_gun_texture.glb' remapped 'res://assets/weapons/sotjet/source/Soyjet_gun_texture.glb' at thread -1
+Loading resource: res://game/combat/effects/weapon_grip.gdshader remapped: res://game/combat/effects/weapon_grip.gdshader
+Completed load for: 'res://game/combat/effects/weapon_grip.gdshader' remapped 'res://game/combat/effects/weapon_grip.gdshader' at thread -1
+Loading resource: res://assets/weapons/sword/source/Knife_simple_texture.glb remapped: res://assets/weapons/sword/source/Knife_simple_texture.glb
+Loading resource: res://.godot/imported/Knife_simple_texture.glb-d065f4f2872290f6fa74bd62f029fdab.scn remapped: res://.godot/imported/Knife_simple_texture.glb-d065f4f2872290f6fa74bd62f029fdab.scn
+Loading resource: res://assets/weapons/sword/source/Knife_simple_texture_0.jpg remapped: res://assets/weapons/sword/source/Knife_simple_texture_0.jpg
+Loading resource: res://.godot/imported/Knife_simple_texture_0.jpg-2d93555ce5e55816e2d2cf75bb44231a.s3tc.ctex remapped: res://.godot/imported/Knife_simple_texture_0.jpg-2d93555ce5e55816e2d2cf75bb44231a.s3tc.ctex
+Completed load for: 'res://assets/weapons/sword/source/Knife_simple_texture_0.jpg' remapped 'res://assets/weapons/sword/source/Knife_simple_texture_0.jpg' at thread -1
+Loading resource: res://assets/weapons/sword/source/Knife_simple_texture_1.jpg remapped: res://assets/weapons/sword/source/Knife_simple_texture_1.jpg
+Loading resource: res://.godot/imported/Knife_simple_texture_1.jpg-5e468d435f668ef5fc79e3389eb963f6.s3tc.ctex remapped: res://.godot/imported/Knife_simple_texture_1.jpg-5e468d435f668ef5fc79e3389eb963f6.s3tc.ctex
+Completed load for: 'res://assets/weapons/sword/source/Knife_simple_texture_1.jpg' remapped 'res://assets/weapons/sword/source/Knife_simple_texture_1.jpg' at thread -1
+Loading resource: res://assets/weapons/sword/source/Knife_simple_texture_2.jpg remapped: res://assets/weapons/sword/source/Knife_simple_texture_2.jpg
+Loading resource: res://.godot/imported/Knife_simple_texture_2.jpg-facbd831c0bdb6e63746c4ffbb40bf88.s3tc.ctex remapped: res://.godot/imported/Knife_simple_texture_2.jpg-facbd831c0bdb6e63746c4ffbb40bf88.s3tc.ctex
+Completed load for: 'res://assets/weapons/sword/source/Knife_simple_texture_2.jpg' remapped 'res://assets/weapons/sword/source/Knife_simple_texture_2.jpg' at thread -1
+Completed load for: 'res://assets/weapons/sword/source/Knife_simple_texture.glb' remapped 'res://assets/weapons/sword/source/Knife_simple_texture.glb' at thread -1
+Loading resource: res://assets/weapons/nori/source/Nori_katana_texture.glb remapped: res://assets/weapons/nori/source/Nori_katana_texture.glb
+Loading resource: res://.godot/imported/Nori_katana_texture.glb-f1c27c372206afba7c82169e22310836.scn remapped: res://.godot/imported/Nori_katana_texture.glb-f1c27c372206afba7c82169e22310836.scn
+Loading resource: res://assets/weapons/nori/source/Nori_katana_texture_0.jpg remapped: res://assets/weapons/nori/source/Nori_katana_texture_0.jpg
+Loading resource: res://.godot/imported/Nori_katana_texture_0.jpg-c464fed20fe78b566b604dcfd2b4bd6e.s3tc.ctex remapped: res://.godot/imported/Nori_katana_texture_0.jpg-c464fed20fe78b566b604dcfd2b4bd6e.s3tc.ctex
+Completed load for: 'res://assets/weapons/nori/source/Nori_katana_texture_0.jpg' remapped 'res://assets/weapons/nori/source/Nori_katana_texture_0.jpg' at thread -1
+Loading resource: res://assets/weapons/nori/source/Nori_katana_texture_1.jpg remapped: res://assets/weapons/nori/source/Nori_katana_texture_1.jpg
+Loading resource: res://.godot/imported/Nori_katana_texture_1.jpg-6de0e0b206d1bb7080c5d6fb72c73d6f.s3tc.ctex remapped: res://.godot/imported/Nori_katana_texture_1.jpg-6de0e0b206d1bb7080c5d6fb72c73d6f.s3tc.ctex
+Completed load for: 'res://assets/weapons/nori/source/Nori_katana_texture_1.jpg' remapped 'res://assets/weapons/nori/source/Nori_katana_texture_1.jpg' at thread -1
+Loading resource: res://assets/weapons/nori/source/Nori_katana_texture_2.jpg remapped: res://assets/weapons/nori/source/Nori_katana_texture_2.jpg
+Loading resource: res://.godot/imported/Nori_katana_texture_2.jpg-e38794fbdc3cd2c35c7ce071bf675c43.s3tc.ctex remapped: res://.godot/imported/Nori_katana_texture_2.jpg-e38794fbdc3cd2c35c7ce071bf675c43.s3tc.ctex
+Completed load for: 'res://assets/weapons/nori/source/Nori_katana_texture_2.jpg' remapped 'res://assets/weapons/nori/source/Nori_katana_texture_2.jpg' at thread -1
+Completed load for: 'res://assets/weapons/nori/source/Nori_katana_texture.glb' remapped 'res://assets/weapons/nori/source/Nori_katana_texture.glb' at thread -1
+Loading resource: res://assets/weapons/edamame/source/Soypod_blade_texture.glb remapped: res://assets/weapons/edamame/source/Soypod_blade_texture.glb
+Loading resource: res://.godot/imported/Soypod_blade_texture.glb-d43fc41591205b408d9086cab4a880bf.scn remapped: res://.godot/imported/Soypod_blade_texture.glb-d43fc41591205b408d9086cab4a880bf.scn
+Loading resource: res://assets/weapons/edamame/source/Soypod_blade_texture_0.jpg remapped: res://assets/weapons/edamame/source/Soypod_blade_texture_0.jpg
+Loading resource: res://.godot/imported/Soypod_blade_texture_0.jpg-bcf7d18fc1d98a973cb6a8b72da8dea2.s3tc.ctex remapped: res://.godot/imported/Soypod_blade_texture_0.jpg-bcf7d18fc1d98a973cb6a8b72da8dea2.s3tc.ctex
+Completed load for: 'res://assets/weapons/edamame/source/Soypod_blade_texture_0.jpg' remapped 'res://assets/weapons/edamame/source/Soypod_blade_texture_0.jpg' at thread -1
+Loading resource: res://assets/weapons/edamame/source/Soypod_blade_texture_1.jpg remapped: res://assets/weapons/edamame/source/Soypod_blade_texture_1.jpg
+Loading resource: res://.godot/imported/Soypod_blade_texture_1.jpg-300a0644117c929b73cf95c60fb82a07.s3tc.ctex remapped: res://.godot/imported/Soypod_blade_texture_1.jpg-300a0644117c929b73cf95c60fb82a07.s3tc.ctex
+Completed load for: 'res://assets/weapons/edamame/source/Soypod_blade_texture_1.jpg' remapped 'res://assets/weapons/edamame/source/Soypod_blade_texture_1.jpg' at thread -1
+Loading resource: res://assets/weapons/edamame/source/Soypod_blade_texture_2.jpg remapped: res://assets/weapons/edamame/source/Soypod_blade_texture_2.jpg
+Loading resource: res://.godot/imported/Soypod_blade_texture_2.jpg-e04a9be8d1ec669aae9f1cbb67f04bfd.s3tc.ctex remapped: res://.godot/imported/Soypod_blade_texture_2.jpg-e04a9be8d1ec669aae9f1cbb67f04bfd.s3tc.ctex
+Completed load for: 'res://assets/weapons/edamame/source/Soypod_blade_texture_2.jpg' remapped 'res://assets/weapons/edamame/source/Soypod_blade_texture_2.jpg' at thread -1
+Completed load for: 'res://assets/weapons/edamame/source/Soypod_blade_texture.glb' remapped 'res://assets/weapons/edamame/source/Soypod_blade_texture.glb' at thread -1
+Loading resource: res://game/combat/models/celestial_sword.tscn remapped: res://game/combat/models/celestial_sword.tscn
+Loading resource: res://game/combat/celestial_weapon_model.gd remapped: res://game/combat/celestial_weapon_model.gd
+Completed load for: 'res://game/combat/celestial_weapon_model.gd' remapped 'res://game/combat/celestial_weapon_model.gd' at thread -1
+Completed load for: 'res://game/combat/models/celestial_sword.tscn' remapped 'res://game/combat/models/celestial_sword.tscn' at thread -1
+Loading resource: res://assets/weapons/soy_gun/source/gun_above.png remapped: res://assets/weapons/soy_gun/source/gun_above.png
+Loading resource: res://.godot/imported/gun_above.png-9d4f3a36defcebe95e3509af1ab256b0.ctex remapped: res://.godot/imported/gun_above.png-9d4f3a36defcebe95e3509af1ab256b0.ctex
+Completed load for: 'res://assets/weapons/soy_gun/source/gun_above.png' remapped 'res://assets/weapons/soy_gun/source/gun_above.png' at thread -1
+Loading resource: res://assets/weapons/soy_gun/source/gun_back.png remapped: res://assets/weapons/soy_gun/source/gun_back.png
+Loading resource: res://.godot/imported/gun_back.png-2c73e5ca5baf7bb1599fa1f8089c5056.ctex remapped: res://.godot/imported/gun_back.png-2c73e5ca5baf7bb1599fa1f8089c5056.ctex
+Completed load for: 'res://assets/weapons/soy_gun/source/gun_back.png' remapped 'res://assets/weapons/soy_gun/source/gun_back.png' at thread -1
+Loading resource: res://game/combat/models/soy_raygun.tscn remapped: res://game/combat/models/soy_raygun.tscn
+Completed load for: 'res://game/combat/models/soy_raygun.tscn' remapped 'res://game/combat/models/soy_raygun.tscn' at thread -1
+Loading resource: res://assets/combat/soybean.svg remapped: res://assets/combat/soybean.svg
+Loading resource: res://.godot/imported/soybean.svg-48d19a01d45782ce09ec121cb8d155c6.ctex remapped: res://.godot/imported/soybean.svg-48d19a01d45782ce09ec121cb8d155c6.ctex
+Completed load for: 'res://assets/combat/soybean.svg' remapped 'res://assets/combat/soybean.svg' at thread -1
+Loading resource: res://assets/weapons/sproutwood_staff/source/sproutwood_staff.glb remapped: res://assets/weapons/sproutwood_staff/source/sproutwood_staff.glb
+Loading resource: res://.godot/imported/sproutwood_staff.glb-116a85c449596b4c91fe87b05940a174.scn remapped: res://.godot/imported/sproutwood_staff.glb-116a85c449596b4c91fe87b05940a174.scn
+Loading resource: res://assets/weapons/sproutwood_staff/source/sproutwood_staff_0.jpg remapped: res://assets/weapons/sproutwood_staff/source/sproutwood_staff_0.jpg
+Loading resource: res://.godot/imported/sproutwood_staff_0.jpg-9644b5f6225e0c31dc9f6a13b2dc3500.s3tc.ctex remapped: res://.godot/imported/sproutwood_staff_0.jpg-9644b5f6225e0c31dc9f6a13b2dc3500.s3tc.ctex
+Completed load for: 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff_0.jpg' remapped 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff_0.jpg' at thread -1
+Loading resource: res://assets/weapons/sproutwood_staff/source/sproutwood_staff_1.jpg remapped: res://assets/weapons/sproutwood_staff/source/sproutwood_staff_1.jpg
+Loading resource: res://.godot/imported/sproutwood_staff_1.jpg-6b37d52d970638a1e7431360ea6b04bc.s3tc.ctex remapped: res://.godot/imported/sproutwood_staff_1.jpg-6b37d52d970638a1e7431360ea6b04bc.s3tc.ctex
+Completed load for: 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff_1.jpg' remapped 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff_1.jpg' at thread -1
+Loading resource: res://assets/weapons/sproutwood_staff/source/sproutwood_staff_2.jpg remapped: res://assets/weapons/sproutwood_staff/source/sproutwood_staff_2.jpg
+Loading resource: res://.godot/imported/sproutwood_staff_2.jpg-15a159b9562014bf21f127199a2645c9.s3tc.ctex remapped: res://.godot/imported/sproutwood_staff_2.jpg-15a159b9562014bf21f127199a2645c9.s3tc.ctex
+Completed load for: 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff_2.jpg' remapped 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff_2.jpg' at thread -1
+Completed load for: 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff.glb' remapped 'res://assets/weapons/sproutwood_staff/source/sproutwood_staff.glb' at thread -1
+Loading resource: res://game/combat/models/celestial_staff.tscn remapped: res://game/combat/models/celestial_staff.tscn
+Completed load for: 'res://game/combat/models/celestial_staff.tscn' remapped 'res://game/combat/models/celestial_staff.tscn' at thread -1
+Loading resource: res://assets/weapons/angel_bow/laurel-ivory.png remapped: res://assets/weapons/angel_bow/laurel-ivory.png
+Loading resource: res://.godot/imported/laurel-ivory.png-47159f188bef508f702273f0030941a0.ctex remapped: res://.godot/imported/laurel-ivory.png-47159f188bef508f702273f0030941a0.ctex
+Completed load for: 'res://assets/weapons/angel_bow/laurel-ivory.png' remapped 'res://assets/weapons/angel_bow/laurel-ivory.png' at thread -1
+Loading resource: res://game/combat/ranged/angel_flame.gdshader remapped: res://game/combat/ranged/angel_flame.gdshader
+Completed load for: 'res://game/combat/ranged/angel_flame.gdshader' remapped 'res://game/combat/ranged/angel_flame.gdshader' at thread -1
+Loading resource: res://assets/weapons/angel_bow/flames.png remapped: res://assets/weapons/angel_bow/flames.png
+Loading resource: res://.godot/imported/flames.png-b3d6a73e32b0fd876b44034915512a07.ctex remapped: res://.godot/imported/flames.png-b3d6a73e32b0fd876b44034915512a07.ctex
+Completed load for: 'res://assets/weapons/angel_bow/flames.png' remapped 'res://assets/weapons/angel_bow/flames.png' at thread -1
+Loading resource: res://assets/weapons/nori/plunge_ring.png remapped: res://assets/weapons/nori/plunge_ring.png
+Loading resource: res://.godot/imported/plunge_ring.png-3e29bfa2b283ebed6f6538a9a6b12998.ctex remapped: res://.godot/imported/plunge_ring.png-3e29bfa2b283ebed6f6538a9a6b12998.ctex
+Completed load for: 'res://assets/weapons/nori/plunge_ring.png' remapped 'res://assets/weapons/nori/plunge_ring.png' at thread -1
+Loading resource: res://assets/weapons/bengal_paws/rift-open.png remapped: res://assets/weapons/bengal_paws/rift-open.png
+Loading resource: res://.godot/imported/rift-open.png-d524821dc7dd685f9388c5df7ba692b7.ctex remapped: res://.godot/imported/rift-open.png-d524821dc7dd685f9388c5df7ba692b7.ctex
+Completed load for: 'res://assets/weapons/bengal_paws/rift-open.png' remapped 'res://assets/weapons/bengal_paws/rift-open.png' at thread -1
+Loading resource: res://game/combat/effects/bengal_rift.gdshader remapped: res://game/combat/effects/bengal_rift.gdshader
+Completed load for: 'res://game/combat/effects/bengal_rift.gdshader' remapped 'res://game/combat/effects/bengal_rift.gdshader' at thread -1
+Loading resource: res://assets/combat/shell_piece.svg remapped: res://assets/combat/shell_piece.svg
+Loading resource: res://.godot/imported/shell_piece.svg-f14d80d6f9e31bfbf31e67e3d7b7102d.ctex remapped: res://.godot/imported/shell_piece.svg-f14d80d6f9e31bfbf31e67e3d7b7102d.ctex
+Completed load for: 'res://assets/combat/shell_piece.svg' remapped 'res://assets/combat/shell_piece.svg' at thread -1
+Loading resource: res://assets/factory/soy_milk.svg remapped: res://assets/factory/soy_milk.svg
+Loading resource: res://.godot/imported/soy_milk.svg-a45698b31ba61314209efc37593aa164.ctex remapped: res://.godot/imported/soy_milk.svg-a45698b31ba61314209efc37593aa164.ctex
+Completed load for: 'res://assets/factory/soy_milk.svg' remapped 'res://assets/factory/soy_milk.svg' at thread -1
+Loading resource: res://game/inventory/icons/apple.svg remapped: res://game/inventory/icons/apple.svg
+Loading resource: res://.godot/imported/apple.svg-d9bc7d8f9a13c8c07381e947ee90fa5a.ctex remapped: res://.godot/imported/apple.svg-d9bc7d8f9a13c8c07381e947ee90fa5a.ctex
+Completed load for: 'res://game/inventory/icons/apple.svg' remapped 'res://game/inventory/icons/apple.svg' at thread -1
+Loading resource: res://game/inventory/icons/nori_katana_model.png remapped: res://game/inventory/icons/nori_katana_model.png
+Loading resource: res://.godot/imported/nori_katana_model.png-e61ce9d8b9c67a24ab4ead07fa7ac90c.ctex remapped: res://.godot/imported/nori_katana_model.png-e61ce9d8b9c67a24ab4ead07fa7ac90c.ctex
+Completed load for: 'res://game/inventory/icons/nori_katana_model.png' remapped 'res://game/inventory/icons/nori_katana_model.png' at thread -1
+Loading resource: res://game/inventory/icons/soypod_blade_model.png remapped: res://game/inventory/icons/soypod_blade_model.png
+Loading resource: res://.godot/imported/soypod_blade_model.png-99ee0aad7bebe96df70b5af30451b0eb.ctex remapped: res://.godot/imported/soypod_blade_model.png-99ee0aad7bebe96df70b5af30451b0eb.ctex
+Completed load for: 'res://game/inventory/icons/soypod_blade_model.png' remapped 'res://game/inventory/icons/soypod_blade_model.png' at thread -1
+Loading resource: res://game/inventory/icons/soyjet_model.png remapped: res://game/inventory/icons/soyjet_model.png
+Loading resource: res://.godot/imported/soyjet_model.png-376a98cd382754b8897ea210d93fe710.ctex remapped: res://.godot/imported/soyjet_model.png-376a98cd382754b8897ea210d93fe710.ctex
+Completed load for: 'res://game/inventory/icons/soyjet_model.png' remapped 'res://game/inventory/icons/soyjet_model.png' at thread -1
+Loading resource: res://game/inventory/icons/knife_model.png remapped: res://game/inventory/icons/knife_model.png
+Loading resource: res://.godot/imported/knife_model.png-f934ba25f1e62f5ed3fdb746e905022e.ctex remapped: res://.godot/imported/knife_model.png-f934ba25f1e62f5ed3fdb746e905022e.ctex
+Completed load for: 'res://game/inventory/icons/knife_model.png' remapped 'res://game/inventory/icons/knife_model.png' at thread -1
+Loading resource: res://game/inventory/icons/sproutwood_staff.png remapped: res://game/inventory/icons/sproutwood_staff.png
+Loading resource: res://.godot/imported/sproutwood_staff.png-adcdf58816596dec0b6e5a74f7a5127c.ctex remapped: res://.godot/imported/sproutwood_staff.png-adcdf58816596dec0b6e5a74f7a5127c.ctex
+Completed load for: 'res://game/inventory/icons/sproutwood_staff.png' remapped 'res://game/inventory/icons/sproutwood_staff.png' at thread -1
+Loading resource: res://game/inventory/icons/soypod_backpack.png remapped: res://game/inventory/icons/soypod_backpack.png
+Loading resource: res://.godot/imported/soypod_backpack.png-d24e30b3b90b31940334cdb1065acaa5.ctex remapped: res://.godot/imported/soypod_backpack.png-d24e30b3b90b31940334cdb1065acaa5.ctex
+Completed load for: 'res://game/inventory/icons/soypod_backpack.png' remapped 'res://game/inventory/icons/soypod_backpack.png' at thread -1
+Loading resource: res://game/inventory/icons/backpack.svg remapped: res://game/inventory/icons/backpack.svg
+Loading resource: res://.godot/imported/backpack.svg-04bc94a73e7f4d64e21f8197273800b9.ctex remapped: res://.godot/imported/backpack.svg-04bc94a73e7f4d64e21f8197273800b9.ctex
+Completed load for: 'res://game/inventory/icons/backpack.svg' remapped 'res://game/inventory/icons/backpack.svg' at thread -1
+Loading resource: res://assets/currency/source/edamame-mature-transparent.png remapped: res://assets/currency/source/edamame-mature-transparent.png
+Loading resource: res://.godot/imported/edamame-mature-transparent.png-774153ffda79c909dcd3874b346f4aaa.ctex remapped: res://.godot/imported/edamame-mature-transparent.png-774153ffda79c909dcd3874b346f4aaa.ctex
+Completed load for: 'res://assets/currency/source/edamame-mature-transparent.png' remapped 'res://assets/currency/source/edamame-mature-transparent.png' at thread -1
+Loading resource: res://assets/currency/source/white-tofu-transparent.png remapped: res://assets/currency/source/white-tofu-transparent.png
+Loading resource: res://.godot/imported/white-tofu-transparent.png-09aa18b7ef9ea7035f8c258018448cc9.ctex remapped: res://.godot/imported/white-tofu-transparent.png-09aa18b7ef9ea7035f8c258018448cc9.ctex
+Completed load for: 'res://assets/currency/source/white-tofu-transparent.png' remapped 'res://assets/currency/source/white-tofu-transparent.png' at thread -1
+Loading resource: res://assets/currency/source/toasted-tofu-transparent.png remapped: res://assets/currency/source/toasted-tofu-transparent.png
+Loading resource: res://.godot/imported/toasted-tofu-transparent.png-fec0f9fd983620485ed33e2fd522b0a0.ctex remapped: res://.godot/imported/toasted-tofu-transparent.png-fec0f9fd983620485ed33e2fd522b0a0.ctex
+Completed load for: 'res://assets/currency/source/toasted-tofu-transparent.png' remapped 'res://assets/currency/source/toasted-tofu-transparent.png' at thread -1
+Loading resource: res://assets/currency/source/golden-tofu-transparent.png remapped: res://assets/currency/source/golden-tofu-transparent.png
+Loading resource: res://.godot/imported/golden-tofu-transparent.png-18af948f02f42897142649ba9e6a100e.ctex remapped: res://.godot/imported/golden-tofu-transparent.png-18af948f02f42897142649ba9e6a100e.ctex
+Completed load for: 'res://assets/currency/source/golden-tofu-transparent.png' remapped 'res://assets/currency/source/golden-tofu-transparent.png' at thread -1
+Loading resource: res://assets/weapons/angel_bow/icon.png remapped: res://assets/weapons/angel_bow/icon.png
+Loading resource: res://.godot/imported/icon.png-7179121a4a7a0b62ea9b9233a068632e.ctex remapped: res://.godot/imported/icon.png-7179121a4a7a0b62ea9b9233a068632e.ctex
+Completed load for: 'res://assets/weapons/angel_bow/icon.png' remapped 'res://assets/weapons/angel_bow/icon.png' at thread -1
+Loading resource: res://assets/weapons/bengal_paws/paws.png remapped: res://assets/weapons/bengal_paws/paws.png
+Loading resource: res://.godot/imported/paws.png-9e5a5e1515bb8a9d9caffa40b72a6ed7.ctex remapped: res://.godot/imported/paws.png-9e5a5e1515bb8a9d9caffa40b72a6ed7.ctex
+Completed load for: 'res://assets/weapons/bengal_paws/paws.png' remapped 'res://assets/weapons/bengal_paws/paws.png' at thread -1
+Loading resource: res://assets/items/magical_tofufu/chunk.png remapped: res://assets/items/magical_tofufu/chunk.png
+Loading resource: res://.godot/imported/chunk.png-2b20c6776279211e0605a841c952d87d.ctex remapped: res://.godot/imported/chunk.png-2b20c6776279211e0605a841c952d87d.ctex
+Completed load for: 'res://assets/items/magical_tofufu/chunk.png' remapped 'res://assets/items/magical_tofufu/chunk.png' at thread -1
+Loading resource: res://game/ui/effects/snail_smear.gdshader remapped: res://game/ui/effects/snail_smear.gdshader
+Completed load for: 'res://game/ui/effects/snail_smear.gdshader' remapped 'res://game/ui/effects/snail_smear.gdshader' at thread -1
+Loading resource: res://assets/weapons/bengal_paws/glove-worn.png remapped: res://assets/weapons/bengal_paws/glove-worn.png
+Loading resource: res://.godot/imported/glove-worn.png-b249048908ca0f0b1e538173cdbb279c.ctex remapped: res://.godot/imported/glove-worn.png-b249048908ca0f0b1e538173cdbb279c.ctex
+Completed load for: 'res://assets/weapons/bengal_paws/glove-worn.png' remapped 'res://assets/weapons/bengal_paws/glove-worn.png' at thread -1
+Loading resource: res://game/world/biomes/volcanic/castle_chest_wood.gdshader remapped: res://game/world/biomes/volcanic/castle_chest_wood.gdshader
+Completed load for: 'res://game/world/biomes/volcanic/castle_chest_wood.gdshader' remapped 'res://game/world/biomes/volcanic/castle_chest_wood.gdshader' at thread -1
+Loading resource: res://game/world/common/ink_outline.tres remapped: res://game/world/common/ink_outline.tres
+Loading resource: res://game/world/common/ink_outline.gdshader remapped: res://game/world/common/ink_outline.gdshader
+Completed load for: 'res://game/world/common/ink_outline.gdshader' remapped 'res://game/world/common/ink_outline.gdshader' at thread -1
+Completed load for: 'res://game/world/common/ink_outline.tres' remapped 'res://game/world/common/ink_outline.tres' at thread -1
+Loading resource: res://game/world/biomes/volcanic/castle_stone.gdshader remapped: res://game/world/biomes/volcanic/castle_stone.gdshader
+Completed load for: 'res://game/world/biomes/volcanic/castle_stone.gdshader' remapped 'res://game/world/biomes/volcanic/castle_stone.gdshader' at thread -1
+Loading resource: res://assets/environment/lava_castle/basalt-masonry.png remapped: res://assets/environment/lava_castle/basalt-masonry.png
+Loading resource: res://.godot/imported/basalt-masonry.png-e4ea3c1d30a8e7491d42bff53f522589.ctex remapped: res://.godot/imported/basalt-masonry.png-e4ea3c1d30a8e7491d42bff53f522589.ctex
+Completed load for: 'res://assets/environment/lava_castle/basalt-masonry.png' remapped 'res://assets/environment/lava_castle/basalt-masonry.png' at thread -1
+Loading resource: res://assets/environment/lava_castle/ash-flagstones.png remapped: res://assets/environment/lava_castle/ash-flagstones.png
+Loading resource: res://.godot/imported/ash-flagstones.png-72168c0847c75359a1f4d836d2b9c624.ctex remapped: res://.godot/imported/ash-flagstones.png-72168c0847c75359a1f4d836d2b9c624.ctex
+Completed load for: 'res://assets/environment/lava_castle/ash-flagstones.png' remapped 'res://assets/environment/lava_castle/ash-flagstones.png' at thread -1
+Loading resource: res://assets/environment/lava_castle/royal-crimson-weave.png remapped: res://assets/environment/lava_castle/royal-crimson-weave.png
+Loading resource: res://.godot/imported/royal-crimson-weave.png-2ab3e65e42a299225e25eddde5d8ec95.ctex remapped: res://.godot/imported/royal-crimson-weave.png-2ab3e65e42a299225e25eddde5d8ec95.ctex
+Completed load for: 'res://assets/environment/lava_castle/royal-crimson-weave.png' remapped 'res://assets/environment/lava_castle/royal-crimson-weave.png' at thread -1
+Loading resource: res://game/world/common/tree.tscn remapped: res://game/world/common/tree.tscn
+Loading resource: res://game/world/common/scenery_tree.gd remapped: res://game/world/common/scenery_tree.gd
+Loading resource: res://game/world/common/tree_leaves.gdshader remapped: res://game/world/common/tree_leaves.gdshader
+Completed load for: 'res://game/world/common/tree_leaves.gdshader' remapped 'res://game/world/common/tree_leaves.gdshader' at thread -1
+Completed load for: 'res://game/world/common/scenery_tree.gd' remapped 'res://game/world/common/scenery_tree.gd' at thread -1
+Completed load for: 'res://game/world/common/tree.tscn' remapped 'res://game/world/common/tree.tscn' at thread -1
+Loading resource: res://assets/factory/surfaces/floor.svg remapped: res://assets/factory/surfaces/floor.svg
+Loading resource: res://.godot/imported/floor.svg-b9923ec994eb1c2cab89b4d9985c0d6a.ctex remapped: res://.godot/imported/floor.svg-b9923ec994eb1c2cab89b4d9985c0d6a.ctex
+Completed load for: 'res://assets/factory/surfaces/floor.svg' remapped 'res://assets/factory/surfaces/floor.svg' at thread -1
+Loading resource: res://assets/factory/surfaces/plaster.svg remapped: res://assets/factory/surfaces/plaster.svg
+Loading resource: res://.godot/imported/plaster.svg-d1e644c8cddb2471a8797f671e214c48.ctex remapped: res://.godot/imported/plaster.svg-d1e644c8cddb2471a8797f671e214c48.ctex
+Completed load for: 'res://assets/factory/surfaces/plaster.svg' remapped 'res://assets/factory/surfaces/plaster.svg' at thread -1
+Loading resource: res://assets/factory/surfaces/roof.svg remapped: res://assets/factory/surfaces/roof.svg
+Loading resource: res://.godot/imported/roof.svg-91bf6e9caf0d2af4251c67538416a1ee.ctex remapped: res://.godot/imported/roof.svg-91bf6e9caf0d2af4251c67538416a1ee.ctex
+Completed load for: 'res://assets/factory/surfaces/roof.svg' remapped 'res://assets/factory/surfaces/roof.svg' at thread -1
+Loading resource: res://assets/factory/surfaces/grip.svg remapped: res://assets/factory/surfaces/grip.svg
+Loading resource: res://.godot/imported/grip.svg-d2324a526e798c3ea634510d844f94e2.ctex remapped: res://.godot/imported/grip.svg-d2324a526e798c3ea634510d844f94e2.ctex
+Completed load for: 'res://assets/factory/surfaces/grip.svg' remapped 'res://assets/factory/surfaces/grip.svg' at thread -1
+Loading resource: res://assets/factory/surfaces/iron.svg remapped: res://assets/factory/surfaces/iron.svg
+Loading resource: res://.godot/imported/iron.svg-ac5879a4e336d925be5744e114a89de7.ctex remapped: res://.godot/imported/iron.svg-ac5879a4e336d925be5744e114a89de7.ctex
+Completed load for: 'res://assets/factory/surfaces/iron.svg' remapped 'res://assets/factory/surfaces/iron.svg' at thread -1
+Loading resource: res://assets/factory/surfaces/wood.svg remapped: res://assets/factory/surfaces/wood.svg
+Loading resource: res://.godot/imported/wood.svg-e8a85720217800d22a43ed89b827c3fb.ctex remapped: res://.godot/imported/wood.svg-e8a85720217800d22a43ed89b827c3fb.ctex
+Completed load for: 'res://assets/factory/surfaces/wood.svg' remapped 'res://assets/factory/surfaces/wood.svg' at thread -1
+Loading resource: res://assets/factory/surfaces/linen.svg remapped: res://assets/factory/surfaces/linen.svg
+Loading resource: res://.godot/imported/linen.svg-faa00c98eb1a93a5f2badb3104058998.ctex remapped: res://.godot/imported/linen.svg-faa00c98eb1a93a5f2badb3104058998.ctex
+Completed load for: 'res://assets/factory/surfaces/linen.svg' remapped 'res://assets/factory/surfaces/linen.svg' at thread -1
+Loading resource: res://assets/factory/surfaces/cream.svg remapped: res://assets/factory/surfaces/cream.svg
+Loading resource: res://.godot/imported/cream.svg-61de9d01854e2e40f81db259b95144c0.ctex remapped: res://.godot/imported/cream.svg-61de9d01854e2e40f81db259b95144c0.ctex
+Completed load for: 'res://assets/factory/surfaces/cream.svg' remapped 'res://assets/factory/surfaces/cream.svg' at thread -1
+Loading resource: res://game/world/factory/props/factory_ink.tres remapped: res://game/world/factory/props/factory_ink.tres
+Completed load for: 'res://game/world/factory/props/factory_ink.tres' remapped 'res://game/world/factory/props/factory_ink.tres' at thread -1
+Loading resource: res://assets/environment/gigalopolis/limestone.png remapped: res://assets/environment/gigalopolis/limestone.png
+Loading resource: res://.godot/imported/limestone.png-ed5efa907bffaabb450c3eded2074413.ctex remapped: res://.godot/imported/limestone.png-ed5efa907bffaabb450c3eded2074413.ctex
+Completed load for: 'res://assets/environment/gigalopolis/limestone.png' remapped 'res://assets/environment/gigalopolis/limestone.png' at thread -1
+Loading resource: res://assets/environment/gigalopolis/teal-metal.png remapped: res://assets/environment/gigalopolis/teal-metal.png
+Loading resource: res://.godot/imported/teal-metal.png-0e860ea23d0a389ae900583378667497.ctex remapped: res://.godot/imported/teal-metal.png-0e860ea23d0a389ae900583378667497.ctex
+Completed load for: 'res://assets/environment/gigalopolis/teal-metal.png' remapped 'res://assets/environment/gigalopolis/teal-metal.png' at thread -1
+Loading resource: res://assets/environment/gigalopolis/paving.png remapped: res://assets/environment/gigalopolis/paving.png
+Loading resource: res://.godot/imported/paving.png-5f6cc7cd3615a94f6f7aecbc8526cda7.ctex remapped: res://.godot/imported/paving.png-5f6cc7cd3615a94f6f7aecbc8526cda7.ctex
+Completed load for: 'res://assets/environment/gigalopolis/paving.png' remapped 'res://assets/environment/gigalopolis/paving.png' at thread -1
+Loading resource: res://assets/environment/gigalopolis/canvas.png remapped: res://assets/environment/gigalopolis/canvas.png
+Loading resource: res://.godot/imported/canvas.png-677574aa6e92658fabf9cfb360a36ef3.ctex remapped: res://.godot/imported/canvas.png-677574aa6e92658fabf9cfb360a36ef3.ctex
+Completed load for: 'res://assets/environment/gigalopolis/canvas.png' remapped 'res://assets/environment/gigalopolis/canvas.png' at thread -1
+Loading resource: res://game/world/farm/farm_ground.gdshader remapped: res://game/world/farm/farm_ground.gdshader
+Completed load for: 'res://game/world/farm/farm_ground.gdshader' remapped 'res://game/world/farm/farm_ground.gdshader' at thread -1
+Loading resource: res://assets/environment/biome_transitions/ground-grain.png remapped: res://assets/environment/biome_transitions/ground-grain.png
+Loading resource: res://.godot/imported/ground-grain.png-1d9d103cdb8782179b870198519d9859.ctex remapped: res://.godot/imported/ground-grain.png-1d9d103cdb8782179b870198519d9859.ctex
+Completed load for: 'res://assets/environment/biome_transitions/ground-grain.png' remapped 'res://assets/environment/biome_transitions/ground-grain.png' at thread -1
+Loading resource: res://game/world/factory/gigalopolis_ground.gdshader remapped: res://game/world/factory/gigalopolis_ground.gdshader
+Completed load for: 'res://game/world/factory/gigalopolis_ground.gdshader' remapped 'res://game/world/factory/gigalopolis_ground.gdshader' at thread -1
+Loading resource: res://game/world/biomes/volcanic/volcanic_ground.gdshader remapped: res://game/world/biomes/volcanic/volcanic_ground.gdshader
+Completed load for: 'res://game/world/biomes/volcanic/volcanic_ground.gdshader' remapped 'res://game/world/biomes/volcanic/volcanic_ground.gdshader' at thread -1
+Loading resource: res://game/world/biomes/volcanic/lava.gdshader remapped: res://game/world/biomes/volcanic/lava.gdshader
+Completed load for: 'res://game/world/biomes/volcanic/lava.gdshader' remapped 'res://game/world/biomes/volcanic/lava.gdshader' at thread -1
+Loading resource: res://assets/characters/lava_king/lava-king-north.png remapped: res://assets/characters/lava_king/lava-king-north.png
+Loading resource: res://.godot/imported/lava-king-north.png-806a9b68960e76f71b2645f22a07301e.ctex remapped: res://.godot/imported/lava-king-north.png-806a9b68960e76f71b2645f22a07301e.ctex
+Completed load for: 'res://assets/characters/lava_king/lava-king-north.png' remapped 'res://assets/characters/lava_king/lava-king-north.png' at thread -1
+Loading resource: res://assets/characters/lava_king/lava-king-north-east.png remapped: res://assets/characters/lava_king/lava-king-north-east.png
+Loading resource: res://.godot/imported/lava-king-north-east.png-cffacf24d2fa16e94bb598efebd57877.ctex remapped: res://.godot/imported/lava-king-north-east.png-cffacf24d2fa16e94bb598efebd57877.ctex
+Completed load for: 'res://assets/characters/lava_king/lava-king-north-east.png' remapped 'res://assets/characters/lava_king/lava-king-north-east.png' at thread -1
+Loading resource: res://assets/characters/lava_king/lava-king-east.png remapped: res://assets/characters/lava_king/lava-king-east.png
+Loading resource: res://.godot/imported/lava-king-east.png-eda2523c663ce88efead6b76b9825255.ctex remapped: res://.godot/imported/lava-king-east.png-eda2523c663ce88efead6b76b9825255.ctex
+Completed load for: 'res://assets/characters/lava_king/lava-king-east.png' remapped 'res://assets/characters/lava_king/lava-king-east.png' at thread -1
+Loading resource: res://assets/characters/lava_king/lava-king-south-east.png remapped: res://assets/characters/lava_king/lava-king-south-east.png
+Loading resource: res://.godot/imported/lava-king-south-east.png-64ba016e7a406e9c68fc5039b37709da.ctex remapped: res://.godot/imported/lava-king-south-east.png-64ba016e7a406e9c68fc5039b37709da.ctex
+Completed load for: 'res://assets/characters/lava_king/lava-king-south-east.png' remapped 'res://assets/characters/lava_king/lava-king-south-east.png' at thread -1
+Loading resource: res://assets/characters/lava_king/lava-king-south.png remapped: res://assets/characters/lava_king/lava-king-south.png
+Loading resource: res://.godot/imported/lava-king-south.png-22b713339b2db527535e969e2a6cf9eb.ctex remapped: res://.godot/imported/lava-king-south.png-22b713339b2db527535e969e2a6cf9eb.ctex
+Completed load for: 'res://assets/characters/lava_king/lava-king-south.png' remapped 'res://assets/characters/lava_king/lava-king-south.png' at thread -1
+Loading resource: res://assets/characters/lava_king/combat/lava-king-combat-north.png remapped: res://assets/characters/lava_king/combat/lava-king-combat-north.png
+Loading resource: res://.godot/imported/lava-king-combat-north.png-b3f8eed2caa7e59ada3c5ac6391308b3.ctex remapped: res://.godot/imported/lava-king-combat-north.png-b3f8eed2caa7e59ada3c5ac6391308b3.ctex
+Completed load for: 'res://assets/characters/lava_king/combat/lava-king-combat-north.png' remapped 'res://assets/characters/lava_king/combat/lava-king-combat-north.png' at thread -1
+Loading resource: res://assets/characters/lava_king/combat/lava-king-combat-north-east.png remapped: res://assets/characters/lava_king/combat/lava-king-combat-north-east.png
+Loading resource: res://.godot/imported/lava-king-combat-north-east.png-b7c1196d938e811b2cea2b102435f7f5.ctex remapped: res://.godot/imported/lava-king-combat-north-east.png-b7c1196d938e811b2cea2b102435f7f5.ctex
+Completed load for: 'res://assets/characters/lava_king/combat/lava-king-combat-north-east.png' remapped 'res://assets/characters/lava_king/combat/lava-king-combat-north-east.png' at thread -1
+Loading resource: res://assets/characters/lava_king/combat/lava-king-combat-east.png remapped: res://assets/characters/lava_king/combat/lava-king-combat-east.png
+Loading resource: res://.godot/imported/lava-king-combat-east.png-f9911a92898f11606d9b837ad8abe5b3.ctex remapped: res://.godot/imported/lava-king-combat-east.png-f9911a92898f11606d9b837ad8abe5b3.ctex
+Completed load for: 'res://assets/characters/lava_king/combat/lava-king-combat-east.png' remapped 'res://assets/characters/lava_king/combat/lava-king-combat-east.png' at thread -1
+Loading resource: res://assets/characters/lava_king/combat/lava-king-combat-south-east.png remapped: res://assets/characters/lava_king/combat/lava-king-combat-south-east.png
+Loading resource: res://.godot/imported/lava-king-combat-south-east.png-c9375e47303a2174db71f0546a629cad.ctex remapped: res://.godot/imported/lava-king-combat-south-east.png-c9375e47303a2174db71f0546a629cad.ctex
+Completed load for: 'res://assets/characters/lava_king/combat/lava-king-combat-south-east.png' remapped 'res://assets/characters/lava_king/combat/lava-king-combat-south-east.png' at thread -1
+Loading resource: res://assets/characters/lava_king/combat/lava-king-combat-south.png remapped: res://assets/characters/lava_king/combat/lava-king-combat-south.png
+Loading resource: res://.godot/imported/lava-king-combat-south.png-a61626673cec9a26927c4e8d2cea38d5.ctex remapped: res://.godot/imported/lava-king-combat-south.png-a61626673cec9a26927c4e8d2cea38d5.ctex
+Completed load for: 'res://assets/characters/lava_king/combat/lava-king-combat-south.png' remapped 'res://assets/characters/lava_king/combat/lava-king-combat-south.png' at thread -1
+Loading resource: res://game/world/biomes/volcanic/thermal_water.gdshader remapped: res://game/world/biomes/volcanic/thermal_water.gdshader
+Completed load for: 'res://game/world/biomes/volcanic/thermal_water.gdshader' remapped 'res://game/world/biomes/volcanic/thermal_water.gdshader' at thread -1
+Loading resource: res://game/world/common/ocean_water.gdshader remapped: res://game/world/common/ocean_water.gdshader
+Completed load for: 'res://game/world/common/ocean_water.gdshader' remapped 'res://game/world/common/ocean_water.gdshader' at thread -1
+Loading resource: res://game/world/farm/fufu_3d_display.tscn remapped: res://game/world/farm/fufu_3d_display.tscn
+Loading resource: res://game/world/farm/fufu_3d_display.gd remapped: res://game/world/farm/fufu_3d_display.gd
+Completed load for: 'res://game/world/farm/fufu_3d_display.gd' remapped 'res://game/world/farm/fufu_3d_display.gd' at thread -1
+Loading resource: res://assets/characters/fufu_3d/fufu.glb remapped: res://assets/characters/fufu_3d/fufu.glb
+Loading resource: res://.godot/imported/fufu.glb-8eea1599ac23aa042697d5a951a4a261.scn remapped: res://.godot/imported/fufu.glb-8eea1599ac23aa042697d5a951a4a261.scn
+Loading resource: res://assets/characters/fufu_3d/fufu_Fufu painted surfaces.png remapped: res://assets/characters/fufu_3d/fufu_Fufu painted surfaces.png
+Loading resource: res://.godot/imported/fufu_Fufu painted surfaces.png-6ba6c93875c84e4c412cb4f9ed2301c5.s3tc.ctex remapped: res://.godot/imported/fufu_Fufu painted surfaces.png-6ba6c93875c84e4c412cb4f9ed2301c5.s3tc.ctex
+Completed load for: 'res://assets/characters/fufu_3d/fufu_Fufu painted surfaces.png' remapped 'res://assets/characters/fufu_3d/fufu_Fufu painted surfaces.png' at thread -1
+Completed load for: 'res://assets/characters/fufu_3d/fufu.glb' remapped 'res://assets/characters/fufu_3d/fufu.glb' at thread -1
+Loading resource: res://assets/characters/fufu_3d/material-atlas.png remapped: res://assets/characters/fufu_3d/material-atlas.png
+Loading resource: res://.godot/imported/material-atlas.png-4f6e3495de7fa22232074e1a1ff6da54.ctex remapped: res://.godot/imported/material-atlas.png-4f6e3495de7fa22232074e1a1ff6da54.ctex
+Completed load for: 'res://assets/characters/fufu_3d/material-atlas.png' remapped 'res://assets/characters/fufu_3d/material-atlas.png' at thread -1
+Completed load for: 'res://game/world/farm/fufu_3d_display.tscn' remapped 'res://game/world/farm/fufu_3d_display.tscn' at thread -1
+Loading resource: res://assets/environment/meadow/brick.png remapped: res://assets/environment/meadow/brick.png
+Loading resource: res://.godot/imported/brick.png-636ade1b24626229a778c55686471efd.s3tc.ctex remapped: res://.godot/imported/brick.png-636ade1b24626229a778c55686471efd.s3tc.ctex
+Completed load for: 'res://assets/environment/meadow/brick.png' remapped 'res://assets/environment/meadow/brick.png' at thread -1
+Loading resource: res://assets/environment/meadow/timber.png remapped: res://assets/environment/meadow/timber.png
+Loading resource: res://.godot/imported/timber.png-9d021013bd19248c38150b158cdf67d6.s3tc.ctex remapped: res://.godot/imported/timber.png-9d021013bd19248c38150b158cdf67d6.s3tc.ctex
+Completed load for: 'res://assets/environment/meadow/timber.png' remapped 'res://assets/environment/meadow/timber.png' at thread -1
+Loading resource: res://assets/environment/meadow/roof.png remapped: res://assets/environment/meadow/roof.png
+Loading resource: res://.godot/imported/roof.png-c0ac7aba90acf48c66fadb76901bb703.s3tc.ctex remapped: res://.godot/imported/roof.png-c0ac7aba90acf48c66fadb76901bb703.s3tc.ctex
+Completed load for: 'res://assets/environment/meadow/roof.png' remapped 'res://assets/environment/meadow/roof.png' at thread -1
+Loading resource: res://assets/environment/meadow/concrete.png remapped: res://assets/environment/meadow/concrete.png
+Loading resource: res://.godot/imported/concrete.png-3f3bdf6eef7ef5ab15493aa02a7f6b48.s3tc.ctex remapped: res://.godot/imported/concrete.png-3f3bdf6eef7ef5ab15493aa02a7f6b48.s3tc.ctex
+Completed load for: 'res://assets/environment/meadow/concrete.png' remapped 'res://assets/environment/meadow/concrete.png' at thread -1
+Loading resource: res://game/world/common/decoration_outline.gdshader remapped: res://game/world/common/decoration_outline.gdshader
+Completed load for: 'res://game/world/common/decoration_outline.gdshader' remapped 'res://game/world/common/decoration_outline.gdshader' at thread -1
+Loading resource: res://game/world/common/terrain_finish.gdshader remapped: res://game/world/common/terrain_finish.gdshader
+Completed load for: 'res://game/world/common/terrain_finish.gdshader' remapped 'res://game/world/common/terrain_finish.gdshader' at thread -1
+Loading resource: res://game/world/biomes/ocean/ocean_sand.gdshader remapped: res://game/world/biomes/ocean/ocean_sand.gdshader
+Completed load for: 'res://game/world/biomes/ocean/ocean_sand.gdshader' remapped 'res://game/world/biomes/ocean/ocean_sand.gdshader' at thread -1
+Loading resource: res://game/world/biomes/ocean/ocean_kelp.gdshader remapped: res://game/world/biomes/ocean/ocean_kelp.gdshader
+Completed load for: 'res://game/world/biomes/ocean/ocean_kelp.gdshader' remapped 'res://game/world/biomes/ocean/ocean_kelp.gdshader' at thread -1
+Loading resource: res://game/world/biomes/jungle/waterfall.gdshader remapped: res://game/world/biomes/jungle/waterfall.gdshader
+Completed load for: 'res://game/world/biomes/jungle/waterfall.gdshader' remapped 'res://game/world/biomes/jungle/waterfall.gdshader' at thread -1
+Loading resource: res://game/world/biomes/jungle/waterfall_mist.gdshader remapped: res://game/world/biomes/jungle/waterfall_mist.gdshader
+Completed load for: 'res://game/world/biomes/jungle/waterfall_mist.gdshader' remapped 'res://game/world/biomes/jungle/waterfall_mist.gdshader' at thread -1
+Loading resource: res://game/world/river/river_fish.gdshader remapped: res://game/world/river/river_fish.gdshader
+Completed load for: 'res://game/world/river/river_fish.gdshader' remapped 'res://game/world/river/river_fish.gdshader' at thread -1
+Loading resource: res://game/world/biomes/jungle/waterfall_rock.gdshader remapped: res://game/world/biomes/jungle/waterfall_rock.gdshader
+Completed load for: 'res://game/world/biomes/jungle/waterfall_rock.gdshader' remapped 'res://game/world/biomes/jungle/waterfall_rock.gdshader' at thread -1
+Loading resource: res://game/world/biomes/jungle/jungle_ground.gdshader remapped: res://game/world/biomes/jungle/jungle_ground.gdshader
+Completed load for: 'res://game/world/biomes/jungle/jungle_ground.gdshader' remapped 'res://game/world/biomes/jungle/jungle_ground.gdshader' at thread -1
+Loading resource: res://assets/characters/dofufu_city/city-directions.png remapped: res://assets/characters/dofufu_city/city-directions.png
+Loading resource: res://.godot/imported/city-directions.png-5ad626c158aa1e6e4fa3d93aead68c1f.ctex remapped: res://.godot/imported/city-directions.png-5ad626c158aa1e6e4fa3d93aead68c1f.ctex
+Completed load for: 'res://assets/characters/dofufu_city/city-directions.png' remapped 'res://assets/characters/dofufu_city/city-directions.png' at thread -1
+Loading resource: res://game/world/biomes/dofufu/mountain_ground.gdshader remapped: res://game/world/biomes/dofufu/mountain_ground.gdshader
+Completed load for: 'res://game/world/biomes/dofufu/mountain_ground.gdshader' remapped 'res://game/world/biomes/dofufu/mountain_ground.gdshader' at thread -1
+Loading resource: res://assets/environment/dofufu_mountains/natural-surfaces.png remapped: res://assets/environment/dofufu_mountains/natural-surfaces.png
+Loading resource: res://.godot/imported/natural-surfaces.png-1bd1f03519abf702e6e721cfc8bd103f.ctex remapped: res://.godot/imported/natural-surfaces.png-1bd1f03519abf702e6e721cfc8bd103f.ctex
+Completed load for: 'res://assets/environment/dofufu_mountains/natural-surfaces.png' remapped 'res://assets/environment/dofufu_mountains/natural-surfaces.png' at thread -1
+Loading resource: res://game/world/biomes/dofufu/mountain_props.gdshader remapped: res://game/world/biomes/dofufu/mountain_props.gdshader
+Completed load for: 'res://game/world/biomes/dofufu/mountain_props.gdshader' remapped 'res://game/world/biomes/dofufu/mountain_props.gdshader' at thread -1
+Loading resource: res://assets/characters/mountain_hybrid/hermit-directions.png remapped: res://assets/characters/mountain_hybrid/hermit-directions.png
+Loading resource: res://.godot/imported/hermit-directions.png-73d4e906c0cff7d2f2c236ed0c624c62.ctex remapped: res://.godot/imported/hermit-directions.png-73d4e906c0cff7d2f2c236ed0c624c62.ctex
+Completed load for: 'res://assets/characters/mountain_hybrid/hermit-directions.png' remapped 'res://assets/characters/mountain_hybrid/hermit-directions.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/godfufu-directions.png remapped: res://assets/characters/cloud_court/godfufu-directions.png
+Loading resource: res://.godot/imported/godfufu-directions.png-1d9130d09aa4ca5f158c651962b86684.ctex remapped: res://.godot/imported/godfufu-directions.png-1d9130d09aa4ca5f158c651962b86684.ctex
+Completed load for: 'res://assets/characters/cloud_court/godfufu-directions.png' remapped 'res://assets/characters/cloud_court/godfufu-directions.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/goddess-directions-v2.png remapped: res://assets/characters/cloud_court/goddess-directions-v2.png
+Loading resource: res://.godot/imported/goddess-directions-v2.png-149d9ba34c5007884261aab285c14dc3.ctex remapped: res://.godot/imported/goddess-directions-v2.png-149d9ba34c5007884261aab285c14dc3.ctex
+Completed load for: 'res://assets/characters/cloud_court/goddess-directions-v2.png' remapped 'res://assets/characters/cloud_court/goddess-directions-v2.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/guardian-directions-v2.png remapped: res://assets/characters/cloud_court/guardian-directions-v2.png
+Loading resource: res://.godot/imported/guardian-directions-v2.png-8c537fa981e6089f984d114f249cb5b8.ctex remapped: res://.godot/imported/guardian-directions-v2.png-8c537fa981e6089f984d114f249cb5b8.ctex
+Completed load for: 'res://assets/characters/cloud_court/guardian-directions-v2.png' remapped 'res://assets/characters/cloud_court/guardian-directions-v2.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/nimbus-directions-v2.png remapped: res://assets/characters/cloud_court/nimbus-directions-v2.png
+Loading resource: res://.godot/imported/nimbus-directions-v2.png-dd7f31b58c2949ecb16ecd9ee7059df5.ctex remapped: res://.godot/imported/nimbus-directions-v2.png-dd7f31b58c2949ecb16ecd9ee7059df5.ctex
+Completed load for: 'res://assets/characters/cloud_court/nimbus-directions-v2.png' remapped 'res://assets/characters/cloud_court/nimbus-directions-v2.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/petal-directions-v2.png remapped: res://assets/characters/cloud_court/petal-directions-v2.png
+Loading resource: res://.godot/imported/petal-directions-v2.png-e66f2550fed91d29db5674469afbc147.ctex remapped: res://.godot/imported/petal-directions-v2.png-e66f2550fed91d29db5674469afbc147.ctex
+Completed load for: 'res://assets/characters/cloud_court/petal-directions-v2.png' remapped 'res://assets/characters/cloud_court/petal-directions-v2.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/mallow-directions.png remapped: res://assets/characters/cloud_court/mallow-directions.png
+Loading resource: res://.godot/imported/mallow-directions.png-7c8eb17c250b1c438b31a8d8a3e69b76.ctex remapped: res://.godot/imported/mallow-directions.png-7c8eb17c250b1c438b31a8d8a3e69b76.ctex
+Completed load for: 'res://assets/characters/cloud_court/mallow-directions.png' remapped 'res://assets/characters/cloud_court/mallow-directions.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/lumen-directions.png remapped: res://assets/characters/cloud_court/lumen-directions.png
+Loading resource: res://.godot/imported/lumen-directions.png-c2a62bc2ed0b202aeaa4b3fe9ed6cf5b.ctex remapped: res://.godot/imported/lumen-directions.png-c2a62bc2ed0b202aeaa4b3fe9ed6cf5b.ctex
+Completed load for: 'res://assets/characters/cloud_court/lumen-directions.png' remapped 'res://assets/characters/cloud_court/lumen-directions.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/pearl-directions.png remapped: res://assets/characters/cloud_court/pearl-directions.png
+Loading resource: res://.godot/imported/pearl-directions.png-7fd856bf310a2ca077bb53da182d9c46.ctex remapped: res://.godot/imported/pearl-directions.png-7fd856bf310a2ca077bb53da182d9c46.ctex
+Completed load for: 'res://assets/characters/cloud_court/pearl-directions.png' remapped 'res://assets/characters/cloud_court/pearl-directions.png' at thread -1
+Loading resource: res://assets/characters/cloud_court/angel-directions.png remapped: res://assets/characters/cloud_court/angel-directions.png
+Loading resource: res://.godot/imported/angel-directions.png-18cf4b44c9705a842c4994c0dddf8b87.ctex remapped: res://.godot/imported/angel-directions.png-18cf4b44c9705a842c4994c0dddf8b87.ctex
+Completed load for: 'res://assets/characters/cloud_court/angel-directions.png' remapped 'res://assets/characters/cloud_court/angel-directions.png' at thread -1
+Loading resource: res://assets/environment/cloud_realm/pearl-clouds-soft.png remapped: res://assets/environment/cloud_realm/pearl-clouds-soft.png
+Loading resource: res://.godot/imported/pearl-clouds-soft.png-2d25e8405d05894f5dca507cc64f9cb5.ctex remapped: res://.godot/imported/pearl-clouds-soft.png-2d25e8405d05894f5dca507cc64f9cb5.ctex
+Completed load for: 'res://assets/environment/cloud_realm/pearl-clouds-soft.png' remapped 'res://assets/environment/cloud_realm/pearl-clouds-soft.png' at thread -1
+Loading resource: res://assets/environment/cloud_realm/olympian-marble.png remapped: res://assets/environment/cloud_realm/olympian-marble.png
+Loading resource: res://.godot/imported/olympian-marble.png-4ea523bb20605836f0cef8e9bed030d3.ctex remapped: res://.godot/imported/olympian-marble.png-4ea523bb20605836f0cef8e9bed030d3.ctex
+Completed load for: 'res://assets/environment/cloud_realm/olympian-marble.png' remapped 'res://assets/environment/cloud_realm/olympian-marble.png' at thread -1
+Loading resource: res://assets/environment/cloud_realm/laurel-silk.png remapped: res://assets/environment/cloud_realm/laurel-silk.png
+Loading resource: res://.godot/imported/laurel-silk.png-a73c85ef83106a12aba7a37f7221c9ed.ctex remapped: res://.godot/imported/laurel-silk.png-a73c85ef83106a12aba7a37f7221c9ed.ctex
+Completed load for: 'res://assets/environment/cloud_realm/laurel-silk.png' remapped 'res://assets/environment/cloud_realm/laurel-silk.png' at thread -1
+Loading resource: res://assets/environment/cloud_realm/greek-key.svg remapped: res://assets/environment/cloud_realm/greek-key.svg
+Loading resource: res://.godot/imported/greek-key.svg-790e3345522d90f485da4f50b4b22abd.ctex remapped: res://.godot/imported/greek-key.svg-790e3345522d90f485da4f50b4b22abd.ctex
+Completed load for: 'res://assets/environment/cloud_realm/greek-key.svg' remapped 'res://assets/environment/cloud_realm/greek-key.svg' at thread -1
+Loading resource: res://assets/environment/cloud_realm/laurel-mosaic.svg remapped: res://assets/environment/cloud_realm/laurel-mosaic.svg
+Loading resource: res://.godot/imported/laurel-mosaic.svg-1bf7e158404dc99effc035f5742d5a24.ctex remapped: res://.godot/imported/laurel-mosaic.svg-1bf7e158404dc99effc035f5742d5a24.ctex
+Completed load for: 'res://assets/environment/cloud_realm/laurel-mosaic.svg' remapped 'res://assets/environment/cloud_realm/laurel-mosaic.svg' at thread -1
+Loading resource: res://game/world/biomes/clouds/cloud_fountain.gdshader remapped: res://game/world/biomes/clouds/cloud_fountain.gdshader
+Completed load for: 'res://game/world/biomes/clouds/cloud_fountain.gdshader' remapped 'res://game/world/biomes/clouds/cloud_fountain.gdshader' at thread -1
+Loading resource: res://game/world/biomes/clouds/cloud_mist.gdshader remapped: res://game/world/biomes/clouds/cloud_mist.gdshader
+Completed load for: 'res://game/world/biomes/clouds/cloud_mist.gdshader' remapped 'res://game/world/biomes/clouds/cloud_mist.gdshader' at thread -1
+Loading resource: res://game/world/weather/rain_puddle.gdshader remapped: res://game/world/weather/rain_puddle.gdshader
+Completed load for: 'res://game/world/weather/rain_puddle.gdshader' remapped 'res://game/world/weather/rain_puddle.gdshader' at thread -1
+Loading resource: res://game/world/farm/meadow_grass.gdshader remapped: res://game/world/farm/meadow_grass.gdshader
+Completed load for: 'res://game/world/farm/meadow_grass.gdshader' remapped 'res://game/world/farm/meadow_grass.gdshader' at thread -1
+Loading resource: res://game/world/river/river_plants.gdshader remapped: res://game/world/river/river_plants.gdshader
+Completed load for: 'res://game/world/river/river_plants.gdshader' remapped 'res://game/world/river/river_plants.gdshader' at thread -1
+Loading resource: res://game/world/river/river.gdshader remapped: res://game/world/river/river.gdshader
+Completed load for: 'res://game/world/river/river.gdshader' remapped 'res://game/world/river/river.gdshader' at thread -1
+Loading resource: res://game/inventory/icons/helmet.svg remapped: res://game/inventory/icons/helmet.svg
+Loading resource: res://.godot/imported/helmet.svg-5bb0db4a8b95012fc268543c8f0d70d8.ctex remapped: res://.godot/imported/helmet.svg-5bb0db4a8b95012fc268543c8f0d70d8.ctex
+Completed load for: 'res://game/inventory/icons/helmet.svg' remapped 'res://game/inventory/icons/helmet.svg' at thread -1
+Loading resource: res://game/inventory/icons/armor.svg remapped: res://game/inventory/icons/armor.svg
+Loading resource: res://.godot/imported/armor.svg-5783df16afafe2761143e3460f6b2ff9.ctex remapped: res://.godot/imported/armor.svg-5783df16afafe2761143e3460f6b2ff9.ctex
+Completed load for: 'res://game/inventory/icons/armor.svg' remapped 'res://game/inventory/icons/armor.svg' at thread -1
+Loading resource: res://game/inventory/icons/legs.svg remapped: res://game/inventory/icons/legs.svg
+Loading resource: res://.godot/imported/legs.svg-20f2daa3f854c361b785bb3e75036cd6.ctex remapped: res://.godot/imported/legs.svg-20f2daa3f854c361b785bb3e75036cd6.ctex
+Completed load for: 'res://game/inventory/icons/legs.svg' remapped 'res://game/inventory/icons/legs.svg' at thread -1
+Loading resource: res://game/inventory/icons/boots.svg remapped: res://game/inventory/icons/boots.svg
+Loading resource: res://.godot/imported/boots.svg-7414f00abc411c4fc051356fb8e75b4e.ctex remapped: res://.godot/imported/boots.svg-7414f00abc411c4fc051356fb8e75b4e.ctex
+Completed load for: 'res://game/inventory/icons/boots.svg' remapped 'res://game/inventory/icons/boots.svg' at thread -1
+Loading resource: res://game/inventory/icons/accessory.svg remapped: res://game/inventory/icons/accessory.svg
+Loading resource: res://.godot/imported/accessory.svg-1ccf2c62ffe8ba8ee5ff9918bc412a82.ctex remapped: res://.godot/imported/accessory.svg-1ccf2c62ffe8ba8ee5ff9918bc412a82.ctex
+Completed load for: 'res://game/inventory/icons/accessory.svg' remapped 'res://game/inventory/icons/accessory.svg' at thread -1
+Loading resource: res://game/inventory/icons/combat.svg remapped: res://game/inventory/icons/combat.svg
+Loading resource: res://.godot/imported/combat.svg-2e6e10e8dc41e66b9b0358280b06bf61.ctex remapped: res://.godot/imported/combat.svg-2e6e10e8dc41e66b9b0358280b06bf61.ctex
+Completed load for: 'res://game/inventory/icons/combat.svg' remapped 'res://game/inventory/icons/combat.svg' at thread -1
+Loading resource: res://game/inventory/icons/healing.svg remapped: res://game/inventory/icons/healing.svg
+Loading resource: res://.godot/imported/healing.svg-2ce1be1ecd662f481895fb13ea5e8e05.ctex remapped: res://.godot/imported/healing.svg-2ce1be1ecd662f481895fb13ea5e8e05.ctex
+Completed load for: 'res://game/inventory/icons/healing.svg' remapped 'res://game/inventory/icons/healing.svg' at thread -1
+Completed load for: 'res://tests/test_battle_deployment.gd' remapped 'res://tests/test_battle_deployment.gd' at thread -1
+SceneTreeFTI: traversal method DEFAULT
+Loaded system CA certificates
+Loading resource: res://game/world/farm/meadow.tscn remapped: res://game/world/farm/meadow.tscn
+Loading resource: res://game/world/common/stone.tscn remapped: res://game/world/common/stone.tscn
+Completed load for: 'res://game/world/common/stone.tscn' remapped 'res://game/world/common/stone.tscn' at thread -1
+Loading resource: res://game/world/common/platform.tscn remapped: res://game/world/common/platform.tscn
+Completed load for: 'res://game/world/common/platform.tscn' remapped 'res://game/world/common/platform.tscn' at thread -1
+Loading resource: res://game/world/weather/environment_cycle.gd remapped: res://game/world/weather/environment_cycle.gd
+Loading resource: res://game/world/weather/storybook_sky.gdshader remapped: res://game/world/weather/storybook_sky.gdshader
+Completed load for: 'res://game/world/weather/storybook_sky.gdshader' remapped 'res://game/world/weather/storybook_sky.gdshader' at thread -1
+Completed load for: 'res://game/world/weather/environment_cycle.gd' remapped 'res://game/world/weather/environment_cycle.gd' at thread -1
+Completed load for: 'res://game/world/farm/meadow.tscn' remapped 'res://game/world/farm/meadow.tscn' at thread -1
+Loading resource: res://assets/characters/village/grandma-directions.png remapped: res://assets/characters/village/grandma-directions.png
+Loading resource: res://.godot/imported/grandma-directions.png-1d8cbc95eb2c56f6b3cf5e8dae8cab46.ctex remapped: res://.godot/imported/grandma-directions.png-1d8cbc95eb2c56f6b3cf5e8dae8cab46.ctex
+Completed load for: 'res://assets/characters/village/grandma-directions.png' remapped 'res://assets/characters/village/grandma-directions.png' at thread -1
+Loading resource: res://assets/characters/village/grandpa-directions.png remapped: res://assets/characters/village/grandpa-directions.png
+Loading resource: res://.godot/imported/grandpa-directions.png-7a8878455e72a669d698dbd4a38de792.ctex remapped: res://.godot/imported/grandpa-directions.png-7a8878455e72a669d698dbd4a38de792.ctex
+Completed load for: 'res://assets/characters/village/grandpa-directions.png' remapped 'res://assets/characters/village/grandpa-directions.png' at thread -1
+Loading resource: res://assets/environment/groatfields/ground.png remapped: res://assets/environment/groatfields/ground.png
+Loading resource: res://.godot/imported/ground.png-d4d4234633c2487b4eda1418bb4a167b.ctex remapped: res://.godot/imported/ground.png-d4d4234633c2487b4eda1418bb4a167b.ctex
+Completed load for: 'res://assets/environment/groatfields/ground.png' remapped 'res://assets/environment/groatfields/ground.png' at thread -1
+Loading resource: res://game/player/player.tscn remapped: res://game/player/player.tscn
+Loading resource: res://assets/characters/fufu/soybean_fufu.png remapped: res://assets/characters/fufu/soybean_fufu.png
+Loading resource: res://.godot/imported/soybean_fufu.png-b02fe16d05b62c19c551d17a4615603e.s3tc.ctex remapped: res://.godot/imported/soybean_fufu.png-b02fe16d05b62c19c551d17a4615603e.s3tc.ctex
+Completed load for: 'res://assets/characters/fufu/soybean_fufu.png' remapped 'res://assets/characters/fufu/soybean_fufu.png' at thread -1
+Loading resource: res://game/player/ground_shadow.gd remapped: res://game/player/ground_shadow.gd
+Completed load for: 'res://game/player/ground_shadow.gd' remapped 'res://game/player/ground_shadow.gd' at thread -1
+Completed load for: 'res://game/player/player.tscn' remapped 'res://game/player/player.tscn' at thread -1
+Loading resource: res://assets/characters/tofufu/smoked_tofufu_green_headband/locomotion.png remapped: res://assets/characters/tofufu/smoked_tofufu_green_headband/locomotion.png
+Loading resource: res://.godot/imported/locomotion.png-6d36209c289235ed6a50788ba1c07663.ctex remapped: res://.godot/imported/locomotion.png-6d36209c289235ed6a50788ba1c07663.ctex
+Completed load for: 'res://assets/characters/tofufu/smoked_tofufu_green_headband/locomotion.png' remapped 'res://assets/characters/tofufu/smoked_tofufu_green_headband/locomotion.png' at thread -1
+Loading resource: res://assets/characters/tofufu/panko_tofufu/locomotion.png remapped: res://assets/characters/tofufu/panko_tofufu/locomotion.png
+Loading resource: res://.godot/imported/locomotion.png-d8a0524b28671a74ad1d529c53421a82.ctex remapped: res://.godot/imported/locomotion.png-d8a0524b28671a74ad1d529c53421a82.ctex
+Completed load for: 'res://assets/characters/tofufu/panko_tofufu/locomotion.png' remapped 'res://assets/characters/tofufu/panko_tofufu/locomotion.png' at thread -1
+Loading resource: res://assets/characters/tofufu/golden_tofufu/locomotion.png remapped: res://assets/characters/tofufu/golden_tofufu/locomotion.png
+Loading resource: res://.godot/imported/locomotion.png-c49777ac5d89ae4cc18324c1d5c7f4ca.ctex remapped: res://.godot/imported/locomotion.png-c49777ac5d89ae4cc18324c1d5c7f4ca.ctex
+Completed load for: 'res://assets/characters/tofufu/golden_tofufu/locomotion.png' remapped 'res://assets/characters/tofufu/golden_tofufu/locomotion.png' at thread -1
+Loading resource: res://assets/characters/tofufu/smoked_tofufu_steam/locomotion.png remapped: res://assets/characters/tofufu/smoked_tofufu_steam/locomotion.png
+Loading resource: res://.godot/imported/locomotion.png-6e852cf908bf22868eadcefed3d1df62.ctex remapped: res://.godot/imported/locomotion.png-6e852cf908bf22868eadcefed3d1df62.ctex
+Completed load for: 'res://assets/characters/tofufu/smoked_tofufu_steam/locomotion.png' remapped 'res://assets/characters/tofufu/smoked_tofufu_steam/locomotion.png' at thread -1
+Loading resource: res://assets/weapons/celestial/celestial_sword.png remapped: res://assets/weapons/celestial/celestial_sword.png
+Loading resource: res://.godot/imported/celestial_sword.png-b84d5927c99bda32b3e0c4a2dbb0da1c.ctex remapped: res://.godot/imported/celestial_sword.png-b84d5927c99bda32b3e0c4a2dbb0da1c.ctex
+Completed load for: 'res://assets/weapons/celestial/celestial_sword.png' remapped 'res://assets/weapons/celestial/celestial_sword.png' at thread -1
+Loading resource: res://assets/weapons/celestial/celestial_staff.png remapped: res://assets/weapons/celestial/celestial_staff.png
+Loading resource: res://.godot/imported/celestial_staff.png-b07d2d58e953c0e47b811619fea3e76e.ctex remapped: res://.godot/imported/celestial_staff.png-b07d2d58e953c0e47b811619fea3e76e.ctex
+Completed load for: 'res://assets/weapons/celestial/celestial_staff.png' remapped 'res://assets/weapons/celestial/celestial_staff.png' at thread -1
+Loading resource: res://assets/weapons/celestial/soy_raygun.png remapped: res://assets/weapons/celestial/soy_raygun.png
+Loading resource: res://.godot/imported/soy_raygun.png-8f5576050311045cde83f87062e81421.ctex remapped: res://.godot/imported/soy_raygun.png-8f5576050311045cde83f87062e81421.ctex
+Completed load for: 'res://assets/weapons/celestial/soy_raygun.png' remapped 'res://assets/weapons/celestial/soy_raygun.png' at thread -1
+Loading resource: res://assets/equipment/bright_leaf_set/helmet.png remapped: res://assets/equipment/bright_leaf_set/helmet.png
+Loading resource: res://.godot/imported/helmet.png-30c61366815ebf9b73e55b56c1d274e4.ctex remapped: res://.godot/imported/helmet.png-30c61366815ebf9b73e55b56c1d274e4.ctex
+Completed load for: 'res://assets/equipment/bright_leaf_set/helmet.png' remapped 'res://assets/equipment/bright_leaf_set/helmet.png' at thread -1
+Loading resource: res://assets/equipment/bright_leaf_set/armor.png remapped: res://assets/equipment/bright_leaf_set/armor.png
+Loading resource: res://.godot/imported/armor.png-6aaec537c73b68ed53d36d48a3282316.ctex remapped: res://.godot/imported/armor.png-6aaec537c73b68ed53d36d48a3282316.ctex
+Completed load for: 'res://assets/equipment/bright_leaf_set/armor.png' remapped 'res://assets/equipment/bright_leaf_set/armor.png' at thread -1
+Loading resource: res://assets/equipment/bright_leaf_set/legs.png remapped: res://assets/equipment/bright_leaf_set/legs.png
+Loading resource: res://.godot/imported/legs.png-11a4997b73c4f7d61aa80364c9ca5636.ctex remapped: res://.godot/imported/legs.png-11a4997b73c4f7d61aa80364c9ca5636.ctex
+Completed load for: 'res://assets/equipment/bright_leaf_set/legs.png' remapped 'res://assets/equipment/bright_leaf_set/legs.png' at thread -1
+Loading resource: res://assets/equipment/bright_leaf_set/boots.png remapped: res://assets/equipment/bright_leaf_set/boots.png
+Loading resource: res://.godot/imported/boots.png-2c964cb8abe04a700e47f8cf66db9ce4.ctex remapped: res://.godot/imported/boots.png-2c964cb8abe04a700e47f8cf66db9ce4.ctex
+Completed load for: 'res://assets/equipment/bright_leaf_set/boots.png' remapped 'res://assets/equipment/bright_leaf_set/boots.png' at thread -1
+Loading resource: res://assets/equipment/dark_leaf_set/helmet.png remapped: res://assets/equipment/dark_leaf_set/helmet.png
+Loading resource: res://.godot/imported/helmet.png-cdd23870438cb230eeb2d8fb71a6b176.ctex remapped: res://.godot/imported/helmet.png-cdd23870438cb230eeb2d8fb71a6b176.ctex
+Completed load for: 'res://assets/equipment/dark_leaf_set/helmet.png' remapped 'res://assets/equipment/dark_leaf_set/helmet.png' at thread -1
+Loading resource: res://assets/equipment/dark_leaf_set/armor.png remapped: res://assets/equipment/dark_leaf_set/armor.png
+Loading resource: res://.godot/imported/armor.png-9b27dc81ff33e3d0db5f16a5d73a6a93.ctex remapped: res://.godot/imported/armor.png-9b27dc81ff33e3d0db5f16a5d73a6a93.ctex
+Completed load for: 'res://assets/equipment/dark_leaf_set/armor.png' remapped 'res://assets/equipment/dark_leaf_set/armor.png' at thread -1
+Loading resource: res://assets/equipment/dark_leaf_set/legs.png remapped: res://assets/equipment/dark_leaf_set/legs.png
+Loading resource: res://.godot/imported/legs.png-6933fe8c4907946b9cb7e69a8298a198.ctex remapped: res://.godot/imported/legs.png-6933fe8c4907946b9cb7e69a8298a198.ctex
+Completed load for: 'res://assets/equipment/dark_leaf_set/legs.png' remapped 'res://assets/equipment/dark_leaf_set/legs.png' at thread -1
+Loading resource: res://assets/equipment/dark_leaf_set/boots.png remapped: res://assets/equipment/dark_leaf_set/boots.png
+Loading resource: res://.godot/imported/boots.png-e2e35a83724f4c6515de9338ce4ed670.ctex remapped: res://.godot/imported/boots.png-e2e35a83724f4c6515de9338ce4ed670.ctex
+Completed load for: 'res://assets/equipment/dark_leaf_set/boots.png' remapped 'res://assets/equipment/dark_leaf_set/boots.png' at thread -1
+Loading resource: res://assets/equipment/celestial/helmet.png remapped: res://assets/equipment/celestial/helmet.png
+Loading resource: res://.godot/imported/helmet.png-4c23a302f55faaa9732630685d3c1c2f.ctex remapped: res://.godot/imported/helmet.png-4c23a302f55faaa9732630685d3c1c2f.ctex
+Completed load for: 'res://assets/equipment/celestial/helmet.png' remapped 'res://assets/equipment/celestial/helmet.png' at thread -1
+Loading resource: res://assets/equipment/celestial/armor.png remapped: res://assets/equipment/celestial/armor.png
+Loading resource: res://.godot/imported/armor.png-276cd74560af45acb7d2be7c786bf9d2.ctex remapped: res://.godot/imported/armor.png-276cd74560af45acb7d2be7c786bf9d2.ctex
+Completed load for: 'res://assets/equipment/celestial/armor.png' remapped 'res://assets/equipment/celestial/armor.png' at thread -1
+Loading resource: res://assets/equipment/celestial/legs.png remapped: res://assets/equipment/celestial/legs.png
+Loading resource: res://.godot/imported/legs.png-74f7737cfb48400ed134353b65c23703.ctex remapped: res://.godot/imported/legs.png-74f7737cfb48400ed134353b65c23703.ctex
+Completed load for: 'res://assets/equipment/celestial/legs.png' remapped 'res://assets/equipment/celestial/legs.png' at thread -1
+Loading resource: res://assets/equipment/celestial/boots.png remapped: res://assets/equipment/celestial/boots.png
+Loading resource: res://.godot/imported/boots.png-57f64c11706e2c3bdd547961d26343aa.ctex remapped: res://.godot/imported/boots.png-57f64c11706e2c3bdd547961d26343aa.ctex
+Completed load for: 'res://assets/equipment/celestial/boots.png' remapped 'res://assets/equipment/celestial/boots.png' at thread -1
+Loading resource: res://game/inventory/icons/potato.svg remapped: res://game/inventory/icons/potato.svg
+Loading resource: res://.godot/imported/potato.svg-69c523e7d1f893e3882979b8ab76d49e.ctex remapped: res://.godot/imported/potato.svg-69c523e7d1f893e3882979b8ab76d49e.ctex
+Completed load for: 'res://game/inventory/icons/potato.svg' remapped 'res://game/inventory/icons/potato.svg' at thread -1
+Loading resource: res://game/inventory/icons/cucumber.svg remapped: res://game/inventory/icons/cucumber.svg
+Loading resource: res://.godot/imported/cucumber.svg-6307bb67fae5c6cb2d2fd7920dc124aa.ctex remapped: res://.godot/imported/cucumber.svg-6307bb67fae5c6cb2d2fd7920dc124aa.ctex
+Completed load for: 'res://game/inventory/icons/cucumber.svg' remapped 'res://game/inventory/icons/cucumber.svg' at thread -1
+Loading resource: res://game/inventory/icons/red_berries.svg remapped: res://game/inventory/icons/red_berries.svg
+Loading resource: res://.godot/imported/red_berries.svg-c1c70c0b482d750abf8adfc7697ce161.ctex remapped: res://.godot/imported/red_berries.svg-c1c70c0b482d750abf8adfc7697ce161.ctex
+Completed load for: 'res://game/inventory/icons/red_berries.svg' remapped 'res://game/inventory/icons/red_berries.svg' at thread -1
+Loading resource: res://game/inventory/icons/beetroot.svg remapped: res://game/inventory/icons/beetroot.svg
+Loading resource: res://.godot/imported/beetroot.svg-ab4fb02f8eaa640a9d17a02e853cd808.ctex remapped: res://.godot/imported/beetroot.svg-ab4fb02f8eaa640a9d17a02e853cd808.ctex
+Completed load for: 'res://game/inventory/icons/beetroot.svg' remapped 'res://game/inventory/icons/beetroot.svg' at thread -1
+Loading resource: res://assets/characters/tofufu/crispy_tofufu/locomotion.png remapped: res://assets/characters/tofufu/crispy_tofufu/locomotion.png
+Loading resource: res://.godot/imported/locomotion.png-1c099e2a1edc522edf633e81d1e095b7.ctex remapped: res://.godot/imported/locomotion.png-1c099e2a1edc522edf633e81d1e095b7.ctex
+Completed load for: 'res://assets/characters/tofufu/crispy_tofufu/locomotion.png' remapped 'res://assets/characters/tofufu/crispy_tofufu/locomotion.png' at thread -1
+Loading resource: res://assets/characters/tofufu/crispy_tofufu/jump.png remapped: res://assets/characters/tofufu/crispy_tofufu/jump.png
+Loading resource: res://.godot/imported/jump.png-ef8bf3eb7c6827cc464a0da5f617368e.ctex remapped: res://.godot/imported/jump.png-ef8bf3eb7c6827cc464a0da5f617368e.ctex
+Completed load for: 'res://assets/characters/tofufu/crispy_tofufu/jump.png' remapped 'res://assets/characters/tofufu/crispy_tofufu/jump.png' at thread -1
+Loading resource: res://assets/characters/tofufu/crispy_tofufu/melee.png remapped: res://assets/characters/tofufu/crispy_tofufu/melee.png
+Loading resource: res://.godot/imported/melee.png-029fe2cfda183c069db3fb0b25707607.ctex remapped: res://.godot/imported/melee.png-029fe2cfda183c069db3fb0b25707607.ctex
+Completed load for: 'res://assets/characters/tofufu/crispy_tofufu/melee.png' remapped 'res://assets/characters/tofufu/crispy_tofufu/melee.png' at thread -1
+Loading resource: res://assets/characters/tofufu/smoked_tofufu_green_headband/jump.png remapped: res://assets/characters/tofufu/smoked_tofufu_green_headband/jump.png
+Loading resource: res://.godot/imported/jump.png-7449e01e3fcf6b7ae09364461b849558.ctex remapped: res://.godot/imported/jump.png-7449e01e3fcf6b7ae09364461b849558.ctex
+Completed load for: 'res://assets/characters/tofufu/smoked_tofufu_green_headband/jump.png' remapped 'res://assets/characters/tofufu/smoked_tofufu_green_headband/jump.png' at thread -1
+Loading resource: res://assets/characters/tofufu/smoked_tofufu_green_headband/melee.png remapped: res://assets/characters/tofufu/smoked_tofufu_green_headband/melee.png
+Loading resource: res://.godot/imported/melee.png-db2ccacfc3b9accf2978c45c0ed7874b.ctex remapped: res://.godot/imported/melee.png-db2ccacfc3b9accf2978c45c0ed7874b.ctex
+Completed load for: 'res://assets/characters/tofufu/smoked_tofufu_green_headband/melee.png' remapped 'res://assets/characters/tofufu/smoked_tofufu_green_headband/melee.png' at thread -1
+Loading resource: res://assets/characters/tofufu/panko_tofufu/jump.png remapped: res://assets/characters/tofufu/panko_tofufu/jump.png
+Loading resource: res://.godot/imported/jump.png-d5174548d45f28ecc52e05436aa75dad.ctex remapped: res://.godot/imported/jump.png-d5174548d45f28ecc52e05436aa75dad.ctex
+Completed load for: 'res://assets/characters/tofufu/panko_tofufu/jump.png' remapped 'res://assets/characters/tofufu/panko_tofufu/jump.png' at thread -1
+Loading resource: res://assets/characters/tofufu/panko_tofufu/melee.png remapped: res://assets/characters/tofufu/panko_tofufu/melee.png
+Loading resource: res://.godot/imported/melee.png-42195757aaddd76818cc048991a292b8.ctex remapped: res://.godot/imported/melee.png-42195757aaddd76818cc048991a292b8.ctex
+Completed load for: 'res://assets/characters/tofufu/panko_tofufu/melee.png' remapped 'res://assets/characters/tofufu/panko_tofufu/melee.png' at thread -1
+Loading resource: res://assets/characters/tofufu/golden_tofufu/jump.png remapped: res://assets/characters/tofufu/golden_tofufu/jump.png
+Loading resource: res://.godot/imported/jump.png-4346db7462b98722e53215d7ff70ada7.ctex remapped: res://.godot/imported/jump.png-4346db7462b98722e53215d7ff70ada7.ctex
+Completed load for: 'res://assets/characters/tofufu/golden_tofufu/jump.png' remapped 'res://assets/characters/tofufu/golden_tofufu/jump.png' at thread -1
+Loading resource: res://assets/characters/tofufu/golden_tofufu/melee.png remapped: res://assets/characters/tofufu/golden_tofufu/melee.png
+Loading resource: res://.godot/imported/melee.png-3d1beb72f46a3005373098756d2ca139.ctex remapped: res://.godot/imported/melee.png-3d1beb72f46a3005373098756d2ca139.ctex
+Completed load for: 'res://assets/characters/tofufu/golden_tofufu/melee.png' remapped 'res://assets/characters/tofufu/golden_tofufu/melee.png' at thread -1
+Loading resource: res://assets/characters/tofufu/smoked_tofufu_steam/jump.png remapped: res://assets/characters/tofufu/smoked_tofufu_steam/jump.png
+Loading resource: res://.godot/imported/jump.png-96bf7493d493a168ab31aeab5d961881.ctex remapped: res://.godot/imported/jump.png-96bf7493d493a168ab31aeab5d961881.ctex
+Completed load for: 'res://assets/characters/tofufu/smoked_tofufu_steam/jump.png' remapped 'res://assets/characters/tofufu/smoked_tofufu_steam/jump.png' at thread -1
+Loading resource: res://assets/characters/tofufu/smoked_tofufu_steam/melee.png remapped: res://assets/characters/tofufu/smoked_tofufu_steam/melee.png
+Loading resource: res://.godot/imported/melee.png-ab0385d3c812ba68e4e4500f3072fba6.ctex remapped: res://.godot/imported/melee.png-ab0385d3c812ba68e4e4500f3072fba6.ctex
+Completed load for: 'res://assets/characters/tofufu/smoked_tofufu_steam/melee.png' remapped 'res://assets/characters/tofufu/smoked_tofufu_steam/melee.png' at thread -1
+Loading resource: res://assets/characters/tofufu/silken_tofufu/locomotion.png remapped: res://assets/characters/tofufu/silken_tofufu/locomotion.png
+Loading resource: res://.godot/imported/locomotion.png-b33b6111d350ff5fbcf9ec414b33e366.ctex remapped: res://.godot/imported/locomotion.png-b33b6111d350ff5fbcf9ec414b33e366.ctex
+Completed load for: 'res://assets/characters/tofufu/silken_tofufu/locomotion.png' remapped 'res://assets/characters/tofufu/silken_tofufu/locomotion.png' at thread -1
+Loading resource: res://assets/characters/tofufu/silken_tofufu/jump.png remapped: res://assets/characters/tofufu/silken_tofufu/jump.png
+Loading resource: res://.godot/imported/jump.png-034ea934eaeacbe490fa1ac02ca3407f.ctex remapped: res://.godot/imported/jump.png-034ea934eaeacbe490fa1ac02ca3407f.ctex
+Completed load for: 'res://assets/characters/tofufu/silken_tofufu/jump.png' remapped 'res://assets/characters/tofufu/silken_tofufu/jump.png' at thread -1
+Loading resource: res://assets/characters/tofufu/silken_tofufu/melee.png remapped: res://assets/characters/tofufu/silken_tofufu/melee.png
+Loading resource: res://.godot/imported/melee.png-9c08d4a35b6f1e4a6dfbc21907490186.ctex remapped: res://.godot/imported/melee.png-9c08d4a35b6f1e4a6dfbc21907490186.ctex
+Completed load for: 'res://assets/characters/tofufu/silken_tofufu/melee.png' remapped 'res://assets/characters/tofufu/silken_tofufu/melee.png' at thread -1
+Loading resource: res://assets/characters/tofufu/burnt_tofufu/locomotion.png remapped: res://assets/characters/tofufu/burnt_tofufu/locomotion.png
+Loading resource: res://.godot/imported/locomotion.png-b35a493a48bceab781fcaca7d44c98b0.ctex remapped: res://.godot/imported/locomotion.png-b35a493a48bceab781fcaca7d44c98b0.ctex
+Completed load for: 'res://assets/characters/tofufu/burnt_tofufu/locomotion.png' remapped 'res://assets/characters/tofufu/burnt_tofufu/locomotion.png' at thread -1
+Loading resource: res://assets/characters/tofufu/burnt_tofufu/jump.png remapped: res://assets/characters/tofufu/burnt_tofufu/jump.png
+Loading resource: res://.godot/imported/jump.png-28da50447e4dbf074b6bb7ed4ec51e3d.ctex remapped: res://.godot/imported/jump.png-28da50447e4dbf074b6bb7ed4ec51e3d.ctex
+Completed load for: 'res://assets/characters/tofufu/burnt_tofufu/jump.png' remapped 'res://assets/characters/tofufu/burnt_tofufu/jump.png' at thread -1
+Loading resource: res://assets/characters/tofufu/burnt_tofufu/melee.png remapped: res://assets/characters/tofufu/burnt_tofufu/melee.png
+Loading resource: res://.godot/imported/melee.png-14969c99f885aa9b5dd8b2d0b01ba797.ctex remapped: res://.godot/imported/melee.png-14969c99f885aa9b5dd8b2d0b01ba797.ctex
+Completed load for: 'res://assets/characters/tofufu/burnt_tofufu/melee.png' remapped 'res://assets/characters/tofufu/burnt_tofufu/melee.png' at thread -1
+Loading resource: res://game/world/farm/meadow.tscn remapped: res://game/world/farm/meadow.tscn
+Loading resource: res://game/world/common/stone.tscn remapped: res://game/world/common/stone.tscn
+Completed load for: 'res://game/world/common/stone.tscn' remapped 'res://game/world/common/stone.tscn' at thread -1
+Loading resource: res://game/world/common/platform.tscn remapped: res://game/world/common/platform.tscn
+Completed load for: 'res://game/world/common/platform.tscn' remapped 'res://game/world/common/platform.tscn' at thread -1
+Completed load for: 'res://game/world/farm/meadow.tscn' remapped 'res://game/world/farm/meadow.tscn' at thread -1
+Loading resource: res://game/player/player.tscn remapped: res://game/player/player.tscn
+Loading resource: res://assets/characters/fufu/soybean_fufu.png remapped: res://assets/characters/fufu/soybean_fufu.png
+Loading resource: res://.godot/imported/soybean_fufu.png-b02fe16d05b62c19c551d17a4615603e.s3tc.ctex remapped: res://.godot/imported/soybean_fufu.png-b02fe16d05b62c19c551d17a4615603e.s3tc.ctex
+Completed load for: 'res://assets/characters/fufu/soybean_fufu.png' remapped 'res://assets/characters/fufu/soybean_fufu.png' at thread -1
+Completed load for: 'res://game/player/player.tscn' remapped 'res://game/player/player.tscn' at thread -1
+Minimum plant sites across twelve seeds: 81
+Battle plant deployment and duos: PASS
+XR: Clearing primary interface
+XR: Removed interface "Native mobile"
+XR: Removed interface "OpenXR"

@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "regression_scenarios": 146,
+  "sidecar_tests": 19,
+  "real_three_process_migration": true,
+  "benchmark": {
+    "cpu_seats": 0,
+    "draw_calls": 154.0,
+    "elapsed_wall_seconds": 5.995649,
+    "engine_fps": 119.0,
+    "human_seats": 20,
+    "json_upload_bytes_per_simulated_second": 1756113.0,
+    "minimum_alive": 20,
+    "render_scale": 0.850000023841858,
+    "rendered_objects": 357.0,
+    "simulation_and_json_max_ms": 8.553,
+    "simulation_and_json_p95_ms": 6.73
+  }
+}

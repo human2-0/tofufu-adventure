@@ -14,6 +14,10 @@ function identity(filename) {
 }
 async function options(config) {
   const result = { seed: identity(config.identity) }
+  if (config.channel) {
+    if (typeof config.channel !== 'string' || !/^tofufu-battle-v1\/(public|[0-9a-f]{24})$/.test(config.channel)) throw new Error('Invalid discovery channel')
+    result.topic = require('node:crypto').createHash('sha256').update(config.channel).digest()
+  }
   if (process.env.TOFUFU_TEST_TOPIC) {
     result.topic = require('node:crypto').createHash('sha256').update('tofufu/verification/' + process.env.TOFUFU_TEST_TOPIC).digest()
   }

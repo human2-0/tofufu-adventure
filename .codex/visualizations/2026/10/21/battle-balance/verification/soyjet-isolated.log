@@ -1,0 +1,19 @@
+Focused verification: architecture, import, 2 Godot tests
+Architecture check: PASS (736 scripts)
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-0l7vd53b
+import: PASS (6.0s)
+sotjet: PASS (53.7s)
+sotjet_coop: PASS (58.6s)
+Focused checks passed in 135.7s (2 Godot tests). Visual/NAT checks remain separate.
+Slowest stages: sotjet_coop 58.6s, sotjet 53.7s, import 6.0s
+Full suite was not run.
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.022s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.009s
+
+OK

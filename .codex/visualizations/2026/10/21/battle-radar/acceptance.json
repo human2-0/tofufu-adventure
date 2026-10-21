@@ -1,0 +1,51 @@
+{
+  "feature": "Stationary nearby enemy gunfire markers in Battle Royale",
+  "range_metres": 100,
+  "lifetime_seconds": 2,
+  "behavior": [
+    "Confirmed ranged launches only; latest shot origin per shooter",
+    "Fade without following movement; firing again refreshes position and lifetime",
+    "Self and watched survivor teammates excluded",
+    "Initial accepted snapshot baselines ignore historical shots",
+    "Migration and spectator changes clear/rebaseline markers"
+  ],
+  "networking": {
+    "new_messages": false,
+    "new_schema_fields": false,
+    "guest_check": "Two actual Godot worlds exchanging validated JSON snapshots/deltas",
+    "wan_or_fps_benchmark_run": false
+  },
+  "verification": {
+    "scope": "focused quick verification",
+    "architecture": "PASS (715 scripts)",
+    "scenarios": {
+      "battle_migration": "PASS",
+      "battle_combat": "PASS",
+      "battle_radar": "PASS",
+      "battle_inventory": "PASS",
+      "battle_deployment": "PASS",
+      "battle_cpu": "PASS",
+      "battle_game": "PASS",
+      "localization": "PASS",
+      "update_log": "PASS",
+      "scene": "PASS"
+    },
+    "python_tooling_tests": 15,
+    "initial_failure": "Revived host fixture retained a spectator target; fixture now returns to the local survivor before checking self-shot exclusion. Corrected battle_game scenario passed."
+  },
+  "native_visuals": {
+    "renderer": "Apple M1 Metal / Forward Mobile",
+    "sizes": [
+      "1280x720",
+      "640x360"
+    ],
+    "locales": [
+      "en",
+      "pl"
+    ],
+    "minimap_and_expanded_map": true,
+    "expiry_preview": true,
+    "inspected": true
+  },
+  "release_batch": 15
+}

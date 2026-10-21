@@ -2,10 +2,12 @@ extends SceneTree
 
 class ScriptedInput extends PlayerCommandSource:
 	var next_command: PlayerCommand = PlayerCommand.new()
+	var hold_jump: bool = false
 
 	func sample(_position: Vector3) -> PlayerCommand:
 		var result := next_command
 		next_command = PlayerCommand.new()
+		result.jump_held = hold_jump # Held state survives multiple physics ticks per rendered frame.
 		return result
 
 var failures: int = 0
@@ -39,10 +41,10 @@ func _run() -> void:
 		await ticks(1)
 	check(player.position.x > start.x + 0.2, "injected command moves real body")
 	source.next_command.jump_pressed = true
-	for tick in 45:
-		source.next_command.jump_held = true
-		await ticks(1)
+	source.hold_jump = true
+	await ticks(45)
 	check(player.is_on_floor() and player.motor.jump_charge == 1.0, "holding fully charges without leaving floor")
+	source.hold_jump = false
 	await ticks(3)
 	check(player.position.y > 0.1, "jump lifts real body off floor")
 	source.next_command.dash_pressed = true

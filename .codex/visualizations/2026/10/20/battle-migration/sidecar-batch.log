@@ -1,0 +1,126 @@
+npm notice run tofufu-holepunch-playtest@0.1.0 test
+npm notice run node --test test/*.test.cjs
+TAP version 13
+# Subtest: battle discovery channels isolate public, private and adventure topics
+ok 1 - battle discovery channels isolate public, private and adventure topics
+  ---
+  duration_ms: 2.291334
+  type: 'test'
+  ...
+# Subtest: twenty direct encrypted battle peers exchange compact match traffic
+ok 2 - twenty direct encrypted battle peers exchange compact match traffic
+  ---
+  duration_ms: 6778.719875
+  type: 'test'
+  ...
+# Subtest: bounded local fanout preserves destinations, payload and endpoint failures
+ok 3 - bounded local fanout preserves destinations, payload and endpoint failures
+  ---
+  duration_ms: 2.15225
+  type: 'test'
+  ...
+# Subtest: malformed fanout rejects the entire batch before sending anything
+ok 4 - malformed fanout rejects the entire batch before sending anything
+  ---
+  duration_ms: 0.203042
+  type: 'test'
+  ...
+# Subtest: frames survive fragmentation and coalescing
+ok 5 - frames survive fragmentation and coalescing
+  ---
+  duration_ms: 4.697666
+  type: 'test'
+  ...
+# Subtest: compressed gameplay frames preserve exact values with less wire traffic
+ok 6 - compressed gameplay frames preserve exact values with less wire traffic
+  ---
+  duration_ms: 2.460667
+  type: 'test'
+  ...
+# Subtest: small steady actor deltas also avoid repeated control-envelope overhead
+ok 7 - small steady actor deltas also avoid repeated control-envelope overhead
+  ---
+  duration_ms: 0.612375
+  type: 'test'
+  ...
+# Subtest: compression cannot bypass decoded frame size or JSON validation
+ok 8 - compression cannot bypass decoded frame size or JSON validation
+  ---
+  duration_ms: 1.082625
+  type: 'test'
+  ...
+# Subtest: reject zero length
+ok 9 - reject zero length
+  ---
+  duration_ms: 0.46375
+  type: 'test'
+  ...
+# Subtest: reject oversized
+ok 10 - reject oversized
+  ---
+  duration_ms: 0.149834
+  type: 'test'
+  ...
+# Subtest: reject invalid JSON
+ok 11 - reject invalid JSON
+  ---
+  duration_ms: 1.398333
+  type: 'test'
+  ...
+# Subtest: reject array payload
+ok 12 - reject array payload
+  ---
+  duration_ms: 0.240416
+  type: 'test'
+  ...
+# Subtest: rate bounded
+ok 13 - rate bounded
+  ---
+  duration_ms: 2.844875
+  type: 'test'
+  ...
+# Subtest: loopback admits four-player traffic while retaining its aggregate limit
+ok 14 - loopback admits four-player traffic while retaining its aggregate limit
+  ---
+  duration_ms: 5.604417
+  type: 'test'
+  ...
+# Subtest: slow writable cannot grow an unbounded queue
+ok 15 - slow writable cannot grow an unbounded queue
+  ---
+  duration_ms: 2.416708
+  type: 'test'
+  ...
+# Subtest: streamx completed writes release byte accounting and the stall deadline
+ok 16 - streamx completed writes release byte accounting and the stall deadline
+  ---
+  duration_ms: 3210.067041
+  type: 'test'
+  ...
+# Subtest: streamx truly stalled writes still expire
+ok 17 - streamx truly stalled writes still expire
+  ---
+  duration_ms: 3200.70175
+  type: 'test'
+  ...
+# Subtest: identity persists across launches and rejects corruption
+ok 18 - identity persists across launches and rejects corruption
+  ---
+  duration_ms: 3.772166
+  type: 'test'
+  ...
+# Subtest: two isolated local Holepunch peers discover, authenticate, exchange and shut down
+ok 19 - two isolated local Holepunch peers discover, authenticate, exchange and shut down
+  ---
+  duration_ms: 11224.047666
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11353.660875

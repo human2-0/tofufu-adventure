@@ -13,6 +13,10 @@ static func covered(game: AdventureGame, at: Vector3) -> bool:
 		var local := building.to_local(at)
 		if absf(local.x) < size.x * 0.5 and absf(local.z) < size.y * 0.5 and local.y > -0.5:
 			if local.y < float(building.get_meta("weather_roof_height", 6.0)): return true
+	for room in game.world.city_rooms:
+		var local := room.to_local(at)
+		var size: Vector3 = room.get_meta("city_size")
+		if absf(local.x) < size.x / 2 and absf(local.z) < size.z / 2 and local.y > -0.5 and local.y < size.y: return true
 	return false
 
 static func submerged(game: AdventureGame, at: Vector3) -> bool:
@@ -32,4 +36,9 @@ static func precipitation_floor(x: float, z: float, extra: float, game: Adventur
 		if absf(local.x) < size.x * 0.5 and absf(local.z) < size.y * 0.5:
 			var roof := building.to_global(Vector3(0, float(building.get_meta("weather_roof_height", 6.0)), 0))
 			floor_at.y = maxf(floor_at.y, game.world.to_local(roof).y)
+	for room in game.world.city_rooms:
+		var size: Vector3 = room.get_meta("city_size")
+		var local := room.to_local(game.world.to_global(floor_at))
+		if absf(local.x) < size.x / 2 and absf(local.z) < size.z / 2:
+			floor_at.y = maxf(floor_at.y, game.world.to_local(room.global_position + Vector3.UP * float(room.get_meta("city_roof_height"))).y)
 	return floor_at

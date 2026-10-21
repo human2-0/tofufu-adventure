@@ -32,9 +32,20 @@ static func build(game: AdventureGame) -> void:
 	interiors.camera = game.camera
 	interiors.buildings = game.world.interiors
 	game.add_child(interiors)
+	var city_interiors := GigalopolisInteriorView.new()
+	city_interiors.actor = game.player
+	city_interiors.camera = game.camera
+	city_interiors.rooms = game.world.city_rooms
+	game.add_child(city_interiors)
+	game.city_loot = CityLoot.new()
+	game.city_loot.game = game
+	game.add_child(game.city_loot)
 	game.apple_harvest = AppleHarvest.new()
 	game.apple_harvest.setup(game)
 	game.add_child(game.apple_harvest)
 	game.solo_arena = SoloArena.new()
 	game.solo_arena.game = game
 	game.add_child(game.solo_arena)
+	game.skin_test = MeadowSkinTest.new()
+	game.skin_test.game = game
+	game.add_child(game.skin_test)

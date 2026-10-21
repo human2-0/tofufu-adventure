@@ -1,0 +1,32 @@
+Quick verification: architecture, import, 15 Godot tests
+Architecture check: PASS (685 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.022s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.009s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-95i5kapc
+import: PASS (5.9s)
+battle_migration: PASS (0.7s)
+battle_royale: PASS (4.0s)
+battle_combat: PASS (3.1s)
+battle_inventory: PASS (23.2s)
+battle_game: PASS (40.7s)
+localization: PASS (0.8s)
+item_tooltip: PASS (0.9s)
+save_modes: PASS (0.5s)
+vitals: PASS (32.8s)
+equipment: PASS (32.7s)
+loadout_shop: PASS (34.1s)
+backpack: PASS (0.6s)
+inventory: PASS (0.5s)
+update_log: PASS (4.0s)
+scene: PASS (83.1s)
+Quick checks passed in 281.6s (15 Godot tests). Visual/NAT checks remain separate.
+Slowest stages: scene 83.1s, battle_game 40.7s, loadout_shop 34.1s
+Full suite was not run.

@@ -1,0 +1,24 @@
+Full verification: architecture, import, 147 Godot tests
+Architecture check: PASS (666 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.022s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.009s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-wjgdt5_5
+import: PASS (6.6s)
+tofufu_alignment: PASS (2.3s)
+battle_migration: PASS (0.7s)
+battle_royale: PASS (4.3s)
+battle_combat: PASS (3.0s)
+battle_game failed (exit 1); inspect /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-wjgdt5_5
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Battle Royale map/gameplay: FAIL
+FAIL: guest facing follows chosen movement even while momentum or walls change velocity
+

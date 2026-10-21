@@ -43,6 +43,8 @@ static func select_focus(items: WorldItems, source: LocalPlayerInput, pointer: V
 			items.focused_id = id
 	if items.game.quest_giver != null and items.game.quest_giver.nearby(items.game.player):
 		best = consider(items, "quest", items.game.world.quest_npc.global_position + Vector3(0, 1.5, 0.65), origin, source, camera, pointer, best)
+	if items.game.skin_test != null and items.game.skin_test.available():
+		best = consider(items, "skin_test", items.game.skin_test.focus_position(), origin, source, camera, pointer, best)
 	if items.game.god_hunt != null and items.game.god_hunt.nearby(items.game.player):
 		best = consider(items, "god_quest", items.game.world.cloud_realm.godfufu.global_position + Vector3.UP * 1.5, origin, source, camera, pointer, best)
 	if items.game.merchant != null and items.game.merchant.nearby(items.game.player):
@@ -95,6 +97,17 @@ static func select_focus(items: WorldItems, source: LocalPlayerInput, pointer: V
 				items.focused_kind = "castle"
 				items.focused_id = 0
 				items.focused_plot = action
+
+	if items.game.city_loot != null and items.game.city_loot.available():
+		for index in items.game.city_loot.chests.size():
+			if not items.game.city_loot.reachable(items.game.player, index): continue
+			var chest: GigalopolisChest = items.game.city_loot.chests[index]
+			var score := items._focus_score(chest.global_position + Vector3.UP * 1.2, origin, source, camera, pointer)
+			if score < best:
+				best = score
+				items.focused_kind = "city_chest"
+				items.focused_id = 0
+				items.focused_plot = index
 
 static func consider(items: WorldItems, kind: String, at: Vector3, origin: Vector3, source: LocalPlayerInput, camera: Camera3D, pointer: Vector2, best: float) -> float:
 	var score := items._focus_score(at, origin, source, camera, pointer)

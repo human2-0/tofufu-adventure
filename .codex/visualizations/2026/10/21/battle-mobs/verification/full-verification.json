@@ -1,0 +1,645 @@
+{
+  "scope": "verify.py --full with four independent scenario processes; coop_launch isolated after all others",
+  "expected": 158,
+  "passed": 156,
+  "seconds": 1425.94,
+  "main_error": "battle_mobs failed (exit 1); inspect /Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-mobs/verification/full",
+  "results": {
+    "import": {
+      "status": "PASS",
+      "seconds": 6.166
+    },
+    "battle_migration": {
+      "status": "PASS",
+      "seconds": 0.77
+    },
+    "tofufu_alignment": {
+      "status": "PASS",
+      "seconds": 2.577
+    },
+    "battle_combat": {
+      "status": "PASS",
+      "seconds": 4.052
+    },
+    "battle_radar": {
+      "status": "PASS",
+      "seconds": 3.774
+    },
+    "battle_loop": {
+      "status": "PASS",
+      "seconds": 0.877
+    },
+    "battle_royale": {
+      "status": "PASS",
+      "seconds": 5.01
+    },
+    "battle_squad": {
+      "status": "PASS",
+      "seconds": 3.727
+    },
+    "battle_mobs": {
+      "status": "FAIL",
+      "error": "battle_mobs failed (exit 1); inspect /Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-mobs/verification/full"
+    },
+    "battle_inventory": {
+      "status": "PASS",
+      "seconds": 30.511
+    },
+    "battle_deployment": {
+      "status": "PASS",
+      "seconds": 52.741
+    },
+    "battle_cpu": {
+      "status": "PASS",
+      "seconds": 49.516
+    },
+    "battle_game": {
+      "status": "FAIL",
+      "error": "battle_game failed (exit 1); inspect /Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-mobs/verification/full"
+    },
+    "battle_rematch": {
+      "status": "PASS",
+      "seconds": 104.23
+    },
+    "gigalopolis": {
+      "status": "PASS",
+      "seconds": 66.95
+    },
+    "coop_city_loot": {
+      "status": "PASS",
+      "seconds": 57.301
+    },
+    "unarmed_art": {
+      "status": "PASS",
+      "seconds": 1.467
+    },
+    "fufu_3d": {
+      "status": "PASS",
+      "seconds": 22.904
+    },
+    "skin_test": {
+      "status": "PASS",
+      "seconds": 38.11
+    },
+    "angel_bow": {
+      "status": "PASS",
+      "seconds": 1.561
+    },
+    "bengal_dash": {
+      "status": "PASS",
+      "seconds": 5.735
+    },
+    "bengal_vfx": {
+      "status": "PASS",
+      "seconds": 0.784
+    },
+    "gigalopolis_east": {
+      "status": "PASS",
+      "seconds": 89.521
+    },
+    "bengal": {
+      "status": "PASS",
+      "seconds": 37.378
+    },
+    "localization": {
+      "status": "PASS",
+      "seconds": 0.849
+    },
+    "city_loot": {
+      "status": "PASS",
+      "seconds": 145.937
+    },
+    "coop_angel_bow": {
+      "status": "PASS",
+      "seconds": 61.639
+    },
+    "save_modes": {
+      "status": "PASS",
+      "seconds": 0.549
+    },
+    "item_tooltip": {
+      "status": "PASS",
+      "seconds": 0.994
+    },
+    "coop_bengal": {
+      "status": "PASS",
+      "seconds": 59.706
+    },
+    "meadow_meshes": {
+      "status": "PASS",
+      "seconds": 0.475
+    },
+    "meadow_reorg": {
+      "status": "PASS",
+      "seconds": 41.019
+    },
+    "weapon_enhancement": {
+      "status": "PASS",
+      "seconds": 77.655
+    },
+    "farming": {
+      "status": "PASS",
+      "seconds": 41.56
+    },
+    "soy_plant": {
+      "status": "PASS",
+      "seconds": 0.85
+    },
+    "soy_save_spots": {
+      "status": "PASS",
+      "seconds": 37.135
+    },
+    "parrot_travel": {
+      "status": "PASS",
+      "seconds": 46.499
+    },
+    "parrot_art": {
+      "status": "PASS",
+      "seconds": 0.382
+    },
+    "coop_parrot_travel": {
+      "status": "PASS",
+      "seconds": 68.877
+    },
+    "cloud_realm_art": {
+      "status": "PASS",
+      "seconds": 0.467
+    },
+    "cloud_heaven": {
+      "status": "PASS",
+      "seconds": 2.945
+    },
+    "coop_soy_save_spots": {
+      "status": "PASS",
+      "seconds": 101.465
+    },
+    "lava_king_art": {
+      "status": "PASS",
+      "seconds": 0.76
+    },
+    "coop_farming": {
+      "status": "PASS",
+      "seconds": 176.095
+    },
+    "celestial": {
+      "status": "PASS",
+      "seconds": 40.151
+    },
+    "cloud_realm": {
+      "status": "PASS",
+      "seconds": 74.442
+    },
+    "volcanic_expansion": {
+      "status": "PASS",
+      "seconds": 48.814
+    },
+    "castle_adventure": {
+      "status": "PASS",
+      "seconds": 36.389
+    },
+    "coop_castle": {
+      "status": "PASS",
+      "seconds": 62.276
+    },
+    "castle_challenge": {
+      "status": "PASS",
+      "seconds": 37.711
+    },
+    "castle_stairs": {
+      "status": "PASS",
+      "seconds": 99.766
+    },
+    "mountain_retreat": {
+      "status": "PASS",
+      "seconds": 39.17
+    },
+    "groatfields": {
+      "status": "PASS",
+      "seconds": 37.303
+    },
+    "dofufu_city": {
+      "status": "PASS",
+      "seconds": 75.157
+    },
+    "coop_groatfields": {
+      "status": "PASS",
+      "seconds": 58.506
+    },
+    "jungle": {
+      "status": "PASS",
+      "seconds": 46.625
+    },
+    "waterfall": {
+      "status": "PASS",
+      "seconds": 37.423
+    },
+    "map_exploration": {
+      "status": "PASS",
+      "seconds": 0.559
+    },
+    "personal_map_transfer": {
+      "status": "PASS",
+      "seconds": 4.13
+    },
+    "input": {
+      "status": "PASS",
+      "seconds": 0.357
+    },
+    "motor": {
+      "status": "PASS",
+      "seconds": 0.271
+    },
+    "volcanic": {
+      "status": "PASS",
+      "seconds": 145.085
+    },
+    "render_budget": {
+      "status": "PASS",
+      "seconds": 0.776
+    },
+    "occlusion": {
+      "status": "PASS",
+      "seconds": 0.381
+    },
+    "scenery_batch": {
+      "status": "PASS",
+      "seconds": 0.361
+    },
+    "mob_rest": {
+      "status": "PASS",
+      "seconds": 0.785
+    },
+    "northern_biomes": {
+      "status": "PASS",
+      "seconds": 37.985
+    },
+    "map": {
+      "status": "PASS",
+      "seconds": 40.203
+    },
+    "heavy_movement": {
+      "status": "PASS",
+      "seconds": 40.503
+    },
+    "grass": {
+      "status": "PASS",
+      "seconds": 42.762
+    },
+    "world_life": {
+      "status": "PASS",
+      "seconds": 41.662
+    },
+    "jump": {
+      "status": "PASS",
+      "seconds": 0.676
+    },
+    "apple_trees": {
+      "status": "PASS",
+      "seconds": 28.283
+    },
+    "progression": {
+      "status": "PASS",
+      "seconds": 0.362
+    },
+    "actor_collisions": {
+      "status": "PASS",
+      "seconds": 5.836
+    },
+    "combat": {
+      "status": "PASS",
+      "seconds": 0.672
+    },
+    "knife_combo": {
+      "status": "PASS",
+      "seconds": 0.373
+    },
+    "melee_flow": {
+      "status": "PASS",
+      "seconds": 3.64
+    },
+    "melee_clash": {
+      "status": "PASS",
+      "seconds": 0.761
+    },
+    "apple_pickup": {
+      "status": "PASS",
+      "seconds": 41.992
+    },
+    "vitals": {
+      "status": "PASS",
+      "seconds": 41.302
+    },
+    "nori_katana": {
+      "status": "PASS",
+      "seconds": 2.631
+    },
+    "edamame_sword": {
+      "status": "PASS",
+      "seconds": 1.36
+    },
+    "staff_combat": {
+      "status": "PASS",
+      "seconds": 2.848
+    },
+    "backpack": {
+      "status": "PASS",
+      "seconds": 0.57
+    },
+    "character_details": {
+      "status": "PASS",
+      "seconds": 47.153
+    },
+    "equipment": {
+      "status": "PASS",
+      "seconds": 41.265
+    },
+    "loadout_shop": {
+      "status": "PASS",
+      "seconds": 42.832
+    },
+    "inventory": {
+      "status": "PASS",
+      "seconds": 0.57
+    },
+    "depot_focus": {
+      "status": "PASS",
+      "seconds": 41.79
+    },
+    "world_items": {
+      "status": "PASS",
+      "seconds": 43.129
+    },
+    "currency": {
+      "status": "PASS",
+      "seconds": 0.952
+    },
+    "inventory_input": {
+      "status": "PASS",
+      "seconds": 42.288
+    },
+    "seed_storage": {
+      "status": "PASS",
+      "seconds": 40.52
+    },
+    "tofu_dungeon": {
+      "status": "PASS",
+      "seconds": 36.86
+    },
+    "coop_storage": {
+      "status": "PASS",
+      "seconds": 57.833
+    },
+    "tofu_dungeon_coop": {
+      "status": "PASS",
+      "seconds": 61.209
+    },
+    "factory_presentation": {
+      "status": "PASS",
+      "seconds": 0.558
+    },
+    "factory_surfaces": {
+      "status": "PASS",
+      "seconds": 0.552
+    },
+    "factory_reactivity": {
+      "status": "PASS",
+      "seconds": 0.637
+    },
+    "factory_stashes": {
+      "status": "PASS",
+      "seconds": 0.264
+    },
+    "factory_recovery": {
+      "status": "PASS",
+      "seconds": 37.593
+    },
+    "tofu_production_views": {
+      "status": "PASS",
+      "seconds": 0.367
+    },
+    "tofu_sorting_lab_rules": {
+      "status": "PASS",
+      "seconds": 0.263
+    },
+    "tofu_production_rules": {
+      "status": "PASS",
+      "seconds": 0.267
+    },
+    "tofu_dungeon_attempt": {
+      "status": "PASS",
+      "seconds": 0.368
+    },
+    "tofu_reward_ledger": {
+      "status": "PASS",
+      "seconds": 0.27
+    },
+    "tofu_puzzle_protocol": {
+      "status": "PASS",
+      "seconds": 0.262
+    },
+    "tofu_boss_coop": {
+      "status": "PASS",
+      "seconds": 78.115
+    },
+    "dungeon_ui": {
+      "status": "PASS",
+      "seconds": 4.037
+    },
+    "factory_soy_fighter": {
+      "status": "PASS",
+      "seconds": 0.655
+    },
+    "dofufu": {
+      "status": "PASS",
+      "seconds": 0.746
+    },
+    "dungeon_puzzle_runtime": {
+      "status": "PASS",
+      "seconds": 36.128
+    },
+    "factory_handling": {
+      "status": "PASS",
+      "seconds": 64.746
+    },
+    "gun_recoil": {
+      "status": "PASS",
+      "seconds": 0.264
+    },
+    "tofu_dungeon_active": {
+      "status": "PASS",
+      "seconds": 50.295
+    },
+    "first_person": {
+      "status": "PASS",
+      "seconds": 35.583
+    },
+    "soy_gun": {
+      "status": "PASS",
+      "seconds": 4.95
+    },
+    "factory_route": {
+      "status": "PASS",
+      "seconds": 189.243
+    },
+    "soy_flight": {
+      "status": "PASS",
+      "seconds": 36.458
+    },
+    "tofu_dungeon_active_coop": {
+      "status": "PASS",
+      "seconds": 79.354
+    },
+    "soy_reload": {
+      "status": "PASS",
+      "seconds": 36.336
+    },
+    "right_hand": {
+      "status": "PASS",
+      "seconds": 1.674
+    },
+    "sword": {
+      "status": "PASS",
+      "seconds": 1.541
+    },
+    "gun_run_pose": {
+      "status": "PASS",
+      "seconds": 37.146
+    },
+    "armored_shell": {
+      "status": "PASS",
+      "seconds": 36.241
+    },
+    "sotjet": {
+      "status": "PASS",
+      "seconds": 58.803
+    },
+    "sandbox": {
+      "status": "PASS",
+      "seconds": 53.093
+    },
+    "sotjet_coop": {
+      "status": "PASS",
+      "seconds": 63.991
+    },
+    "wild_bee": {
+      "status": "PASS",
+      "seconds": 38.746
+    },
+    "farm_combat": {
+      "status": "PASS",
+      "seconds": 48.023
+    },
+    "snail": {
+      "status": "PASS",
+      "seconds": 35.946
+    },
+    "coop_wild_bee": {
+      "status": "PASS",
+      "seconds": 55.716
+    },
+    "world_contours": {
+      "status": "PASS",
+      "seconds": 41.465
+    },
+    "sky": {
+      "status": "PASS",
+      "seconds": 0.345
+    },
+    "river": {
+      "status": "PASS",
+      "seconds": 32.327
+    },
+    "ocean": {
+      "status": "PASS",
+      "seconds": 49.424
+    },
+    "coop_ocean": {
+      "status": "PASS",
+      "seconds": 58.995
+    },
+    "session_transport": {
+      "status": "PASS",
+      "seconds": 4.468
+    },
+    "weather_exposure": {
+      "status": "PASS",
+      "seconds": 36.442
+    },
+    "weather": {
+      "status": "PASS",
+      "seconds": 55.258
+    },
+    "coop_protocol": {
+      "status": "PASS",
+      "seconds": 0.358
+    },
+    "snapshot_channel": {
+      "status": "PASS",
+      "seconds": 0.358
+    },
+    "pod_escape": {
+      "status": "PASS",
+      "seconds": 46.018
+    },
+    "arena": {
+      "status": "PASS",
+      "seconds": 4.732
+    },
+    "solo_arena": {
+      "status": "PASS",
+      "seconds": 36.703
+    },
+    "oracle": {
+      "status": "PASS",
+      "seconds": 74.869
+    },
+    "public_multiplayer": {
+      "status": "PASS",
+      "seconds": 57.751
+    },
+    "coop_gameplay": {
+      "status": "PASS",
+      "seconds": 74.713
+    },
+    "chat": {
+      "status": "PASS",
+      "seconds": 41.732
+    },
+    "update_log": {
+      "status": "PASS",
+      "seconds": 5.218
+    },
+    "landing": {
+      "status": "PASS",
+      "seconds": 5.305
+    },
+    "coop_response": {
+      "status": "PASS",
+      "seconds": 68.483
+    },
+    "lobby": {
+      "status": "PASS",
+      "seconds": 5.116
+    },
+    "coop_opening": {
+      "status": "PASS",
+      "seconds": 73.779
+    },
+    "coop_scene": {
+      "status": "PASS",
+      "seconds": 58.804
+    },
+    "scene": {
+      "status": "PASS",
+      "seconds": 38.94
+    },
+    "frontend": {
+      "status": "PASS",
+      "seconds": 72.254
+    },
+    "coop_launch": {
+      "status": "PASS",
+      "seconds": 70.14
+    }
+  }
+}

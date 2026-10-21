@@ -1,0 +1,70 @@
+{
+  "meadow_reorg": {
+    "passed": true,
+    "seconds": 48.72
+  },
+  "meadow_meshes": {
+    "passed": true,
+    "seconds": 0.55
+  },
+  "farming": {
+    "passed": true,
+    "seconds": 46.44
+  },
+  "soy_save_spots": {
+    "passed": true,
+    "seconds": 39.6
+  },
+  "coop_soy_save_spots": {
+    "passed": true,
+    "seconds": 124.05
+  },
+  "soy_plant": {
+    "passed": true,
+    "seconds": 1.13
+  },
+  "coop_parrot_travel": {
+    "passed": true,
+    "seconds": 83.36
+  },
+  "parrot_travel": {
+    "passed": true,
+    "seconds": 57.02
+  },
+  "parrot_art": {
+    "passed": true,
+    "seconds": 0.48
+  },
+  "cloud_realm": {
+    "passed": true,
+    "seconds": 79.81
+  },
+  "cloud_realm_art": {
+    "passed": true,
+    "seconds": 0.56
+  },
+  "cloud_heaven": {
+    "passed": true,
+    "seconds": 3.71
+  },
+  "celestial": {
+    "passed": true,
+    "seconds": 51.67
+  },
+  "lava_king_art": {
+    "passed": true,
+    "seconds": 0.86
+  },
+  "volcanic_expansion": {
+    "passed": true,
+    "seconds": 49.05
+  },
+  "castle_stairs": {
+    "passed": true,
+    "seconds": 100.08
+  },
+  "coop_castle": {
+    "passed": true,
+    "seconds": 83.35
+  }
+}

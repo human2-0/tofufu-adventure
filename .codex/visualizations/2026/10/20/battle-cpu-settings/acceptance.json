@@ -1,0 +1,86 @@
+{
+  "feature": "Battle Royale CPU count and difficulty",
+  "ui_defaults": {
+    "cpus": 7,
+    "difficulty": "Normal"
+  },
+  "limits": {
+    "cpus": [
+      0,
+      19
+    ],
+    "total_survivors": 20,
+    "minimum_survivors": 2
+  },
+  "focused_verifier": {
+    "passed": true,
+    "stages": [
+      "battle_cpu",
+      "battle_royale",
+      "battle_migration",
+      "battle_combat",
+      "battle_inventory",
+      "battle_game",
+      "localization",
+      "update_log"
+    ],
+    "log_directory": "/var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-keggwggh"
+  },
+  "native_visual": {
+    "renderer": "Metal / Forward Mobile / Apple M1",
+    "locales": [
+      "en",
+      "pl"
+    ],
+    "viewports": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "screenshots": [
+      "compact-options-en.png",
+      "compact-options-pl.png",
+      "compact-practice-en.png",
+      "compact-practice-pl.png",
+      "compact-top-en.png",
+      "compact-top-pl.png",
+      "guest-clamped-en.png",
+      "guest-clamped-pl.png",
+      "lobby-en.png",
+      "lobby-pl.png",
+      "maximum-pl.png"
+    ]
+  },
+  "real_peer_acceptance": {
+    "passed": true,
+    "result": "real-peers/result.json",
+    "scope": "3 OS processes over encrypted Holepunch isolated loopback DHT, 3 humans + 3 Hard CPUs; SIGKILL host, pause and migration retained 6 actors, settings, loot and healing. Not WAN/NAT acceptance."
+  },
+  "full_scenarios": "verification/matrix.json",
+  "full_regression": {
+    "passed": true,
+    "scenarios": 149,
+    "scope": "All registered verifier scenarios; serial --full prefix plus 3-worker remainder; coop_launch isolated without pausing. Architecture/import and Python verifier checks passed in CLI prefix. Native UI and encrypted peers separate."
+  },
+  "native_cpu_benchmark": {
+    "passed": true,
+    "viewport": [
+      2560,
+      1440
+    ],
+    "profiles": [
+      "benchmark-7.json",
+      "benchmark-19.json"
+    ],
+    "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+    "p95_simulation_ms": {
+      "7": 6.598,
+      "19": 7.715
+    }
+  }
+}

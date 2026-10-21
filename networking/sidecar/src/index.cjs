@@ -2,6 +2,7 @@
 // Capability is delivered only over the inherited stdin pipe, never argv/files/logs.
 const net = require('node:net')
 const { attach } = require('./framing.cjs')
+const { dispatch } = require('./dispatch.cjs')
 let input = ''
 let transport
 let bridge
@@ -34,9 +35,7 @@ process.stdin.on('data', chunk => {
     bridge.setNoDelay(true)
     const emit = attach(bridge, message => {
       if (message.type === 'close') return close()
-      if (message.type === 'send' && /^[0-9a-f]{64}$/.test(message.key) && message.data && typeof message.data === 'object') {
-        if (!transport?.send(message.key, message.data)) emit({ type: 'left', key: message.key })
-      } else close()
+      if (!dispatch(message, transport, emit)) close()
     }, close, null, 600)
     bridge.on('close', close)
     bridge.on('connect', async () => {

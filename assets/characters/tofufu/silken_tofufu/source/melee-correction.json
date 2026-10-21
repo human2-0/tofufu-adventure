@@ -1,0 +1,8 @@
+{
+  "prompt": "Use case: identity-preserve. Input1 is EDIT TARGET atlas, input2 is original CHARACTER IDENTITY/ACCESSORY reference. Edit ONLY described errors. Preserve the exact character identity, illustration style, all other poses, atlas column and row counts, full body bounds, size and spacing. Real transparent alpha no matte. Fix TOP TWO rows only. Row1 straight BACK N and row2 three-quarter BACK LEFT NW must both have NO eyes, mouth, face, eyebrows or cheeks. Row2 currently includes wrong front-profile faces. Show blank ivory back and narrow side plane at LEFT; faces hidden away. Move blue sash knot and TWO trailing tails to SCREEN LEFT in both top rows in all 8 poses, as original back reference2. Keep rows3,4,5 unchanged; keep 4 attack columns. All outlines clean dark green/black, no colored fringe artifacts. All sprites completely in frame. Do not add labels or effects.",
+  "references": [
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/blue_sash/melee.png",
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/blue_sash/source/walk-original.png"
+  ],
+  "source": "/Users/mat-dwor/.codex/generated_images/01a153cd-faf0-75f1-b429-cde7636c6570/exec-85728084-b406-43cb-b168-81f001c6fcd6.png"
+}

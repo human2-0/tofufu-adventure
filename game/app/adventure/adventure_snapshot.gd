@@ -24,6 +24,7 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 		"sotjet_selected": game.combat.sotjet.selected, "soymilk": game.combat.sotjet.milk, "gun_selected": game.combat.gun.selected, "knife_selected": equipment.knife_selected, "dropped_position": [dropped.x, dropped.y, dropped.z],
 		"gun_owned": equipment.gun_owned, "sotjet_owned": equipment.sotjet_owned,
 		"world_items": game.world_items.pool.capture(),
+		"city_loot": game.city_loot.opened,
 		"active_slot": game.loadout.active_slot,
 		"pending_items": game.inventory.pending_items.map(func(stack: ItemStack) -> Dictionary: return stack.capture()),
 		"inventory": game.inventory.capture() if game.inventory != null else [],
@@ -39,8 +40,10 @@ static func capture(game: Node3D, title: String, seconds: float) -> Dictionary:
 
 static func restore(game: Node3D, data: Dictionary) -> void:
 	if not DungeonSnapshotValidation.adventure(data): return
+	if data.has("city_loot") and (not ExplorationProtocol.sequence(data.city_loot) or data.city_loot > CityLootSites.MASK): return
 	var rest: Variant = data.get("parrot_rest", [])
 	if not rest is Array or (not rest.is_empty() and not ExplorationProtocol.vector(rest, 3, 1000)): return
+	game.city_loot.restore(int(data.get("city_loot", 0)))
 	game.player.parrot_rest = CoopValues.vector3(data.parrot_rest) if data.get("parrot_rest", []).size() == 3 else Vector3.INF
 	game.soy_spots.ownership.restore(int(data.get("soy_spots", 0)))
 	game.map.restore_exploration(data.get("map_exploration", ""))

@@ -92,7 +92,7 @@ func _impact(hit: Dictionary, velocity: Vector3, reflected_by: Damageable = null
 		_hit_until[id] = _clock + tuning.damage_interval / maxf(attack_cadence_multiplier, 0.01)
 		var damage := tuning.damage_per_second * tuning.damage_interval * damage_multiplier * enhancement_multiplier
 		var impulse := Vector3(velocity.x, 0.0, velocity.z).normalized() * tuning.push_speed * push_multiplier
-		if target.damage(damage, impulse, Damageable.HitKind.SOY, hit.position):
+		if target.receive_attack(damage, impulse, Damageable.HitKind.SOY, hit.position, reflected_by if is_instance_valid(reflected_by) else owner_health):
 			if target.current > 0.0 and target.invulnerability <= 0.0: target.pushed.emit(impulse)
 			CombatEffects.damage_number(self, target, target.last_hit_amount)
 			var credited := reflected_by if is_instance_valid(reflected_by) else owner_health

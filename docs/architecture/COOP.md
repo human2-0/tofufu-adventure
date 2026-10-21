@@ -97,13 +97,19 @@ The `event_received(Dictionary)` schema intentionally retains the existing bound
 | `packet` | `key` string, `data` dictionary | Message bound to its authenticated sender |
 | `error` | `message` string | Terminal backend failure; adapter closes resources before emitting |
 
+`SessionTransport.send_packets` is an optional optimized fanout operation with a
+default loop over `send_packet`. Delivery identity, ordering, bounds and per-endpoint
+failures retain the same contract. The Holepunch implementation accepts up to twenty
+unique targets in one authenticated loopback frame; encrypted peer frames are
+unchanged. No peer forwards another peer's traffic as a transport relay.
+
 Adapters must validate external data, emit `ready` before peers, announce a peer before its packets, and never accept a sender identity supplied by an untrusted payload. Delivery is reliable and ordered per endpoint; payloads remain bounded to the existing 64-KiB envelope and queues/rates remain bounded. Identity is a stable lowercase 64-character hexadecimal application ID, as required by current room, chat and checkpoint schemas. Holepunch uses its encrypted public key. Another backend must authenticate and consistently map its account IDs to this representation; display names are never identity. Existing character saves require an explicit trusted identity migration if the mapping changes.
 
 To replace Holepunch, implement this contract under `networking/` and change the transport child script/configuration in `launch.tscn`. Endpoint URLs, credentials, SDKs and service-specific discovery belong in that adapter, not in room rules or views. A centralized directory/message service can expose the same authenticated endpoint semantics and reuse the current presence/join/roster/gameplay protocol. The optional Oracle dedicated adapter and deployment are described in N8. Holepunch remains the default; production account authentication and identity migration are still planned. There is no automatic fallback.
 
 Transport replacement alone does not relocate authority: the default participating player still simulates and saves the world, and host loss ends play. The explicit dedicated composition in N8 separately changes room membership, authority and persistence. Holepunch's current direct-only policy continues to apply to its adapter; selecting a future centralized backend must be deliberate.
 
-`tests/test_session_transport.gd` supplies an alternate local implementation and exercises discovery, admission, gameplay delivery, reconnect, host loss, errors, delayed cleanup and actual launch-scene injection without Node or the network. The architecture checker prevents concrete Holepunch dependencies returning to game scripts.
+`tests/test_session_transport.gd` supplies an alternate local implementation and exercises discovery, admission, gameplay delivery, reconnect, host loss, errors, delayed cleanup and actual launch-scene injection without Node or public discovery; it also checks batched IPC on loopback TCP. The architecture checker prevents concrete Holepunch dependencies returning to game scripts.
 
 ## N2 — Session, authority and composition (implemented)
 
@@ -116,6 +122,19 @@ Room message validation/dispatch lives in `game/session/room_messages.gd`; room 
 Guests disable authoritative actor, encounter and quest outcome simulation. The locally owned actor predicts movement with the existing motor and capsule collisions. Host snapshots acknowledge consumed input sequences; a bounded history of predicted positions corrects position error smoothly on physics ticks. Respawns and large teleports reset history and movement timers; prediction stops after 250 ms without a snapshot or 120 outstanding ticks. This is positional reconciliation, not deterministic input replay: collision and jump/dash timer differences can still require corrections. Other actors use `ReplicaMotion`: up to eight received positions, a 25 ms interpolation delay, and at most 100 ms of velocity extrapolation. Respawns, transport changes and large teleports discard old samples. Camera and existing character sprites interpolate between physics positions on render frames; the camera precedes character hands and weapon views. There is one Fufu sprite per actor, and presentation never moves the authoritative capsule. Guests apply world state, and present sword swings, guarding, punches, dropped knives, health and respawns. Each guest retains its own camera and HUD. All players may contribute to the shared opening; the host alone advances the pod rules and broadcasts the cinematic state. During online menus the world continues and local input is neutralized. Host departure ends the session; it does not elect another authority.
 
 ## N3 — Bounded protocol (implemented)
+
+Live build 65 requires the enterable Gigalopolis geometry. The optional world/save
+`city_loot` field is an integer mask from 0 to 262143 for eighteen append-only
+supply sites; older records default to unopened. `city_chest_open` carries a
+bounded chest index and increasing per-member sequence. The host queues at most
+one request per admitted actor per tick, rejects opening/duel/spectator/dead or
+mounted actors, and checks distance, line of sight and the shared claim bit.
+Two modest stacks enter the existing bounded world-item pool atomically; a failed
+spill or full pool leaves the chest closed. Simultaneous requests cannot pay twice.
+Replicas display the opened mask and normal shared drops, and never mint loot.
+Solo saves and host checkpoints retain both claims and remaining drops. Room
+cutaways are local presentation; floors, walls and roofs retain collision on every
+peer. Adventure save version, transport bounds and authority policy are unchanged.
 
 Live version 43 adds the reverse melee move (style 6), a bounded chain cursor (0–3), weapon contact pause (0–0.075 seconds), and player impact motion (`remaining` 0–0.24 seconds, planar `push` length at most 9). All live peers require version 43. The host owns buffered attack selection, resource payment, swept contact, interruption, immunity and launch velocity. Guests display the host move/elapsed clock and pause; local movement prediction adopts host recoil/vertical velocity so input cannot immediately overwrite a received hit. Encounter positions and velocities already carry enemy launches, so world encounter row shapes are unchanged. Replica flashes and weapon paths do not resolve damage. Legacy checkpoints default missing impact fields to zero; transient recoil and pending attacks clear on checkpoint placement.
 
@@ -614,3 +633,412 @@ Guests present authoritative ownership without granting it locally. Repeated
 claims are idempotent. Claiming does not change resources or force an autosave;
 the normal adventure save flow retains ownership. Death destination selection
 and checkpoint respawning remain planned.
+
+
+## N9 — Separate Tofufu Battle Royale (implemented; battle protocol 10)
+
+The title menu opens an independent mode for up to twenty humans and fifty CPUs on the existing seeded
+Meadow scene, including its connected biomes and obstacle collisions. Adventure
+quests, saved progression and adventure checkpoints are not composed. A bounded subset of adventure enemies is composed as isolated, finite Royale hunts. Each
+participant starts with 100 HP, 50 armour, 100 SP, a knife, a soybean gun, a ten-slot backpack, one Soy Milk and two
+apples. Temporary equipment uses the normal inventory and combat components. Embedded Fufu and
+all seven Tofufu variations are cosmetic choices with identical capsules/rules.
+CPU fill cycles through the complete roster. Plant selection and a three-second
+emergence precede scavenging, armour, adventure weapons/specials, reloads, healing,
+weapon drops, elevation-aware gun aim, elimination placement and spectating.
+The radar reuses the seeded terrain atlas. Confirmed ranged shots within 100 metres
+of the local/spectated survivor leave a red dot at their original muzzle position
+for two seconds, fading without tracking movement. Self and duo allies are excluded.
+BattleGunfirePings reads live authority counters or existing accepted combat snapshot
+counters/origins, including ricochet, Sotjet and bow launches; it adds no wire fields
+or gameplay queries. Initial replica baselines, recovery and spectator changes
+clear historical pings. At most one cosmetic marker per shooter is retained.
+Seven timed circle stages
+close on the nursery clearing; storm damage bypasses armour. The final circle
+closes completely, bounding match duration even if survivors hide.
+
+`BattleRoom` and `BattleRoomMessages` have their own capacity, epoch and readiness
+barrier; peers must also match the existing game build, preventing different
+collision maps from sharing a battle. Adventure room capacity and live/save
+versions are unchanged. Public
+matchmaking discovers reachable participants on a battle-specific Hyperswarm
+topic, picks existing waiting rooms and consolidates simultaneous single-seat
+hosts by stable identity. After thirty seconds the host-selected CPU count joins the human roster (up to fifty CPUs plus twenty humans). Private
+rooms wait for the creator to start and use a random 96-bit discovery topic,
+shared with the creator's authenticated key in a clipboard invite. Invites must
+be sent by the player; the game does not message contacts. Discovery is bounded
+by the existing 32-peer transport capacity, so this is best-effort discovery,
+not a global queue or a guarantee of finding every available player. Opening
+the battle lobby and offline CPU practice start no sidecar. Online actions opt
+into a separate scene-injected transport; exit closes it.
+
+The participating authority runs only the selected survivors’ standard physics capsules at 60 Hz and
+resolves damage/occlusion, finite match inventories and victory. Every
+human, including the authority, enters the same 100-ms minimum input buffer.
+Commands expire after 300 ms; queues hold at most eight per seat; press edges
+are consumed once. Per-endpoint packets bind to authenticated roster seats,
+validate all nested values, reject replays/leaps, and obey a 90-packet/s ceiling.
+All capsules advance before combat resolves; same-tick attacks are collected
+before damage is applied, and pickup priority rotates each tick rather than
+favouring roster position. Only the assigned worker can steer a CPU.
+Ten-Hz CPU decisions are spread by
+seat across connected humans; stale decisions fall back to the authority.
+Disconnecting humans become CPUs. This distributes steering, not trusted damage
+or deterministic physics; no cross-machine physics lockstep is claimed.
+
+Compact actor snapshots publish at 20 Hz, captured once for all recipients.
+`SessionTransport.send_packets` has an endpoint-preserving fallback. The Holepunch
+adapter serializes a shared broadcast once across authenticated local IPC; the
+sidecar validates up to twenty unique destinations before direct encrypted fanout.
+One failed endpoint reports its own departure without discarding other deliveries. Loot
+is sent only when changed and on one-second recovery keyframes. Guests perform
+cosmetic interpolation with at most 100 ms extrapolation. Adventure world snapshots remain absent; the separate bounded hunt records carry only Royale enemies. Normal gameplay delivery uses the authority's direct links;
+recovery additionally needs a directly connected majority of surviving voters.
+Hyperswarm discovery
+and encrypted direct streams retain the pinned direct-only adapter policy;
+there is no automatic relay or central game service. See the primary
+[Hyperswarm API](https://github.com/holepunchto/hyperswarm).
+
+This is a trusted-authority, unranked peer mode. Equal stats and a shared minimum
+buffer reduce local timing differences but do not remove network travel time,
+conceal state from the authority, or prevent a modified authority from cheating.
+A fully distributed cheat-resistant match, reconnect-in-progress, globally complete
+search and guaranteed NAT connectivity/FPS are not implemented. CPU workers are also
+untrusted steering sources: they cannot award damage/resources, but can steer
+their assigned bots poorly. Separate-device 20-human bandwidth, FPS and WAN/NAT
+acceptance remain distinct from local automated evidence.
+
+### Paused Battle Royale authority recovery (implemented; battle protocol 2)
+
+`BattleRecovery` captures one bounded recovery checkpoint per second, plus an
+initial checkpoint. It includes all participating actor outcomes, loot, storm time,
+reload/attack timers, running reserve, dash/jump/impact state and rotating turn
+order. `BattleCheckpoint` validates the complete value-only record before any
+restore; expanded JSON is capped at 196,608 bytes; compressed, checksummed text is capped at 58,000 bytes, including temporary RPG loot. Checkpoints stay in memory,
+never in adventure saves. The loaded world and capsules are reused. Choosing an
+older shared checkpoint can roll back recent actions; this is checkpoint recovery,
+not deterministic physics replay or preservation of every in-flight action.
+
+On an authenticated host departure, a four-second snapshot silence, or loss of
+the authority's three-second survivor-acknowledgement lease, `BattleMigration`
+pauses match simulation and local commands while room/transport processing stays
+alive. A lone guest suspicion does not pause healthy peers: they also require
+their own stale/lost host link, a host-issued handoff, or a majority of recent
+authenticated survivor requests. A blocking English/Polish panel explains recovery
+and keeps Leave available.
+Storm time, resources and combat do not advance during this pause. The authority
+also pauses when it loses a majority of the checkpoint's human voters; it cannot
+continue indefinitely in an isolated partition. Its voting electorate stays fixed
+while ordinary disconnects become CPUs; only a completed majority handoff can
+replace that electorate. A minority authority cannot lower its quorum by relabeling
+missing peers as CPUs. Losing too many direct peers can therefore end the match
+even when the remaining machine could simulate more CPUs.
+
+Surviving checkpoint voters exclude the failed authority and try candidates in
+stable identity order. Four-second ballots skip unavailable candidates, bounded
+by the original survivor count. The candidate proposes its newest validated
+checkpoint offer. A majority of the fixed survivor electorate must vote for that
+exact checkpoint digest. Each identity votes for at most one replacement/digest
+throughout a host-loss episode, including later ballots. Votes and restoration
+readiness are received over each voter's authenticated direct stream; a candidate
+cannot invent a certificate by listing keys. This favours safe failure over a
+competing authority if a candidate dies after collecting votes. Direct-link
+partitions or an interrupted voted handoff can therefore return to the lobby.
+
+After a majority has restored the same proposal, a 1.5-second countdown resumes
+under the replacement. Only acknowledged participants remain human workers;
+missing participants become CPUs. A two-human match can migrate to its sole
+remaining connected human, who continues with CPUs.
+Epoch plus increasing authority term rejects delayed old-host outcomes and old
+input sequences. Pending commands/edges are cleared, pose and motor contacts are
+restored, and replicas enable authority collision only on the chosen host.
+Further losses can repeat this flow after the new host shares a checkpoint.
+Loss before the first checkpoint, absence of a direct quorum and exhausted
+ballots return to the lobby with an explanation. Adventure co-op host-loss
+behaviour is unchanged. These are cooperative, trusted peers; the voting protocol
+does not authenticate checkpoint contents against a malicious modified client.
+
+`test_battle_migration.gd` covers twenty-seat JSON delivery, single-survivor and
+repeated migration, an absent first candidate, lease expiry, invalid checkpoints,
+old terms and partition failure. `test_battle_game.gd` promotes a loaded independent
+guest world and checks frozen storm time, timers, running reserve, collision and
+CPU replacement. These local checks do not establish separate-device/WAN/NAT
+acceptance. Discovery channel/invite names remain `v1` / `TOFUBR1` format markers;
+room admission separately requires battle protocol 10 and the current game build.
+
+Tofufu atlas metadata registers every pose on its solid torso center rather than
+a moving toe. Vertical registration still follows the planted foot baseline.
+Authority walking faces chosen travel, and snapshots carry that input separately
+from velocity so replicas keep the chosen direction during sliding and braking;
+firing and strike poses keep their aim direction. Source PNGs and collision
+capsules are unchanged. `test_tofufu_alignment.gd` measures source alpha anchors
+for all skins/actions/mirrors and exercises all eight directions through rotated
+cameras. The metadata change also fixes the meadow skin display and SpriteFrames
+library resources.
+
+`tools/verify_battle_peers.py` is optional local acceptance with three real Godot
+processes and their Holepunch sidecars on an isolated DHT. It kills the authority
+process abruptly, observes both survivors pausing, then checks one new authority
+term, twenty retained actors, CPU replacement and clean survivor shutdown. This
+is stronger than an in-memory transport fixture and remains local-network evidence.
+
+### Adventure combat in Battle Royale (implemented; battle protocol 3)
+
+BattleFighter composes the same PlayerCombat, SoyGun/SoyProjectile, Sotjet,
+AngelBow, melee/guard/combo and movement ability components used in adventure.
+Each survivor gets a temporary knife and nine-round soybean gun, 100 HP, 50
+armour and 100 SP. Match pickups enter a temporary backpack; explicit equipment
+transfers choose the worn melee/ranged slots without deleting the previous item. The catalog includes Nori, Edamame, staff, Bengal Paws,
+Sotjet, bow and celestial weapon variants. All loans are usable at level one with no saved training or enhancements; match-only
+rarity profiles supply the weapon and outfit bonuses. Adventure characters, progression and saves never
+enter this composition. BattleBalance owns separate damage/recoil cadence tuning;
+reloads use the adventure renewable magazine, while SP and milk keep their normal
+costs and recovery. Existing 1/2, attack, aim/secondary, punch, walk/run, charged
+jump/dash, reload and healing commands cross the equal-delay input buffer.
+
+Damageable.receive_attack adds an optional attributed attack receiver. Adventure
+continues through Damageable.damage; BattleCombat queues attributed confirmed
+hits and commits them after all capsules and attacks advance. Projectile
+reflection preserves the deflector as the damage source. Only authority resolves
+hits, guards, resources and eliminations; guest weapons spawn cosmetic flights.
+BattleCombatWire packs the existing CombatState into positional arrays, rounds
+wire floats to millimetres/milliseconds and validates the expanded values with
+ExplorationProtocol. Reliable-stream deltas send changed combat fields between
+one-second complete keyframes, bound to their exact accepted baseline sequence.
+Combat values are captured at the 20-Hz publishing cadence; lightweight health,
+ammo and reload readouts remain current each physics tick. The shared broadcast
+is serialized once for all direct recipients.
+
+Recovery pauses the combat subtree as well as movement/storm time. Checkpoints
+include ammunition/reload, SP, milk/refill delay, recoil/recovery delay,
+gun/punch cadence and every
+special cooldown. Restoring cancels pending attacks and active flights on every
+peer, retaining spent resources and cooldowns. No in-flight projectile is replayed
+after the countdown; the checkpoint rollback can still discard recent outcomes.
+
+
+### Temporary RPG loot in Battle Royale (implemented; battle protocol 4)
+
+BattleChestLayout seeds at most 80 chests, one per 64-by-80-metre map cell, with
+28-metre minimum spacing, four-metre clearance from starting survivors, dry
+shared-terrain placement and collision clearance.
+Water or fully obstructed cells are skipped. The match seed changes positions;
+chests do not respawn. Each chest rolls four distinct items from the
+same rarity-weighted 32-item pool, independent of region or opening order. The pool contains all
+11 match weapons, the twelve Soypod/Nori/Celestial armour pieces, three backpack
+sizes and apples, Soy Milk, potatoes, cucumbers, red berries and beetroot. Four
+physical choice markers spill beside the opened chest. CPUs loot through the
+same inventory transactions and finite food as humans.
+
+BattlePack composes per-survivor PlayerInventory, CharacterEquipment,
+PlayerHealing and a match-specific BattleLoadout. B opens normal bag/equipment
+controls, I shows actual match stats, and E opens a nearby chest and choice list.
+Shift-click equips, drag/click transfers, right-click consumes bag food, 3–6 use
+support slots, and dropping selected stacks makes them available to survivors.
+These windows block local movement/attacks but never pause the match. New packs
+hold ten slots; found bags expand to fourteen or twenty. Capacity overflow rejects
+smaller-bag swaps atomically. Complete sets use normal movement tradeoffs, with
+protection capped at 25%; the Celestial set adds 20% damage, 12% attack/fire speed
+and 10% movement, composed with match-only weapon role bonuses. Fufu
+uses existing worn artwork; every Tofufu skin retains its identity with an armour
+badge and existing Celestial aura. Match tooltips show the capped values.
+
+The host validates authenticated br_pack intents with epoch/term, monotonically
+increasing sequence, four queued requests per human, revision-checked slot
+mutations, range and line of sight. A full bag leaves the item on the ground.
+Host UI requests use the same 100-ms minimum delay and rotating commit priority
+as guest requests. The explicit active slot distinguishes identical weapons and their individual
+Sotjet reservoirs. World IDs are monotonic even when inactive drop slots are
+reused. A finite 768-slot ledger bounds the original chest and starter item supply.
+Elimination drops the entire backpack and worn gear once and cancels healing.
+The normal gradual apple HP/SP effect and Soy Milk healing retain shared cooldowns.
+Equipment changes preserve live ammunition, recoil, reload and special timers.
+
+BattlePackWire validates compact item enums, stack limits, up to 70 bags, ongoing
+healing, at most 80 chests and 768 drops. Indexed pack/chest/drop deltas bind to
+the accepted snapshot sequence, so a healing tick only sends its changed timers without bag contents;
+complete keyframes repair baselines every second. Checkpoint serialization is
+offset from complete keyframes and reuses the current combat capture to spread
+authority work across frames. Checkpoints force-capture live
+Sotjet reserves and retain bag contents, gear, healing clocks, opened chests and
+remaining drops. Recovery clears pending item intents before resuming. Everything
+is in memory for this match; adventure saves, currency and progression are absent.
+Focused tests cover atomic inventory actions, real-map placement, deterministic rarity
+weights, healing, death drops, guest actions, recovery and maximum framed payloads.
+Separate-device/WAN and 20-human performance acceptance remain separate.
+
+### Configurable CPU opponents (implemented; updated in battle protocol 6)
+
+The lobby defaults to seven CPUs and Normal difficulty. The creator can request
+0–50 CPUs before starting, alongside up to twenty humans (70 survivors maximum). Guests see the authoritative settings read-only.
+Zero CPUs permits human-only matches; at least two survivors are required, so
+solo CPU practice is disabled until a CPU is added. The same settings apply to
+public, private and offline starts. The host can adjust a waiting lobby, and
+settings freeze at loading. Human departures during play still convert that
+existing seat to a CPU without adding actors.
+
+BattleOptions validates the count and difficulty at admission and in snapshots
+and recovery checkpoints. Only the actual 2–70 survivors are instantiated,
+registered as combat targets, simulated, inventoried, presented and serialized.
+Snapshot combat/pack lengths must match the actor count, replicas require the
+loaded count, and recovery requires the original roster plus selected CPU count.
+Settings changes or out-of-range seat commands cannot resize a running match.
+Battle protocol 6 is intentionally incompatible with earlier battle clients;
+adventure networking and saves are unchanged.
+
+Easy/Normal/Hard vary delayed perception (0.60/0.30/0.12 seconds plus one decision
+sample), aim error, attack burst/rest cadence and engagement range. Steering stays
+at 10 Hz for every profile, with stateless sampled decisions on assigned peers
+and the same authority fallback. All profiles use the same capsules, health,
+damage, ammunition rules and finite loot. Difficulty does not increase simulation
+frequency. `tools/verify_battle_peers.py --cpus 3 --difficulty hard` checks six survivors over
+three real local Holepunch processes, including host loss and retained settings.
+CPU count bounds additional work; it cannot guarantee FPS for every
+map location, device or network. test_battle_cpu.gd covers count boundaries,
+settings authority, smaller real worlds, compact deltas and paused host migration.
+
+### Fifty-CPU matches (implemented; battle protocol 7)
+
+Human admission remains capped at twenty, independently of the 0–50 CPU choice.
+Fifty CPUs therefore create 51 survivors in solo practice or up to 70 with friends.
+The seven-CPU default and all three difficulty profiles remain available. Deployment
+uses up to 96 collision-cleared soybean sites, preserving separation from enemy
+reservations and the authored terrain/collision placement. HUD totals, placements, kills,
+combat/pack deltas, input ownership and recovery use the selected population.
+The 768-drop ledger covers the original 320 chest items plus every starter item
+and individually separated starter apple stack for seventy survivors.
+
+BattleWire uses DEFLATE and Base64 over value-only JSON for large-roster snapshots
+and all recovery checkpoints. Checksummed encoded text is at most 58,000 bytes;
+expanded data is at most 196,608 bytes and all existing nested validators still
+apply. Snapshot envelope identity, term and sequence must match the decoded
+payload. This preserves the sidecar's existing 64-KiB frame and twenty-human
+fanout limits. Compression does not authenticate a modified trusted participant.
+Small-roster snapshots retain their compact dictionary path. No adventure
+protocol, save schema, relay policy or transport frame bound changes.
+
+The native CPU benchmark accepts counts through fifty and renders a fixed
+2560-by-1440 target. Timing evidence, local encrypted peer recovery and the
+registered regression scenarios are recorded separately; larger populations do
+not imply a locked FPS target or WAN connectivity guarantee.
+
+For large matches BattleVisibility gates only offscreen sprite animation, wrist
+interpolation and held-model rendering, with a 160-pixel screen margin. Newly
+visible fighters resume immediately; physical muzzles supply offscreen projectile
+visual origins. Collision, movement, melee samples, projectiles, resources and
+eliminations keep their authority cadence. The normal adventure presentation
+path remains enabled by default. Offline practice skips unused combat wire
+capture; online snapshots and recovery still capture complete combat state.
+CPU steering is split across alternating 20-Hz input frames, retaining exactly
+ten decisions per second per CPU while reducing shared-frame spikes.
+
+### Soybean deployment and Duos (implemented; battle protocol 7)
+
+The readiness barrier now opens a 30-second map/list plant selector before match
+physics, resources or storm time advance. Up to 96 dry, flat collision-cleared
+sites reuse the existing textured soybean save-spot scene as cosmetic props,
+streamed within 60 metres. Adventure ownership and saves are not composed.
+Authenticated plant intents use the same 100-ms minimum delay for host and guests;
+per-seat bounded queues, increasing sequences, epoch/term checks and rotating
+commit order reject stale, spoofed and conflicting claims. Confirmed choices
+freeze. Enemies cannot reserve the same plant; teammates may share or split up.
+After connected humans confirm, or the timeout expires, unselected seats and CPUs
+take available plants, preferring their partner's choice. Everyone emerges for
+three seconds at separate collision-cleared exits before active combat starts.
+The 12-second legacy grace clock is advanced only after this new pre-match stage.
+
+The host selects Solo or Duos alongside CPU count/difficulty. Duos pair the human
+roster in lobby order, then CPUs; an odd human gets the next CPU as partner.
+Effective CPU count rounds upward to complete pairs, or downward at the 50-CPU
+ceiling. At least two teams are required. Two invited friends therefore form one
+duo against CPU pairs. Public discovery filters Solo/Duos; private guests adopt
+the host's setting. All teammates share victory and team placement, bots ignore
+allies, adventure target/clash lists exclude allies, and authority rejects friendly
+hits before guard/SP costs. Partner health, a cyan radar marker and nameplate
+identify the teammate. There is no downed/revive state: an eliminated partner
+spectates while the survivor can still win for both.
+
+Plant sites, per-seat choices/confirmation, stage and remaining time are bounded
+value-only snapshot/checkpoint fields. Recovery freezes and restores selection or
+emergence with the team option; queued pre-loss choices are discarded, and the
+replacement rechecks intents under its new term. No extra service, transport
+frame expansion, adventure save version or deterministic physics claim is added.
+`test_battle_deployment.gd` exercises exclusive solo and shared duo claims, real
+world exits, timeout, friendly fire, team victory, bilingual UI and host loss during
+selection. Device/WAN and long-session performance remain separate acceptance.
+
+### Replay, match goals and varied zones (implemented; battle protocol 8)
+
+BattleRoundStats adds a bounded six-value ledger per survivor: actual damage,
+damage received, opened chests, food consumed, survival seconds and an eight-second
+quiet armour timer. Hosts capture it with the dry finale anchor in snapshots and
+checkpoints; protocol 8 requires both fields. No adventure save or room schema changes.
+Armour recovers at five per second to the starting fifty after eight quiet seconds;
+storm and enemy damage reset the delay. Next-circle previews and rotation guidance
+use the same moving, nested circle math as damage and CPUs. Damage escalates after
+complete closure so even maximum milk/apple regeneration cannot stall the finale.
+
+BattleRoundFlow exchanges authenticated epoch/term-scoped ready intents, host
+readiness summaries and a fresh-epoch round instruction over the existing direct
+transport. Only the authority can advance, and every connected human must be ready.
+Guests cannot replace a roster or start a round, old epochs cannot vote, and migration
+clears pending readiness. New rounds retain connected identities/options while
+rebuilding temporary state and the loading barrier. Post-victory snapshots and host-loss
+detection remain active. BattleCareer atomically stores local cosmetic records,
+separately for practice and peer rounds, with bounded epoch deduplication and backup
+recovery. It is not a trusted ladder. See the [match-loop audit](../design/BATTLE_ROYALE_LOOP.md)
+for delivered gameplay and explicitly remaining systems.
+
+BattleSquadPings uses G / H to request a stationary route/danger marker.
+The host binds the authenticated identity to its living seat, validates a finite
+point within 180 metres, enforces one request per second and rejects replayed
+sequences. It sends a cosmetic event only to the sender's duo. Each local view
+keeps at most two eight-second markers, without tracking opponents; migration
+clears them. All marker values/labels remain outside simulation and saves.
+
+
+### Finite adventure hunts (implemented; updated in battle protocol 10)
+
+BattleMobLayout distributes at most 24 hunt sites, at least 60 metres apart, on dry,
+collision-cleared ground near chest routes and at least 12 metres from every deployment
+plant. TrainingMob, ArmoredSnail and WildBee retain their adventure movement, attack
+warnings, shell weak points; a match-only BattleMobRanged supplies swept, reflectable shots
+for all three kinds while disabling the bee's legacy sting in this mode. They do not compose adventure respawn,
+quests, EXP or save components. Only authority advances their physics; target selection
+is staggered at four Hz, with normal movement only within 108 metres of a living survivor.
+Sleeping enemies remain damageable. Cosmetic culling never determines damage.
+
+Normal weapon targets include all hunts. Enemy hits enter BattleCombat's existing
+guard, equipment, dash immunity, armour and simultaneous player-damage path. Finite
+hunt credit is separate from PvP KOs, damage goals, survivor seats and team victory.
+CPUs choose nearby hunts through accepted value snapshots, prioritising close player
+fights, storm escape and inventory capacity. Ordinary chest rarity weights remain region-independent.
+
+Each snail guarantees two apples and an armour piece; armored snails guarantee milk,
+an armour piece and a weapon; bees guarantee milk plus a weapon or upgraded backpack. Epoch/site
+seeds prevent rerolls. Rewards are public, contestable temporary drops. At most 72 hunt
+stacks join the existing 320 chest and 350 starter stacks, fitting the 768-slot ledger.
+Reward claims are atomic: a full ledger retains a pending claim until slots become free.
+Storm/fall deaths grant neither rewards nor hunt credit. No enemy respawns during a round.
+
+BattleMobWire bounds kinds, health, shell, motion, cooldowns, reward status, per-seat hunt
+counts and exact string-encoded 64-bit RNG state. Twenty-Hz snapshots use ordered hunt
+deltas and one-second full keyframes. All actor counts use compressed, bounded envelopes;
+the room field gate allows at most 18 fields for expanded/plain test-compatible packets.
+Checkpoints retain the entire hunt state and pending/paid claims with world loot. Recovery
+pauses all enemy logic, restores health/shell, RNG, wander destination, paralysis and
+cooldowns, and cancels transient stings/rushes with at least 0.75 seconds of recovery.
+A fresh round constructs a fresh seeded population. No additional transport or service
+is introduced; the existing trusted-authority and WAN/device acceptance limits apply.
+
+Battle protocol 10 adds one bounded 13-value ranged record per hunt: cooldown,
+windup, committed aim, active projectile position/velocity/lifetime and sequence.
+BattleMobShotWire rejects nonfinite/out-of-range values before presentation.
+Only authority manually steps the swept SoyProjectile; guest views apply cosmetic
+positions. Confirmed hunt shot sequences feed the same brief, range-limited radar
+origin markers as player fire, with first-snapshot and recovery baselines. Projectiles live under the match root so a dead shooter cannot erase
+a fired attack. Recovery cancels flights/windups and retains cooldowns with a
+0.75-second minimum grace. No additional gameplay service or relay is introduced.
+Rarity is derived from the unchanged stable item catalog, so grade/stat resources
+remain match-only and do not change adventure item definitions or save schemas.
+See the match-loop design for exact weights, weapon roles and outfit caps.

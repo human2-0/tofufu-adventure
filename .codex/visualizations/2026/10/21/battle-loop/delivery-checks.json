@@ -1,0 +1,27 @@
+{
+  "final-scoped": {
+    "passed": true,
+    "seconds": 28.58,
+    "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-loop/verification/final-scoped.log"
+  },
+  "native-delivery": {
+    "passed": true,
+    "seconds": 64.08,
+    "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-loop/verification/native-delivery.log"
+  },
+  "benchmark-7": {
+    "passed": true,
+    "seconds": 40.65,
+    "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-loop/verification/benchmark-7.log"
+  },
+  "benchmark-50": {
+    "passed": true,
+    "seconds": 41.81,
+    "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-loop/verification/benchmark-50.log"
+  },
+  "real-holepunch": {
+    "passed": true,
+    "seconds": 36.99,
+    "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-loop/verification/real-holepunch.log"
+  }
+}

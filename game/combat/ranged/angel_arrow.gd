@@ -44,7 +44,7 @@ func resolve(body: Object, at: Vector3) -> void:
 		if not is_instance_valid(target) or target.body != body: continue
 		var amount := head_damage if target.is_headshot(at) else body_damage
 		if empowered: amount *= 2.0
-		if target.damage(amount, velocity.normalized() * 3.0, Damageable.HitKind.SOY, at):
+		if target.receive_attack(amount, velocity.normalized() * 3.0, Damageable.HitKind.SOY, at, bow.combat.owner_health):
 			credit(target, at, amount, not empowered)
 			if empowered:
 				bow.impact(at)

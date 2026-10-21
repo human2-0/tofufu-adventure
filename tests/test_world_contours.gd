@@ -42,7 +42,7 @@ func _run() -> void:
 			var b := game.world.ground_point(x, seam + 0.04).y
 			check(absf(a - b) < 0.15, "height remains continuous on both sides of each biome crossing")
 	# The formerly exposed region sides now have a graded physical shoulder.
-	for at in [Vector2(100, 130), Vector2(-95, 240), Vector2(120, -60), Vector2(194, 6), Vector2(-1000, 0), Vector2(156, -145)]:
+	for at in [Vector2(670, 130), Vector2(-95, 240), Vector2(120, -60), Vector2(670, 6), Vector2(-1000, 0), Vector2(156, -145)]:
 		check(MainlandFringe.contains(at), "former chunk edges are backed by a mainland shoulder")
 		var desired := game.world.ground_point(at.x, at.y)
 		check(ParrotLanding.height(game, desired) >= maxf(desired.y, MainlandFringe.water_level(at)), "parrot flight clears the shoulder and outer sea")

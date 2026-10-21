@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "scenarios": [
+    "battle_migration",
+    "battle_combat",
+    "battle_radar",
+    "battle_mobs",
+    "battle_inventory",
+    "battle_game",
+    "scene"
+  ],
+  "results": {
+    "battle_migration": {
+      "status": "PASS",
+      "log": ".codex/visualizations/2026/10/21/battle-balance/verification/final-focus-first/battle_migration.log"
+    },
+    "battle_combat": {
+      "status": "PASS",
+      "log": ".codex/visualizations/2026/10/21/battle-balance/verification/final-focus-first/battle_combat.log"
+    },
+    "battle_radar": {
+      "status": "PASS",
+      "log": ".codex/visualizations/2026/10/21/battle-balance/verification/final-focus-first/battle_radar.log"
+    },
+    "battle_mobs": {
+      "status": "PASS",
+      "log": ".codex/visualizations/2026/10/21/battle-balance/verification/final-focus-first/battle_mobs.log"
+    },
+    "battle_inventory": {
+      "status": "PASS",
+      "log": ".codex/visualizations/2026/10/21/battle-balance/verification/final-focus-completion/battle_inventory.log"
+    },
+    "battle_game": {
+      "status": "PASS",
+      "log": ".codex/visualizations/2026/10/21/battle-balance/verification/npc-replication/battle_game.log"
+    },
+    "scene": {
+      "status": "PASS",
+      "log": ".codex/visualizations/2026/10/21/battle-balance/verification/final-focus-completion/scene.log"
+    }
+  },
+  "scope": "Final source checks after weapon normalization, hunt radar integration and effective-melee stat display; architecture/import and 15 Python verifier checks also passed. Explicit NPC cosmetic replication and flight cancellation on actual guest promotion also passed."
+}

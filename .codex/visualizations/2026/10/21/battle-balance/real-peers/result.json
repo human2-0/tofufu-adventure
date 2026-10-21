@@ -1,0 +1,173 @@
+{
+  "passed": true,
+  "scope": "Three OS processes and real encrypted Holepunch over an isolated loopback DHT; abrupt host kill, paused recovery, new authority, plant reservation and duo settings, selected actor count and CPU difficulty, CPU replacement, consumed backpack apples, ongoing healing, opened chest/drop recovery and finite hunt death/credit recovery. Not WAN/NAT acceptance.",
+  "duos": true,
+  "effective_cpus": 3,
+  "requested_cpus": 3,
+  "difficulty": "hard",
+  "actor_count": 6,
+  "before": {
+    "p0": {
+      "apple_seconds": 24.5666666666667,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 77,
+      "cpus": 3,
+      "deployment_stage": 2,
+      "drop_slots": 6,
+      "first_mob_dead": true,
+      "host": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+      "hunt_claims": 1,
+      "key": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+      "mob_count": 21,
+      "opened_chests": 1,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0,
+        0,
+        1,
+        1,
+        68,
+        68
+      ],
+      "term": 0,
+      "time": 13.4333333333334
+    },
+    "p1": {
+      "apple_seconds": 24.55,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 77,
+      "cpus": 3,
+      "deployment_stage": 2,
+      "drop_slots": 6,
+      "first_mob_dead": true,
+      "host": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+      "hunt_claims": 1.0,
+      "key": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+      "mob_count": 21,
+      "opened_chests": 1,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 0,
+      "time": 13.45
+    },
+    "p2": {
+      "apple_seconds": 24.55,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 77,
+      "cpus": 3,
+      "deployment_stage": 2,
+      "drop_slots": 6,
+      "first_mob_dead": true,
+      "host": "9bff1df8c41e43efab5cd273a1aa0684d66e44abf37a262a080318418fc80e15",
+      "hunt_claims": 1.0,
+      "key": "99dc1bdbb33b5aef52dffbcb5346d7df5c8ac76db4aa477e06f97cd57c363119",
+      "mob_count": 21,
+      "opened_chests": 1,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 0,
+      "time": 13.45
+    }
+  },
+  "after": {
+    "p1": {
+      "apple_seconds": 24.95,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 79,
+      "cpus": 4,
+      "deployment_stage": 2,
+      "drop_slots": 6,
+      "first_mob_dead": true,
+      "host": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+      "hunt_claims": 1.0,
+      "key": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+      "mob_count": 21,
+      "opened_chests": 1,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 1,
+      "time": 13.05
+    },
+    "p2": {
+      "apple_seconds": 24.9,
+      "apples": 6,
+      "bodies": 6,
+      "checkpoint": 79,
+      "cpus": 4,
+      "deployment_stage": 2,
+      "drop_slots": 6,
+      "first_mob_dead": true,
+      "host": "985af45be71278ad56987e428062c21fefd21303acb040b08e77d0e689b39e5c",
+      "hunt_claims": 1.0,
+      "key": "99dc1bdbb33b5aef52dffbcb5346d7df5c8ac76db4aa477e06f97cd57c363119",
+      "mob_count": 21,
+      "opened_chests": 1,
+      "options": [
+        3,
+        2,
+        1
+      ],
+      "phase": "playing",
+      "plants": [
+        0.0,
+        0.0,
+        1.0,
+        1.0,
+        68.0,
+        68.0
+      ],
+      "term": 1,
+      "time": 13.1
+    }
+  },
+  "observed_paused": [
+    "p1",
+    "p2"
+  ],
+  "logs": "/var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-battle-peers-pyelaylz"
+}

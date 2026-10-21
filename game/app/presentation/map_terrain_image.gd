@@ -26,6 +26,10 @@ static func build(world: Meadow, bounds: Rect2, density: float) -> Texture2D:
 	return texture
 
 static func _color(world: Meadow, at: Vector2) -> Color:
+	if GigalopolisTerrain.contains(at):
+		var city_height := GigalopolisTerrain.height_at(at)
+		if GigalopolisTerrain.is_water(Vector3(at.x, city_height - 0.01, at.y)): return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -city_height))
+		return GigalopolisTerrain.color_at(at, city_height)
 	if MainlandFringe.contains(at):
 		var shore_height := MainlandFringe.height_at(world, at)
 		if shore_height < MainlandFringe.water_level(at): return Color("246c87").lerp(Color("102f4c"), smoothstep(0, 8, -shore_height))

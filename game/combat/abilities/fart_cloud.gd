@@ -7,15 +7,17 @@ const RADIUS: float = 1.45
 const DAMAGE: float = 8.0
 
 var targets: Array[Damageable] = []
+var owner_health: Damageable
 var _remaining: float = LIFETIME
 var _hit_targets: Array[Damageable] = []
 var _puffs: Array[MeshInstance3D] = []
 
-static func spawn(parent: Node, at: Vector3, damage_targets: Array[Damageable] = []) -> FartCloud:
+static func spawn(parent: Node, at: Vector3, damage_targets: Array[Damageable] = [], source: Damageable = null) -> FartCloud:
 	var cloud := FartCloud.new()
 	var origin := at + Vector3.UP * 0.45
 	cloud.position = (parent as Node3D).to_local(origin) if parent is Node3D else origin
 	cloud.targets = damage_targets.duplicate()
+	cloud.owner_health = source
 	parent.add_child(cloud)
 	return cloud
 
@@ -50,7 +52,7 @@ func _damage_targets() -> void:
 		offset.y = 0.0
 		if offset.length_squared() > RADIUS * RADIUS:
 			continue
-		if target.damage(DAMAGE, offset.normalized(), Damageable.HitKind.SLIME):
+		if target.receive_attack(DAMAGE, offset.normalized(), Damageable.HitKind.SLIME, Vector3.INF, owner_health):
 			_hit_targets.append(target)
 			CombatEffects.burst(self, target.global_position, str(int(DAMAGE)), Color("a4d968"))
 

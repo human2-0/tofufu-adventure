@@ -110,7 +110,7 @@ func _punch() -> void:
 		if offset.length() > combat.tuning.punch_reach or offset.normalized().dot(forward) < 0.5:
 			continue
 		var dmg: float = combat.tuning.punch_damage * combat.fist_damage_multiplier
-		if combat._unobstructed(combat.actor.global_position, target) and target.damage(dmg, forward * 3.0):
+		if combat._unobstructed(combat.actor.global_position, target) and target.receive_attack(dmg, forward * 3.0, Damageable.HitKind.MELEE, Vector3.INF, combat.owner_health):
 			CombatEffects.burst(self, target.global_position, "-%d POW!" % int(dmg), Color("ffccaa"))
 			combat.vitals.confirmed_hit()
 			combat.struck.emit(0.0, 1)

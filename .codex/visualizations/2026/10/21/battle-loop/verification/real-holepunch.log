@@ -1,0 +1,4 @@
+Battle peer logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-battle-peers-5bi6s4zn
+Three real peers / 6 actors / hard CPUs / shared checkpoints: PASS
+Abrupt host loss / paused migration / CPU replacement: PASS
+Result: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-battle-peers-5bi6s4zn/result.json

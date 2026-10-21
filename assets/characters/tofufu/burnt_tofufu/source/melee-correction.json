@@ -1,0 +1,8 @@
+{
+  "prompt": "Use case: identity-preserve. Input1 is EDIT TARGET atlas, input2 is original CHARACTER IDENTITY/ACCESSORY reference. Edit ONLY described errors. Preserve the exact character identity, illustration style, all other poses, atlas column and row counts, full body bounds, size and spacing. Real transparent alpha no matte. Fix TORCH and HEADBAND KNOT handedness ONLY. BOTTOM THREE rows W,SW,S must hold torch staff on SCREEN LEFT with headband knot SCREEN RIGHT, as original reference2. Keep W/SW facing screen LEFT (do NOT mirror body to right). Striking free fist on opposite side, torch remains held, even uppercut and kick. Top2 rows N/NW torchRIGHT knotLEFT unchanged. Preserve all20 attack poses and dark lava tofu identity. All outlines clean dark green/black, no colored fringe artifacts. All sprites completely in frame. Do not add labels or effects.",
+  "references": [
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/ember_staff/melee.png",
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/ember_staff/source/walk-original.png"
+  ],
+  "source": "/Users/mat-dwor/.codex/generated_images/01a153cd-faf0-75f1-b429-cde7636c6570/exec-d8b798b6-b8a9-41f4-b418-f8aca25491f2.png"
+}

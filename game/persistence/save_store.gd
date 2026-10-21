@@ -48,6 +48,7 @@ func _path(slot: int) -> String:
 	return SaveSlotFiles.path(directory, mode, slot)
 
 static func valid(data: Dictionary) -> bool:
+	if data.has("city_loot") and (not _progress_counter(data.city_loot) or data.city_loot > 262143): return false
 	if not _progress_counter(data.get("soy_spots", 0)) or data.get("soy_spots", 0) > 2047: return false
 	for field in {"bow_reload": 2.0, "bow_cooldown": 6.0}:
 		if not data.has(field): continue

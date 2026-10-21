@@ -1,0 +1,32 @@
+{
+	"renderer": "macOS",
+	"results": [
+		{
+			"cpu_seats": 19,
+			"draw_calls": 159.0,
+			"elapsed_wall_seconds": 5.975806,
+			"engine_fps": 116.0,
+			"human_seats": 1,
+			"json_upload_bytes_per_simulated_second": 0.0,
+			"rendered_objects": 388.0,
+			"simulation_and_json_max_ms": 25.122,
+			"simulation_and_json_p95_ms": 7.177
+		},
+		{
+			"cpu_seats": 0,
+			"draw_calls": 159.0,
+			"elapsed_wall_seconds": 6.005362,
+			"engine_fps": 117.0,
+			"human_seats": 20,
+			"json_upload_bytes_per_simulated_second": 1236279.33333333,
+			"rendered_objects": 415.0,
+			"simulation_and_json_max_ms": 9.849,
+			"simulation_and_json_p95_ms": 8.372
+		}
+	],
+	"scope": "One local map; nineteen recipients are serialized fakes. Actual encrypted twenty-peer traffic is a separate sidecar test. No separate-device or WAN FPS guarantee.",
+	"viewport": [
+		2560,
+		1440
+	]
+}

@@ -11,6 +11,8 @@ var settings := SettingsFlow.new()
 var updates := UpdateLogFlow.new()
 @export var transport: SessionTransport
 @export var server_transport: OracleTransport
+@export var battle_transport: SessionTransport
+var battle := BattleRoyaleFlow.new()
 var connection := SessionConnection.new()
 var room := PlaytestRoom.new()
 var lobby := LobbyFlow.new()
@@ -32,7 +34,7 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	get_tree().auto_accept_quit = false
 	preferences.load_preferences()
-	RenderBudget.install(self, preferences, func() -> bool: return is_instance_valid(game) and not get_tree().paused)
+	RenderBudget.install(self, preferences, func() -> bool: return (is_instance_valid(game) or is_instance_valid(battle.game)) and not get_tree().paused)
 	store.extra_validator = CoopCheckpoint.valid
 	_menu_layer = CanvasLayer.new()
 	_menu_layer.layer = 20
@@ -49,6 +51,7 @@ func _ready() -> void:
 		public_play.active = false
 		lobby.show_lobby())
 	menu.settings.connect(settings.show_settings)
+	menu.battle_royale.connect(battle.show_lobby)
 	menu.resume_game.connect(_resume)
 	menu.save_game.connect(_save)
 	menu.return_title.connect(_return_title)

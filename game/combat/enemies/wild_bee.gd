@@ -8,6 +8,7 @@ const SIGHT_RANGE: float = 22.0
 const STING_RANGE: float = 18.0
 const WINDUP: float = 0.7
 const COOLDOWN: float = 2.3
+var ranged_enabled: bool = true
 var shot_height: float = 0.7
 var shot_windup: float = WINDUP
 var shot_cooldown: float = COOLDOWN
@@ -82,7 +83,7 @@ func _choose_direction(delta: float) -> Vector3:
 			if _can_reach_quarry(): sting.launch(global_position + Vector3.UP * shot_height, _sting_aim)
 			_rest = shot_cooldown
 		return Vector3.ZERO
-	if _rest <= 0.0 and not sting.active and distance <= STING_RANGE and _can_reach_quarry():
+	if ranged_enabled and _rest <= 0.0 and not sting.active and distance <= STING_RANGE and _can_reach_quarry():
 		# Lock aim at the warning, leaving time to sidestep the straight flight.
 		_sting_aim = (quarry.global_position + Vector3.UP * 0.7 - (global_position + Vector3.UP * shot_height)).normalized()
 		_windup = shot_windup

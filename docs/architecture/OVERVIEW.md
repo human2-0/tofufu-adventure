@@ -339,6 +339,39 @@ focused/rendered checks. No session schema or save migration is required.
 
 ### Continuous mainland edges and local weather detail (implemented)
 
+Gigalopolis extends its factory district east to X=660, approximately the
+volcanic island's eastern shoreline, with a 576-metre east-west span. Six eastern
+quarters combine terraced homes, L-shaped apartments, vaulted depots, workshops,
+open market arcades, courtyard halls, water towers and a stepped clocktower.
+The earlier southern wards and coastal peninsula remain connected.
+`GigalopolisTerrain` owns the city floor and
+the shared coastal height profile applied by `VolcanicTerrain`; both rendered
+triangles and collision use these samples. Mainland shoulders now end at the
+expanded city bounds, with matching water, locomotion, landing and map queries.
+The sandy crossing joins the existing Embercrown landing, and a graded northern
+beach joins the wider city to the island. The original six exterior stairs
+use continuous physical ramps beneath visible treads, leading to guarded camp
+roofs and a terrace bridge; eastern arcades, civic hall and clocktower add
+supported exterior stairs and roof camps. Capped gabled/vaulted roof profiles
+have matching collision, while market aisles and the civic courtyard remain
+physically open. `GigalopolisMaterials` applies one generated palette
+to the factory shell, blocks and furnishings; immutable city ornaments use the
+existing spatial batching. Lookouts use personal explored-map markers. Older
+positions below the new shore are lifted onto its terrain while roof elevations
+are retained; exploration bounds are unchanged.
+
+The enclosed city buildings now use `GigalopolisInterior` shells with real door
+openings, terrain-supported level floors and graded entrances. Homes, shops,
+industrial halls and civic rooms contain sparse textured furnishings. The local
+`GigalopolisInteriorView` hides roofs and camera-facing wall visuals while
+the player is indoors, including neighbouring shells blocking that sightline; roof collision and rooftop camp visibility remain intact.
+`CityLoot` authors eighteen finite shared supply chests, with two modest stacks
+per chest and only three basic equipment finds across the city. The existing
+world-item pickup path retains full-bag loot on the ground. Claims and remaining
+drops persist in solo/host saves, with bounded host-validated requests in co-op;
+see COOP N3. Old saves start the new city supplies unopened. Battle Royale reuses the room
+cutaway for its watched actor, while retaining its separate match loot and saves.
+
 `MainlandFringe` fills outside the original region floors with 48-metre shoulders
 that descend into a continuous outer sea. Its height query interpolates the same
 two-metre triangles used by collision and parrot landing. Existing biome floors,
@@ -355,3 +388,35 @@ puddles and particle presentation; menus apply them immediately. Disabled puddle
 and movement-particle updates stop, and hidden precipitation skips placement.
 The weather clock, wind movement modifiers, encounter rules, saves and replicated
 world state are unaffected by each player's visual choices.
+
+
+### Battle Royale with twenty humans and fifty CPUs (implemented)
+
+The title menu composes `BattleRoyaleFlow`, an independent `BattleRoom` and
+`BattleRoyaleGame` over the existing authored world, with temporary match rules
+and no adventure persistence. The existing four-player adventure boundaries
+remain intact. BattleFighter composes the existing adventure combat, equipment
+and movement abilities under equal-stat temporary loans. BattleCombat queues
+attributed hits, and BattleCombatWire validates compact combat deltas. BattlePack
+composes finite inventories, equipment and gradual food healing. Spaced seeded
+chests share a uniform pool; indexed loot changes and recovery checkpoints retain
+only temporary match state. Standard
+capsules preserve movement/collision, while
+peer-assigned CPU steering and compact twenty-Hz actor snapshots bound additional
+work. Collision, damage and victory retain one trusted player authority. Equal
+starting stats and a shared minimum input buffer do not establish cheat-proof
+fairness. `BattleRecovery` supplies periodic resumable checkpoints to the independent
+`BattleMigration`/`BattleElection` rules. Host loss pauses gameplay while surviving
+peers agree on a replacement over direct links, restore the shared checkpoint and
+resume after a countdown. Missing direct quorum or an interrupted voted handoff
+fails safely to the lobby. Adventure co-op and persistence retain their existing
+contracts. Protocol, matchmaking and acceptance limits are recorded in
+[N9](COOP.md#n9--separate-tofufu-battle-royale-implemented-battle-protocol-8).
+
+The Battle Royale loop also composes BattleMatchView/BattleRoundHUD for zone
+forecasts, achievements, combat feedback and recap. BattleRoundStats/circle values
+remain authoritative and recoverable. BattleRoundFlow retains direct peers through
+explicit ready/cancel-ready replays; BattleCareer stores only local cosmetic progress
+outside adventure slots. BattleBotNavigation applies bounded authority-side cover
+checks to distributed CPU steering. The [loop audit](../design/BATTLE_ROYALE_LOOP.md)
+distinguishes implemented improvements from future revive, coordination and ranked work.

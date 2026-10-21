@@ -8,6 +8,7 @@ const WALK: Array[Vector2] = [Vector2(112,212), Vector2(112,208), Vector2(112,20
 const DIAGONAL: Array[Vector2] = [Vector2(120,226), Vector2(121,222), Vector2(119,225), Vector2(118,224), Vector2(100,218), Vector2(99,219), Vector2(100,219), Vector2(102,219), Vector2(235,184), Vector2(232,183), Vector2(234,186), Vector2(230,184), Vector2(219,180), Vector2(219,177), Vector2(220,180), Vector2(218,178)]
 
 static func point(sprite: FufuVisuals) -> Vector2:
+	if sprite.test_skin.active(): return sprite.test_skin.hand
 	if sprite._using_unarmed_frame: return sprite.unarmed_art.hand
 	if sprite.worn_set == "celestial": return sprite.celestial_art.hand
 	if not sprite.worn_set.is_empty():
@@ -41,5 +42,5 @@ static func present(sprite: FufuVisuals) -> void:
 	# Anatomical right is near in E/SE/S/NE, far in W/SW/N/NW.
 	var in_front := int(sprite.current_facing) in [0, 1, 2, 7]
 	var outward := -1.0 if int(sprite.current_facing) in [1, 2, 3, 4] else 1.0
-	sprite.hand_tint_presented.emit(tint(sprite.worn_set))
+	sprite.hand_tint_presented.emit(sprite.test_skin.tint() if sprite.test_skin.active() else tint(sprite.worn_set))
 	sprite.hand_presented.emit(hand, plane, outward, in_front)

@@ -5,6 +5,7 @@ signal new_game
 signal continue_game
 signal coop
 signal public_multiplayer
+signal battle_royale
 signal settings
 signal updates
 signal resume_game
@@ -113,6 +114,7 @@ func show_home(paused: bool = false, can_save: bool = true) -> void:
 		MenuStyle.button(buttons, "Continue adventure", continue_game.emit, MenuIcons.BOOK)
 		MenuStyle.button(buttons, "Play with friends", coop.emit, MenuIcons.FRIENDS)
 		MenuStyle.button(buttons, "Public Multiplayer", public_multiplayer.emit, MenuIcons.FRIENDS)
+		MenuStyle.button(buttons, "Battle Royale · Up to 50 CPUs", battle_royale.emit, MenuIcons.FRIENDS)
 		var utilities := HBoxContainer.new()
 		buttons.add_child(utilities)
 		for item in [["Settings", settings.emit, MenuIcons.SETTINGS], ["What's new?", updates.emit, MenuIcons.BOOK]]:

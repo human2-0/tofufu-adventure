@@ -1,0 +1,119 @@
+npm notice run tofufu-holepunch-playtest@0.1.0 test
+npm notice run node --test test/*.test.cjs
+TAP version 13
+# Subtest: battle discovery channels isolate public, private and adventure topics
+ok 1 - battle discovery channels isolate public, private and adventure topics
+  ---
+  duration_ms: 6.972042
+  type: 'test'
+  ...
+# Subtest: twenty direct encrypted battle peers exchange compact match traffic
+ok 2 - twenty direct encrypted battle peers exchange compact match traffic
+  ---
+  duration_ms: 11244.270667
+  type: 'test'
+  ...
+# Subtest: frames survive fragmentation and coalescing
+ok 3 - frames survive fragmentation and coalescing
+  ---
+  duration_ms: 5.240833
+  type: 'test'
+  ...
+# Subtest: compressed gameplay frames preserve exact values with less wire traffic
+ok 4 - compressed gameplay frames preserve exact values with less wire traffic
+  ---
+  duration_ms: 6.748834
+  type: 'test'
+  ...
+# Subtest: small steady actor deltas also avoid repeated control-envelope overhead
+ok 5 - small steady actor deltas also avoid repeated control-envelope overhead
+  ---
+  duration_ms: 1.403625
+  type: 'test'
+  ...
+# Subtest: compression cannot bypass decoded frame size or JSON validation
+ok 6 - compression cannot bypass decoded frame size or JSON validation
+  ---
+  duration_ms: 1.386916
+  type: 'test'
+  ...
+# Subtest: reject zero length
+ok 7 - reject zero length
+  ---
+  duration_ms: 0.533792
+  type: 'test'
+  ...
+# Subtest: reject oversized
+ok 8 - reject oversized
+  ---
+  duration_ms: 0.334041
+  type: 'test'
+  ...
+# Subtest: reject invalid JSON
+ok 9 - reject invalid JSON
+  ---
+  duration_ms: 1.698583
+  type: 'test'
+  ...
+# Subtest: reject array payload
+ok 10 - reject array payload
+  ---
+  duration_ms: 0.431125
+  type: 'test'
+  ...
+# Subtest: rate bounded
+ok 11 - rate bounded
+  ---
+  duration_ms: 3.384792
+  type: 'test'
+  ...
+# Subtest: loopback admits four-player traffic while retaining its aggregate limit
+ok 12 - loopback admits four-player traffic while retaining its aggregate limit
+  ---
+  duration_ms: 6.139708
+  type: 'test'
+  ...
+# Subtest: slow writable cannot grow an unbounded queue
+ok 13 - slow writable cannot grow an unbounded queue
+  ---
+  duration_ms: 2.490167
+  type: 'test'
+  ...
+# Subtest: streamx completed writes release byte accounting and the stall deadline
+ok 14 - streamx completed writes release byte accounting and the stall deadline
+  ---
+  duration_ms: 3217.579792
+  type: 'test'
+  ...
+# Subtest: streamx truly stalled writes still expire
+ok 15 - streamx truly stalled writes still expire
+  ---
+  duration_ms: 3201.530292
+  type: 'test'
+  ...
+# Subtest: identity persists across launches and rejects corruption
+ok 16 - identity persists across launches and rejects corruption
+  ---
+  duration_ms: 5.358958
+  type: 'test'
+  ...
+# Subtest: two isolated local Holepunch peers discover, authenticate, exchange and shut down
+ok 17 - two isolated local Holepunch peers discover, authenticate, exchange and shut down
+  ---
+  duration_ms: 11246.434708
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11466.106042
+npm notice
+npm notice New minor version of npm available! 12.0.2 -> 12.2.0
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.0
+npm notice To update run: npm install -g npm@12.2.0
+npm notice

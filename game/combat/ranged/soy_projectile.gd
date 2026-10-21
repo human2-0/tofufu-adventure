@@ -114,7 +114,7 @@ func _hit(body: Object, point: Vector3) -> void:
 		if not is_instance_valid(target) or target.body != body: continue
 		var headshot := target.is_headshot(point)
 		var amount := head_damage if headshot else body_damage
-		if target.damage(amount, velocity.normalized() * 2.0, Damageable.HitKind.SOY, point):
+		if target.receive_attack(amount, velocity.normalized() * 2.0, Damageable.HitKind.SOY, point, reflected_by if is_instance_valid(reflected_by) else owner_health):
 			CombatEffects.burst(get_parent(), point, "%d HEAD!" % int(amount) if headshot else str(int(amount)), Color("ffe4a0"))
 			var credited := reflected_by if is_instance_valid(reflected_by) else owner_health
 			if is_instance_valid(credited): credited.attack_confirmed.emit(reflections == 0)

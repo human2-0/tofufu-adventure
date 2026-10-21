@@ -39,6 +39,8 @@ func height_at(x: float, z: float) -> float:
 		h = lerpf(h, 11.0 * smoothstep(80, 110, -x), 1.0 - smoothstep(5, 10, absf(z)))
 	var district := smoothstep(72.0, 84.0, x) * smoothstep(-56.0, -44.0, z) * (1.0 - smoothstep(56.0, 68.0, z))
 	h = lerpf(h, 0.0, district)
+	if z >= 56 and z <= 84 and x >= 72:
+		h = lerpf(h, GigalopolisTerrain.height_at(Vector2(x, z)), smoothstep(72.0, 84.0, x))
 	h = RiverCourse.carve(x, z, h)
 	# A gently graded approach to the main plank bridge.
 	var approach := (1.0 - smoothstep(1.3, 3.5, absf(z - 4))) * (1.0 - smoothstep(6.0, 10.0, absf(x - 11)))
@@ -68,7 +70,7 @@ func build(parent: Node3D) -> void:
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
 	for z in range(-EXTENT, EXTENT):
 		for x in range(-X_EXTENT, X_EXTENT):
-			if x >= 84 and z >= -44 and z < 56: continue
+			if GigalopolisTerrain.contains(Vector2(x, z)): continue
 			for corner in [Vector2(0, 0), Vector2(1, 0), Vector2(0, 1), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)]:
 				var px: float = x + corner.x
 				var pz: float = z + corner.y

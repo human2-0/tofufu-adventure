@@ -1,11 +1,16 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene load_steps=4 format=3]
 
 [ext_resource type="Script" path="res://game/app/bootstrap/launch.gd" id="1"]
 [ext_resource type="Script" path="res://networking/oracle/oracle_transport.gd" id="2"]
+[ext_resource type="Script" path="res://networking/godot/holepunch_transport.gd" id="3"]
 
-[node name="OracleLaunch" type="Node" node_paths=PackedStringArray("transport")]
+[node name="OracleLaunch" type="Node" node_paths=PackedStringArray("transport", "battle_transport")]
 script = ExtResource("1")
 transport = NodePath("Transport")
+battle_transport = NodePath("BattleTransport")
 
 [node name="Transport" type="Node" parent="."]
 script = ExtResource("2")
+
+[node name="BattleTransport" type="Node" parent="."]
+script = ExtResource("3")

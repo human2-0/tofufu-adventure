@@ -1,0 +1,755 @@
+{
+  "passed": true,
+  "registered_scenarios": 149,
+  "completed_scenarios": 149,
+  "full_cli_completed": false,
+  "scope": "All registered verifier scenarios; serial --full prefix plus 4-worker remainder; coop_launch isolated without pausing. Architecture/import and Python verifier checks passed in CLI prefix. Native UI and encrypted peers separate.",
+  "seconds_in_remainder": 1188.0,
+  "results": {
+    "tofufu_alignment": {
+      "passed": true,
+      "seconds": 2.4,
+      "source": "full CLI prefix"
+    },
+    "battle_migration": {
+      "passed": true,
+      "seconds": 0.7,
+      "source": "full CLI prefix"
+    },
+    "battle_royale": {
+      "passed": true,
+      "seconds": 4.4,
+      "source": "full CLI prefix"
+    },
+    "battle_combat": {
+      "passed": true,
+      "seconds": 3.0,
+      "source": "full CLI prefix"
+    },
+    "battle_inventory": {
+      "passed": true,
+      "seconds": 23.0,
+      "source": "full CLI prefix"
+    },
+    "skin_test": {
+      "passed": true,
+      "seconds": 35.77,
+      "source": "parallel remainder"
+    },
+    "unarmed_art": {
+      "passed": true,
+      "seconds": 1.48,
+      "source": "parallel remainder"
+    },
+    "battle_game": {
+      "passed": true,
+      "seconds": 43.38,
+      "source": "parallel remainder"
+    },
+    "battle_cpu": {
+      "passed": true,
+      "seconds": 44.22,
+      "source": "parallel remainder"
+    },
+    "angel_bow": {
+      "passed": true,
+      "seconds": 1.47,
+      "source": "parallel remainder"
+    },
+    "bengal_dash": {
+      "passed": true,
+      "seconds": 5.36,
+      "source": "parallel remainder"
+    },
+    "bengal_vfx": {
+      "passed": true,
+      "seconds": 0.66,
+      "source": "parallel remainder"
+    },
+    "fufu_3d": {
+      "passed": true,
+      "seconds": 21.13,
+      "source": "parallel remainder"
+    },
+    "gigalopolis": {
+      "passed": true,
+      "seconds": 65.74,
+      "source": "parallel remainder"
+    },
+    "localization": {
+      "passed": true,
+      "seconds": 0.84,
+      "source": "parallel remainder"
+    },
+    "bengal": {
+      "passed": true,
+      "seconds": 35.05,
+      "source": "parallel remainder"
+    },
+    "item_tooltip": {
+      "passed": true,
+      "seconds": 0.96,
+      "source": "parallel remainder"
+    },
+    "save_modes": {
+      "passed": true,
+      "seconds": 0.55,
+      "source": "parallel remainder"
+    },
+    "coop_angel_bow": {
+      "passed": true,
+      "seconds": 58.4,
+      "source": "parallel remainder"
+    },
+    "coop_bengal": {
+      "passed": true,
+      "seconds": 58.43,
+      "source": "parallel remainder"
+    },
+    "meadow_meshes": {
+      "passed": true,
+      "seconds": 0.48,
+      "source": "parallel remainder"
+    },
+    "weapon_enhancement": {
+      "passed": true,
+      "seconds": 74.41,
+      "source": "parallel remainder"
+    },
+    "meadow_reorg": {
+      "passed": true,
+      "seconds": 38.93,
+      "source": "parallel remainder"
+    },
+    "farming": {
+      "passed": true,
+      "seconds": 39.3,
+      "source": "parallel remainder"
+    },
+    "soy_plant": {
+      "passed": true,
+      "seconds": 0.87,
+      "source": "parallel remainder"
+    },
+    "soy_save_spots": {
+      "passed": true,
+      "seconds": 35.58,
+      "source": "parallel remainder"
+    },
+    "coop_parrot_travel": {
+      "passed": true,
+      "seconds": 63.98,
+      "source": "parallel remainder"
+    },
+    "parrot_travel": {
+      "passed": true,
+      "seconds": 44.92,
+      "source": "parallel remainder"
+    },
+    "parrot_art": {
+      "passed": true,
+      "seconds": 0.36,
+      "source": "parallel remainder"
+    },
+    "cloud_realm_art": {
+      "passed": true,
+      "seconds": 0.47,
+      "source": "parallel remainder"
+    },
+    "cloud_heaven": {
+      "passed": true,
+      "seconds": 2.63,
+      "source": "parallel remainder"
+    },
+    "coop_soy_save_spots": {
+      "passed": true,
+      "seconds": 91.98,
+      "source": "parallel remainder"
+    },
+    "lava_king_art": {
+      "passed": true,
+      "seconds": 0.74,
+      "source": "parallel remainder"
+    },
+    "coop_farming": {
+      "passed": true,
+      "seconds": 149.39,
+      "source": "parallel remainder"
+    },
+    "celestial": {
+      "passed": true,
+      "seconds": 35.22,
+      "source": "parallel remainder"
+    },
+    "volcanic_expansion": {
+      "passed": true,
+      "seconds": 48.45,
+      "source": "parallel remainder"
+    },
+    "cloud_realm": {
+      "passed": true,
+      "seconds": 67.19,
+      "source": "parallel remainder"
+    },
+    "castle_adventure": {
+      "passed": true,
+      "seconds": 34.46,
+      "source": "parallel remainder"
+    },
+    "coop_castle": {
+      "passed": true,
+      "seconds": 58.93,
+      "source": "parallel remainder"
+    },
+    "castle_challenge": {
+      "passed": true,
+      "seconds": 35.88,
+      "source": "parallel remainder"
+    },
+    "castle_stairs": {
+      "passed": true,
+      "seconds": 99.75,
+      "source": "parallel remainder"
+    },
+    "mountain_retreat": {
+      "passed": true,
+      "seconds": 37.91,
+      "source": "parallel remainder"
+    },
+    "groatfields": {
+      "passed": true,
+      "seconds": 34.19,
+      "source": "parallel remainder"
+    },
+    "dofufu_city": {
+      "passed": true,
+      "seconds": 73.73,
+      "source": "parallel remainder"
+    },
+    "jungle": {
+      "passed": true,
+      "seconds": 42.75,
+      "source": "parallel remainder"
+    },
+    "coop_groatfields": {
+      "passed": true,
+      "seconds": 53.17,
+      "source": "parallel remainder"
+    },
+    "personal_map_transfer": {
+      "passed": true,
+      "seconds": 3.85,
+      "source": "parallel remainder"
+    },
+    "map_exploration": {
+      "passed": true,
+      "seconds": 0.46,
+      "source": "parallel remainder"
+    },
+    "waterfall": {
+      "passed": true,
+      "seconds": 34.27,
+      "source": "parallel remainder"
+    },
+    "input": {
+      "passed": true,
+      "seconds": 0.36,
+      "source": "parallel remainder"
+    },
+    "motor": {
+      "passed": true,
+      "seconds": 0.25,
+      "source": "parallel remainder"
+    },
+    "northern_biomes": {
+      "passed": true,
+      "seconds": 34.69,
+      "source": "parallel remainder"
+    },
+    "render_budget": {
+      "passed": true,
+      "seconds": 0.66,
+      "source": "parallel remainder"
+    },
+    "occlusion": {
+      "passed": true,
+      "seconds": 0.26,
+      "source": "parallel remainder"
+    },
+    "scenery_batch": {
+      "passed": true,
+      "seconds": 0.26,
+      "source": "parallel remainder"
+    },
+    "mob_rest": {
+      "passed": true,
+      "seconds": 0.75,
+      "source": "parallel remainder"
+    },
+    "map": {
+      "passed": true,
+      "seconds": 34.93,
+      "source": "parallel remainder"
+    },
+    "volcanic": {
+      "passed": true,
+      "seconds": 143.38,
+      "source": "parallel remainder"
+    },
+    "heavy_movement": {
+      "passed": true,
+      "seconds": 34.63,
+      "source": "parallel remainder"
+    },
+    "apple_trees": {
+      "passed": true,
+      "seconds": 23.69,
+      "source": "parallel remainder"
+    },
+    "grass": {
+      "passed": true,
+      "seconds": 35.53,
+      "source": "parallel remainder"
+    },
+    "jump": {
+      "passed": true,
+      "seconds": 0.64,
+      "source": "parallel remainder"
+    },
+    "world_life": {
+      "passed": true,
+      "seconds": 34.71,
+      "source": "parallel remainder"
+    },
+    "progression": {
+      "passed": true,
+      "seconds": 0.36,
+      "source": "parallel remainder"
+    },
+    "actor_collisions": {
+      "passed": true,
+      "seconds": 5.78,
+      "source": "parallel remainder"
+    },
+    "combat": {
+      "passed": true,
+      "seconds": 0.65,
+      "source": "parallel remainder"
+    },
+    "knife_combo": {
+      "passed": true,
+      "seconds": 0.25,
+      "source": "parallel remainder"
+    },
+    "melee_flow": {
+      "passed": true,
+      "seconds": 3.43,
+      "source": "parallel remainder"
+    },
+    "melee_clash": {
+      "passed": true,
+      "seconds": 0.65,
+      "source": "parallel remainder"
+    },
+    "apple_pickup": {
+      "passed": true,
+      "seconds": 35.92,
+      "source": "parallel remainder"
+    },
+    "vitals": {
+      "passed": true,
+      "seconds": 34.92,
+      "source": "parallel remainder"
+    },
+    "nori_katana": {
+      "passed": true,
+      "seconds": 2.55,
+      "source": "parallel remainder"
+    },
+    "edamame_sword": {
+      "passed": true,
+      "seconds": 1.26,
+      "source": "parallel remainder"
+    },
+    "staff_combat": {
+      "passed": true,
+      "seconds": 2.75,
+      "source": "parallel remainder"
+    },
+    "backpack": {
+      "passed": true,
+      "seconds": 0.57,
+      "source": "parallel remainder"
+    },
+    "equipment": {
+      "passed": true,
+      "seconds": 34.8,
+      "source": "parallel remainder"
+    },
+    "character_details": {
+      "passed": true,
+      "seconds": 40.62,
+      "source": "parallel remainder"
+    },
+    "loadout_shop": {
+      "passed": true,
+      "seconds": 37.45,
+      "source": "parallel remainder"
+    },
+    "inventory": {
+      "passed": true,
+      "seconds": 0.65,
+      "source": "parallel remainder"
+    },
+    "world_items": {
+      "passed": true,
+      "seconds": 37.37,
+      "source": "parallel remainder"
+    },
+    "depot_focus": {
+      "passed": true,
+      "seconds": 36.17,
+      "source": "parallel remainder"
+    },
+    "inventory_input": {
+      "passed": true,
+      "seconds": 36.07,
+      "source": "parallel remainder"
+    },
+    "currency": {
+      "passed": true,
+      "seconds": 0.85,
+      "source": "parallel remainder"
+    },
+    "seed_storage": {
+      "passed": true,
+      "seconds": 35.16,
+      "source": "parallel remainder"
+    },
+    "tofu_dungeon": {
+      "passed": true,
+      "seconds": 34.82,
+      "source": "parallel remainder"
+    },
+    "coop_storage": {
+      "passed": true,
+      "seconds": 54.84,
+      "source": "parallel remainder"
+    },
+    "tofu_dungeon_coop": {
+      "passed": true,
+      "seconds": 57.25,
+      "source": "parallel remainder"
+    },
+    "factory_presentation": {
+      "passed": true,
+      "seconds": 0.55,
+      "source": "parallel remainder"
+    },
+    "factory_surfaces": {
+      "passed": true,
+      "seconds": 0.46,
+      "source": "parallel remainder"
+    },
+    "factory_reactivity": {
+      "passed": true,
+      "seconds": 0.54,
+      "source": "parallel remainder"
+    },
+    "factory_stashes": {
+      "passed": true,
+      "seconds": 0.26,
+      "source": "parallel remainder"
+    },
+    "factory_recovery": {
+      "passed": true,
+      "seconds": 35.02,
+      "source": "parallel remainder"
+    },
+    "tofu_production_views": {
+      "passed": true,
+      "seconds": 0.27,
+      "source": "parallel remainder"
+    },
+    "tofu_sorting_lab_rules": {
+      "passed": true,
+      "seconds": 0.25,
+      "source": "parallel remainder"
+    },
+    "tofu_production_rules": {
+      "passed": true,
+      "seconds": 0.26,
+      "source": "parallel remainder"
+    },
+    "tofu_dungeon_attempt": {
+      "passed": true,
+      "seconds": 0.27,
+      "source": "parallel remainder"
+    },
+    "tofu_reward_ledger": {
+      "passed": true,
+      "seconds": 0.26,
+      "source": "parallel remainder"
+    },
+    "tofu_puzzle_protocol": {
+      "passed": true,
+      "seconds": 0.26,
+      "source": "parallel remainder"
+    },
+    "tofu_boss_coop": {
+      "passed": true,
+      "seconds": 72.4,
+      "source": "parallel remainder"
+    },
+    "dungeon_ui": {
+      "passed": true,
+      "seconds": 4.03,
+      "source": "parallel remainder"
+    },
+    "factory_soy_fighter": {
+      "passed": true,
+      "seconds": 0.65,
+      "source": "parallel remainder"
+    },
+    "dofufu": {
+      "passed": true,
+      "seconds": 0.74,
+      "source": "parallel remainder"
+    },
+    "dungeon_puzzle_runtime": {
+      "passed": true,
+      "seconds": 34.61,
+      "source": "parallel remainder"
+    },
+    "factory_handling": {
+      "passed": true,
+      "seconds": 62.18,
+      "source": "parallel remainder"
+    },
+    "gun_recoil": {
+      "passed": true,
+      "seconds": 0.27,
+      "source": "parallel remainder"
+    },
+    "first_person": {
+      "passed": true,
+      "seconds": 34.09,
+      "source": "parallel remainder"
+    },
+    "tofu_dungeon_active": {
+      "passed": true,
+      "seconds": 48.96,
+      "source": "parallel remainder"
+    },
+    "soy_gun": {
+      "passed": true,
+      "seconds": 4.76,
+      "source": "parallel remainder"
+    },
+    "factory_route": {
+      "passed": true,
+      "seconds": 189.23,
+      "source": "parallel remainder"
+    },
+    "soy_flight": {
+      "passed": true,
+      "seconds": 34.95,
+      "source": "parallel remainder"
+    },
+    "tofu_dungeon_active_coop": {
+      "passed": true,
+      "seconds": 75.7,
+      "source": "parallel remainder"
+    },
+    "soy_reload": {
+      "passed": true,
+      "seconds": 34.81,
+      "source": "parallel remainder"
+    },
+    "right_hand": {
+      "passed": true,
+      "seconds": 1.75,
+      "source": "parallel remainder"
+    },
+    "sword": {
+      "passed": true,
+      "seconds": 1.56,
+      "source": "parallel remainder"
+    },
+    "gun_run_pose": {
+      "passed": true,
+      "seconds": 35.18,
+      "source": "parallel remainder"
+    },
+    "sotjet": {
+      "passed": true,
+      "seconds": 55.46,
+      "source": "parallel remainder"
+    },
+    "sandbox": {
+      "passed": true,
+      "seconds": 51.2,
+      "source": "parallel remainder"
+    },
+    "armored_shell": {
+      "passed": true,
+      "seconds": 34.99,
+      "source": "parallel remainder"
+    },
+    "sotjet_coop": {
+      "passed": true,
+      "seconds": 60.37,
+      "source": "parallel remainder"
+    },
+    "wild_bee": {
+      "passed": true,
+      "seconds": 40.11,
+      "source": "parallel remainder"
+    },
+    "snail": {
+      "passed": true,
+      "seconds": 37.29,
+      "source": "parallel remainder"
+    },
+    "farm_combat": {
+      "passed": true,
+      "seconds": 49.29,
+      "source": "parallel remainder"
+    },
+    "coop_wild_bee": {
+      "passed": true,
+      "seconds": 56.38,
+      "source": "parallel remainder"
+    },
+    "world_contours": {
+      "passed": true,
+      "seconds": 39.96,
+      "source": "parallel remainder"
+    },
+    "sky": {
+      "passed": true,
+      "seconds": 0.26,
+      "source": "parallel remainder"
+    },
+    "ocean": {
+      "passed": true,
+      "seconds": 47.9,
+      "source": "parallel remainder"
+    },
+    "river": {
+      "passed": true,
+      "seconds": 31.06,
+      "source": "parallel remainder"
+    },
+    "coop_ocean": {
+      "passed": true,
+      "seconds": 56.34,
+      "source": "parallel remainder"
+    },
+    "session_transport": {
+      "passed": true,
+      "seconds": 4.22,
+      "source": "parallel remainder"
+    },
+    "weather_exposure": {
+      "passed": true,
+      "seconds": 34.86,
+      "source": "parallel remainder"
+    },
+    "weather": {
+      "passed": true,
+      "seconds": 52.69,
+      "source": "parallel remainder"
+    },
+    "coop_protocol": {
+      "passed": true,
+      "seconds": 0.36,
+      "source": "parallel remainder"
+    },
+    "snapshot_channel": {
+      "passed": true,
+      "seconds": 0.37,
+      "source": "parallel remainder"
+    },
+    "pod_escape": {
+      "passed": true,
+      "seconds": 44.49,
+      "source": "parallel remainder"
+    },
+    "arena": {
+      "passed": true,
+      "seconds": 4.57,
+      "source": "parallel remainder"
+    },
+    "solo_arena": {
+      "passed": true,
+      "seconds": 36.54,
+      "source": "parallel remainder"
+    },
+    "oracle": {
+      "passed": true,
+      "seconds": 73.19,
+      "source": "parallel remainder"
+    },
+    "public_multiplayer": {
+      "passed": true,
+      "seconds": 56.13,
+      "source": "parallel remainder"
+    },
+    "coop_gameplay": {
+      "passed": true,
+      "seconds": 67.96,
+      "source": "parallel remainder"
+    },
+    "chat": {
+      "passed": true,
+      "seconds": 35.08,
+      "source": "parallel remainder"
+    },
+    "update_log": {
+      "passed": true,
+      "seconds": 4.42,
+      "source": "parallel remainder"
+    },
+    "landing": {
+      "passed": true,
+      "seconds": 4.61,
+      "source": "parallel remainder"
+    },
+    "coop_response": {
+      "passed": true,
+      "seconds": 57.84,
+      "source": "parallel remainder"
+    },
+    "lobby": {
+      "passed": true,
+      "seconds": 4.73,
+      "source": "parallel remainder"
+    },
+    "coop_opening": {
+      "passed": true,
+      "seconds": 63.39,
+      "source": "parallel remainder"
+    },
+    "coop_scene": {
+      "passed": true,
+      "seconds": 52.85,
+      "source": "parallel remainder"
+    },
+    "scene": {
+      "passed": true,
+      "seconds": 36.69,
+      "source": "parallel remainder"
+    },
+    "frontend": {
+      "passed": true,
+      "seconds": 68.27,
+      "source": "parallel remainder"
+    },
+    "coop_launch": {
+      "passed": true,
+      "seconds": 67.33,
+      "source": "serial lifecycle check"
+    }
+  }
+}

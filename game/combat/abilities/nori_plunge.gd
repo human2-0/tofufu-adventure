@@ -63,7 +63,7 @@ func step(combat: PlayerCombat, delta: float) -> void:
 		if Vector2(offset.x, offset.z).length() > combat.tuning.nori_plunge_radius or absf(offset.y) > 1.5: continue
 		if not combat._unobstructed(impact_at, target): continue
 		var impulse := Vector3(offset.x, 0, offset.z).normalized() * 7.0 + Vector3.UP * 3.0
-		if not target.damage(damage, impulse, Damageable.HitKind.MELEE): continue
+		if not target.receive_attack(damage, impulse, Damageable.HitKind.MELEE, Vector3.INF, combat.owner_health): continue
 		combat.vitals.confirmed_hit(false)
 		combat.combo.confirm_hit()
 		combat.struck.emit(1.0, 1)

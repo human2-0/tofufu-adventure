@@ -1,0 +1,40 @@
+{
+	"adaptive_resolution": true,
+	"measured_frames_per_profile": 360,
+	"renderer": "macOS",
+	"results": [
+		{
+			"cpu_seats": 19,
+			"draw_calls": 181.0,
+			"elapsed_wall_seconds": 6.003706,
+			"engine_fps": 108.0,
+			"human_seats": 1,
+			"json_upload_bytes_per_simulated_second": 0.0,
+			"minimum_alive": 20,
+			"render_scale": 0.899999976158142,
+			"rendered_objects": 637.0,
+			"simulation_and_json_max_ms": 11.969,
+			"simulation_and_json_p95_ms": 7.502
+		},
+		{
+			"cpu_seats": 0,
+			"draw_calls": 162.0,
+			"elapsed_wall_seconds": 6.003092,
+			"engine_fps": 109.0,
+			"human_seats": 20,
+			"json_upload_bytes_per_simulated_second": 3017614.83333333,
+			"minimum_alive": 20,
+			"render_scale": 0.850000023841858,
+			"rendered_objects": 618.0,
+			"simulation_and_json_max_ms": 12.425,
+			"simulation_and_json_p95_ms": 9.051
+		}
+	],
+	"scope": "Production render budget, one shared IPC serialization per broadcast and one local map; nineteen recipients are serialized fakes. Actual encrypted twenty-peer traffic is a separate sidecar test. No separate-device or WAN FPS guarantee.",
+	"target_fps": 120,
+	"viewport": [
+		2560,
+		1440
+	],
+	"warmup_frames_per_profile": 120
+}

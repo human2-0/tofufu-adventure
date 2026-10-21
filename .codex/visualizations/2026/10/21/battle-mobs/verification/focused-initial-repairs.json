@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "scope": "Architecture, import, Python tooling checks and 14 selected Godot scenarios after JSON credit validation and checkpoint fixture repairs. Full suite results are retained separately.",
+  "architecture_scripts": 731,
+  "seconds": 350.7,
+  "scenarios": [
+    "battle_migration",
+    "battle_royale",
+    "battle_combat",
+    "battle_radar",
+    "battle_mobs",
+    "battle_loop",
+    "battle_squad",
+    "battle_rematch",
+    "battle_inventory",
+    "battle_cpu",
+    "battle_game",
+    "localization",
+    "update_log",
+    "scene"
+  ],
+  "logs": ".codex/visualizations/2026/10/21/battle-mobs/verification/focused"
+}

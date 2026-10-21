@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "scope": "Three OS processes and real encrypted Holepunch over an isolated loopback DHT; abrupt host kill, paused recovery, new authority, twenty actors and CPU replacement. Not WAN/NAT acceptance.",
+  "before": {
+    "p0": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 17,
+      "host": "d89edd7609f71e587da8e9920fe42e4d5087c1e4c2368d94e866cea819305fe0",
+      "key": "d89edd7609f71e587da8e9920fe42e4d5087c1e4c2368d94e866cea819305fe0",
+      "phase": "playing",
+      "term": 0,
+      "time": 0.233333333333333
+    },
+    "p1": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 17,
+      "host": "d89edd7609f71e587da8e9920fe42e4d5087c1e4c2368d94e866cea819305fe0",
+      "key": "25f8ba2cf46ec17d3d2bcef13e37f8235eca4f8e708b7e6d72a35c5b24d66196",
+      "phase": "playing",
+      "term": 0,
+      "time": 0.2
+    },
+    "p2": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 17,
+      "host": "d89edd7609f71e587da8e9920fe42e4d5087c1e4c2368d94e866cea819305fe0",
+      "key": "e7f4abe86838d9d59994b6e5ff585e700c5bf324350df4740fbfd62f818fe563",
+      "phase": "playing",
+      "term": 0,
+      "time": 0.15
+    }
+  },
+  "after": {
+    "p1": {
+      "bodies": 20,
+      "checkpoint": 4,
+      "cpus": 18,
+      "host": "25f8ba2cf46ec17d3d2bcef13e37f8235eca4f8e708b7e6d72a35c5b24d66196",
+      "key": "25f8ba2cf46ec17d3d2bcef13e37f8235eca4f8e708b7e6d72a35c5b24d66196",
+      "phase": "playing",
+      "term": 1,
+      "time": 0.166666666666667
+    },
+    "p2": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 18,
+      "host": "25f8ba2cf46ec17d3d2bcef13e37f8235eca4f8e708b7e6d72a35c5b24d66196",
+      "key": "e7f4abe86838d9d59994b6e5ff585e700c5bf324350df4740fbfd62f818fe563",
+      "phase": "playing",
+      "term": 1,
+      "time": 0.05
+    }
+  },
+  "observed_paused": [
+    "p1",
+    "p2"
+  ],
+  "logs": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/20/battle-migration/real-peer-logs"
+}

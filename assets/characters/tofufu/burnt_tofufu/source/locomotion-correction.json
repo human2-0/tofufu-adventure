@@ -1,0 +1,8 @@
+{
+  "prompt": "Use case: identity-preserve. Input1 is EDIT TARGET atlas, input2 is original CHARACTER IDENTITY/ACCESSORY reference. Edit ONLY described errors. Preserve the exact character identity, illustration style, all other poses, atlas column and row counts, full body bounds, size and spacing. Real transparent alpha no matte. Fix TOP TWO rows ONLY. All N and NW sprites must hold torch staff on SCREEN RIGHT and have charcoal band knot SCREEN LEFT, exactly matching original reference2 back view. Keep NW turned to screen LEFT/away, blank faceless backs. Do not mirror entire NW bodies into NE. Bottom3 rows keep torch SCREEN LEFT, band knot SCREEN RIGHT. Same 25 sprites and grid. All outlines clean dark green/black, no colored fringe artifacts. All sprites completely in frame. Do not add labels or effects.",
+  "references": [
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/ember_staff/locomotion.png",
+    "/Users/mat-dwor/Documents/tofufu-adventure/assets/characters/tofufu/ember_staff/source/walk-original.png"
+  ],
+  "source": "/Users/mat-dwor/.codex/generated_images/01a153cd-faf0-75f1-b429-cde7636c6570/exec-2ed165c8-a85e-4cc3-9403-29037a3d7efb.png"
+}

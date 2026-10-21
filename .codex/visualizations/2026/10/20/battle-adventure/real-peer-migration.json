@@ -1,0 +1,63 @@
+{
+  "passed": true,
+  "scope": "Three OS processes and real encrypted Holepunch over an isolated loopback DHT; abrupt host kill, paused recovery, new authority, twenty actors and CPU replacement. Not WAN/NAT acceptance.",
+  "before": {
+    "p0": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 17,
+      "host": "94721db57ae1333951f3be4d767e3a8a3f3cc011f0eaff79b29f36521a526ba8",
+      "key": "94721db57ae1333951f3be4d767e3a8a3f3cc011f0eaff79b29f36521a526ba8",
+      "phase": "playing",
+      "term": 0,
+      "time": 0.0833333333333333
+    },
+    "p1": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 17,
+      "host": "94721db57ae1333951f3be4d767e3a8a3f3cc011f0eaff79b29f36521a526ba8",
+      "key": "57df7f73900e9b91336aff66a7d4298991b502f1276f858132e5001063833fa9",
+      "phase": "playing",
+      "term": 0,
+      "time": 0.1
+    },
+    "p2": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 17,
+      "host": "94721db57ae1333951f3be4d767e3a8a3f3cc011f0eaff79b29f36521a526ba8",
+      "key": "743c9895679ec5f089d82557e4183af0bd2a966fbb8305cf19c8fce5c26b2cfe",
+      "phase": "playing",
+      "term": 0,
+      "time": 0.05
+    }
+  },
+  "after": {
+    "p1": {
+      "bodies": 20,
+      "checkpoint": 4,
+      "cpus": 18,
+      "host": "57df7f73900e9b91336aff66a7d4298991b502f1276f858132e5001063833fa9",
+      "key": "57df7f73900e9b91336aff66a7d4298991b502f1276f858132e5001063833fa9",
+      "phase": "playing",
+      "term": 1,
+      "time": 0.133333333333333
+    },
+    "p2": {
+      "bodies": 20,
+      "checkpoint": 2,
+      "cpus": 18,
+      "host": "57df7f73900e9b91336aff66a7d4298991b502f1276f858132e5001063833fa9",
+      "key": "743c9895679ec5f089d82557e4183af0bd2a966fbb8305cf19c8fce5c26b2cfe",
+      "phase": "playing",
+      "term": 1,
+      "time": 0.05
+    }
+  },
+  "observed_paused": [
+    "p1",
+    "p2"
+  ],
+  "logs": "/var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-battle-peers-vqnutfq6"
+}

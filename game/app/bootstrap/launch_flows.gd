@@ -3,6 +3,9 @@ extends RefCounted
 ## Explicitly wires launch flows; lifecycle and mutable state stay on the launch node.
 
 static func connect_flows(app: Node) -> void:
+	app.battle.app = app
+	app.battle.transport = app.battle_transport
+	app.add_child(app.battle)
 	app.store.mode = "solo"
 	app.coop_store.mode = "coop"
 	app.coop_store.directory = app.store.directory

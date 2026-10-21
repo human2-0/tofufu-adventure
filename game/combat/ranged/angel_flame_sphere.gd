@@ -18,7 +18,7 @@ static func pulse(arrow: AngelArrow, at: Vector3, struck: Damageable) -> void:
 		var ray := PhysicsRayQueryParameters3D.create(start, target.global_position, 1, excludes)
 		var cover := arrow.get_world_3d().direct_space_state.intersect_ray(ray)
 		if not cover.is_empty() and cover.collider != target.body: continue
-		if target.damage(arrow.body_damage, offset.normalized() * 4.0, Damageable.HitKind.SOY, target.global_position):
+		if target.receive_attack(arrow.body_damage, offset.normalized() * 4.0, Damageable.HitKind.SOY, target.global_position, arrow.bow.combat.owner_health):
 			arrow.credit(target, target.global_position, arrow.body_damage, false)
 
 static func spawn(parent: Node, at: Vector3) -> void:

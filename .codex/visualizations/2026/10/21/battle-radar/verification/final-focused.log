@@ -1,0 +1,21 @@
+Quick verification: architecture, import, 4 Godot tests
+Architecture check: PASS (715 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.021s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.008s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-o3q2i9cf
+import: PASS (6.0s)
+battle_game: PASS (41.9s)
+localization: PASS (0.8s)
+update_log: PASS (4.1s)
+scene: PASS (36.0s)
+Quick checks passed in 105.3s (4 Godot tests). Visual/NAT checks remain separate.
+Slowest stages: battle_game 41.9s, scene 36.0s, import 6.0s
+Full suite was not run.

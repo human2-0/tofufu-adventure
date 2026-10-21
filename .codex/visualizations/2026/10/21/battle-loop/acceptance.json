@@ -1,0 +1,109 @@
+{
+  "feature": "Battle Royale core loop audit and implementation",
+  "protocol": 8,
+  "release_batch": 16,
+  "implemented": [
+    "Seeded dry finale clearings, nested moving safe zones, next-circle previews and rotation guidance",
+    "Escalating closed-circle damage prevents unlimited maximum-healing stalemates",
+    "Equal armour recovery: cap 50, eight quiet seconds, five points per second",
+    "Actual-damage feedback and authoritative loot/damage/survival goals",
+    "Round recap, projected cosmetic level progress, atomic isolated career with epoch deduplication and backup recovery",
+    "Private G route / H danger markers: 180m range, one per second, eight-second lifetime, at most two per view",
+    "Ready/cancel-ready rematches retaining connected friends/options with fresh epoch, world, loot and deployment",
+    "Bounded ten-Hz CPU cover sensing, no firing into cover, bounded target perception and duo regrouping"
+  ],
+  "verification": {
+    "full": {
+      "passed": 157,
+      "expected": 157,
+      "seconds": 1400.37,
+      "processes": 4,
+      "coop_launch_isolated": true
+    },
+    "followups": "Final controls, escalating storm, projected progress and affected UI/career callers passed focused quick/scoped followups",
+    "architecture": "724 scripts passed; all runtime scripts <=200 lines",
+    "visuals": {
+      "screenshots": 18,
+      "locales": [
+        "en",
+        "pl"
+      ],
+      "sizes": [
+        "1280x720",
+        "640x360"
+      ],
+      "pages": [
+        "lobby",
+        "goals",
+        "zone forecast",
+        "results",
+        "replayed plant selection"
+      ],
+      "native_replay_executed": true
+    }
+  },
+  "performance": {
+    "7": {
+      "cpus": 7,
+      "difficulty": "normal",
+      "draw_calls": 203.0,
+      "engine_fps": 119.0,
+      "measured_ticks": 360,
+      "minimum_alive": 8,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "simulation_max_ms": 7.178,
+      "simulation_p50_ms": 1.782,
+      "simulation_p95_ms": 6.403,
+      "survivors": 8,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    },
+    "50": {
+      "cpus": 50,
+      "difficulty": "normal",
+      "draw_calls": 228.0,
+      "engine_fps": 84.0,
+      "measured_ticks": 360,
+      "minimum_alive": 51,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "simulation_max_ms": 14.05,
+      "simulation_p50_ms": 5.897,
+      "simulation_p95_ms": 9.535,
+      "survivors": 51,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    }
+  },
+  "network_acceptance": {
+    "transport": "Real encrypted Holepunch, isolated loopback DHT",
+    "godot_processes": 3,
+    "actors": 6,
+    "cpu_difficulty": "hard",
+    "duos": true,
+    "abrupt_host_kill": true,
+    "both_survivors_observed_pause": true,
+    "new_host_and_retained_checkpoint": true,
+    "scope": "Local encrypted peers; no separate-device/WAN/NAT or twenty-human load acceptance claimed"
+  },
+  "remaining": [
+    "Downed/revive or plant-rescue rules for Duos",
+    "Contextual item callouts, acknowledgement and controller bindings",
+    "More contested objectives and repeated human weapon/pacing/navigation playtests",
+    "Trusted ranked ladder, anti-cheat and production network/device/load acceptance"
+  ],
+  "validation_notes": [
+    "Initial new fixtures were corrected for the expanded per-actor ledger, first deployment snapshot and numeric JSON quantization. Final registered suite and scoped followups passed.",
+    "Native previews stage later match values; rule and independent-world scenarios verify authoritative outcomes and recovery.",
+    "Performance samples retain a constant invulnerable actor population for eight simulated seconds and use adaptive 3D resolution; observed FPS is not a locked target."
+  ]
+}

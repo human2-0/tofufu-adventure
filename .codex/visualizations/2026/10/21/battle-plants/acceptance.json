@@ -1,0 +1,70 @@
+{
+  "battle_protocol": 7,
+  "full_suite": {
+    "passed": true,
+    "registered_scenarios": 150,
+    "record": "full-verification.json",
+    "method": "Unmodified verifier main --full selection and gates; four independent test processes; coop_launch isolated after other scenarios."
+  },
+  "followups": {
+    "passed": true,
+    "scope": "Final focused battle deployment/inventory, CPU/game, localization/update journal and scene checks after battle fixes; final native compact HUD geometry check.",
+    "logs": "verification/"
+  },
+  "real_peers": {
+    "passed": true,
+    "actors": 6,
+    "humans": 3,
+    "requested_cpus": 3,
+    "difficulty": "hard",
+    "duos": true,
+    "shared_plant": true,
+    "retained_plants_after_host_kill": true,
+    "observed_paused": [
+      "p1",
+      "p2"
+    ],
+    "report": "real-peers/result.json",
+    "scope": "Real Godot/Node processes over an isolated loopback Holepunch DHT; not WAN/NAT acceptance."
+  },
+  "layout_seed_check": {
+    "seeds_per_run": 12,
+    "minimum_sites_observed": 80,
+    "maximum_supported_actors": 70
+  },
+  "visuals": {
+    "locales": [
+      "en",
+      "pl"
+    ],
+    "resolutions": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "screens": [
+      "choose-1280x720-en.png",
+      "choose-1280x720-pl.png",
+      "choose-640x360-en.png",
+      "choose-640x360-pl.png",
+      "duos-game-compact-en.png",
+      "duos-game-compact-pl.png",
+      "duos-game-en.png",
+      "duos-game-pl.png",
+      "duos-lobby-compact-en.png",
+      "duos-lobby-compact-pl.png",
+      "duos-lobby-en.png",
+      "duos-lobby-pl.png",
+      "emergence-pl.png",
+      "selection-exit-en.png",
+      "selection-exit-pl.png"
+    ],
+    "checked": "Selector, Duos lobby, emergence, exit overlay and compact partner/radar layout."
+  },
+  "performance_design": "Plant visuals stream near the camera and add no world collisions. Static sites travel on keyframes/checkpoints. No new FPS or WAN claim."
+}

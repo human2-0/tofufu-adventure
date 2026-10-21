@@ -1,0 +1,763 @@
+{
+  "passed": true,
+  "scope": "Unmodified verifier main --full selection and gates; four independent test processes; coop_launch isolated after other scenarios.",
+  "registered_scenarios": 150,
+  "seconds": 1299.6000741659955,
+  "records": {
+    "import": {
+      "passed": true,
+      "seconds": 6.606623874999059,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/import.log"
+    },
+    "battle_migration": {
+      "passed": true,
+      "seconds": 0.8854174169973703,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/battle_migration.log"
+    },
+    "tofufu_alignment": {
+      "passed": true,
+      "seconds": 2.9568096669972874,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofufu_alignment.log"
+    },
+    "battle_combat": {
+      "passed": true,
+      "seconds": 4.454248500005633,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/battle_combat.log"
+    },
+    "battle_royale": {
+      "passed": true,
+      "seconds": 5.77260587499768,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/battle_royale.log"
+    },
+    "battle_inventory": {
+      "passed": true,
+      "seconds": 33.190969791998214,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/battle_inventory.log"
+    },
+    "battle_deployment": {
+      "passed": true,
+      "seconds": 52.89955487500265,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/battle_deployment.log"
+    },
+    "battle_game": {
+      "passed": true,
+      "seconds": 51.60028641700046,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/battle_game.log"
+    },
+    "battle_cpu": {
+      "passed": true,
+      "seconds": 53.03048720800143,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/battle_cpu.log"
+    },
+    "unarmed_art": {
+      "passed": true,
+      "seconds": 1.4817259589981404,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/unarmed_art.log"
+    },
+    "angel_bow": {
+      "passed": true,
+      "seconds": 1.4572677079995628,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/angel_bow.log"
+    },
+    "fufu_3d": {
+      "passed": true,
+      "seconds": 20.965611500003433,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/fufu_3d.log"
+    },
+    "bengal_dash": {
+      "passed": true,
+      "seconds": 5.34573116699903,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/bengal_dash.log"
+    },
+    "bengal_vfx": {
+      "passed": true,
+      "seconds": 0.6535091670011752,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/bengal_vfx.log"
+    },
+    "skin_test": {
+      "passed": true,
+      "seconds": 35.402752292000514,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/skin_test.log"
+    },
+    "gigalopolis": {
+      "passed": true,
+      "seconds": 67.1209104590016,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/gigalopolis.log"
+    },
+    "localization": {
+      "passed": true,
+      "seconds": 0.8527366669950425,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/localization.log"
+    },
+    "coop_angel_bow": {
+      "passed": true,
+      "seconds": 57.26074604099995,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_angel_bow.log"
+    },
+    "item_tooltip": {
+      "passed": true,
+      "seconds": 1.0479734170003212,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/item_tooltip.log"
+    },
+    "save_modes": {
+      "passed": true,
+      "seconds": 0.560322958001052,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/save_modes.log"
+    },
+    "bengal": {
+      "passed": true,
+      "seconds": 35.00961062499846,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/bengal.log"
+    },
+    "coop_bengal": {
+      "passed": true,
+      "seconds": 56.963543707999634,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_bengal.log"
+    },
+    "meadow_meshes": {
+      "passed": true,
+      "seconds": 0.4554994580030325,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/meadow_meshes.log"
+    },
+    "meadow_reorg": {
+      "passed": true,
+      "seconds": 38.5923232080022,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/meadow_reorg.log"
+    },
+    "weapon_enhancement": {
+      "passed": true,
+      "seconds": 72.98712704199716,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/weapon_enhancement.log"
+    },
+    "farming": {
+      "passed": true,
+      "seconds": 39.40561824999895,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/farming.log"
+    },
+    "soy_plant": {
+      "passed": true,
+      "seconds": 0.8558533749965136,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/soy_plant.log"
+    },
+    "soy_save_spots": {
+      "passed": true,
+      "seconds": 35.50800595900364,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/soy_save_spots.log"
+    },
+    "parrot_travel": {
+      "passed": true,
+      "seconds": 46.6446779580001,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/parrot_travel.log"
+    },
+    "parrot_art": {
+      "passed": true,
+      "seconds": 0.3800475420066505,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/parrot_art.log"
+    },
+    "coop_parrot_travel": {
+      "passed": true,
+      "seconds": 66.16346508300194,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_parrot_travel.log"
+    },
+    "cloud_realm_art": {
+      "passed": true,
+      "seconds": 0.4763168330027838,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/cloud_realm_art.log"
+    },
+    "cloud_heaven": {
+      "passed": true,
+      "seconds": 2.5499521250021644,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/cloud_heaven.log"
+    },
+    "coop_soy_save_spots": {
+      "passed": true,
+      "seconds": 94.69263724999473,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_soy_save_spots.log"
+    },
+    "lava_king_art": {
+      "passed": true,
+      "seconds": 0.7703037090032012,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/lava_king_art.log"
+    },
+    "coop_farming": {
+      "passed": true,
+      "seconds": 162.2024067500024,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_farming.log"
+    },
+    "celestial": {
+      "passed": true,
+      "seconds": 35.883852124999976,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/celestial.log"
+    },
+    "cloud_realm": {
+      "passed": true,
+      "seconds": 68.94066245900467,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/cloud_realm.log"
+    },
+    "volcanic_expansion": {
+      "passed": true,
+      "seconds": 48.428217166998365,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/volcanic_expansion.log"
+    },
+    "castle_adventure": {
+      "passed": true,
+      "seconds": 35.001606042002095,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/castle_adventure.log"
+    },
+    "coop_castle": {
+      "passed": true,
+      "seconds": 59.91425254099886,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_castle.log"
+    },
+    "castle_challenge": {
+      "passed": true,
+      "seconds": 36.754463958001,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/castle_challenge.log"
+    },
+    "castle_stairs": {
+      "passed": true,
+      "seconds": 99.74453358400206,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/castle_stairs.log"
+    },
+    "mountain_retreat": {
+      "passed": true,
+      "seconds": 38.393001000004006,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/mountain_retreat.log"
+    },
+    "groatfields": {
+      "passed": true,
+      "seconds": 35.68261183399591,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/groatfields.log"
+    },
+    "dofufu_city": {
+      "passed": true,
+      "seconds": 74.32351637500688,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/dofufu_city.log"
+    },
+    "coop_groatfields": {
+      "passed": true,
+      "seconds": 56.06899291599984,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_groatfields.log"
+    },
+    "jungle": {
+      "passed": true,
+      "seconds": 45.5297840839994,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/jungle.log"
+    },
+    "waterfall": {
+      "passed": true,
+      "seconds": 37.1339186250043,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/waterfall.log"
+    },
+    "map_exploration": {
+      "passed": true,
+      "seconds": 0.574102792001213,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/map_exploration.log"
+    },
+    "personal_map_transfer": {
+      "passed": true,
+      "seconds": 4.5364700829959475,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/personal_map_transfer.log"
+    },
+    "input": {
+      "passed": true,
+      "seconds": 0.3778244999994058,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/input.log"
+    },
+    "motor": {
+      "passed": true,
+      "seconds": 0.3712721249976312,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/motor.log"
+    },
+    "volcanic": {
+      "passed": true,
+      "seconds": 144.14968308300013,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/volcanic.log"
+    },
+    "render_budget": {
+      "passed": true,
+      "seconds": 0.8797441669958062,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/render_budget.log"
+    },
+    "occlusion": {
+      "passed": true,
+      "seconds": 0.3783204580031452,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/occlusion.log"
+    },
+    "northern_biomes": {
+      "passed": true,
+      "seconds": 40.137910915997054,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/northern_biomes.log"
+    },
+    "scenery_batch": {
+      "passed": true,
+      "seconds": 0.39096983300260035,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/scenery_batch.log"
+    },
+    "mob_rest": {
+      "passed": true,
+      "seconds": 0.7769094579998637,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/mob_rest.log"
+    },
+    "map": {
+      "passed": true,
+      "seconds": 43.902366792004614,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/map.log"
+    },
+    "heavy_movement": {
+      "passed": true,
+      "seconds": 43.636649291998765,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/heavy_movement.log"
+    },
+    "world_life": {
+      "passed": true,
+      "seconds": 43.14106395900308,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/world_life.log"
+    },
+    "grass": {
+      "passed": true,
+      "seconds": 44.14765358399745,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/grass.log"
+    },
+    "jump": {
+      "passed": true,
+      "seconds": 0.6548673330034944,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/jump.log"
+    },
+    "apple_trees": {
+      "passed": true,
+      "seconds": 27.51489712500188,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/apple_trees.log"
+    },
+    "progression": {
+      "passed": true,
+      "seconds": 0.3626513330018497,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/progression.log"
+    },
+    "actor_collisions": {
+      "passed": true,
+      "seconds": 5.795207458002551,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/actor_collisions.log"
+    },
+    "combat": {
+      "passed": true,
+      "seconds": 0.664311667002039,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/combat.log"
+    },
+    "knife_combo": {
+      "passed": true,
+      "seconds": 0.25993116699828533,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/knife_combo.log"
+    },
+    "melee_flow": {
+      "passed": true,
+      "seconds": 3.4438581249996787,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/melee_flow.log"
+    },
+    "melee_clash": {
+      "passed": true,
+      "seconds": 0.870575082997675,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/melee_clash.log"
+    },
+    "apple_pickup": {
+      "passed": true,
+      "seconds": 41.32999495900003,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/apple_pickup.log"
+    },
+    "vitals": {
+      "passed": true,
+      "seconds": 41.70250408299762,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/vitals.log"
+    },
+    "nori_katana": {
+      "passed": true,
+      "seconds": 2.763764541996352,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/nori_katana.log"
+    },
+    "edamame_sword": {
+      "passed": true,
+      "seconds": 1.2574787919947994,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/edamame_sword.log"
+    },
+    "staff_combat": {
+      "passed": true,
+      "seconds": 2.750144082994666,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/staff_combat.log"
+    },
+    "backpack": {
+      "passed": true,
+      "seconds": 0.5663362089981092,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/backpack.log"
+    },
+    "character_details": {
+      "passed": true,
+      "seconds": 47.474890625002445,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/character_details.log"
+    },
+    "equipment": {
+      "passed": true,
+      "seconds": 41.33090666699718,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/equipment.log"
+    },
+    "loadout_shop": {
+      "passed": true,
+      "seconds": 41.35311450000154,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/loadout_shop.log"
+    },
+    "inventory": {
+      "passed": true,
+      "seconds": 0.5715149999959976,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/inventory.log"
+    },
+    "depot_focus": {
+      "passed": true,
+      "seconds": 35.408665374998236,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/depot_focus.log"
+    },
+    "world_items": {
+      "passed": true,
+      "seconds": 36.826311500000884,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/world_items.log"
+    },
+    "currency": {
+      "passed": true,
+      "seconds": 0.9743806660044356,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/currency.log"
+    },
+    "inventory_input": {
+      "passed": true,
+      "seconds": 35.80214425000304,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/inventory_input.log"
+    },
+    "seed_storage": {
+      "passed": true,
+      "seconds": 35.750899083999684,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/seed_storage.log"
+    },
+    "tofu_dungeon": {
+      "passed": true,
+      "seconds": 35.72992199999862,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_dungeon.log"
+    },
+    "coop_storage": {
+      "passed": true,
+      "seconds": 55.899414291998255,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_storage.log"
+    },
+    "tofu_dungeon_coop": {
+      "passed": true,
+      "seconds": 58.464753542000835,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_dungeon_coop.log"
+    },
+    "factory_presentation": {
+      "passed": true,
+      "seconds": 0.4724205830061692,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_presentation.log"
+    },
+    "factory_surfaces": {
+      "passed": true,
+      "seconds": 0.46158974999707425,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_surfaces.log"
+    },
+    "factory_reactivity": {
+      "passed": true,
+      "seconds": 0.4648428750006133,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_reactivity.log"
+    },
+    "factory_stashes": {
+      "passed": true,
+      "seconds": 0.25492237500293413,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_stashes.log"
+    },
+    "factory_recovery": {
+      "passed": true,
+      "seconds": 35.19529941699875,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_recovery.log"
+    },
+    "tofu_production_views": {
+      "passed": true,
+      "seconds": 0.2657212080011959,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_production_views.log"
+    },
+    "tofu_sorting_lab_rules": {
+      "passed": true,
+      "seconds": 0.2572915830023703,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_sorting_lab_rules.log"
+    },
+    "tofu_production_rules": {
+      "passed": true,
+      "seconds": 0.2633962089967099,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_production_rules.log"
+    },
+    "tofu_dungeon_attempt": {
+      "passed": true,
+      "seconds": 0.2614102920051664,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_dungeon_attempt.log"
+    },
+    "tofu_reward_ledger": {
+      "passed": true,
+      "seconds": 0.252509916004783,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_reward_ledger.log"
+    },
+    "tofu_puzzle_protocol": {
+      "passed": true,
+      "seconds": 0.2621254580008099,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_puzzle_protocol.log"
+    },
+    "tofu_boss_coop": {
+      "passed": true,
+      "seconds": 73.19084387500334,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_boss_coop.log"
+    },
+    "dungeon_ui": {
+      "passed": true,
+      "seconds": 3.8781010000020615,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/dungeon_ui.log"
+    },
+    "factory_soy_fighter": {
+      "passed": true,
+      "seconds": 0.6556126669966034,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_soy_fighter.log"
+    },
+    "dofufu": {
+      "passed": true,
+      "seconds": 0.7530521660009981,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/dofufu.log"
+    },
+    "dungeon_puzzle_runtime": {
+      "passed": true,
+      "seconds": 34.548257499998726,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/dungeon_puzzle_runtime.log"
+    },
+    "factory_handling": {
+      "passed": true,
+      "seconds": 62.07540337499813,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_handling.log"
+    },
+    "gun_recoil": {
+      "passed": true,
+      "seconds": 0.26295316699543037,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/gun_recoil.log"
+    },
+    "tofu_dungeon_active": {
+      "passed": true,
+      "seconds": 50.08614120800485,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_dungeon_active.log"
+    },
+    "first_person": {
+      "passed": true,
+      "seconds": 35.42387541700009,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/first_person.log"
+    },
+    "soy_gun": {
+      "passed": true,
+      "seconds": 4.9442827079983545,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/soy_gun.log"
+    },
+    "factory_route": {
+      "passed": true,
+      "seconds": 189.2205047910029,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/factory_route.log"
+    },
+    "soy_flight": {
+      "passed": true,
+      "seconds": 41.71415691600123,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/soy_flight.log"
+    },
+    "tofu_dungeon_active_coop": {
+      "passed": true,
+      "seconds": 85.74468999999954,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/tofu_dungeon_active_coop.log"
+    },
+    "soy_reload": {
+      "passed": true,
+      "seconds": 43.04390875000536,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/soy_reload.log"
+    },
+    "right_hand": {
+      "passed": true,
+      "seconds": 2.1656496669966145,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/right_hand.log"
+    },
+    "sword": {
+      "passed": true,
+      "seconds": 1.7703187919978518,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/sword.log"
+    },
+    "gun_run_pose": {
+      "passed": true,
+      "seconds": 42.475819582999975,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/gun_run_pose.log"
+    },
+    "sotjet": {
+      "passed": true,
+      "seconds": 58.988184249996266,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/sotjet.log"
+    },
+    "armored_shell": {
+      "passed": true,
+      "seconds": 34.77018095800304,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/armored_shell.log"
+    },
+    "sandbox": {
+      "passed": true,
+      "seconds": 52.66297645899613,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/sandbox.log"
+    },
+    "sotjet_coop": {
+      "passed": true,
+      "seconds": 63.21015425000223,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/sotjet_coop.log"
+    },
+    "wild_bee": {
+      "passed": true,
+      "seconds": 41.49704562500119,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/wild_bee.log"
+    },
+    "snail": {
+      "passed": true,
+      "seconds": 38.582937416002096,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/snail.log"
+    },
+    "farm_combat": {
+      "passed": true,
+      "seconds": 50.714958042000944,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/farm_combat.log"
+    },
+    "coop_wild_bee": {
+      "passed": true,
+      "seconds": 57.53835029200127,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_wild_bee.log"
+    },
+    "world_contours": {
+      "passed": true,
+      "seconds": 39.674227167000936,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/world_contours.log"
+    },
+    "sky": {
+      "passed": true,
+      "seconds": 0.260579667003185,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/sky.log"
+    },
+    "river": {
+      "passed": true,
+      "seconds": 30.96168666700396,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/river.log"
+    },
+    "ocean": {
+      "passed": true,
+      "seconds": 47.70235720900382,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/ocean.log"
+    },
+    "coop_ocean": {
+      "passed": true,
+      "seconds": 56.27499408300355,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_ocean.log"
+    },
+    "session_transport": {
+      "passed": true,
+      "seconds": 4.340237791002437,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/session_transport.log"
+    },
+    "weather_exposure": {
+      "passed": true,
+      "seconds": 34.94426650000241,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/weather_exposure.log"
+    },
+    "weather": {
+      "passed": true,
+      "seconds": 53.13659125000413,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/weather.log"
+    },
+    "coop_protocol": {
+      "passed": true,
+      "seconds": 0.36812012500013225,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_protocol.log"
+    },
+    "snapshot_channel": {
+      "passed": true,
+      "seconds": 0.36453974999312777,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/snapshot_channel.log"
+    },
+    "pod_escape": {
+      "passed": true,
+      "seconds": 44.67713533299684,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/pod_escape.log"
+    },
+    "arena": {
+      "passed": true,
+      "seconds": 4.989753041001677,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/arena.log"
+    },
+    "solo_arena": {
+      "passed": true,
+      "seconds": 40.25740424999822,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/solo_arena.log"
+    },
+    "public_multiplayer": {
+      "passed": true,
+      "seconds": 60.563119291000476,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/public_multiplayer.log"
+    },
+    "oracle": {
+      "passed": true,
+      "seconds": 78.13309079199826,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/oracle.log"
+    },
+    "coop_gameplay": {
+      "passed": true,
+      "seconds": 72.40911741699529,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_gameplay.log"
+    },
+    "chat": {
+      "passed": true,
+      "seconds": 35.62151562499639,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/chat.log"
+    },
+    "update_log": {
+      "passed": true,
+      "seconds": 6.477858040998399,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/update_log.log"
+    },
+    "landing": {
+      "passed": true,
+      "seconds": 5.890878166996117,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/landing.log"
+    },
+    "lobby": {
+      "passed": true,
+      "seconds": 5.57357291700464,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/lobby.log"
+    },
+    "coop_response": {
+      "passed": true,
+      "seconds": 63.323717999999644,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_response.log"
+    },
+    "coop_opening": {
+      "passed": true,
+      "seconds": 71.74406295800145,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_opening.log"
+    },
+    "coop_scene": {
+      "passed": true,
+      "seconds": 62.480526416999055,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_scene.log"
+    },
+    "scene": {
+      "passed": true,
+      "seconds": 41.7624768329988,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/scene.log"
+    },
+    "frontend": {
+      "passed": true,
+      "seconds": 74.97411495800043,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/frontend.log"
+    },
+    "coop_launch": {
+      "passed": true,
+      "seconds": 70.92360083300446,
+      "log": "/Users/mat-dwor/Documents/tofufu-adventure/.codex/visualizations/2026/10/21/battle-plants/verification/full/coop_launch.log"
+    }
+  }
+}

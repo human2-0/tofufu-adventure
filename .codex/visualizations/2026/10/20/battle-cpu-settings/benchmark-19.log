@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Metal 4.0 - Forward Mobile - Using Device #0: Apple - Apple M1 (Apple7)
+
+{"cpus":19,"difficulty":"normal","draw_calls":155.0,"engine_fps":111.0,"measured_ticks":360,"minimum_alive":20,"render_scale":0.899999976158142,"renderer":"macOS","scope":"One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.","simulation_max_ms":10.675,"simulation_p50_ms":3.578,"simulation_p95_ms":7.715,"survivors":20,"viewport":[2560,1440],"warmup_ticks":120}

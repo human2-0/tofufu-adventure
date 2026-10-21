@@ -1,0 +1,91 @@
+{
+  "feature": "Battle Royale with 50 CPUs alongside players",
+  "protocol": 6,
+  "limits": {
+    "requested_cpus": 50,
+    "humans": 20,
+    "survivors": 70,
+    "default_cpus": 7,
+    "difficulties": [
+      "Easy",
+      "Normal",
+      "Hard"
+    ]
+  },
+  "native_benchmark": {
+    "cpus": 50,
+    "difficulty": "normal",
+    "draw_calls": 84.0,
+    "engine_fps": 96.0,
+    "measured_ticks": 360,
+    "minimum_alive": 51,
+    "render_scale": 0.899999976158142,
+    "renderer": "macOS",
+    "scope": "One native offline map, constant invulnerable population, 1440p viewport with production adaptive resolution. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+    "simulation_max_ms": 12.599,
+    "simulation_p50_ms": 6.005,
+    "simulation_p95_ms": 9.6,
+    "survivors": 51,
+    "viewport": [
+      2560,
+      1440
+    ],
+    "warmup_ticks": 120,
+    "internal_3d_scale": 0.899999976158142
+  },
+  "real_peer_recovery": {
+    "passed": true,
+    "report": "real-peers/result.json",
+    "humans": 3,
+    "cpus": 50,
+    "survivors": 53,
+    "scope": "Real encrypted Holepunch, isolated loopback DHT, abrupt host kill, paused recovery, retained actors/items/healing/settings. Not WAN/NAT acceptance."
+  },
+  "maximum_wire_test": {
+    "passed": true,
+    "survivors": 70,
+    "raw_json_bytes": 102899,
+    "encoded_text_bytes": 18071,
+    "transport_frame_limit_bytes": 65536,
+    "report": "maximum-inventory.log"
+  },
+  "native_visual": {
+    "renderer": "Apple M1 / Metal / Forward Mobile",
+    "viewports": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "languages": [
+      "en",
+      "pl"
+    ],
+    "images": [
+      "compact-options-en.png",
+      "compact-options-pl.png",
+      "compact-practice-en.png",
+      "compact-practice-pl.png",
+      "compact-top-en.png",
+      "compact-top-pl.png",
+      "game-50-en.png",
+      "guest-clamped-en.png",
+      "guest-clamped-pl.png",
+      "lobby-en.png",
+      "lobby-pl.png",
+      "maximum-en.png",
+      "maximum-pl.png"
+    ]
+  },
+  "full_verification_report": "verification/matrix.json",
+  "regression": {
+    "passed": true,
+    "completed": 149,
+    "registered": 149,
+    "scope": "All registered verifier scenarios; serial --full prefix plus 4-worker remainder; coop_launch isolated without pausing. Architecture/import and Python verifier checks passed in CLI prefix. Native UI and encrypted peers separate."
+  }
+}

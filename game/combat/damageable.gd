@@ -19,6 +19,8 @@ var hit_counts: Array[int] = [0, 0, 0, 0]
 var impact_point := Vector3.INF
 var hit_absorbed: bool = false
 var damage_filter: Callable
+## Optional match authority routes attributed attacks; adventure keeps normal damage.
+var attack_receiver: Callable
 @export var launch_immune: bool = false
 @export_range(0.0, 1.0) var knockback_multiplier: float = 1.0
 var projectile_guard: Callable
@@ -71,6 +73,10 @@ func damage(amount: float, direction: Vector3 = Vector3.ZERO, kind: HitKind = Hi
 	if current <= 0.0:
 		depleted.emit()
 	return true
+
+func receive_attack(amount: float, direction: Vector3, kind: HitKind, point: Vector3, attacker: Damageable) -> bool:
+	if attack_receiver.is_valid(): return attack_receiver.call(amount, direction, kind, point, attacker)
+	return damage(amount, direction, kind, point)
 
 func heal(amount: float) -> void:
 	if current > 0.0:

@@ -14,10 +14,10 @@ const BED: float = -8.0
 const REGIONS: Array[Rect2] = [
 	Rect2(-110, -84, 220, 168), Rect2(-80, 84, 160, 132),
 	Rect2(-80, 216, 162, 124), Rect2(-80, 340, 160, 140),
-	Rect2(-140, -368, 280, 284), Rect2(84, -44, 100, 100),
+	Rect2(-140, -368, 280, 284), GigalopolisTerrain.BOUNDS,
 	DofufuTerrain.BOUNDS
 ]
-const BOUNDS := Rect2i(-1040, -432, 1280, 976)
+const BOUNDS := Rect2i(-1040, -432, 1748, 976)
 
 static func contains(at: Vector2) -> bool:
 	if not Rect2(BOUNDS).has_point(at) or VolcanicTerrain.contains(at): return false
@@ -118,7 +118,7 @@ static func _edge_height(world: Meadow, at: Vector2, region: int) -> float:
 		2: return world.jungle.point(at.x, at.y).y
 		3: return world.groatfields.point(at.x, at.y).y
 		4: return world.frost.point(at.x, at.y).y if at.y <= -220 else world.ocean.point(at.x, at.y).y
-		5: return 0.0
+		5: return GigalopolisTerrain.height_at(at)
 		_: return world.dofufu_highlands.point(at.x, at.y).y
 
 static func _horizon(world: Meadow) -> void:

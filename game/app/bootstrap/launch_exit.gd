@@ -18,6 +18,7 @@ static func quit(app: Node, discard: bool = false) -> void:
 		_failed(app, true)
 		return
 	app._quitting = true
+	await app.battle.shutdown()
 	app.loader.cancel()
 	if is_instance_valid(app.game): app.game.process_mode = Node.PROCESS_MODE_DISABLED
 	await app.connection.shutdown()

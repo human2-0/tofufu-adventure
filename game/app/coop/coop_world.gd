@@ -7,7 +7,7 @@ static func capture(game: Node3D) -> Dictionary:
 	var data := {"mobs": [], "props": [], "dummies": [], "apple_trees": [], "pickups": [], "phase": game.cycle.phase,
 		"produce": game.meadow_harvest.capture(), "barn": game.seed_storage.barn.capture(), "weather_phase": game.weather.phase, "farming": game.farming.capture(), "seed_storage": game.seed_storage.barn.banks[0].capture(), "seed_satchel_claimed": game.seed_storage.free_satchel_claimed,
 		"beans": encounters.beans, "kills": encounters.mobs, "harvests": encounters.props,
-		"experience": encounters.experience, "places": game.exploration.found_places(), "next_pickup": encounters.next_pickup_id, "world_items": game.world_items.pool.capture(), "factory": game.factory_dungeon.capture_world()}
+		"experience": encounters.experience, "places": game.exploration.found_places(), "next_pickup": encounters.next_pickup_id, "world_items": game.world_items.pool.capture(), "city_loot": game.city_loot.opened, "factory": game.factory_dungeon.capture_world()}
 	for mob in encounters.mob_nodes: data.mobs.append(EncounterState.mob(mob))
 	data["mob_paralysis"] = encounters.mob_nodes.map(func(mob: TrainingMob) -> float: return mob.target.paralysis)
 	for prop in encounters.prop_nodes: data.props.append(EncounterState.prop(prop))
@@ -22,9 +22,11 @@ static func capture(game: Node3D) -> Dictionary:
 
 static func apply(game: Node3D, data: Dictionary, replica: bool, changes: ReplicaWorldChanges = null) -> void:
 	if data.has("castle") and not CastleProtocol.valid(data.castle, true): return
+	if data.has("city_loot") and (not ExplorationProtocol.sequence(data.city_loot) or data.city_loot > CityLootSites.MASK): return
 	if data.get("factory") is Dictionary and not DungeonSnapshotValidation.valid(data.factory, replica): return
 	if data.has("barn") and not BarnProtocol.valid(data.barn, WorldProtocol.ITEM_LIMITS): return
 	if data.has("produce") and not BarnProtocol.produce(data.produce): return
+	if changes == null or changes.changed("city_loot", data.get("city_loot", 0)): game.city_loot.restore(int(data.get("city_loot", 0)))
 	var encounters: SandboxEncounters = game.encounters
 	if data.has("farming") and (changes == null or changes.changed("farming", data.farming)): game.farming.restore(data.farming)
 	if data.has("seed_storage") and data.seed_storage != game.seed_storage.barn.banks[0].capture():
@@ -80,6 +82,7 @@ static func apply(game: Node3D, data: Dictionary, replica: bool, changes: Replic
 	game.hud.show_experience(encounters.experience)
 
 static func disable_simulation(game: Node3D) -> void:
+	game.city_loot.authoritative = false
 	game.castle_adventure.authoritative = false
 	game.castle_adventure.encounter.authority(false)
 	game.meadow_harvest.authoritative = false

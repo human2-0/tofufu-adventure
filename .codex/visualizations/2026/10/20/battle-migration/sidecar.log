@@ -1,0 +1,114 @@
+npm notice run tofufu-holepunch-playtest@0.1.0 test
+npm notice run node --test test/*.test.cjs
+TAP version 13
+# Subtest: battle discovery channels isolate public, private and adventure topics
+ok 1 - battle discovery channels isolate public, private and adventure topics
+  ---
+  duration_ms: 3.351875
+  type: 'test'
+  ...
+# Subtest: twenty direct encrypted battle peers exchange compact match traffic
+ok 2 - twenty direct encrypted battle peers exchange compact match traffic
+  ---
+  duration_ms: 11213.372542
+  type: 'test'
+  ...
+# Subtest: frames survive fragmentation and coalescing
+ok 3 - frames survive fragmentation and coalescing
+  ---
+  duration_ms: 5.462916
+  type: 'test'
+  ...
+# Subtest: compressed gameplay frames preserve exact values with less wire traffic
+ok 4 - compressed gameplay frames preserve exact values with less wire traffic
+  ---
+  duration_ms: 6.397958
+  type: 'test'
+  ...
+# Subtest: small steady actor deltas also avoid repeated control-envelope overhead
+ok 5 - small steady actor deltas also avoid repeated control-envelope overhead
+  ---
+  duration_ms: 1.533583
+  type: 'test'
+  ...
+# Subtest: compression cannot bypass decoded frame size or JSON validation
+ok 6 - compression cannot bypass decoded frame size or JSON validation
+  ---
+  duration_ms: 3.416166
+  type: 'test'
+  ...
+# Subtest: reject zero length
+ok 7 - reject zero length
+  ---
+  duration_ms: 1.888833
+  type: 'test'
+  ...
+# Subtest: reject oversized
+ok 8 - reject oversized
+  ---
+  duration_ms: 0.254167
+  type: 'test'
+  ...
+# Subtest: reject invalid JSON
+ok 9 - reject invalid JSON
+  ---
+  duration_ms: 0.430458
+  type: 'test'
+  ...
+# Subtest: reject array payload
+ok 10 - reject array payload
+  ---
+  duration_ms: 0.535417
+  type: 'test'
+  ...
+# Subtest: rate bounded
+ok 11 - rate bounded
+  ---
+  duration_ms: 52.705208
+  type: 'test'
+  ...
+# Subtest: loopback admits four-player traffic while retaining its aggregate limit
+ok 12 - loopback admits four-player traffic while retaining its aggregate limit
+  ---
+  duration_ms: 13.075459
+  type: 'test'
+  ...
+# Subtest: slow writable cannot grow an unbounded queue
+ok 13 - slow writable cannot grow an unbounded queue
+  ---
+  duration_ms: 5.053791
+  type: 'test'
+  ...
+# Subtest: streamx completed writes release byte accounting and the stall deadline
+ok 14 - streamx completed writes release byte accounting and the stall deadline
+  ---
+  duration_ms: 3217.986708
+  type: 'test'
+  ...
+# Subtest: streamx truly stalled writes still expire
+ok 15 - streamx truly stalled writes still expire
+  ---
+  duration_ms: 3201.856542
+  type: 'test'
+  ...
+# Subtest: identity persists across launches and rejects corruption
+ok 16 - identity persists across launches and rejects corruption
+  ---
+  duration_ms: 6.1495
+  type: 'test'
+  ...
+# Subtest: two isolated local Holepunch peers discover, authenticate, exchange and shut down
+ok 17 - two isolated local Holepunch peers discover, authenticate, exchange and shut down
+  ---
+  duration_ms: 11239.764042
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11513.71875

@@ -1,0 +1,48 @@
+Full verification: architecture, import, 147 Godot tests
+Architecture check: PASS (667 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.021s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.008s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-vsdli0n9
+import: PASS (5.8s)
+tofufu_alignment: PASS (2.2s)
+battle_migration: PASS (0.6s)
+battle_royale: PASS (3.9s)
+battle_combat: PASS (2.9s)
+battle_game: PASS (39.7s)
+gigalopolis: PASS (63.9s)
+skin_test: PASS (33.0s)
+unarmed_art: PASS (1.4s)
+fufu_3d: PASS (19.6s)
+angel_bow: PASS (1.4s)
+coop_angel_bow: PASS (53.5s)
+Traceback (most recent call last):
+  File "/Users/mat-dwor/Documents/tofufu-adventure/tools/verify.py", line 248, in <module>
+    main()
+    ~~~~^^
+  File "/Users/mat-dwor/Documents/tofufu-adventure/tools/verify.py", line 235, in main
+    durations.append((name, run_stage(godot, name, args, logs, timeout,
+                            ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                     verbose=options.verbose)))
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/mat-dwor/Documents/tofufu-adventure/tools/verify.py", line 37, in run_stage
+    result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True,
+                            timeout=timeout_seconds * timeout_scale)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/subprocess.py", line 2128, in _communicate
+    ready = selector.select(timeout)
+  File "/opt/homebrew/Cellar/python@3.13/3.13.5/Frameworks/Python.framework/Versions/3.13/lib/python3.13/selectors.py", line 398, in select
+    fd_event_list = self._selector.poll(timeout)
+KeyboardInterrupt

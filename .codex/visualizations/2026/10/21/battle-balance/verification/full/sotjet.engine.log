@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: player push moves through collision-aware physics
+FAIL: shooting rank 99 nearly doubles player push
+FAIL: shooting strength also applies to enemies
+Sotjet: FAIL

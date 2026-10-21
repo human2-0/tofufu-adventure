@@ -7,6 +7,7 @@ var failures: int = 0
 var rooms: Dictionary = {}
 var sessions: Dictionary = {}
 var views: Array[SubViewport] = []
+var seen_harvest: Dictionary = {}
 
 func _initialize() -> void: call_deferred("run")
 
@@ -28,8 +29,13 @@ func run() -> void:
 
 func deliver(sender: String, recipient: String, data: Dictionary) -> void:
 	rooms[recipient].receive({"type": "packet", "key": sender, "data": JSON.parse_string(JSON.stringify(data))})
+	if recipient == HOST or not sessions.has(recipient): return
+	var decoded: Dictionary = sessions[recipient]._pending
+	if decoded.has("world") and decoded.world.has("farming") and decoded.world.farming[0][2] > 0:
+		seen_harvest[recipient] = true
 
 func scenario(dedicated: bool) -> void:
+	seen_harvest.clear()
 	for key in [HOST, ONE, TWO]:
 		var room := PlaytestRoom.new()
 		room.local_key = key
@@ -92,7 +98,8 @@ func scenario(dedicated: bool) -> void:
 	var ground_yield := 0
 	for drop: SoybeanPickup in host.game.encounters.pickups.values(): ground_yield += drop.count
 	check(host.game.encounters.beans + ground_yield == 3 and (ground_yield == 0 or (host.game.encounters.pickups.size() == 1 and host.game.encounters.pickups.values()[0].count == 3)), "simultaneous harvest creates one stacked yield")
-	check(two.game.farming.plots[0].crop.phase() == SoybeanCrop.Phase.HARVEST, "harvest animation replicated")
+	# Observe the decoded animation while it arrives; catch-up ticks may finish it before this assertion.
+	check(seen_harvest.get(TWO, false), "harvest animation replicated")
 	await ticks(90)
 	check(member.inventory.count_item("edamame") + other.inventory.count_item("edamame") == 3, "simultaneous harvest grants exactly one yield")
 	check(one.game.inventory.count_item("edamame") + two.game.inventory.count_item("edamame") == 3, "winner inventory replicated")

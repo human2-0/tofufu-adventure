@@ -17,6 +17,8 @@ static func apply(actor: Player, world: Meadow) -> void:
 		actor.motor.surface_grip = 0.24
 
 static func immersion(at: Vector3, world: Meadow) -> float:
+	if GigalopolisTerrain.contains(Vector2(at.x, at.z)):
+		return clampf((1.2 - at.y - 0.25) / 1.1, 0.0, 1.0) if GigalopolisTerrain.is_water(at) else 0.0
 	if MainlandFringe.contains(Vector2(at.x, at.z)):
 		return clampf((MainlandFringe.water_level(Vector2(at.x, at.z)) - at.y - 0.25) / 1.1, 0.0, 1.0)
 	if at.z >= Groatfields.START: return 0.0
@@ -28,6 +30,10 @@ static func immersion(at: Vector3, world: Meadow) -> float:
 	return clampf((OceanTerrain.WATER_LEVEL - at.y - 0.25) / 1.1, 0.0, 1.0)
 
 static func saved_position(at: Vector3, world: Meadow) -> Vector3:
+	if GigalopolisTerrain.contains(Vector2(at.x, at.z)) or GigalopolisTerrain.COAST_BOUNDS.has_point(Vector2(at.x, at.z)):
+		# Lift older coastal saves out of newly connected city ground; retain rooftops.
+		at.y = maxf(at.y, world.ground_point(at.x, at.z, 0.05).y)
+		return at
 	if DofufuTerrain.contains(Vector2(at.x, at.z)):
 		at.y = maxf(at.y, world.ground_point(at.x, at.z, 0.05).y)
 		return at
