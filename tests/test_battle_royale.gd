@@ -63,12 +63,12 @@ func _rules() -> void:
 	state.hit(1, 100, 0)
 	state.step(1)
 	check(state.rows == ended.actors and state.time == ended.time, "finished match is immutable")
-	var last := 1000.0
-	for tick in 5000:
+	var last := BattleRing.RADII[0]
+	for tick in int((BattleRing.total_time() + 10) * 10):
 		var radius := BattleRing.radius(tick * 0.1)
 		check(radius <= last, "safe zone never expands")
 		last = radius
-	check(last == 0 and BattleRing.outside(Vector3.ZERO, 500), "final storm closes completely")
+	check(last == 0 and BattleRing.outside(Vector3.ZERO, BattleRing.total_time()), "final storm closes completely")
 
 func _input_buffer() -> void:
 	var buffer := BattleInputBuffer.new()

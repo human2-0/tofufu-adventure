@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "date": "2026-10-22",
+  "battle_protocol": 11,
+  "automated": {
+    "full_scenarios": 160,
+    "passed": 160,
+    "runtime_scripts": 744,
+    "final_followups": [
+      "grounded airborne loot and exact item/resource multiset",
+      "damage overlay above inventory; recovery cancellation",
+      "compact HUD and scene smoke",
+      "English/Polish localization and release journal"
+    ],
+    "full_report": "verification/full/report.json",
+    "note": "Focused followups cover final death-floor and overlay adjustments made while the full suite ran."
+  },
+  "native": {
+    "engine": "Godot 4.7.2 / Metal / Apple M1",
+    "languages": [
+      "en",
+      "pl"
+    ],
+    "resolutions": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "screenshots": 36,
+    "views": [
+      "partial-armour",
+      "hurt-pulse",
+      "hurt-inventory",
+      "damaged-tooltip",
+      "complete-set",
+      "unbreakable-tooltip",
+      "whole-kit-drop",
+      "whole-kit-loot",
+      "expanded-regions"
+    ],
+    "tooltips_visible_and_in_bounds": true
+  },
+  "rules": {
+    "death_loot": "Entire bag and every worn slot, including backpack. Atomic capacity check; pending kits survive recovery; no phantom pack or repeated death drop. Airborne loot projects to collision ground and avoids walls.",
+    "armour": "50 durability per piece, encoded in the existing 0..100 reserve. Actual received combat damage including shield absorption splits evenly across intact worn pieces. Each grants 1/4 family modifiers. Broken pieces are removed. Matching four-piece sets suspend wear without repairing it.",
+    "storm": "Eligible regions get equal odds before seeded site selection. Plants and chests extend across the map. Initial radius 1000 m, anchors within 900 m, complete closure at 602 s; nested circles and longer early travel phases.",
+    "feedback": "Red edge pulse lasts 0.65 s after a hit, keeps aiming centre clear, remains above bag/loot panels and cancels during recovery."
+  },
+  "boundaries": [
+    "Adventure saves and item definitions unchanged",
+    "No new transport or service",
+    "Automated CPU-count correctness is not an active 50-CPU FPS benchmark",
+    "Separate-device/WAN and human balance acceptance remain separate"
+  ],
+  "source_sha256": {
+    "game/app/inventory/battle_armour_wear.gd": "b7a1a8f76ecc7a7787a416ba5f0360f1a09d725803fbd0e6d6f71ef1af5cd016",
+    "game/app/actors/battle_wear_stats.gd": "074c4ba16bdbd6cd2e96977526ed6e5ed604d69824a73af0d08e2173f75319ba",
+    "game/app/coop/battle_pack.gd": "e6cb8f78fda46e5dd367834a847fc704cbcab7215ce2f4dcf721cb322ff340af",
+    "game/app/coop/battle_pack_actions.gd": "2a18e3a8f81977ea0630c1426c0cc59cccf41e33251c98c51e51645833f2e86b",
+    "game/app/presentation/battle_match_view.gd": "51c82703ba3994ff5695599513447ff5771ee837fc1390a642d53d796b9a62db",
+    "game/session/battle_ring.gd": "93e30b0429db3aed22b1abe0c35a725ff56b13e3a7b33908198fdae9e56d53b0",
+    "game/session/battle_protocol.gd": "0d87fa819cba557b5c3f7505cbee19d7f03683701e35abae94e06409df65f8d4",
+    "game/session/battle_pack_wire.gd": "ec9b21f95e7ac8a81f5a892a0c19a49c49635161d52b19e1144ceb715f40f731",
+    "game/ui/effects/battle_damage_flash.gd": "e5da44746cd82b33a3d2f5c78260213fa784d63ff8f1b06e84b036eb16445bba",
+    "game/inventory/ui/item_tooltip.gd": "5ed357925af1083a8bd491ad2d29f69c0a6097c87f84348623a50f268fedf9f5"
+  }
+}

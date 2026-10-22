@@ -17,7 +17,6 @@ static func message(game: BattleRoyaleGame) -> String:
 		else: text = game.tr("Tofufu Royale! %s wins") % game.name_of(state.winner)
 	elif row[8] <= 0:
 		text = game.tr("Placed #%d · Spectating %s · N for next survivor") % [row[13], game.name_of(game.watch_slot)] if row[13] > 0 else game.tr("Your duo is still in the match · Spectating %s") % game.name_of(game.watch_slot)
-	elif BattleRing.outside(game.bodies[game.local_slot].position, state.time, state.circle): text = game.tr("Storm damage! Follow the radar line to safety")
 	return text
 
 static func partner(game: BattleRoyaleGame) -> String:

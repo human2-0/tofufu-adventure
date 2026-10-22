@@ -83,7 +83,8 @@ func _ready() -> void:
 	visibility = BattleVisibility.new()
 	visibility.game = self
 	add_child(visibility)
-	hud.radar.terrain_map = MapTerrainImage.build(world, Rect2(-500, -500, 1000, 1000), 0.256)
+	hud.radar.map_bounds = BattleWorldSetup.MAP_BOUNDS
+	hud.radar.terrain_map = MapTerrainImage.build(world, BattleWorldSetup.MAP_BOUNDS, 256.0 / 1400)
 	hud.leave_requested.connect(leave_requested.emit)
 	hud.spectate_requested.connect(next_survivor)
 	presentation.build()

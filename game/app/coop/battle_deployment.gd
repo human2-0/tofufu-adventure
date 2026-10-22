@@ -100,7 +100,7 @@ func update() -> void:
 			status = 2 if slot == game.local_slot else (3 if BattleTeams.allies(game.room.options, slot, game.local_slot) else 1)
 			if status == 2: break
 		states.append(status)
-	panel.display({"visible": true, "terrain": game.hud.radar.terrain_map, "sites": state.sites, "states": states,
+	panel.display({"visible": true, "bounds": BattleWorldSetup.MAP_BOUNDS, "terrain": game.hud.radar.terrain_map, "sites": state.sites, "states": states,
 		"choice": int(state.choices[game.local_slot]), "locked": state.locked[game.local_slot] == 1,
 		"duos": BattleOptions.duos(game.room.options), "seconds": ceili(float(state.remaining))})
 

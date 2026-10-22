@@ -56,26 +56,32 @@ func drop(slot: int, source: int, index: int) -> bool:
 	pack.refresh(slot)
 	return true
 
-func drop_all(slot: int) -> void:
+func drop_all(slot: int) -> bool:
 	var fighter := pack.game.combat.fighters[slot]
 	var loadout := fighter.loadout
 	loadout.persist_reserve()
 	var stacks: Array[ItemStack] = loadout.inventory.slots.duplicate()
 	for name in CharacterEquipment.SLOTS: stacks.append(loadout.equipment.get_slot(name))
+	var needed := 0
+	for stack in stacks:
+		if stack != null: needed += 1
+	var available := BattlePackWire.DROPS - pack.game.match_state.drops.size()
+	for drop: Array in pack.game.match_state.drops:
+		if drop[5] == 0: available += 1
+	if needed > available: return false
+	var anchor := pack.death_anchor(slot)
 	var counter := 0
 	for stack in stacks:
 		if stack == null: continue
 		var angle := counter * 2.39996
 		var offset := Vector3(cos(angle), 0, sin(angle)) * (0.4 + 0.18 * sqrt(counter))
-		pack.spawn(stack, pack.drop_point(slot, offset))
+		pack.spawn(stack, pack.drop_point(slot, offset, anchor))
 		counter += 1
 	loadout._restoring = true
 	loadout.inventory.clear()
-	for name in CharacterEquipment.SLOTS:
-		if name != "backpack": loadout.equipment.set_slot(name, null)
-	# The empty starter backpack remains as a harmless container on eliminated actors.
-	loadout.equipment.set_slot("backpack", ItemStack.new(InventoryItem.backpack("factory_backpack"), 1))
+	for name in CharacterEquipment.SLOTS: loadout.equipment.set_slot(name, null)
 	loadout._restoring = false
 	pack.refresh(slot)
 	pack.healing[slot].active_heal_remaining = 0
 	pack.healing[slot].apple_duration_remaining = 0
+	return true

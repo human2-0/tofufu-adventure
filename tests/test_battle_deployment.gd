@@ -176,7 +176,8 @@ func _worlds() -> void:
 	var skin := guest.bodies[2].visuals.test_skin.selected
 	var art := guest.bodies[2].visuals.texture as AtlasTexture
 	check(art != null and art.atlas.resource_path.contains("/" + skin + "/"), "emergence applies the selected Tofufu skin before the first movement tick")
-	check(guest.camera.global_position.distance_to(guest.bodies[1].global_position + guest.camera.overhead_offset()) < 0.1, "guest camera snaps to the chosen plant before emergence is drawn")
+	var camera_offset := Vector3.UP * 0.95 + guest.camera._boom_offset() if guest.camera.shoulder else guest.camera.overhead_offset()
+	check(guest.camera.target == guest.bodies[1] and guest.camera.global_position.distance_to(guest.bodies[1].global_position + camera_offset) < 0.1, "guest camera snaps to the chosen plant before emergence is drawn in either view")
 	check(not guest.combat.fighters[0].combat.targets.has(guest.combat.fighters[1].health), "shared adventure weapons omit friendly targets")
 	var sp := guest.combat.fighters[1].combat.vitals.current
 	check(not guest.combat.receive(80, Vector3.ZERO, Damageable.HitKind.SOY, Vector3.ZERO, guest.combat.fighters[0].health, 1), "emergence blocks damage")

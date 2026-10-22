@@ -1,0 +1,34 @@
+{
+  "samples": [
+    {
+      "draw_calls": 1478.0,
+      "frame_p50_ms": 16.251,
+      "frame_p95_ms": 22.656,
+      "preparation_p95_ms": 4.158,
+      "storm": false
+    },
+    {
+      "draw_calls": 1480.0,
+      "frame_p50_ms": 15.188,
+      "frame_p95_ms": 18.469,
+      "preparation_p95_ms": 3.692,
+      "storm": true
+    },
+    {
+      "draw_calls": 1478.0,
+      "frame_p50_ms": 14.875,
+      "frame_p95_ms": 19.056,
+      "preparation_p95_ms": 3.703,
+      "storm": true
+    },
+    {
+      "draw_calls": 1474.0,
+      "frame_p50_ms": 16.269,
+      "frame_p95_ms": 22.791,
+      "preparation_p95_ms": 3.871,
+      "storm": false
+    }
+  ],
+  "scope": "Native M1, 2560x1440 at fixed 90% render scale, 51 fixed-pose actors, close storm wall filling the view. ABBA presentation comparison; simulation/networking are frozen. This isolates visual cost and is not an active 50-CPU FPS guarantee.",
+  "disabled_pass": "Wall, rim and vignette are hidden after identical CPU preparation, isolating rendering cost."
+}

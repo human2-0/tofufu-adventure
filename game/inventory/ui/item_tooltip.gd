@@ -7,6 +7,7 @@ var window: CanvasLayer
 var target: Control
 var _item_reader: Callable
 var details_reader: Callable
+var stack_details_reader: Callable
 var _panel: PanelContainer
 var _title: Label
 var _type: Label
@@ -93,6 +94,7 @@ func _update() -> void:
 	var type := ItemTooltipContent.type_label(item)
 	if item.required_level > 1: type += " · Requires Lv. %d" % item.required_level
 	var details: String = details_reader.call(item) if details_reader.is_valid() else ItemTooltipContent.details(item)
+	if stack_details_reader.is_valid(): details += "\n" + str(stack_details_reader.call(stack))
 	if stack.enhanced: details += "\n" + MagicalTofufu.bonus_text(item.id) + "\nAlready enhanced · Once per weapon"
 	var text := title + type + details
 	if text != _last_text:

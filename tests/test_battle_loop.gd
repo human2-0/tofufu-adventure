@@ -26,9 +26,9 @@ func _state() -> BattleMatch:
 	return state
 
 func _rings() -> void:
-	for anchor: Vector2 in [Vector2(-180, -100), Vector2(170, 75), Vector2.ZERO, BattleRing.CENTER]:
+	for anchor: Vector2 in [Vector2(-180, -100), Vector2(170, 75), Vector2(650, 450), Vector2(-300, -300), Vector2.ZERO, BattleRing.CENTER]:
 		var previous := BattleRing.CENTER
-		for tick in 4500:
+		for tick in int((BattleRing.total_time() + 20) * 10):
 			var time := tick / 10.0
 			var center := BattleRing.center(time, anchor)
 			var next := BattleRing.next_center(time, anchor)
@@ -37,18 +37,18 @@ func _rings() -> void:
 			check(center.distance_to(next) + next_radius <= radius + 0.001, "announced next circle stays inside current safe circle")
 			check(center.distance_to(previous) < 1, "moving circle has no stage-boundary teleport")
 			previous = center
-		check(BattleRing.center(430, anchor).is_equal_approx(anchor), "late circles finish at the chosen dry anchor")
+		check(BattleRing.center(BattleRing.total_time(), anchor).is_equal_approx(anchor), "late circles finish at the chosen dry anchor")
 	check(not BattleRing.closing(13) and BattleRing.closing(33), "hold and closing are separate readable phases")
 	check(is_equal_approx(BattleRing.phase_remaining(13), 19), "hold warning uses time until movement, not end of closing")
 	var finale := _state()
-	finale.time = 432
+	finale.time = BattleRing.total_time()
 	for tick in 400:
 		if finale.winner != -2: break
 		# Even unlimited milk plus apple regeneration cannot stall the closed circle.
 		for row: Array in finale.rows:
 			if row[8] > 0: row[8] = minf(100, float(row[8]) + 2.2)
 		finale.step(0.1)
-	check(finale.winner != -2 and finale.time < 470, "escalating final storm ends healing stalemates promptly")
+	check(finale.winner != -2 and finale.time < BattleRing.total_time() + 40, "escalating final storm ends healing stalemates promptly")
 
 func _stats() -> void:
 	var state := _state()
@@ -81,7 +81,7 @@ func _stats() -> void:
 	packet.stats[0][0] = NAN
 	check(not BattleProtocol.snapshot(packet), "non-finite achievements are rejected")
 	packet = state.capture()
-	packet.circle = [300, 300]
+	packet.circle = [999, 999]
 	check(not BattleProtocol.snapshot(packet), "distant or unsafe route bounds cannot enter presentation")
 	var duo := _state()
 	duo.options = [3, 1, 1]

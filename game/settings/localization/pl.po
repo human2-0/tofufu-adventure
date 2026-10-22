@@ -9106,3 +9106,69 @@ msgstr "Każdy przeciwnik na polowaniu Royale potrafi teraz strzelać z dystansu
 
 msgid "Find Common, Rare and Legendary gear across the map. Weapons have distinct strengths, CPUs keep upgrading, and a complete Celestial set is the strongest loadout."
 msgstr "Znajduj pospolity, rzadki i legendarny ekwipunek na całej mapie. Bronie mają różne atuty, CPU ulepszają wyposażenie, a pełny Niebiański zestaw jest najsilniejszy."
+
+msgid "STORM"
+msgstr "BURZA"
+
+msgid "CLOSING"
+msgstr "ZAMYKANIE"
+
+msgid "SAFE ZONE"
+msgstr "BEZPIECZNA STREFA"
+
+msgid "C: camera · Middle click: direction · Mouse: orbit"
+msgstr "C: kamera · Środkowy przycisk: kierunek · Mysz: obrót"
+
+msgid "Controls · F1"
+msgstr "Sterowanie · F1"
+
+msgid "Read the Royale at a glance"
+msgstr "Royale na pierwszy rzut oka"
+
+msgid "A compact Royale HUD shows health, armour, stamina, weapons and food with icons and bars. Open Help for controls."
+msgstr "Kompaktowy interfejs Royale pokazuje zdrowie, pancerz, wytrzymałość, broń i jedzenie za pomocą ikon i pasków. Sterowanie znajdziesz w pomocy."
+
+msgid "Start behind Tofufu, press C for the overhead test view, and use middle click to rotate overhead or switch shoulders."
+msgstr "Zaczynasz z kamerą za Tofufu. Naciśnij C, aby przetestować widok z góry, a środkowym przyciskiem myszy zmieniaj kierunek widoku lub ramię kamery."
+
+msgid "A moving purple storm wall, bright ground edge and shaded map make danger clear. Follow the safe-zone arrow before the storm reaches you."
+msgstr "Ruchoma fioletowa ściana burzy, jasna granica na ziemi i zacieniona mapa wyraźnie wskazują zagrożenie. Podążaj za strzałką do bezpiecznej strefy, zanim dosięgnie cię burza."
+
+msgid "CPU %d"
+msgstr "Bot %d"
+
+msgid "Round goals: 3 chests · 100 damage · 90s alive"
+msgstr "Cele rundy: 3 skrzynie · 100 obrażeń · 90 s przeżycia"
+
+msgid "Temporary match armour. Each piece grants one quarter of its set modifiers and has 50 durability. A complete matching set cannot break; protection is capped at 25%."
+msgstr "Tymczasowy pancerz na mecz. Każda część zapewnia jedną czwartą modyfikatorów zestawu i ma 50 wytrzymałości. Pełny zgodny zestaw nie może się zniszczyć; ochrona jest ograniczona do 25%."
+
+msgid "Per piece: %.2f%% protection and one quarter of its set modifiers."
+msgstr "Każda część: %.2f%% ochrony i jedna czwarta modyfikatorów zestawu."
+
+msgid "Complete matching set: unbreakable while equipped together."
+msgstr "Pełny zgodny zestaw: niezniszczalny, dopóki nosisz wszystkie jego części."
+
+msgid "Durability: %.1f / 50. Incoming damage is shared evenly among worn pieces."
+msgstr "Wytrzymałość: %.1f / 50. Otrzymane obrażenia są dzielone równo między noszone części."
+
+msgid "Durability %.0f/50"
+msgstr "Wytrzymałość %.0f/50"
+
+msgid "%s · Durability %.1f/50"
+msgstr "%s · Wytrzymałość %.1f/50"
+
+msgid "Loot, withstand and rotate"
+msgstr "Zgarniaj łup, wytrzymaj i zmieniaj pozycję"
+
+msgid "Defeated survivors drop their entire equipment and backpack contents, preserving remaining item resources."
+msgstr "Pokonani ocalali upuszczają cały ekwipunek i zawartość plecaka, zachowując pozostałe zasoby przedmiotów."
+
+msgid "Incoming damage briefly pulses the screen edges red. Each partial armour piece has 50 durability and a quarter of its set modifiers; complete matching sets cannot break."
+msgstr "Otrzymane obrażenia na chwilę pulsują czerwienią na krawędziach ekranu. Każda część niepełnego pancerza ma 50 wytrzymałości i jedną czwartą modyfikatorów zestawu; pełne zgodne zestawy nie mogą się zniszczyć."
+
+msgid "Soybean plants, chests and storm finales now reach distant map regions. Early circles allow more time to travel, and eligible regions have equal finale chances."
+msgstr "Sojowe rośliny, skrzynie i finały burzy docierają teraz do odległych regionów mapy. Początkowe kręgi dają więcej czasu na podróż, a dostępne regiony mają równe szanse na finał."
+
+msgid "HP %.0f / 100 · Armour %.0f / 50 · SP %.0f / 100"
+msgstr "PŻ %.0f / 100 · Osłona %.0f / 50 · PW %.0f / 100"

@@ -51,6 +51,7 @@ func step(commands: Array[PlayerCommand], delta: float, rotation: int) -> void:
 		var health := fighters[slot].health
 		health.current = float(game.match_state.rows[slot][8])
 		health.last_hit_amount = before - health.current - float(game.match_state.rows[slot][9])
+		if game.pack != null: BattleArmourWear.damage(game.pack, slot, health.last_hit_amount)
 		health.last_hit_kind = hit[4]
 		health.hit.emit(hit[1], hit[3])
 	for push: Array in pending_pushes:

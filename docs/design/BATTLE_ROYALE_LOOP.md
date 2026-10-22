@@ -25,12 +25,14 @@ and ready up again**. Ordinary chest contents use the same rarity weights in eve
 
 ## Pacing and fairness
 
-The seven 20-second holds / 40-second closes retain the bounded seven-minute
-active match. After the circle closes completely, storm damage increases by
+The seven 20-second holds and 120/100/60/50/40/40/40-second closes allow a bounded
+ten-minute active match across the expanded map. After the circle closes completely, storm damage increases by
 two HP per second each second, preventing milk/apple heal-offs from extending the
 finale indefinitely. The next circle is always inside the current one. Finale anchors
-come from supported plant sites within 235 metres of the original centre and
-pass an additional 16-metre clearance / dry-ground check. The authored nursery
+come from supported plant sites within 900 metres of the original centre and
+pass an additional six-metre clearance / eight-metre dry-ground check. Eligible
+mainland, northern, southern, western, city and volcanic regions have equal
+selection odds; a seeded site is then chosen within that region. The authored nursery
 is the fallback. The final three circles share the dry finale anchor.
 
 The same quiet-armour rule applies to every human and CPU. Health still requires
@@ -96,10 +98,45 @@ but loses 6% fire rate. Rare tools retain reach, area control, mobility or preci
 Common guns still deal 18 body / 27 head damage and keep nine-shot magazines.
 A complete Celestial outfit adds 25% protection, 20% damage, 12% attack/fire speed
 and 10% movement. Complete Soypod/Nori sets give 12%/20% protection with their
-existing offensive/mobility tradeoffs. Partial pieces give 2%/4%/6% protection
-by grade. Weapon and outfit bonuses compose; swaps retain resources and cooldowns.
+existing offensive/mobility tradeoffs. Each partial piece grants a quarter of its family’s complete modifiers: 3%/5%/6.25%
+protection plus that family’s proportional bonuses and tradeoffs. Partial pieces
+have 50 durability. Actual combat damage, including hits absorbed by the armour
+bar, is split evenly among worn pieces; broken pieces disappear and lose their
+modifiers. Four matching pieces suspend wear without repairing prior wear;
+removing a piece resumes it. Weapon and outfit bonuses compose; swaps retain resources and cooldowns.
 CPUs upgrade through grades and do not replace legendary gear with weaker items.
 These are explicit initial tuning values, pending repeated human playtests.
+
+## Compact HUD, camera and storm presentation
+
+The Royale starts behind Tofufu. C alternates between behind and overhead test
+views; it never enters first person. Middle click swaps shoulders behind, or
+cycles North/East/South/West overhead, using Adventure's camera and screen-relative
+movement/aim adapters. Deployment, inventory, Help, results and paused host recovery
+release the cursor and block camera changes. Adventure's camera cycle is unchanged.
+
+Health, armour and stamina use small colour-coded bars. The loadout shows actual
+weapon/food art, grade borders, magazine pips and reload/special clocks. Small
+objective medallions replace the permanent goal paragraph. F1 or ? opens controls.
+The minimap follows the watched survivor, shades and hatches unsafe ground and
+shows facing; Tab retains the full map and next-circle preview.
+
+A generated mist texture covers one curved storm wall, with a terrain-following
+bright inner rim and purple outer band. An edge vignette warns near/outside the
+boundary while preserving the aiming centre. All effects derive position and
+animation phase from the accepted match clock, including paused recovery; none
+owns damage, collision or networking. The wall is one shadow-free mesh, and the
+bounded 192-segment rim resamples at four Hz. Confirmed damage triggers a brief
+pulsing red edge vignette with a clear aiming centre, including while
+inventory/loot is open. Paused recovery cancels transient flashes. Four small worn-item
+icons show integrity, or shields when a matching full set is unbreakable. English/Polish native screenshots
+and focused camera/HUD/storm scenarios live beside the existing Royale checks.
+Human comprehension and target-device performance remain separate acceptance.
+
+Eliminations atomically release the entire bag and worn kit, including backpacks,
+with exact remaining durability and milk. Airborne kills land the kit on the
+collision surface below rather than leaving floating loot. A saturated ledger retains the kit for
+retry; recovery distinguishes this pending kit from a completed empty release.
 
 ## Remaining larger systems
 

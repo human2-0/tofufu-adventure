@@ -6,8 +6,8 @@ static func populate(game: BattleRoyaleGame) -> bool:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = game.room.epoch.hash() ^ 721871
 	var cells: Array[Vector2] = []
-	for z in 18:
-		for x in 18: cells.append(Vector2(-324 + x * 36, -324 + z * 36))
+	for z in 26:
+		for x in 28: cells.append(Vector2(-360 + x * 40, -360 + z * 40))
 	for i in range(cells.size() - 1, 0, -1):
 		var other := rng.randi_range(0, i)
 		var swap := cells[i]
@@ -19,9 +19,9 @@ static func populate(game: BattleRoyaleGame) -> bool:
 	for cell in cells:
 		for attempt in 8:
 			var point := cell + Vector2(rng.randf_range(-9, 9), rng.randf_range(-9, 9))
-			if point.distance_to(BattleRing.CENTER) > 330: continue
+			if point.distance_to(BattleRing.CENTER) > BattleRing.MAX_ANCHOR: continue
 			var at := game.world.ground_point(point.x, point.y, 0.08)
-			if game.world.is_water(at) or not _flat(game, at): continue
+			if game.world.is_water(at) or (VolcanicTerrain.contains(point) and VolcanicLava.molten(at)) or not _flat(game, at): continue
 			var query := PhysicsShapeQueryParameters3D.new()
 			query.shape = shape
 			query.transform.origin = at + Vector3.UP * 1.3

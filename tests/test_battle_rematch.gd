@@ -167,7 +167,7 @@ func _storm_sites(game: BattleRoyaleGame) -> void:
 		BattleStormLayout.choose(game)
 		var circle := game.match_state.circle
 		seen[circle] = true
-		check(circle.distance_to(BattleRing.CENTER) <= 235 and not game.world.is_water(game.world.ground_point(circle.x, circle.y, 0.08)), "finale seed selects supported dry terrain")
+		check(circle.distance_to(BattleRing.CENTER) <= BattleRing.MAX_ANCHOR and not game.world.is_water(game.world.ground_point(circle.x, circle.y, 0.08)), "finale seed selects supported dry terrain")
 	game.room.epoch = original
 	BattleStormLayout.choose(game)
 	check(seen.size() > 1, "different match seeds vary the finale location")

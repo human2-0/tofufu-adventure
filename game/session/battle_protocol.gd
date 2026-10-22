@@ -2,7 +2,7 @@ class_name BattleProtocol
 extends RefCounted
 ## Independent, bounded battle protocol. Arrays contain values, never objects.
 
-const VERSION: int = 10
+const VERSION: int = 11
 const BUILD: int = PlaytestRoom.GAME_VERSION
 const HUMAN_CAPACITY: int = 20
 const CAPACITY: int = 70
@@ -51,8 +51,8 @@ static func snapshot(value: Dictionary) -> bool:
 	if int(value.winner) >= rows.size(): return false
 	if not value.has("circle") or not value.has("stats"): return false
 	if value.has("circle"):
-		if not ExplorationProtocol.vector(value.circle, 2, 300): return false
-		if Vector2(value.circle[0], value.circle[1]).distance_to(BattleRing.CENTER) > 240: return false
+		if not ExplorationProtocol.vector(value.circle, 2, 1000): return false
+		if Vector2(value.circle[0], value.circle[1]).distance_to(BattleRing.CENTER) > BattleRing.MAX_ANCHOR: return false
 	if value.has("stats") and not BattleRoundStats.valid(value.stats, rows.size()): return false
 	if value.has("mobs") and not BattleMobWire.valid(value.mobs, rows.size()): return false
 	if value.has("deployment") and not BattleDeploymentState.valid(value.deployment, rows.size(), value.options): return false
@@ -73,6 +73,8 @@ static func snapshot(value: Dictionary) -> bool:
 	if value.has("combat") and (not BattleCombatWire.roster(value.combat) or value.combat.size() != rows.size()): return false
 	if value.has("pack"):
 		if not BattlePackWire.packs(value.pack) or value.pack.size() != rows.size() or not BattlePackWire.world(value.get("chests"), value.get("drops")): return false
+		for i in rows.size():
+			if value.pack[i][1].is_empty() and rows[i][8] > 0: return false
 	var loot: Variant = value.get("loot")
 	if not loot is Array or loot.size() > 160: return false
 	for row: Variant in loot:

@@ -16,6 +16,11 @@ var _kills: int = 0
 
 func build() -> void:
 	tactical = BattleRoundHUD.new()
+	var damage_layer := CanvasLayer.new()
+	damage_layer.layer = 18 # Above bag/loot panels; never inherits tactical visibility.
+	game.hud.add_child(damage_layer)
+	tactical.damage_flash = BattleDamageFlash.new()
+	damage_layer.add_child(tactical.damage_flash)
 	game.hud._root.add_child(tactical)
 	results = BattleResultPanel.new()
 	game.hud._root.add_child(results)
@@ -26,6 +31,7 @@ func build() -> void:
 func update() -> void:
 	_base_hud()
 	if game.room.phase == "recovering":
+		tactical.damage_flash.cancel()
 		results.hide()
 		tactical.hide()
 		_shown = false
@@ -40,10 +46,9 @@ func update() -> void:
 	_taken = float(stats[1])
 	_kills = int(row[12])
 	_observed = true
-	tactical.visible = not game.deployment.active()
-	_rotation()
+	tactical.visible = not game.deployment.active() and not game.hud.exit_panel.visible and not game.pack_ui.blocked()
 	var progress := BattleRoundStats.goals(state, game.local_slot)
-	tactical.goals.text = tr("Goals · Chests %d/3 · Damage %d/100 · Survive %ds/90s") % progress
+	tactical.display_objectives(progress)
 	var complete: bool = state.winner != -2 or (row[8] <= 0 and row[13] > 0)
 	tactical.results_button.visible = complete
 	if not complete:
@@ -55,21 +60,23 @@ func update() -> void:
 		_shown = true
 		results.show()
 
-func _rotation() -> void:
+func _rotation() -> Dictionary:
 	var state := game.match_state
 	var radar := game.hud.radar
 	radar.next_center = BattleRing.next_center(state.time, state.circle)
 	radar.next_radius = BattleRing.RADII[BattleRing.stage(state.time) + 1]
-	var at := radar.position_on_map
+	var actor := game.bodies[game.watch_slot]
+	var at := Vector2(actor.position.x, actor.position.z)
 	var offset := at - radar.next_center
 	var edge := maxf(0, radar.next_radius - 5)
 	radar.destination = at if offset.length() <= edge else radar.next_center + offset.normalized() * edge
 	var distance := ceili(at.distance_to(radar.destination))
 	var seconds := ceili(BattleRing.phase_remaining(state.time))
-	tactical.storm.text = (tr("Storm closing · %ds · Next zone %dm") if BattleRing.closing(state.time) else tr("Storm moves in %ds · Next zone %dm")) % [seconds, distance]
-	var teams := BattleTeams.survivors(state).size()
-	if teams <= 3: tactical.storm.text = tr("Final showdown · %d teams · Next zone %dm") % [teams, distance]
-	radar.queue_redraw()
+	var right := Vector2(game.camera.global_basis.x.x, game.camera.global_basis.x.z).normalized()
+	var forward := Vector2(-game.camera.global_basis.z.x, -game.camera.global_basis.z.z).normalized()
+	var direction := (radar.destination - at).normalized()
+	return {"closing": BattleRing.closing(state.time), "phase_seconds": seconds, "zone_distance": distance,
+		"unsafe": BattleRing.outside(actor.position, state.time, state.circle), "zone_heading": atan2(direction.dot(right), direction.dot(forward)), "view_heading": forward}
 
 func _recap() -> void:
 	var state := game.match_state
@@ -95,12 +102,13 @@ func _base_hud() -> void:
 	game.hud.radar.chests = []
 	for chest: Array in game.match_state.chests:
 		if chest[4] == 0: game.hud.radar.chests.append(Vector2(chest[1], chest[3]))
-	game.hud.display({"alive": game.match_state.alive, "total": game.bodies.size(), "kills": row[12], "stage": BattleRing.stage(game.match_state.time) + 1,
-		"seconds": ceili(BattleRing.remaining(game.match_state.time)), "hp": ceili(row[8]), "armour": ceili(row[9]),
-		"weapon": BattleBalance.title(int(row[10])), "ammo": row[11], "reserve": row[18], "heals": row[16],
+	var data := {"alive": game.match_state.alive, "total": game.bodies.size(), "kills": row[12], "stage": BattleRing.stage(game.match_state.time) + 1,
+		"hp": ceili(row[8]), "armour": ceili(row[9]),
+		"reserve": row[18],
 		"sp": ceili(game.combat.fighters[game.local_slot].combat.vitals.current), "tank": ceili(game.combat.fighters[game.local_slot].combat.sotjet.milk) if row[10] == 7 else -1,
-		"reload": game.combat.fighters[game.local_slot].combat.gun.reload_remaining,
-		"special": BattleBalance.special(game.combat.fighters[game.local_slot].combat),
-		"team": BattleResultText.partner(game), "deploying": game.deployment.active(), "result": message, "feed": game.presentation.feed_text(), "at": Vector2(game.bodies[game.watch_slot].position.x, game.bodies[game.watch_slot].position.z),
-		"center": BattleRing.center(game.match_state.time, game.match_state.circle), "radius": BattleRing.radius(game.match_state.time)})
+		"deploying": game.deployment.active(), "result": message, "feed": game.presentation.feed_text(), "at": Vector2(game.bodies[game.watch_slot].position.x, game.bodies[game.watch_slot].position.z),
+		"center": BattleRing.center(game.match_state.time, game.match_state.circle), "radius": BattleRing.radius(game.match_state.time)}
+	data.merge(_rotation(), true)
+	data.merge(BattleHUDValues.loadout(game), true)
+	game.hud.display(data)
 

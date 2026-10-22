@@ -53,9 +53,7 @@ func step(delta: float) -> void:
 		var fighter := game.combat.fighters[slot]
 		var row: Array = game.match_state.rows[slot]
 		if row[8] <= 0:
-			if not _dead.has(slot):
-				_dead[slot] = true
-				transactions.drop_all(slot)
+			if not _dead.has(slot) and transactions.drop_all(slot): _dead[slot] = true
 			continue
 		if game.match_state.winner != -2: continue
 		fighter.health.current = float(row[8])
@@ -83,21 +81,31 @@ func spawn(stack: ItemStack, at: Vector3) -> bool:
 	next_drop += 1
 	return true
 
-func reachable(slot: int, at: Vector3, chest: int = -1) -> bool:
+func reachable(slot: int, at: Vector3, chest: int = -1, origin: Vector3 = Vector3.INF) -> bool:
 	var body := game.bodies[slot]
-	if body.position.distance_squared_to(at) > 12.25: return false
+	var from := body.position if origin == Vector3.INF else origin
+	if from.distance_squared_to(at) > 12.25: return false
 	var excludes: Array[RID] = []
 	if chest >= 0 and chest < field.blockers.size(): excludes.assign(field.blockers[chest])
-	var ray := PhysicsRayQueryParameters3D.create(body.position + Vector3.UP * 0.8, at + Vector3.UP * 0.5, 1, excludes)
+	var ray := PhysicsRayQueryParameters3D.create(from + Vector3.UP * 0.8, at + Vector3.UP * 0.5, 1, excludes)
 	return body.get_world_3d().direct_space_state.intersect_ray(ray).is_empty()
 
-func drop_point(slot: int, offset: Vector3) -> Vector3:
+func drop_point(slot: int, offset: Vector3, anchor: Vector3 = Vector3.INF) -> Vector3:
 	var body := game.bodies[slot]
-	var at := body.position + offset
+	var origin := body.position if anchor == Vector3.INF else anchor
+	var at := origin + offset
 	var ray := PhysicsRayQueryParameters3D.create(at + Vector3.UP * 0.8, at - Vector3.UP * 5, 1)
 	var floor_hit := body.get_world_3d().direct_space_state.intersect_ray(ray)
 	var point: Vector3 = floor_hit.position + Vector3.UP * 0.05 if not floor_hit.is_empty() else game.world.ground_point(at.x, at.z, 0.05)
-	return point if reachable(slot, point) else body.position
+	return point if reachable(slot, point, -1, origin) else origin
+
+func death_anchor(slot: int) -> Vector3:
+	var at := game.bodies[slot].position
+	var ground := game.world.ground_point(at.x, at.z, 0.05)
+	var top := Vector3(at.x, maxf(at.y, ground.y) + 2, at.z)
+	var ray := PhysicsRayQueryParameters3D.create(top, top + Vector3.DOWN * 256, 1)
+	var hit := game.bodies[slot].get_world_3d().direct_space_state.intersect_ray(ray)
+	return hit.position + Vector3.UP * 0.05 if not hit.is_empty() else ground
 
 func interact_bot(slot: int) -> void:
 	for chest: Array in game.match_state.chests:
@@ -106,7 +114,7 @@ func interact_bot(slot: int) -> void:
 			return
 	for drop: Array in game.match_state.drops:
 		if drop[5] > 0 and reachable(slot, Vector3(drop[1], drop[2], drop[3])):
-			if not BattlePackBots.wants(game.match_state.pack[slot], int(drop[4])): continue
+			if not BattlePackBots.wants(game.match_state.pack[slot], int(drop[4]), -1, float(drop[6])): continue
 			if transactions.take(slot, int(drop[0])):
 				BattlePackBots.equip(self, slot)
 				return
@@ -116,9 +124,9 @@ func restore(values: Array) -> void:
 	_dead.clear()
 	next_drop = 0
 	for drop: Array in game.match_state.drops: next_drop = maxi(next_drop, int(drop[0]) + 1)
-	for slot in game.bodies.size():
-		if game.match_state.rows[slot][8] <= 0: _dead[slot] = true
 	BattlePackSnapshot.apply(self, values, true)
+	for slot in game.bodies.size():
+		if game.match_state.rows[slot][8] <= 0 and values[slot][1].is_empty(): _dead[slot] = true
 	field.update(false)
 
 func dispose() -> void:

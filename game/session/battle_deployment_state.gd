@@ -57,7 +57,7 @@ static func valid(value: Variant, count: int, options: Array) -> bool:
 	for site: Variant in sites:
 		if not site is Array or site.size() != 3: return false
 		for coordinate in site:
-			if not BattleProtocol.number(coordinate, -450, 450): return false
+			if not BattleProtocol.number(coordinate, -1000, 1000): return false
 	for field in ["choices", "locked"]:
 		if not value.get(field) is Array or value[field].size() != count: return false
 	for slot in count:

@@ -6,6 +6,7 @@ func _ready() -> void:
 	super._ready()
 	_currency.hide()
 	_tooltip.details_reader = BattleItems.details
+	_tooltip.stack_details_reader = _stack_details
 	_conversion_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_adapt_labels(self)
 	drop_confirmation.skip_future = true
@@ -48,3 +49,12 @@ func _grade(button: InventorySlotButton) -> void:
 	style.border_color = BattleRarity.COLORS[BattleRarity.grade(kind)]
 	style.set_border_width_all(2)
 	button.add_theme_stylebox_override("normal", style)
+	if button.current_stack.item.category in CharacterEquipment.APPAREL_SLOTS:
+		button._quantity.text = "◆" if not equipment.complete_set().is_empty() and button.source == "equipment" else str(ceili(BattleArmourWear.remaining(button.current_stack)))
+
+func _stack_details(stack: ItemStack) -> String:
+	if stack.item.category not in CharacterEquipment.APPAREL_SLOTS: return ""
+	if not equipment.complete_set().is_empty():
+		for name in CharacterEquipment.APPAREL_SLOTS:
+			if equipment.get_slot(name) == stack: return tr("Complete matching set: unbreakable while equipped together.")
+	return tr("Durability: %.1f / 50. Incoming damage is shared evenly among worn pieces.") % BattleArmourWear.remaining(stack)

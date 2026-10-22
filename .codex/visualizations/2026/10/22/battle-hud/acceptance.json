@@ -1,0 +1,72 @@
+{
+  "status": "passed",
+  "date": "2026-10-22",
+  "scope": "Battle Royale HUD, camera controls and cosmetic storm; no gameplay tuning, save or network schema change.",
+  "automated": {
+    "architecture": "PASS (742 runtime scripts)",
+    "import": "PASS",
+    "godot_scenarios": {
+      "battle_loop": "PASS",
+      "battle_inventory": "PASS",
+      "battle_deployment": "PASS",
+      "battle_game": "PASS",
+      "first_person": "PASS",
+      "localization": "PASS",
+      "update_log": "PASS",
+      "scene": "PASS",
+      "battle_radar": "PASS",
+      "battle_hud": "PASS"
+    },
+    "full_suite_run": false
+  },
+  "native": {
+    "engine": "Godot 4.7.2 / Metal / Apple M1",
+    "sizes": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "languages": [
+      "en",
+      "pl"
+    ],
+    "screenshots": 28,
+    "views": [
+      "safe-hold",
+      "behind-closing",
+      "overhead-closing",
+      "expanded-map",
+      "outside-storm",
+      "help",
+      "recovery"
+    ],
+    "inspected": [
+      "behind-closing-1280-en.png",
+      "overhead-closing-640-pl.png",
+      "overhead-closing-1280-en.png",
+      "expanded-map-1280-en.png",
+      "outside-storm-1280-en.png",
+      "outside-storm-640-pl.png",
+      "safe-hold-640-pl.png",
+      "help-640-pl.png",
+      "recovery-640-pl.png"
+    ]
+  },
+  "performance": {
+    "report": "storm-performance.json",
+    "finding": "No slowdown measured in this isolated visual ABBA sample; disabled passes share the same CPU presentation preparation. Ambient scene work and draw counts vary. This does not establish active 50-CPU match performance.",
+    "live_cpu_match_rebenchmarked": false
+  },
+  "controls": {
+    "C": "Behind/overhead, starts behind; no first person",
+    "middle_mouse": "Overhead N/E/S/W; behind swaps shoulders",
+    "F1_or_question_mark": "Optional controls and round-goal help",
+    "Tab": "Expanded map"
+  },
+  "remaining_acceptance": "Human readability/playtesting, active-match target FPS and device/WAN acceptance remain separate."
+}

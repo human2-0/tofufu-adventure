@@ -144,6 +144,22 @@ const ENTRIES: Array[Dictionary] = [
 			"Every Royale hunt can now fire a warned, dodgeable ranged attack. Cover, guard reflection and changing direction help you survive.",
 			"Find Common, Rare and Legendary gear across the map. Weapons have distinct strengths, CPUs keep upgrading, and a complete Celestial set is the strongest loadout."
 		]
+	},
+	{
+		"id": 20, "date": "2026-10-22", "title": "Read the Royale at a glance",
+		"bullets": [
+			"A compact Royale HUD shows health, armour, stamina, weapons and food with icons and bars. Open Help for controls.",
+			"Start behind Tofufu, press C for the overhead test view, and use middle click to rotate overhead or switch shoulders.",
+			"A moving purple storm wall, bright ground edge and shaded map make danger clear. Follow the safe-zone arrow before the storm reaches you."
+		]
+	},
+	{
+		"id": 21, "date": "2026-10-22", "title": "Loot, withstand and rotate",
+		"bullets": [
+			"Defeated survivors drop their entire equipment and backpack contents, preserving remaining item resources.",
+			"Incoming damage briefly pulses the screen edges red. Each partial armour piece has 50 durability and a quarter of its set modifiers; complete matching sets cannot break.",
+			"Soybean plants, chests and storm finales now reach distant map regions. Early circles allow more time to travel, and eligible regions have equal finale chances."
+		]
 	}
 
 ]

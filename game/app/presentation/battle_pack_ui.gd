@@ -97,7 +97,9 @@ func _loot() -> void:
 	for drop: Array in game.match_state.drops:
 		if drop[5] <= 0 or not game.pack.reachable(game.local_slot, Vector3(drop[1], drop[2], drop[3])): continue
 		var item := _items[int(drop[4]) - 1]
-		rows.append({"id": drop[0], "label": tr(item.name) + " ×%d" % int(drop[5]), "icon": item.icon, "color": BattleRarity.COLORS[BattleRarity.grade(int(drop[4]))], "enabled": inventory.has_space_for(item, int(drop[5]))})
+		var label := tr(item.name) + " ×%d" % int(drop[5])
+		if item.category in CharacterEquipment.APPAREL_SLOTS: label += " · " + tr("Durability %.0f/50") % (float(drop[6]) * 0.5)
+		rows.append({"id": drop[0], "label": label, "icon": item.icon, "color": BattleRarity.COLORS[BattleRarity.grade(int(drop[4]))], "enabled": inventory.has_space_for(item, int(drop[5]))})
 		tokens.append(drop)
 	var stamp := JSON.stringify(tokens)
 	if stamp == _stamp: return

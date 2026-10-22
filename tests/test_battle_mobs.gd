@@ -207,7 +207,7 @@ func _storm_and_cpu() -> void:
 	check(BattleBotHunts.command(0, game.match_state, original, 25) == original, "nearby survivor combat takes priority over optional hunting")
 	var before := game.match_state.drops.size()
 	var hunts: Array = game.match_state.mobs[1].duplicate()
-	game.match_state.time = 432
+	game.match_state.time = BattleRing.total_time()
 	game.mobs.step(100)
 	check(game.match_state.mobs[0][3][9] == 3 and game.match_state.drops.size() == before and game.match_state.mobs[1] == hunts, "storm clears mobs without loot or hunt credit")
 	check(game.match_state.alive == 4 and game.match_state.winner == -2, "hunts never decide survivor victory")

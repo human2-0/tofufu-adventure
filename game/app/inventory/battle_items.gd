@@ -19,15 +19,15 @@ static func make(kind: int) -> InventoryItem:
 	var base: String = {"celestial_sword": "knife", "celestial_staff": "sproutwood_staff", "soy_raygun": "soy_gun"}.get(item.id, item.id)
 	if DESCRIPTIONS.has(base): item.description = DESCRIPTIONS[base]
 	if item.category in CharacterEquipment.APPAREL_SLOTS:
-		item.damage_reduction = [0.02, 0.04, 0.06][BattleRarity.grade(kind)]
-		item.description = "Temporary match armour. Four matching pieces activate a set bonus; protection is capped at 25%."
+		item.damage_reduction = float(BattleWearStats.BONUSES[BattleWearStats.family(item)][0]) / 4.0
+		item.description = "Temporary match armour. Each piece grants one quarter of its set modifiers and has 50 durability. A complete matching set cannot break; protection is capped at 25%."
 	return item
 
 static func details(item: InventoryItem) -> String:
 	if item.category not in CharacterEquipment.APPAREL_SLOTS:
 		var role: String = BattleWeaponRoles.TEXT.get(item.id, "")
 		return TranslationServer.translate(role) + "\n\n" + TranslationServer.translate(ItemTooltipContent.details(item)) if not role.is_empty() else ItemTooltipContent.details(item)
-	var per_piece := TranslationServer.translate("Per piece: %d%% protection.") % roundi(item.damage_reduction * 100)
+	var per_piece := TranslationServer.translate("Per piece: %.2f%% protection and one quarter of its set modifiers.") % (item.damage_reduction * 100)
 	var set_id := item.id.trim_suffix("_" + item.category)
 	var bonus := "Full set: 25% protection, damage +20%, attack speed +12%, movement +10%. Divine aura."
 	if set_id == "bright_leaf": bonus = "Full set: 12% protection, melee damage +10%, ranged damage -5%, movement -5%."

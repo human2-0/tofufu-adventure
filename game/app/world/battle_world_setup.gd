@@ -2,6 +2,8 @@ class_name BattleWorldSetup
 extends RefCounted
 ## Uses the authored exploration map and existing sprites/models without its quests.
 
+const MAP_BOUNDS := Rect2(-500, -500, 1400, 1400)
+
 static func actors(game: BattleRoyaleGame) -> void:
 	var scene := load("res://game/player/player.tscn") as PackedScene
 	var spawns: Array[Vector3] = []

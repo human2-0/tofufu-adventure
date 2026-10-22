@@ -41,7 +41,7 @@ static func packs(value: Variant) -> bool:
 	if not value is Array or (value.size() < 2 or value.size() > BattleProtocol.CAPACITY): return false
 	for row: Variant in value:
 		if not row is Array or row.size() != 4 or not BattleProtocol.integer(row[0], 0, 1000000): return false
-		if not row[1] is Array or row[1].size() not in [10, 14, 20]: return false
+		if not row[1] is Array or row[1].size() not in [0, 10, 14, 20]: return false
 		for item: Variant in row[1]:
 			if not stack(item): return false
 		if not row[2] is Array or row[2].size() != SLOTS.size(): return false
@@ -49,7 +49,11 @@ static func packs(value: Variant) -> bool:
 			var category := "combat" if i in [6, 7] else ("support" if i >= 8 else SLOTS[i])
 			if not stack(row[2][i], category): return false
 		var bag: Array = row[2][4]
-		if bag.is_empty() or row[1].size() != [10, 14, 20][int(bag[0]) - 24]: return false
+		if bag.is_empty():
+			if not row[1].is_empty(): return false
+			for item: Array in row[2]:
+				if not item.is_empty(): return false
+		elif row[1].size() != [10, 14, 20][int(bag[0]) - 24]: return false
 		if not row[3] is Array or row[3].size() != 5: return false
 		for i in 5:
 			if not BattleProtocol.number(row[3][i], 0, [2, 2, 50, 100, 125][i]): return false

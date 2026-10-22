@@ -2,6 +2,7 @@ class_name BattlePlantMap
 extends Control
 ## Clickable deployment map. Availability and ownership arrive as display values.
 signal selected(index: int)
+var bounds := Rect2(-500, -500, 1000, 1000)
 var terrain: Texture2D
 var sites: Array = []
 var states: Array[int] = [] # 0 free, 1 enemy reservation, 2 local, 3 teammate.
@@ -19,7 +20,7 @@ func _map_rect() -> Rect2:
 
 func _point(index: int) -> Vector2:
 	var rect := _map_rect()
-	return rect.position + (Vector2(sites[index][0], sites[index][2]) + Vector2.ONE * 500) / 1000 * rect.size
+	return rect.position + (Vector2(sites[index][0], sites[index][2]) - bounds.position) / bounds.size * rect.size
 
 func _draw() -> void:
 	var rect := _map_rect()

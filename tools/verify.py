@@ -58,6 +58,8 @@ def test_stages():
     yield "battle_migration", ["--script", "res://tests/test_battle_migration.gd"], 60
     yield "battle_royale", ["--script", "res://tests/test_battle_royale.gd"], 60
     yield "battle_combat", ["--script", "res://tests/test_battle_combat.gd"], 60
+    yield "battle_survival", ["--script", "res://tests/test_battle_survival.gd"], 180
+    yield "battle_hud", ["--script", "res://tests/test_battle_hud.gd"], 90
     yield "battle_radar", ["--script", "res://tests/test_battle_radar.gd"], 60
     yield "battle_mobs", ["--script", "res://tests/test_battle_mobs.gd"], 180
     yield "battle_loop", ["--script", "res://tests/test_battle_loop.gd"], 90

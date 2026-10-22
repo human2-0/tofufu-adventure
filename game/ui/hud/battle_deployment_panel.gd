@@ -58,6 +58,7 @@ func _notification(what: int) -> void:
 
 func _translate() -> void:
 	if _values.is_empty(): return
+	map.bounds = _values.get("bounds", Rect2(-500, -500, 1000, 1000))
 	map.terrain = _values.get("terrain")
 	map.sites = _values.get("sites", [])
 	map.states.assign(_values.get("states", []))

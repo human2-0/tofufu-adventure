@@ -17,15 +17,15 @@ static func equip(pack: BattlePack, slot: int) -> void:
 		if destination.is_empty(): continue
 		var existing := loadout.equipment.get_slot(destination)
 		if existing != null:
-			if existing.item.id == stack.item.id: continue
+			if existing.item.id == stack.item.id and (category not in CharacterEquipment.APPAREL_SLOTS or existing.reserve >= stack.reserve - 10): continue
 			if category == "backpack" and existing.item.storage_slots >= stack.item.storage_slots: continue
 			if category in CharacterEquipment.APPAREL_SLOTS:
 				var worn := CharacterEquipment.SLOTS.find(destination)
-				if not wants(_values(loadout), BattlePackWire.ITEMS.find(stack.item.id) + 1, worn): continue
+				if not wants(_values(loadout), BattlePackWire.ITEMS.find(stack.item.id) + 1, worn, stack.reserve): continue
 			if category == "combat" and not wants(_values(loadout), BattlePackWire.ITEMS.find(stack.item.id) + 1): continue
 		pack.transactions.transfer(slot, 0, i, 1, CharacterEquipment.SLOTS.find(destination))
 
-static func wants(values: Array, kind: int, worn: int = -1) -> bool:
+static func wants(values: Array, kind: int, worn: int = -1, reserve: float = 100.0) -> bool:
 	var category: String = BattlePackWire.CATEGORIES[kind - 1]
 	if category == "support": return true
 	if worn < 0:
@@ -33,7 +33,8 @@ static func wants(values: Array, kind: int, worn: int = -1) -> bool:
 		if category != "combat": worn = BattlePackWire.SLOTS.find(category)
 	var existing: Array = values[2][worn]
 	if existing.is_empty(): return true
-	if existing[0] == kind: return false
+	if existing[0] == kind:
+		return category in CharacterEquipment.APPAREL_SLOTS and reserve > float(existing[2]) + 10 and not _complete(values[2])
 	if category == "backpack": return kind > int(existing[0])
 	if category == "combat": return BattleRarity.grade(kind) > BattleRarity.grade(int(existing[0]))
 	if BattleRarity.grade(kind) != BattleRarity.grade(int(existing[0])):
@@ -67,3 +68,11 @@ static func heal(pack: BattlePack, slot: int) -> void:
 	var inventory := pack.game.combat.fighters[slot].loadout.inventory
 	for i in inventory.capacity:
 		if pack.transactions.consume(slot, 0, i): return
+
+static func _complete(worn: Array) -> bool:
+	if worn[0].is_empty(): return false
+	var first := int(worn[0][0])
+	if first not in [12, 16, 20]: return false
+	for i in 4:
+		if worn[i].is_empty() or int(worn[i][0]) != first + i: return false
+	return true

@@ -635,7 +635,7 @@ the normal adventure save flow retains ownership. Death destination selection
 and checkpoint respawning remain planned.
 
 
-## N9 — Separate Tofufu Battle Royale (implemented; battle protocol 10)
+## N9 — Separate Tofufu Battle Royale (implemented; battle protocol 11)
 
 The title menu opens an independent mode for up to twenty humans and fifty CPUs on the existing seeded
 Meadow scene, including its connected biomes and obstacle collisions. Adventure
@@ -653,9 +653,8 @@ BattleGunfirePings reads live authority counters or existing accepted combat sna
 counters/origins, including ricochet, Sotjet and bow launches; it adds no wire fields
 or gameplay queries. Initial replica baselines, recovery and spectator changes
 clear historical pings. At most one cosmetic marker per shooter is retained.
-Seven timed circle stages
-close on the nursery clearing; storm damage bypasses armour. The final circle
-closes completely, bounding match duration even if survivors hide.
+Seven timed circle stages close on a seeded dry finale site; storm damage bypasses armour.
+The final circle closes completely, bounding match duration even if survivors hide.
 
 `BattleRoom` and `BattleRoomMessages` have their own capacity, epoch and readiness
 barrier; peers must also match the existing game build, preventing different
@@ -1042,3 +1041,39 @@ a fired attack. Recovery cancels flights/windups and retains cooldowns with a
 Rarity is derived from the unchanged stable item catalog, so grade/stat resources
 remain match-only and do not change adventure item definitions or save schemas.
 See the match-loop design for exact weights, weapon roles and outfit caps.
+
+
+### Whole-kit elimination, armour integrity and wider circles (implemented; battle protocol 11)
+
+Every eliminated survivor releases every carried stack and worn slot, including the
+backpack. The authority reserves enough free drop entries before clearing any slots.
+An exceptional full ledger retains the dead survivor's kit and retries; checkpoints
+preserve that pending kit. A completely empty pack/equipment record with zero bag
+capacity marks a completed release, so recovery neither repeats it nor grants a
+replacement backpack. Live survivors cannot submit/receive this empty record.
+Airborne/void eliminations project the kit onto the collision surface below, then
+scatter within unobstructed reach of that landing point.
+Existing drop IDs, resources, atomic takes and bounded 768-entry storage are unchanged.
+
+For Royale apparel, the existing per-stack 0..100 reserve encodes 0..50 durability.
+No Adventure item/save fields are added. Combat damage actually removed from HP and
+the rechargeable armour bar is divided equally among the currently worn pieces;
+blocked, immune and storm damage does not wear apparel. Pieces reaching zero break
+and lose their modifiers. Each intact piece supplies one quarter of its family's
+Royale bonuses and tradeoffs. Four matching pieces suspend wear without repairing
+old wear; removing a piece resumes it. The same actor pack revisions/deltas,
+world-drop resource values and checkpoints preserve exact integrity for humans/CPUs.
+
+Deployment/chest sampling extends across mainland, city and volcanic terrain. The
+1400-metre map atlas covers all these sites. Finale selection gives equal odds to
+each region with valid dry, collision-cleared sites, then chooses a site in that
+region. Circle anchors are bounded to 900 metres from the nursery; circles remain
+nested. Radii are 1000/650/360/180/46/22/7/0 metres, with 20-second holds and
+120/100/60/50/40/40/40-second closes (602 seconds through complete closure).
+Long early closes allow travel across the expanded play area. Matching battle
+protocol 11 peers are required for these semantics and expanded coordinate bounds;
+Adventure's protocol and saves are unchanged.
+
+Confirmed-damage feedback uses a mouse-transparent layer above inventory/loot UI,
+so an open bag does not hide the brief red edge pulses. Paused recovery cancels
+transient flashes; accepted damage counters still drive subsequent feedback.
