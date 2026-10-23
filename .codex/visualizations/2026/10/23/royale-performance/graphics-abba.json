@@ -1,0 +1,69 @@
+{
+	"samples": [
+		{
+			"draw_calls": 1375.0,
+			"frame_p50_ms": 13.121,
+			"frame_p95_ms": 31.355,
+			"performance": false,
+			"region": "meadow",
+			"triangles": 1869115.0
+		},
+		{
+			"draw_calls": 529.0,
+			"frame_p50_ms": 6.847,
+			"frame_p95_ms": 21.407,
+			"performance": true,
+			"region": "meadow",
+			"triangles": 1003365.0
+		},
+		{
+			"draw_calls": 529.0,
+			"frame_p50_ms": 6.842,
+			"frame_p95_ms": 22.141,
+			"performance": true,
+			"region": "meadow",
+			"triangles": 1003365.0
+		},
+		{
+			"draw_calls": 1375.0,
+			"frame_p50_ms": 6.876,
+			"frame_p95_ms": 23.187,
+			"performance": false,
+			"region": "meadow",
+			"triangles": 1869115.0
+		},
+		{
+			"draw_calls": 424.0,
+			"frame_p50_ms": 6.854,
+			"frame_p95_ms": 21.23,
+			"performance": false,
+			"region": "city",
+			"triangles": 54473.0
+		},
+		{
+			"draw_calls": 260.0,
+			"frame_p50_ms": 6.851,
+			"frame_p95_ms": 21.014,
+			"performance": true,
+			"region": "city",
+			"triangles": 32182.0
+		},
+		{
+			"draw_calls": 259.0,
+			"frame_p50_ms": 6.863,
+			"frame_p95_ms": 20.969,
+			"performance": true,
+			"region": "city",
+			"triangles": 32102.0
+		},
+		{
+			"draw_calls": 424.0,
+			"frame_p50_ms": 6.827,
+			"frame_p95_ms": 20.763,
+			"performance": false,
+			"region": "city",
+			"triangles": 54473.0
+		}
+	],
+	"scope": "Native M1 fixed 2560x1440 target, uncapped, 51 fixed-pose survivors. Same loaded world/camera, ABBA at meadow and city. Full scenery/shadows at fixed 90% versus near scenery/no shadows at 65%. Bot simulation and network frozen; this isolates graphics and does not promise active 50-CPU FPS."
+}

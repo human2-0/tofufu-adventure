@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "godot_total": 161,
+  "godot_passed": 161,
+  "initial_full_passed": 158,
+  "initial_full_report": "full/report.json",
+  "rechecks": {
+    "battle_royale": "flow-and-journal/battle_royale.log",
+    "battle_rematch": "rematch-and-journal/battle_rematch.log",
+    "pod_escape": "opening-isolated/pod_escape.log"
+  },
+  "recheck_context": {
+    "battle_royale": "Fixed journal resize callback after menu detachment.",
+    "battle_rematch": "Updated test launcher fixture to supply per-device preferences for the new explicit dependency.",
+    "pod_escape": "Opening timing test passed alone after failing under concurrent world-test load; production opening code unchanged."
+  },
+  "final_followups": {
+    "visibility": "visibility-runner.log",
+    "distant_cpu_culling": "cpu-final.log",
+    "compact_journal_and_rapid_close": "journal-final.log",
+    "architecture": "architecture-final.log",
+    "haze_and_restored_atmosphere": "haze-graphics-final.log",
+    "haze_camera_storm": "haze-hud-final.log"
+  }
+}

@@ -3,6 +3,7 @@ extends CanvasLayer
 ## Compact display-only HUD: graphic resources/loadout, small counters, optional help.
 signal leave_requested
 signal spectate_requested
+signal graphics_requested
 var readout: Label
 var controls_hint: Label
 var result: Label
@@ -79,8 +80,10 @@ func _build_menu() -> void:
 	var buttons := VBoxContainer.new()
 	exit_panel.add_child(buttons)
 	MenuStyle.button(buttons, "Resume match", exit_panel.hide)
+	MenuStyle.button(buttons, "Graphics", graphics_requested.emit, MenuIcons.SETTINGS)
 	MenuStyle.button(buttons, "Next survivor", spectate_requested.emit)
 	MenuStyle.button(buttons, "Leave Battle Royale", leave_requested.emit)
+	for button: Button in buttons.get_children(): MenuStyle.fit_button(button, true)
 	controls_hint = MenuStyle.paragraph(buttons, "")
 	controls_hint.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	controls_hint.add_theme_font_size_override("font_size", 12)

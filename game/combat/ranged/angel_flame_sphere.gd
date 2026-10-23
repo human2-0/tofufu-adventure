@@ -6,16 +6,18 @@ const RADIUS: float = 3.5
 
 static func pulse(arrow: AngelArrow, at: Vector3, struck: Damageable) -> void:
 	if not arrow.authoritative: return
-	var seen: Array[Damageable] = [struck]
+	var seen: Array[Damageable] = []
+	if is_instance_valid(struck): seen.append(struck)
 	for target in arrow.targets:
 		if not is_instance_valid(target) or target in seen or target.current <= 0.0: continue
 		seen.append(target)
 		var offset := target.global_position - at
 		if offset.length() > RADIUS: continue
 		var excludes: Array[RID] = []
-		if is_instance_valid(struck.body): excludes.append(struck.body.get_rid())
-		var start := at + offset.normalized() * 0.04
-		var ray := PhysicsRayQueryParameters3D.create(start, target.global_position, 1, excludes)
+		if is_instance_valid(struck) and is_instance_valid(struck.body): excludes.append(struck.body.get_rid())
+		# Moving toward a target across a thin wall can put the ray inside that wall.
+		var ray := PhysicsRayQueryParameters3D.create(at, target.global_position, 1, excludes)
+		ray.hit_from_inside = true
 		var cover := arrow.get_world_3d().direct_space_state.intersect_ray(ray)
 		if not cover.is_empty() and cover.collider != target.body: continue
 		if target.receive_attack(arrow.body_damage, offset.normalized() * 4.0, Damageable.HitKind.SOY, target.global_position, arrow.bow.combat.owner_health):

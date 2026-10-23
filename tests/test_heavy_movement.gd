@@ -88,7 +88,7 @@ func _rules() -> void:
 	var command := PlayerCommand.new()
 	command.move = Vector2.RIGHT
 	var velocity := motor.step(command, Vector3.ZERO, true, DT)
-	check(velocity.x < 0.3, "walk builds momentum gradually")
+	check(velocity.x > 0.7 and velocity.x < tuning.walk_speed, "firm walking responds in one tick without snapping to full speed")
 	velocity = Vector3(tuning.walk_speed, 0, 0)
 	command.move = Vector2.LEFT
 	velocity = motor.step(command, velocity, true, DT)

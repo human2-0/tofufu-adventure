@@ -25,7 +25,7 @@ func _ready() -> void:
 	combat.owner_health = health
 	combat.gun.owner_health = health
 	combat.sotjet.flow.owner_health = health
-	health.guard_payment = combat.vitals.spend
+	health.guard_payment = _pay_guard
 	health.projectile_guard = _reflection
 	health.hit.connect(ActorMeleeImpact.receive.bind(actor, combat, health))
 	actor.super_dashed.connect(_cloud)
@@ -91,6 +91,10 @@ func clear_flights() -> void:
 func _reflection(incoming: Vector3, point: Vector3, confirmed: bool) -> Vector3:
 	if actor.motor.is_dashing or combat.claws.dashing: return Vector3.ZERO
 	return combat.equipment.reflection_normal(incoming, point, confirmed)
+
+func _pay_guard(amount: float) -> bool:
+	var upgraded := combat.equipment.weapon_enhanced and combat.equipment.melee_selected()
+	return combat.vitals.spend(amount * (BattleWeaponUpgrade.REFLECTION_COST if upgraded else 1.0))
 
 func _cloud(at: Vector3) -> void:
 	if combat.replica_view: return

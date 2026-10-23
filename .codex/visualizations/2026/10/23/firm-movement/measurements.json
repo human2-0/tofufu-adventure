@@ -1,0 +1,11 @@
+{
+	"scope": "Actual grounded CharacterBody3D motion: previous linear reference and shared current motor. Firm Tofufu art, 60 Hz, collision-backed floor; no preference/save writes.",
+	"stop_distances_m": [
+		0.558636426925659,
+		0.203784704208374
+	],
+	"stop_seconds": [
+		0.266666666666667,
+		0.166666666666667
+	]
+}

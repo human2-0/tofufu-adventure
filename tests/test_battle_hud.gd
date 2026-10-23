@@ -17,6 +17,7 @@ func _run() -> void:
 	room.options = [1, 1]
 	room.practice()
 	game = BattleRoyaleGame.new()
+	game.preferences.path = "user://battle-hud-%d.cfg" % Time.get_ticks_usec()
 	game.room = room
 	root.add_child(game)
 	while not game.composed: await physics_frame

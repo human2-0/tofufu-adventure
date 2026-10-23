@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "feature": "Firm grounded movement with a short curved release",
+  "scope": [
+    "Adventure",
+    "Battle Royale",
+    "CPU and authoritative co-op movement",
+    "guest movement prediction"
+  ],
+  "live_build": 66,
+  "release_batch": 24,
+  "tuning": {
+    "ground_response_multiplier": 3.5,
+    "walk_speed_unchanged": 4.8,
+    "run_speed_unchanged": 7.2,
+    "nominal_ground_stop_seconds": 0.16,
+    "curve": "Squared velocity ease-out from linearly falling sqrt(speed), reaching exact zero",
+    "surface_grip_preserved": true,
+    "airborne_rates_unchanged": true,
+    "new_motor_snapshot_fields": 0
+  },
+  "verification": {
+    "mode": "quick plus 14 selected scenarios",
+    "godot_scenarios": 15,
+    "stages": {
+      "import": 7.2,
+      "battle_migration": 0.8,
+      "battle_combat": 3.9,
+      "battle_cpu": 47.9,
+      "save_modes": 0.6,
+      "motor": 0.3,
+      "heavy_movement": 37.1,
+      "actor_collisions": 5.7,
+      "jump": 0.6,
+      "first_person": 36.6,
+      "ocean": 49.7,
+      "coop_ocean": 59.7,
+      "coop_protocol": 0.4,
+      "coop_response": 60.0,
+      "update_log": 5.2,
+      "scene": 39.2
+    },
+    "architecture_scripts": 753,
+    "runner": "verification/runner.log",
+    "mid_release_restore_recheck": "verification/motor-mid-release-recheck.log",
+    "full_suite_rerun": false,
+    "native": "native.log",
+    "native_dimensions": [
+      1280,
+      720
+    ],
+    "native_character": "Firm Tofufu",
+    "checks": [
+      "100 ms walking response in all tested headings",
+      "short right-angle turn and bounded reversal",
+      "finite curved stop and reduced travel",
+      "timestep subdivision",
+      "mid-release continuation from captured velocity",
+      "sub-deadzone input cannot create drift",
+      "ice and air retain their distinct behavior",
+      "real actor collision and jump behavior",
+      "co-op prediction and version compatibility",
+      "Royale recovery, combat and fifty CPUs",
+      "save compatibility, update journal and scene integration"
+    ]
+  },
+  "native_measurements": {
+    "reference_stop_seconds": 0.266666666666667,
+    "current_stop_seconds": 0.166666666666667,
+    "reference_stop_distance_m": 0.558636426925659,
+    "current_stop_distance_m": 0.203784704208374,
+    "scope": "Actual grounded CharacterBody3D motion: previous linear reference and shared current motor. Firm Tofufu art, 60 Hz, collision-backed floor; no preference/save writes."
+  },
+  "committed": false,
+  "pushed": false,
+  "limits": [
+    "Reported stopping distance is a normal-ground walking sample; speed, ice and gear alter travel.",
+    "Focused checks and native movement capture are complete; this turn did not repeat the full suite or WAN tests."
+  ]
+}

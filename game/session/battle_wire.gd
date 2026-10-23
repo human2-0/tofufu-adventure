@@ -2,7 +2,7 @@ class_name BattleWire
 extends RefCounted
 ## Value-only compressed JSON. Bound both encoded and expanded data before parsing.
 
-const MAX_RAW_BYTES: int = 196608
+const MAX_RAW_BYTES: int = 262144
 const MAX_WIRE_BYTES: int = 58000
 const PREFIX: String = "Z6:"
 

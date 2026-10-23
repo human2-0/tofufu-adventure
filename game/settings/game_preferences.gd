@@ -44,7 +44,7 @@ func load_preferences() -> void:
 	frame_limit = int(config.get_value("rendering", "frame_limit", 120))
 	if frame_limit not in [0, 60, 120, 144]: frame_limit = 120
 	var scale_value: Variant = config.get_value("rendering", "scale", 1.0)
-	render_scale = float(scale_value) if (scale_value is float or scale_value is int) and float(scale_value) in [0.75, 0.85, 1.0] else 1.0
+	render_scale = float(scale_value) if (scale_value is float or scale_value is int) and float(scale_value) in GraphicsPreferences.RENDER_SCALES else 1.0
 	apply_deadzone(deadzone)
 	apply_display(resolution, fullscreen)
 
@@ -104,7 +104,7 @@ func apply_display(index: int, full: bool) -> void:
 
 func apply_rendering(viewport: Viewport, limit: int, scale: float, sync: bool = false) -> void:
 	frame_limit = limit if limit in [0, 60, 120, 144] else 120
-	render_scale = scale if scale in [0.75, 0.85, 1.0] else 1.0
+	render_scale = scale if scale in GraphicsPreferences.RENDER_SCALES else 1.0
 	vsync = sync
 	if DisplayServer.get_name() != "headless":
 		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if vsync else DisplayServer.VSYNC_DISABLED)

@@ -129,6 +129,7 @@ func restore(values: Array, authority_enabled: bool) -> void:
 		fighter.equip(game.match_state.rows[slot])
 		var state := BattleCombatWire.unpack(values[slot])
 		CombatState.restore(fighter.combat, state)
+		fighter.combat.gun.magazine_capacity = BattleWeaponUpgrade.capacity(fighter.loadout)
 		fighter.cloud_sequence = int(state.cloud_sequence)
 		fighter.cloud_at = CombatState._vector(state.cloud_at)
 		# Cancel transient attacks, retaining SP, reloads and every special cooldown.

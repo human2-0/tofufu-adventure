@@ -5,6 +5,8 @@ extends RefCounted
 static func contents(epoch: String, id: int, kind: int) -> Array[int]:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = epoch.hash() ^ (id * 7919) ^ 118231
+	if kind == 3:
+		return [28, 27, 33, BattleRarity.roll(rng, BattleRarity.pool(12, 23), [0, 0, 100])]
 	var result: Array[int] = [28 if kind > 0 else 27]
 	if kind == 0: result.append(BattleRarity.roll(rng, BattleRarity.pool(12, 23), [55, 40, 5]))
 	elif kind == 1:

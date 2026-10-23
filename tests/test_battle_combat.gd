@@ -47,6 +47,8 @@ func _run() -> void:
 	_recovery()
 	_wire()
 	_cloud_and_delta()
+	await _bow_controls()
+	_melee_tiers()
 	fixture.queue_free()
 	game.room.queue_free()
 	game.free()
@@ -74,6 +76,11 @@ func _shooting() -> void:
 	gun.spread_multiplier = 0
 	game.combat.fighters[0].step(_command(0, true), 1.0 / 60)
 	check(gun.shot_sequence == 1 and gun.magazine == 8, "adventure gun spawns physical shot and spends magazine")
+	check(is_equal_approx(gun.shot_velocity.length(), 150.0), "Royale bullets travel at 2.5 times Adventure speed")
+	check(is_equal_approx(gun.projectile_lifetime * gun.shot_velocity.length(), 90.0), "faster Royale bullets retain ninety metre reach")
+	game.combat.capture()
+	check(BattleCombatWire.valid(game.match_state.combat[0]), "fast shot is accepted by the bounded Royale wire")
+	check(not ExplorationProtocol.combat(CombatState.capture(game.combat.fighters[0].combat)), "Adventure keeps its original projectile velocity bound")
 	check(game.match_state.rows[1][9] == 50, "projectile does not hit instantly like old battle raycast")
 	for frame in 10:
 		await physics_frame
@@ -110,8 +117,8 @@ func _loadouts() -> void:
 		fighter.equip(row)
 		check(BattleBalance.item(kind).id == BattleBalance.ITEMS[kind], "battle catalog loans actual adventure item")
 		check(fighter.combat.gun.enhancement_multiplier == 1 and fighter.combat.tuning.bean_damage == 18, "rarity never imports saved enhancement or progression")
-		if kind == 3: check(is_equal_approx(fighter.combat.sword_damage_multiplier * 1.2, 1.12), "pod sword does not stack its adventure base bonus above legendary power")
-		if kind == 9: check(is_equal_approx(fighter.combat.sword_damage_multiplier, 1.30), "legendary sword has real match power")
+		if kind == 3: check(is_equal_approx(fighter.combat.sword_damage_multiplier * 1.2, 1.30), "pod sword uses one heavy-hit match bonus")
+		if kind == 9: check(is_equal_approx(fighter.combat.sword_damage_multiplier, 1.45), "legendary sword has real match power")
 		if kind == 11: check(is_equal_approx(fighter.combat.gun.damage_multiplier, 1.22) and is_equal_approx(fighter.combat.gun.attack_speed_multiplier, 0.94), "raygun earns power and range while trading some fire rate")
 	fighter.combat.gun.magazine = 3
 	fighter.combat.gun.reload_remaining = 0.8
@@ -122,6 +129,99 @@ func _loadouts() -> void:
 		game.match_state.rows[0][23] = 2
 		fighter.equip(game.match_state.rows[0])
 	check(fighter.combat.gun.magazine == 3 and fighter.combat.gun.reload_remaining == 0.8 and fighter.combat.gun.cooldown == 0.18, "swapping cannot refill magazine or reset reload/cadence")
+
+func _bow_controls() -> void:
+	var fighter := game.combat.fighters[0]
+	var row: Array = game.match_state.rows[0]
+	row[23] = 8
+	row[10] = 8
+	row[18] = 2
+	fighter.equip(row)
+	var bow := fighter.combat.bow
+	bow.cooldown = 0
+	bow.reload_remaining = 0
+	fighter.combat.vitals.current = 100
+	var command := _command(0)
+	command.aim_point = Vector3(0, 0.65, 25)
+	command.guard_held = true
+	var buffer := BattleInputBuffer.new()
+	var clock := 0.0
+	var paid := 0
+	var previous := fighter.combat.vitals.current
+	for tick in 100:
+		clock += 1.0 / 60
+		buffer.accept(0, BattleInputBuffer.encode(command, fighter.actor.position), clock)
+		fighter.step(BattleInputBuffer.decode(buffer.sample(0, clock), fighter.actor.position), 1.0 / 60)
+		if fighter.combat.vitals.current < previous: paid += 1
+		previous = fighter.combat.vitals.current
+		if tick == 40: check(bow.charge > 0.4 and bow.sequence == 0, "RMB holds survive delayed input and build an observable partial charge")
+	check(bow.sequence == 1 and bow.empowered and paid == 1, "buffered RMB alone launches one charged arrow and spends SP once")
+	check(bow.cooldown > 5 and bow.reload_remaining > 1, "successful charged shot starts both real clocks")
+	var arrow: AngelArrow
+	for child in bow.get_children():
+		if child is AngelArrow: arrow = child
+	check(arrow != null and arrow.flight != null and arrow.flight.is_visible_in_tree(), "charged shot owns visible flight independent of held bow visibility")
+	game.combat.capture()
+	check(BattleCombatWire.valid(game.match_state.combat[0]), "charged match state passes JSON wire validation")
+	var replica := game.combat.fighters[2]
+	replica.authority(false)
+	var state := BattleCombatWire.unpack(game.match_state.combat[0])
+	state.bow_shot = 0
+	CombatState.present(replica.combat, state, Vector2.DOWN)
+	state.bow_shot = 1
+	CombatState.present(replica.combat, state, Vector2.DOWN)
+	var replica_arrow: AngelArrow
+	for child in replica.combat.bow.get_children():
+		if child is AngelArrow: replica_arrow = child
+	check(replica_arrow != null and not replica_arrow.authoritative and replica_arrow.flight.is_visible_in_tree(), "guest charged flight is visible and cosmetic")
+	replica.authority(true)
+	fighter.clear_flights()
+	replica.clear_flights()
+	row[23] = 2
+	row[10] = 2
+	fighter.equip(row)
+	await process_frame
+
+func _melee_tiers() -> void:
+	var fighter := game.combat.fighters[0]
+	var combat := fighter.combat
+	var row: Array = game.match_state.rows[0]
+	var dummy := PracticeDummy.new()
+	dummy.maximum_health = 2000
+	dummy.position = Vector3(0, 0, -20)
+	fixture.add_child(dummy)
+	var measured: Dictionary = {}
+	for sample: Array in [[1, 10.0], [3, 13.0], [4, 11.5], [5, 14.0], [9, 14.5], [10, 16.5]]:
+		var kind := int(sample[0])
+		row[22] = kind
+		row[10] = kind
+		row[18] = 1
+		fighter.equip(row)
+		combat.strike(Vector2.DOWN, 0)
+		var before := dummy.target.current
+		combat._damage(dummy.target)
+		check(is_equal_approx(before - dummy.target.current, sample[1]), "real melee hit has distinct base power: " + str(kind))
+		combat.hit_pause = 0 # Measure the committed swing separately from confirmed-hit pause.
+		var frames := 0
+		while combat.active and frames < 100:
+			combat.step(Vector2.DOWN, false, 1.0 / 60)
+			frames += 1
+		measured[kind] = frames
+	check(measured[4] < measured[1] and measured[1] < measured[3] and measured[3] < measured[5], "Katana, knife, Pod Sword and staff have distinct committed swing times")
+	check(measured[9] < measured[1] and measured[10] < measured[5], "legendary sword and staff improve their family's cadence")
+	row[22] = 6
+	row[10] = 6
+	fighter.equip(row)
+	var base := combat.claws.damage(combat)
+	fighter.loadout.equipment.get_slot("combat_1").enhanced = true
+	fighter.loadout.refresh(false)
+	check(is_equal_approx(combat.claws.damage(combat), base * 1.2), "Paws enhancement applies exactly one 20-percent damage bonus")
+	fighter.loadout.equipment.get_slot("combat_1").enhanced = false
+	row[22] = 1
+	row[10] = 2
+	row[18] = 2
+	fighter.equip(row)
+	dummy.free()
 
 func _guard_and_replica() -> void:
 	var defender := game.combat.fighters[1]

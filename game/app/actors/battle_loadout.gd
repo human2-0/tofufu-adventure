@@ -16,8 +16,10 @@ func refresh(_show_feedback: bool = true) -> void:
 	super.refresh(false)
 	BattleBalance.apply(combat, BattleItems.weapon_kind(equipment.get_slot("combat_%d" % active_slot)))
 	BattleWearStats.apply(combat, equipment)
+	BattleWeaponUpgrade.apply(combat)
+	combat.gun.magazine_capacity = BattleWeaponUpgrade.capacity(self)
 	combat.gun.cooldown = clock
-	combat.gun.magazine = magazine
+	combat.gun.magazine = mini(magazine, combat.gun.magazine_capacity)
 	combat.gun.recoil.heat = heat
 	combat.gun.recoil.quiet_time = quiet
 	combat.equipment._click_remaining = click

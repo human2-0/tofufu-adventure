@@ -8,7 +8,7 @@ func take(slot: int, id: int) -> bool:
 	for drop: Array in pack.game.match_state.drops:
 		if int(drop[0]) != id or drop[5] <= 0: continue
 		if not pack.reachable(slot, Vector3(drop[1], drop[2], drop[3])): return false
-		var stack := BattleItems.decode([drop[4], drop[5], drop[6]])
+		var stack := BattleItems.decode([drop[4], drop[5], drop[6]] + drop.slice(7))
 		if not fighter.loadout.inventory.has_space_for(stack.item, stack.count): return false
 		if fighter.loadout.inventory.add_stack(stack) != 0: return false
 		drop[5] = 0

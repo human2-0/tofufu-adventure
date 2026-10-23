@@ -2,7 +2,7 @@ class_name BattleProtocol
 extends RefCounted
 ## Independent, bounded battle protocol. Arrays contain values, never objects.
 
-const VERSION: int = 11
+const VERSION: int = 14
 const BUILD: int = PlaytestRoom.GAME_VERSION
 const HUMAN_CAPACITY: int = 20
 const CAPACITY: int = 70

@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Metal 4.0 - Forward Mobile - Using Device #0: Apple - Apple M1 (Apple7)
+
+SCRIPT ERROR: Left operand of 'is' is a previously freed instance.
+          at: _skills_gallery (res://tests/preview_battle_honio.gd:149)
+          GDScript backtrace (most recent call first):
+              [0] _skills_gallery (res://tests/preview_battle_honio.gd:149)
+              [1] _run (res://tests/preview_battle_honio.gd:22)
+              [2] _shot (res://tests/preview_battle_honio.gd:13)

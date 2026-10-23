@@ -399,7 +399,7 @@ remain intact. BattleFighter composes the existing adventure combat, equipment
 and movement abilities under equal-stat temporary loans. BattleCombat queues
 attributed hits, and BattleCombatWire validates compact combat deltas. BattlePack
 composes finite inventories, equipment and gradual food healing. Spaced seeded
-chests share a uniform pool; indexed loot changes and recovery checkpoints retain
+basic, rare and legendary chests share region-independent tier odds; indexed loot changes and recovery checkpoints retain
 only temporary match state. Standard
 capsules preserve movement/collision, while
 peer-assigned CPU steering and compact twenty-Hz actor snapshots bound additional
@@ -411,7 +411,7 @@ peers agree on a replacement over direct links, restore the shared checkpoint an
 resume after a countdown. Missing direct quorum or an interrupted voted handoff
 fails safely to the lobby. Adventure co-op and persistence retain their existing
 contracts. Protocol, matchmaking and acceptance limits are recorded in
-[N9](COOP.md#n9--separate-tofufu-battle-royale-implemented-battle-protocol-8).
+[N9](COOP.md#n9--separate-tofufu-battle-royale-implemented-battle-protocol-13).
 
 The Battle Royale loop also composes BattleMatchView/BattleRoundHUD for zone
 forecasts, achievements, combat feedback and recap. BattleRoundStats/circle values
@@ -420,3 +420,18 @@ explicit ready/cancel-ready replays; BattleCareer stores only local cosmetic pro
 outside adventure slots. BattleBotNavigation applies bounded authority-side cover
 checks to distributed CPU steering. The [loop audit](../design/BATTLE_ROYALE_LOOP.md)
 distinguishes implemented improvements from future revive, coordination and ranked work.
+
+### Local Royale rendering and compact journal (implemented)
+
+`BattleSettingsFlow` injects the launcher preferences into a match-local graphics
+view and `BattleSceneryView`. Godot visibility ranges cull existing terrain and
+ornament tiles by camera distance, preserving collision and shorter authored
+detail ranges. Optional distance haze masks the scenery cutoff, retaining the
+local day/night colours; full-map scenery restores the original fog. The
+160/240/360-metre choices and full-map option change rendering
+only. A Performance preset selects 65% 3D, 60 FPS, near scenery and no dynamic
+shadows; text stays native resolution. Lower 50% and 65% scales also appear in the
+shared launcher settings. No lazy loading, physics streaming or central service
+is introduced. `UpdateLogPanel` displays newest-first bilingual release cards
+with one expanded detail view and a bounded scrolling list. Closing still
+acknowledges the shown batches through device-local `UpdateLogFlow`.

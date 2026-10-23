@@ -83,19 +83,28 @@ normal guard reflection provide counterplay. Fired attacks outlive the shooter. 
 One shot per hunt and four-Hz blocked-sight retries bound authority work. Existing
 Adventure enemy tuning and bee stings remain unchanged.
 
-Chest rolls select Common / Rare / Legendary grades at 60 / 32 / 8 weights, then
-uniformly choose a remaining item within that grade. Four choices remain distinct
-and seeded, so weights are reapplied after each removal; the same rules apply to
-all chests. Starter weapons and Soypod armor are Common; specialized weapons, Nori
+The map holds up to 192 dry, clear chests with 28-metre minimum spacing.
+Basic / rare / legendary chest quotas are 65 / 27 / 8 percent, mixed across
+shuffled cells. Each provides four distinct choices: weapon, armour/storage,
+food and a flexible item. Basic quality weights are 72/25/3; rare 20/65/15;
+legendary guarantees a legendary weapon and armour, with 0/25/75 for its flexible
+choice. Food is guaranteed in all tiers. A fifth Magical Tofufu Chunk appears
+with a separate 10% / 35% / 70% tier roll. These chances never depend on region,
+skin, career, host identity or opening order.
+Starter weapons and Soypod armor are Common; specialized weapons, Nori
 armor and expanded bags are Rare; Celestial weapons and armor are Legendary.
 Hunts guarantee food and use their own bounded reward pools: snail armor grades
 55 / 40 / 5, armored armor 20 / 60 / 20, hunt weapons 80 / 20 Rare / Legendary.
 Bees can still supply an upgraded backpack. No region secretly improves these odds.
 
 Weapon tooltips show actual match bonuses and existing role advantages. Legendary
-weapons gain 25–30% melee damage or 22% shot damage. The raygun gains 15% speed/range
-but loses 6% fire rate. Rare tools retain reach, area control, mobility or precision.
+weapons gain 45% sword power / 12% attack rate, or 65% staff power with
+faster sweeps than the rare staff. The raygun gains 22% shot damage and 15%
+speed/range, trading 6% fire rate. Rare tools retain reach, area control, mobility or precision.
 Common guns still deal 18 body / 27 head damage and keep nine-shot magazines.
+Royale gun bullets travel at 150 m/s (Raygun 172.5 m/s), 2.5 times their former
+speed. A 0.6-second flight retains the existing 90/103.5-metre ranges and swept
+collision, including reflected shots and replicas. Adventure speed is unchanged.
 A complete Celestial outfit adds 25% protection, 20% damage, 12% attack/fire speed
 and 10% movement. Complete Soypod/Nori sets give 12%/20% protection with their
 existing offensive/mobility tradeoffs. Each partial piece grants a quarter of its family’s complete modifiers: 3%/5%/6.25%
@@ -132,6 +141,19 @@ inventory/loot is open. Paused recovery cancels transient flashes. Four small wo
 icons show integrity, or shields when a matching full set is unbreakable. English/Polish native screenshots
 and focused camera/HUD/storm scenarios live beside the existing Royale checks.
 Human comprehension and target-device performance remain separate acceptance.
+
+Esc / F1 → Graphics offers live resolution, frame limit, VSync, adaptive resolution,
+scenery distance, dynamic shadows and local effects. It releases combat input and
+keeps the match running. Near/Balanced/Far scenery uses native camera-distance
+culling on existing tiles; bounds include each visual's radius, preserve shorter
+authored foliage ranges, and leave collisions, actors, projectiles, loot and the
+storm active. Combatant visuals share a 140-metre cap at every quality, beyond
+weapon reach and inside the near-cover range. Full map restores authored scenery
+ranges. With atmospheric fog enabled, distance haze softens the cutoff before
+scenery disappears; full-map scenery restores the original atmosphere. The Performance preset selects
+65% 3D, 60 FPS, 160-metre scenery and no dynamic shadows; players can choose 50%
+3D manually. These controls reduce rendering load, not authoritative CPU counts
+or physics frequency. Settings persist on the device and close during recovery.
 
 Eliminations atomically release the entire bag and worn kit, including backpacks,
 with exact remaining durability and milk. Airborne kills land the kit on the
@@ -170,3 +192,49 @@ The prioritisation is informed by the official [Apex beginner guide](https://hel
 on squad coordination and the official [Warzone update](https://www.callofduty.com/patchnotes/2026/03/call-of-duty-bo7-warzone-season-02-reloaded-patch-notes)
 on match activities, loot, armour and elimination feedback. Tofufu's tuning and
 implementation above are project design choices rather than those games' rules.
+
+
+## Temporary upgrades and visual results
+
+Drag/click one Magical Tofufu Chunk onto a weapon in B and confirm its match-only
+bonus. One upgrade per weapon gives +20% damage and +10% attack/fire rate.
+Magazine guns gain five capacity, 20% faster bullets and 25% tighter spread
+without extra reach; reload to fill the new capacity. Soyjet gains 25% continuous
+firing duration and 20% stream speed. Bow reload rate increases 10%. Guarding with
+an enhanced melee weapon reduces reflection SP cost by 35%; weapons with a
+special RMB keep that special rather than gaining a new guard. CPUs obey the
+same transactions. Upgrades follow dropped weapons and host recovery, then reset
+with every new round. Adventure drop chances and enhancements remain independent.
+
+The recap highlights placement, six icon-led statistics and three goal medals.
+An animated XP bar shows the actual cosmetic level before/after this round and
+celebrates level crossings. Four reward sources add to the exact existing career
+award; showing the animation does not save or grant a duplicate reward.
+
+
+### Rare melee hunt: Honio Meniono
+
+One optional Honio replaces an ordinary hunt in 25% of seeded rounds, at a random
+existing dry hunt site. He is a muscular Tofufu Easter egg with generated eight-view
+idle, two running strides, punch/rush and overhead-slam art. Only Royale composes
+him. He does not consume a survivor seat or decide victory.
+
+- 320 HP; 25% resistance while chasing/committing, no resistance during recovery.
+- Chase 8.4 m/s, acquire within 28 m, return home beyond a 38 m leash; no heal reset.
+- Jab: 0.5 s warning, 1.95 m forward cone, 18 damage, 0.65 s recovery.
+- Protein Express: 0.8 s committed lane warning, physical 13 m/s rush for up to
+  0.58 s, one 26-damage close contact, 1.25 s recovery. No ranged damage.
+- Tofu Tenderizer: 1 s warning, 3 m circular melee impact, 32 damage, 1.15 s recovery.
+- Specials share a 4.5 s cooldown. World cover, dodging, guarding/SP and dash
+  immunity all work. Close melee interrupts a committed skill for 0.7 s, followed
+  by 2.5 s interrupt resistance to prevent permanent stunlock. Paralysis still works.
+- Milk, two apples, one Magical Tofufu Chunk and one random legendary armour piece
+  drop once. They are public, contestable, temporary match loot; no Adventure XP or
+  gear. Normal cosmetic Royale hunt credit still applies. A full ledger keeps the whole bounty pending; storm/void kills
+  pay nothing. Migration preserves the claim and cancels unfinished attacks.
+
+Four generated, occluded sprite effects reuse fixed nodes rather than spawning
+particles/lights. Torso/foot anchors, full eight-direction art, the visible upper
+headshot region and collision capsule are calibrated together. Honio has localized
+short jokes and a compact health bar; attack warnings and recovery colour expose
+his openings without adding a permanent HUD panel.

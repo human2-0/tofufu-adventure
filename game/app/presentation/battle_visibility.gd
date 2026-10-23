@@ -3,9 +3,13 @@ extends Node
 ## Skip offscreen sprite/held-model work; every capsule, weapon and projectile simulates.
 
 var game: BattleRoyaleGame
+const COMBATANT_RANGE: float = 140.0 # Beyond every weapon's reach, inside near cover's hysteresis.
 
 func _ready() -> void:
 	process_priority = -18 # After camera follow, before wrist interpolation and weapon views.
+	for slot in game.bodies.size():
+		limit(game.bodies[slot])
+		limit(game.combat.fighters[slot])
 	if game.bodies.size() <= 20:
 		set_process(false)
 		return
@@ -20,7 +24,7 @@ func _process(_delta: float) -> void:
 		var actor := game.bodies[slot]
 		var at := actor.global_position + Vector3.UP
 		var on_screen := slot == game.watch_slot
-		if not on_screen and not game.camera.is_position_behind(at):
+		if not on_screen and game.camera.global_position.distance_squared_to(at) < COMBATANT_RANGE * COMBATANT_RANGE and not game.camera.is_position_behind(at):
 			on_screen = bounds.has_point(game.camera.unproject_position(at))
 		_apply(slot, on_screen and game.match_state.rows[slot][8] > 0)
 
@@ -47,3 +51,9 @@ func _gun_muzzle(fighter: BattleFighter) -> Vector3:
 func _jet_muzzle(fighter: BattleFighter) -> Vector3:
 	var jet := fighter.combat.sotjet
 	return jet.visual.muzzle_position() if fighter.actor.visuals.presentation_enabled else jet.muzzle_position(jet.visual.facing)
+
+static func limit(root: Node) -> void:
+	if root is GeometryInstance3D:
+		var view := root as GeometryInstance3D
+		view.visibility_range_end = minf(view.visibility_range_end, COMBATANT_RANGE) if view.visibility_range_end > 0 else COMBATANT_RANGE
+	for child in root.get_children(): limit(child)

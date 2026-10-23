@@ -31,30 +31,26 @@ func present(delta: float = 0) -> void:
 			state[1] = target.y
 			state[2] = target.z
 		EncounterState.apply_mob(actors[i], state)
-		ranged[i].present(rows[i][14], delta)
+		if actors[i] is HonioMeniono: BattleHonioState.present(actors[i], rows[i][14])
+		else: ranged[i].present(rows[i][14], delta)
 
 func _build(id: int, row: Array) -> void:
-	var mob: TrainingMob = [TrainingMob, ArmoredSnail, WildBee][int(row[0])].new()
-	mob.position = Vector3(row[1], row[2], row[3])
-	game.add_child(mob)
-	mob.leash_radius = 18
-	mob.tuning = mob.tuning.duplicate()
-	mob.tuning.dry_health = BattleMobWire.HEALTH[int(row[0])]
-	mob.target.maximum = mob.tuning.dry_health
-	if mob is WildBee: mob.ranged_enabled = false
-	mob.set_physics_process(false)
-	mob.target.set_physics_process(false)
+	var mob := BattleHuntActor.build(game, row)
 	mob.target.attack_receiver = receive.bind(id)
 	mob.attacked.connect(_melee.bind(id))
 	mob.defeated.connect(_defeated.bind(id))
 	if mob is WildBee: mob.stung.connect(_sting.bind(id))
+	if mob is HonioMeniono: mob.struck.connect(_sting.bind(id))
 	actors.append(mob)
 	awake.append(false)
-	var shot := BattleMobRanged.new()
-	shot.build(game, mob, int(row[0]), id)
+	var shot: BattleMobRanged
+	if not mob is HonioMeniono:
+		shot = BattleMobRanged.new()
+		shot.build(game, mob, int(row[0]), id)
+		shot.restore(row[14])
 	ranged.append(shot)
-	shot.restore(row[14])
 	BattleMobState.restore(mob, row)
+	if mob is HonioMeniono: BattleHonioState.restore(mob, row[14])
 	for fighter in game.combat.fighters:
 		fighter.combat.targets.append(mob.target)
 		fighter.combat.gun.targets = fighter.combat.targets
@@ -67,7 +63,7 @@ func step(delta: float) -> void:
 	for id in actors.size():
 		var mob := actors[id]
 		var row: Array = game.match_state.mobs[0][id]
-		ranged[id].step(delta, awake[id] and row[9] == 0)
+		if ranged[id] != null: ranged[id].step(delta, awake[id] and row[9] == 0)
 		if row[9] != 0:
 			if tick % 60 == id % 60: BattleHuntLoot.release(game, id)
 			continue
@@ -84,6 +80,7 @@ func step(delta: float) -> void:
 		if row[9] != 0: continue
 		mob.target._physics_process(delta)
 		if awake[id]: mob._physics_process(delta)
+		elif mob is HonioMeniono: mob.melee.elapse(delta)
 		if mob is WildBee:
 			if mob._windup > 0: mob.facing = Vector3(mob._sting_aim.x, 0, mob._sting_aim.z).normalized()
 			elif not mob.velocity.is_zero_approx(): mob.facing = Vector3(mob.velocity.x, 0, mob.velocity.z).normalized()
@@ -96,7 +93,7 @@ func step(delta: float) -> void:
 
 func _select(id: int) -> void:
 	var mob := actors[id]
-	var nearest := 11664.0
+	var nearest := 784.0 if mob is HonioMeniono else 11664.0
 	var chosen := -1
 	for offset in game.bodies.size():
 		var slot := (id + offset) % game.bodies.size()
@@ -114,6 +111,10 @@ func _select(id: int) -> void:
 		mob._warning.hide()
 		if mob is ArmoredSnail: mob._cancel_rush()
 		if mob is WildBee: mob.sting.clear()
+		if mob is HonioMeniono:
+			if mob.melee.phase in [HonioMelee.Phase.WARNING, HonioMelee.Phase.RUSH]: mob.melee.cancel()
+			mob.velocity.x = 0
+			mob.velocity.z = 0
 	game.match_state.mobs[0][id][11] = chosen
 
 func receive(amount: float, direction: Vector3, kind: Damageable.HitKind, point: Vector3, source: Damageable, id: int) -> bool:
@@ -156,13 +157,14 @@ func capture() -> void:
 	if game.match_state.mobs.is_empty(): return
 	for id in actors.size():
 		BattleMobState.capture(actors[id], game.match_state.mobs[0][id])
-		game.match_state.mobs[0][id][14] = ranged[id].capture()
+		game.match_state.mobs[0][id][14] = BattleHonioState.capture(actors[id]) if actors[id] is HonioMeniono else ranged[id].capture()
 
 func restore() -> void:
 	present()
 	for id in actors.size():
 		BattleMobState.restore(actors[id], game.match_state.mobs[0][id])
-		ranged[id].restore(game.match_state.mobs[0][id][14])
-		game.match_state.mobs[0][id][14] = ranged[id].capture()
+		if actors[id] is HonioMeniono: BattleHonioState.restore(actors[id], game.match_state.mobs[0][id][14])
+		else: ranged[id].restore(game.match_state.mobs[0][id][14])
 		_select(id)
+	capture()
 	tick = 0

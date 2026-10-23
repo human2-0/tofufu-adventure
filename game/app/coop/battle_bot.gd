@@ -84,10 +84,10 @@ static func _loot_goal(slot: int, planar: Vector2, state: BattleMatch) -> Vector
 		var distance := planar.distance_squared_to(where)
 		if distance >= closest: continue
 		var kind := int(drop[4])
-		if not BattlePackBots.wants(pack, kind): continue
+		if not BattlePackBots.wants(pack, kind, -1, float(drop[6]), drop.size() == 8): continue
 		var category: String = BattlePackWire.CATEGORIES[kind - 1]
 		var useful := free
-		if not free and category == "support":
+		if not free and category in ["support", "material"]:
 			for stack: Array in pack[1]:
 				if not stack.is_empty() and stack[0] == kind and stack[1] + drop[5] <= (10 if kind == 28 else 50): useful = true
 		if not useful: continue

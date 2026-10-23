@@ -90,7 +90,7 @@ func _render_options(frame_limit: int, render_scale: float, vsync: bool, adaptiv
 	var row := HFlowContainer.new()
 	add_child(row)
 	var limits: Array[int] = [60, 120, 144, 0]
-	var scales: Array[float] = [0.75, 0.85, 1.0]
+	var scales: Array[float] = [0.5, 0.65, 0.75, 0.85, 1.0]
 	var fps := OptionButton.new()
 	for limit in limits: fps.add_item("%d FPS" % limit if limit > 0 else "Uncapped")
 	fps.select(maxi(0, limits.find(frame_limit)))

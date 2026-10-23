@@ -5,7 +5,7 @@ Generated with the built-in imagegen tool on 2026-10-16. Style reference:
 
 - `laurel-ivory.png`: repeating albedo applied through the continuous curved limbs' cylindrical UVs.
 - `icon.png`: transparent inventory/shop icon.
-- `flames.png`: repeating hand-painted flame texture, scrolled across the expanding sphere; black gaps become transparent in its shader.
+- `flames.png`: repeating hand-painted flame texture, scrolled across the expanding sphere; black gaps become transparent in its shader. The same generated source textures the fixed crossed flight streaks and camera-facing arrow-tip glint in `angel_arrow_view.gd`; no particle system or dynamic lights are added.
 - The actual 3D asset is `game/combat/ranged/angel_bow_model.tscn`: ivory recurve limbs, gold laurel leaves, plum grip, moving string and nocked arrow. Used for worn, first-person and dropped presentation.
 
 ## Texture prompt

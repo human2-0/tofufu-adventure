@@ -4,8 +4,13 @@ extends InventoryWindow
 
 func _ready() -> void:
 	super._ready()
+	enhancement_confirmation.free()
+	enhancement_confirmation = BattleEnhancementConfirmation.new()
+	enhancement_confirmation.window = self
+	add_child(enhancement_confirmation)
 	_currency.hide()
 	_tooltip.details_reader = BattleItems.details
+	_tooltip.title_reader = BattleItems.label
 	_tooltip.stack_details_reader = _stack_details
 	_conversion_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_adapt_labels(self)
@@ -15,7 +20,7 @@ func _ready() -> void:
 
 func _adapt_labels(node: Node) -> void:
 	if node is Label and node.text.begins_with("Shift-click near the Seed Bank"):
-		node.text = "Shift-click to equip. Right-click food to use it.\nDrag outside to drop. B / Esc closes the bag.\nI opens match stats. The match keeps running."
+		node.text = "Shift-click to equip. Right-click food to use it.\nApply a Magical Tofufu Chunk onto a weapon to upgrade.\nB / Esc closes the bag. The match keeps running."
 	if node is Button and node.text == "← My Tofufu": node.text = "← Match stats"
 	for child in node.get_children(): _adapt_labels(child)
 
@@ -53,6 +58,8 @@ func _grade(button: InventorySlotButton) -> void:
 		button._quantity.text = "◆" if not equipment.complete_set().is_empty() and button.source == "equipment" else str(ceili(BattleArmourWear.remaining(button.current_stack)))
 
 func _stack_details(stack: ItemStack) -> String:
+	if stack.item.category == "combat" and stack.enhanced:
+		return tr(BattleWeaponUpgrade.bonus(stack.item.id)) + "\n" + tr("Match upgrade · Lost when this round ends")
 	if stack.item.category not in CharacterEquipment.APPAREL_SLOTS: return ""
 	if not equipment.complete_set().is_empty():
 		for name in CharacterEquipment.APPAREL_SLOTS:

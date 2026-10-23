@@ -19,7 +19,11 @@ func _run() -> void:
 			for frame in 10: await process_frame
 			await RenderingServer.frame_post_draw
 			root.get_texture().get_image().save_png("/tmp/tofufu-updates-%s-%d.png" % [locale, dimensions.x])
-			menu._scroll.scroll_vertical = 100000
+			flow.panel.cards[0].toggle.pressed.emit()
+			for frame in 8: await process_frame
+			await RenderingServer.frame_post_draw
+			root.get_texture().get_image().save_png("/tmp/tofufu-updates-%s-%d-details.png" % [locale, dimensions.x])
+			flow.panel._scroll.scroll_vertical = 100000
 			for frame in 4: await process_frame
 			await RenderingServer.frame_post_draw
 			root.get_texture().get_image().save_png("/tmp/tofufu-updates-%s-%d-bottom.png" % [locale, dimensions.x])

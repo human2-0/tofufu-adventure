@@ -17,16 +17,29 @@ static func equip(pack: BattlePack, slot: int) -> void:
 		if destination.is_empty(): continue
 		var existing := loadout.equipment.get_slot(destination)
 		if existing != null:
-			if existing.item.id == stack.item.id and (category not in CharacterEquipment.APPAREL_SLOTS or existing.reserve >= stack.reserve - 10): continue
+			if existing.item.id == stack.item.id and not (category == "combat" and stack.enhanced and not existing.enhanced) and (category not in CharacterEquipment.APPAREL_SLOTS or existing.reserve >= stack.reserve - 10): continue
 			if category == "backpack" and existing.item.storage_slots >= stack.item.storage_slots: continue
 			if category in CharacterEquipment.APPAREL_SLOTS:
 				var worn := CharacterEquipment.SLOTS.find(destination)
 				if not wants(_values(loadout), BattlePackWire.ITEMS.find(stack.item.id) + 1, worn, stack.reserve): continue
-			if category == "combat" and not wants(_values(loadout), BattlePackWire.ITEMS.find(stack.item.id) + 1): continue
+			if category == "combat" and not wants(_values(loadout), BattlePackWire.ITEMS.find(stack.item.id) + 1, -1, stack.reserve, stack.enhanced): continue
 		pack.transactions.transfer(slot, 0, i, 1, CharacterEquipment.SLOTS.find(destination))
+	# Spend at most two chunks per looting decision, through the same transfer rule.
+	for i in loadout.inventory.capacity:
+		var chunk := loadout.inventory.get_slot(i)
+		if chunk == null or chunk.item.id != MagicalTofufu.ID: continue
+		for name in ["combat_1", "combat_2"]:
+			var weapon := loadout.equipment.get_slot(name)
+			if weapon != null and not weapon.enhanced:
+				pack.transactions.transfer(slot, 0, i, 1, CharacterEquipment.SLOTS.find(name))
+		return
 
-static func wants(values: Array, kind: int, worn: int = -1, reserve: float = 100.0) -> bool:
+static func wants(values: Array, kind: int, worn: int = -1, reserve: float = 100.0, enhanced: bool = false) -> bool:
 	var category: String = BattlePackWire.CATEGORIES[kind - 1]
+	if category == "material":
+		for i in [6, 7]:
+			if not values[2][i].is_empty() and values[2][i].size() == 3: return true
+		return false
 	if category == "support": return true
 	if worn < 0:
 		worn = 6 if kind in BattleGear.MELEE else 7
@@ -34,6 +47,7 @@ static func wants(values: Array, kind: int, worn: int = -1, reserve: float = 100
 	var existing: Array = values[2][worn]
 	if existing.is_empty(): return true
 	if existing[0] == kind:
+		if category == "combat": return enhanced and existing.size() == 3
 		return category in CharacterEquipment.APPAREL_SLOTS and reserve > float(existing[2]) + 10 and not _complete(values[2])
 	if category == "backpack": return kind > int(existing[0])
 	if category == "combat": return BattleRarity.grade(kind) > BattleRarity.grade(int(existing[0]))

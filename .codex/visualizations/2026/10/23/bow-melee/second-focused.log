@@ -1,0 +1,22 @@
+Focused verification: architecture, import, 2 Godot tests
+Architecture check: PASS (764 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.024s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.011s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-324hcdqf
+import: PASS (6.8s)
+battle_combat failed (exit 1); inspect /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-324hcdqf
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Battle adventure combat: FAIL
+FAIL: RMB holds survive delayed input and build an observable partial charge
+FAIL: buffered RMB alone launches one charged arrow and spends SP once
+FAIL: successful charged shot starts both real clocks
+FAIL: charged shot owns visible flight independent of held bow visibility

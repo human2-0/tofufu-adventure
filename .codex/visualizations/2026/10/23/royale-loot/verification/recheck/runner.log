@@ -1,0 +1,28 @@
+Quick verification: architecture, import, 11 Godot tests
+Architecture check: PASS (753 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.044s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.021s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-9uw70knf
+import: PASS (10.9s)
+battle_combat: PASS (5.4s)
+battle_hud: PASS (38.4s)
+battle_graphics: PASS (34.5s)
+battle_mobs: PASS (44.6s)
+battle_rematch: PASS (115.9s)
+battle_upgrades: PASS (34.2s)
+battle_inventory: PASS (33.8s)
+localization: PASS (1.1s)
+weapon_enhancement: PASS (100.8s)
+item_tooltip: PASS (1.3s)
+scene: PASS (50.4s)
+Quick checks passed in 500.9s (11 Godot tests). Visual/NAT checks remain separate.
+Slowest stages: battle_rematch 115.9s, weapon_enhancement 100.8s, scene 50.4s
+Full suite was not run.

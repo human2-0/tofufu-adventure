@@ -1,0 +1,815 @@
+{
+  "order": [
+    "S",
+    "SW",
+    "W",
+    "NW",
+    "N",
+    "NE",
+    "E",
+    "SE"
+  ],
+  "frames": [
+    {
+      "region": [
+        0,
+        0,
+        443,
+        443
+      ],
+      "center": 229.15,
+      "foot": 402,
+      "solid_bounds": [
+        34,
+        41,
+        423,
+        403
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "S",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        443,
+        0,
+        444,
+        443
+      ],
+      "center": 234.49,
+      "foot": 413,
+      "solid_bounds": [
+        39,
+        40,
+        404,
+        414
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "SW",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        887,
+        0,
+        443,
+        443
+      ],
+      "center": 207.87,
+      "foot": 415,
+      "solid_bounds": [
+        70,
+        56,
+        344,
+        416
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "W",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        1330,
+        0,
+        444,
+        443
+      ],
+      "center": 213.92,
+      "foot": 406,
+      "solid_bounds": [
+        24,
+        42,
+        409,
+        407
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "NW",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        0,
+        443,
+        443,
+        444
+      ],
+      "center": 233.42,
+      "foot": 392,
+      "solid_bounds": [
+        33,
+        34,
+        430,
+        393
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "N",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        443,
+        443,
+        444,
+        444
+      ],
+      "center": 216.83,
+      "foot": 394,
+      "solid_bounds": [
+        37,
+        29,
+        406,
+        395
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "NE",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        887,
+        443,
+        443,
+        444
+      ],
+      "center": 215.49,
+      "foot": 397,
+      "solid_bounds": [
+        67,
+        34,
+        375,
+        398
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "E",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        1330,
+        443,
+        444,
+        444
+      ],
+      "center": 213.76,
+      "foot": 397,
+      "solid_bounds": [
+        36,
+        33,
+        418,
+        398
+      ],
+      "sheet": "idle",
+      "pixel_size": 0.00521441,
+      "direction": "SE",
+      "pose": "idle"
+    },
+    {
+      "region": [
+        0,
+        0,
+        313,
+        313
+      ],
+      "center": 165.95,
+      "foot": 290,
+      "solid_bounds": [
+        32,
+        16,
+        299,
+        291
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "S",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        313,
+        0,
+        314,
+        313
+      ],
+      "center": 175.9,
+      "foot": 290,
+      "solid_bounds": [
+        37,
+        21,
+        298,
+        291
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "SW",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        627,
+        0,
+        313,
+        313
+      ],
+      "center": 141.83,
+      "foot": 291,
+      "solid_bounds": [
+        54,
+        34,
+        255,
+        292
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "W",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        940,
+        0,
+        314,
+        313
+      ],
+      "center": 155.29,
+      "foot": 284,
+      "solid_bounds": [
+        31,
+        35,
+        280,
+        285
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "NW",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        0,
+        313,
+        313,
+        314
+      ],
+      "center": 165.43,
+      "foot": 285,
+      "solid_bounds": [
+        31,
+        16,
+        296,
+        286
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "N",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        313,
+        313,
+        314,
+        314
+      ],
+      "center": 169.0,
+      "foot": 285,
+      "solid_bounds": [
+        42,
+        15,
+        292,
+        286
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "NE",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        627,
+        313,
+        313,
+        314
+      ],
+      "center": 153.54,
+      "foot": 288,
+      "solid_bounds": [
+        59,
+        22,
+        273,
+        289
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "E",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        940,
+        313,
+        314,
+        314
+      ],
+      "center": 156.91,
+      "foot": 289,
+      "solid_bounds": [
+        36,
+        18,
+        288,
+        290
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "SE",
+      "pose": "run_a"
+    },
+    {
+      "region": [
+        0,
+        627,
+        313,
+        313
+      ],
+      "center": 169.3,
+      "foot": 280,
+      "solid_bounds": [
+        42,
+        14,
+        299,
+        281
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "S",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        313,
+        627,
+        314,
+        313
+      ],
+      "center": 179.61,
+      "foot": 285,
+      "solid_bounds": [
+        42,
+        14,
+        297,
+        286
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "SW",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        627,
+        627,
+        313,
+        313
+      ],
+      "center": 149.86,
+      "foot": 284,
+      "solid_bounds": [
+        53,
+        25,
+        261,
+        285
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "W",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        940,
+        627,
+        314,
+        313
+      ],
+      "center": 156.82,
+      "foot": 284,
+      "solid_bounds": [
+        27,
+        14,
+        281,
+        285
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "NW",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        0,
+        940,
+        313,
+        314
+      ],
+      "center": 166.84,
+      "foot": 281,
+      "solid_bounds": [
+        40,
+        13,
+        293,
+        282
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "N",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        313,
+        940,
+        314,
+        314
+      ],
+      "center": 171.25,
+      "foot": 281,
+      "solid_bounds": [
+        36,
+        4,
+        301,
+        282
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "NE",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        627,
+        940,
+        313,
+        314
+      ],
+      "center": 159.67,
+      "foot": 282,
+      "solid_bounds": [
+        53,
+        10,
+        275,
+        283
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "E",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        940,
+        940,
+        314,
+        314
+      ],
+      "center": 158.79,
+      "foot": 283,
+      "solid_bounds": [
+        43,
+        13,
+        293,
+        284
+      ],
+      "sheet": "run",
+      "pixel_size": 0.00712611,
+      "direction": "SE",
+      "pose": "run_b"
+    },
+    {
+      "region": [
+        0,
+        0,
+        313,
+        313
+      ],
+      "center": 173.01,
+      "foot": 276,
+      "solid_bounds": [
+        29,
+        35,
+        288,
+        277
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "S",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        313,
+        0,
+        314,
+        313
+      ],
+      "center": 168.36,
+      "foot": 278,
+      "solid_bounds": [
+        11,
+        29,
+        283,
+        279
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "SW",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        627,
+        0,
+        313,
+        313
+      ],
+      "center": 171.64,
+      "foot": 281,
+      "solid_bounds": [
+        14,
+        45,
+        276,
+        282
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "W",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        940,
+        0,
+        314,
+        313
+      ],
+      "center": 181.06,
+      "foot": 278,
+      "solid_bounds": [
+        24,
+        30,
+        289,
+        279
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "NW",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        0,
+        313,
+        313,
+        314
+      ],
+      "center": 145.13,
+      "foot": 274,
+      "solid_bounds": [
+        27,
+        29,
+        290,
+        275
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "N",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        313,
+        313,
+        314,
+        314
+      ],
+      "center": 142.92,
+      "foot": 269,
+      "solid_bounds": [
+        22,
+        20,
+        300,
+        270
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "NE",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        627,
+        313,
+        313,
+        314
+      ],
+      "center": 143.04,
+      "foot": 276,
+      "solid_bounds": [
+        43,
+        35,
+        295,
+        277
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "E",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        940,
+        313,
+        314,
+        314
+      ],
+      "center": 145.67,
+      "foot": 276,
+      "solid_bounds": [
+        33,
+        25,
+        299,
+        277
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "SE",
+      "pose": "punch"
+    },
+    {
+      "region": [
+        0,
+        627,
+        313,
+        313
+      ],
+      "center": 157.04,
+      "foot": 276,
+      "solid_bounds": [
+        24,
+        13,
+        289,
+        277
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "S",
+      "pose": "slam"
+    },
+    {
+      "region": [
+        313,
+        627,
+        314,
+        313
+      ],
+      "center": 189.92,
+      "foot": 277,
+      "solid_bounds": [
+        52,
+        8,
+        273,
+        278
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "SW",
+      "pose": "slam"
+    },
+    {
+      "region": [
+        627,
+        627,
+        313,
+        313
+      ],
+      "center": 159.71,
+      "foot": 279,
+      "solid_bounds": [
+        77,
+        10,
+        235,
+        280
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "W",
+      "pose": "slam"
+    },
+    {
+      "region": [
+        940,
+        627,
+        314,
+        313
+      ],
+      "center": 165.9,
+      "foot": 276,
+      "solid_bounds": [
+        49,
+        14,
+        284,
+        277
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "NW",
+      "pose": "slam"
+    },
+    {
+      "region": [
+        0,
+        940,
+        313,
+        314
+      ],
+      "center": 162.46,
+      "foot": 268,
+      "solid_bounds": [
+        28,
+        7,
+        284,
+        269
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "N",
+      "pose": "slam"
+    },
+    {
+      "region": [
+        313,
+        940,
+        314,
+        314
+      ],
+      "center": 173.11,
+      "foot": 269,
+      "solid_bounds": [
+        57,
+        3,
+        274,
+        270
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "NE",
+      "pose": "slam"
+    },
+    {
+      "region": [
+        627,
+        940,
+        313,
+        314
+      ],
+      "center": 169.8,
+      "foot": 273,
+      "solid_bounds": [
+        92,
+        7,
+        254,
+        274
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "E",
+      "pose": "slam"
+    },
+    {
+      "region": [
+        940,
+        940,
+        314,
+        314
+      ],
+      "center": 158.29,
+      "foot": 268,
+      "solid_bounds": [
+        49,
+        4,
+        288,
+        269
+      ],
+      "sheet": "melee",
+      "pixel_size": 0.00772358,
+      "direction": "SE",
+      "pose": "slam"
+    }
+  ],
+  "registration": "Centroid of the largest opaque cream torso component; planted feet use alpha > 100 bounds. Arms, fists, sprouts and moving toes do not define the horizontal anchor."
+}

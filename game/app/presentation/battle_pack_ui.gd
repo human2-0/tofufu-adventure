@@ -97,14 +97,15 @@ func _loot() -> void:
 	for drop: Array in game.match_state.drops:
 		if drop[5] <= 0 or not game.pack.reachable(game.local_slot, Vector3(drop[1], drop[2], drop[3])): continue
 		var item := _items[int(drop[4]) - 1]
-		var label := tr(item.name) + " ×%d" % int(drop[5])
+		var label := BattleItems.label(item) + " ×%d" % int(drop[5])
+		if drop.size() == 8: label += " ✦ " + tr("Enhanced")
 		if item.category in CharacterEquipment.APPAREL_SLOTS: label += " · " + tr("Durability %.0f/50") % (float(drop[6]) * 0.5)
 		rows.append({"id": drop[0], "label": label, "icon": item.icon, "color": BattleRarity.COLORS[BattleRarity.grade(int(drop[4]))], "enabled": inventory.has_space_for(item, int(drop[5]))})
 		tokens.append(drop)
 	var stamp := JSON.stringify(tokens)
 	if stamp == _stamp: return
 	_stamp = stamp
-	panel.display(tr("Nearby loot"), tr("Choose what to carry. All chests share the same item chances.") if not rows.is_empty() else tr("No loose items in reach. Move closer to a chest or a dropped item."), rows)
+	panel.display(tr("Nearby loot"), tr("Chunk chance: basic 10% · rare 35% · legendary 70%") if not rows.is_empty() else tr("No loose items in reach. Move closer to a chest or a dropped item."), rows)
 
 func _send(action: int, args: Array) -> void:
 	game.pack.requests.request(action, args)

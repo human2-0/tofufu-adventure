@@ -7,6 +7,7 @@ var window: CanvasLayer
 var target: Control
 var _item_reader: Callable
 var details_reader: Callable
+var title_reader: Callable
 var stack_details_reader: Callable
 var _panel: PanelContainer
 var _title: Label
@@ -90,7 +91,8 @@ func _update() -> void:
 		_panel.hide()
 		return
 	var item := stack.item
-	var title := item.name + (" ✦ Enhanced" if stack.enhanced else "") + (" ×%d" % stack.count if stack.count > 1 else "")
+	var title: String = title_reader.call(item) if title_reader.is_valid() else item.name
+	title += (" ✦ " + tr("Enhanced") if stack.enhanced else "") + (" ×%d" % stack.count if stack.count > 1 else "")
 	var type := ItemTooltipContent.type_label(item)
 	if item.required_level > 1: type += " · Requires Lv. %d" % item.required_level
 	var details: String = details_reader.call(item) if details_reader.is_valid() else ItemTooltipContent.details(item)

@@ -1,0 +1,26 @@
+Quick verification: architecture, import, 21 Godot tests
+Architecture check: PASS (764 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.025s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.010s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-rd5ska1g
+import: PASS (7.2s)
+battle_migration: PASS (0.7s)
+battle_combat: PASS (3.9s)
+battle_hud: PASS (26.4s)
+battle_radar: PASS (3.8s)
+battle_upgrades: PASS (29.8s)
+battle_inventory: PASS (27.0s)
+battle_game: PASS (49.4s)
+angel_bow failed (exit 1); inspect /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-rd5ska1g
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Angel bow: FAIL
+FAIL: surface flame cannot damage an enemy behind the struck wall

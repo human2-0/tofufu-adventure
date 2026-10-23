@@ -16,6 +16,7 @@ func _run() -> void:
 	root.add_child(room)
 	room.practice()
 	game = BattleRoyaleGame.new()
+	game.preferences.path = "user://battle-inventory-test-%d.cfg" % Time.get_ticks_usec()
 	game.room = room
 	root.add_child(game)
 	while not game.composed: await physics_frame
@@ -44,7 +45,7 @@ func _run() -> void:
 func _layout() -> void:
 	var chests := game.match_state.chests
 	print("Random chest count: ", chests.size())
-	check(chests.size() >= 40 and chests.size() <= 80, "reasonable chest count")
+	check(chests.size() >= 160 and chests.size() <= BattlePackWire.CHESTS, "reasonable chest count")
 	var quadrants: Dictionary = {}
 	for i in chests.size():
 		var row: Array = chests[i]
@@ -52,6 +53,8 @@ func _layout() -> void:
 		check(not game.world.is_water(at), "chests spawn on dry land")
 		check(absf(at.y - game.world.ground_point(at.x, at.z, 0.08).y) < 0.002, "chests use shared terrain height")
 		for body: Player in game.bodies: check(body.position.distance_to(at) >= 3.99, "chests never spawn inside starting survivors")
+		for site: Array in game.match_state.deployment.sites:
+			check(Vector2(at.x - site[0], at.z - site[2]).length() >= 5.999, "all selectable plants retain chest clearance after their emergence offset")
 		quadrants[Vector2(signf(at.x + 22), signf(at.z + 22))] = true
 		for j in i:
 			var other: Array = chests[j]
@@ -66,7 +69,7 @@ func _layout() -> void:
 			check(not seen.has(kind), "four distinct chest choices")
 			seen[kind] = true
 			totals[kind] = int(totals.get(kind, 0)) + 1
-	check(totals.size() == 32, "weapons, twelve armour pieces, backpacks and all six foods are in the common pool")
+	check(totals.size() == 33, "weapons, twelve armour pieces, backpacks and all six foods and chunks occur in the basic chest pool")
 	var polish := preload("res://game/settings/localization/pl.po")
 	for kind in range(1, 12):
 		var item := BattleItems.make(kind)
@@ -74,7 +77,7 @@ func _layout() -> void:
 		check(not polish.get_message(item.description).is_empty(), "every match weapon tooltip has exact Polish copy")
 	var grades := [0, 0, 0]
 	for kind: int in totals: grades[BattleRarity.grade(kind)] += int(totals[kind])
-	check(grades[0] > 4400 and grades[0] < 5200 and grades[1] > 2200 and grades[2] > 400 and grades[2] < 850, "same weighted pool everywhere: common plentiful, rare useful, legendary scarce")
+	check(grades[0] > 5400 and grades[0] < 7000 and grades[1] > 900 and grades[2] > 200 and grades[2] < 650, "basic chest choices favour common gear and guarantee food")
 	for slot in 20:
 		var loadout := game.combat.fighters[slot].loadout
 		check(loadout.inventory.capacity == 10 and loadout.equipment.get_slot("support_1").item.id == "soy_milk" and loadout.equipment.get_slot("support_2").count == 2, "all survivors have equal finite starter supplies")
@@ -89,7 +92,7 @@ func _chest() -> void:
 	game.pack.requests.flush(game.simulation.clock + 0.099, 0)
 	check(row[4] == 0, "minimum delay enforced")
 	game.pack.requests.flush(game.simulation.clock + 0.101, 0)
-	check(row[4] == 1 and game.match_state.drops.size() == 4, "opening spills four independent choices")
+	check(row[4] == 1 and game.match_state.drops.size() == BattleChestLoot.contents(game.room.epoch, 0, int(row[5])).size(), "opening spills the complete seeded tier choices")
 	check(not BattleChestLoot.open(game.pack, 0, 0), "opening a chest twice cannot duplicate items")
 	var selected: Array = game.match_state.drops[0]
 	game.bodies[0].position = Vector3(selected[1], selected[2], selected[3])
@@ -326,18 +329,19 @@ func _wire() -> void:
 		pack[2][4] = [26, 1, 0]
 		pack[1] = []
 		for i in 20:
-			var kind := (slot * 7 + i) % 32 + 1
+			var kind := (slot * 7 + i) % 33 + 1
 			var count := (10 if kind == 28 else 50) if kind >= 27 else 1
-			pack[1].append([kind, count, (slot * 13 + i * 3) % 100 + 0.123])
+			pack[1].append([kind, count, (slot * 13 + i * 3) % 100 + 0.123] + ([true] if kind <= 11 else []))
 	while state.mobs[0].size() < BattleMobWire.LIMIT:
-		state.mobs[0].append(state.mobs[0][0].duplicate(true))
-	for row: Array in state.mobs[0]: row[14] = [2.8, 0.85, 0.708, 0, 0.707, 345.125, 123.123, -342.999, 23.456, 0, 26.789, 3.123, 999999]
+		state.mobs[0].append(state.mobs[0][1 if state.mobs[0][0][0] == 3 else 0].duplicate(true))
+	for row: Array in state.mobs[0]:
+		row[14] = BattleHonioWire.initial() if row[0] == 3 else [2.8, 0.85, 0.708, 0, 0.707, 345.125, 123.123, -342.999, 23.456, 0, 26.789, 3.123, 999999]
 	state.chests = []
-	for i in 80: state.chests.append([i, -342.999 + i, 99.999, -342.999 + i, 1])
+	for i in BattlePackWire.CHESTS: state.chests.append([i, -342.999 + i, 99.999, -342.999 + i, 1, i % 3])
 	state.drops = []
 	for i in BattlePackWire.DROPS:
-		var kind := i % 32 + 1
-		state.drops.append([999000 + i, -342.999 + i * 0.25, 99.999, -342.999 + i * 0.3, kind, 1, i % 100 + 0.123])
+		var kind := i % 33 + 1
+		state.drops.append([997000 + i, -342.999 + i * 0.25, 99.999, -342.999 + i * 0.3, kind, 1, i % 100 + 0.123] + ([true] if kind <= 11 else []))
 	state.options = [50, 1]
 	state.deployment = BattleDeploymentState.create(game.match_state.deployment.sites.duplicate(true), 70)
 	BattleDeploymentState.complete(state.deployment, state.options)

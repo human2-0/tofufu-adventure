@@ -7,6 +7,7 @@ static func capture(mob: TrainingMob, row: Array) -> void:
 	if row[9] != 0: row[4][7] = 900
 	row[5] = snappedf(mob._rest, 0.001)
 	row[6] = snappedf(mob._rush_cooldown, 0.001) if mob is ArmoredSnail else 0
+	if mob is HonioMeniono: row[6] = snappedf(mob.melee.interrupt_rest, 0.001)
 	row[7] = snappedf(mob._defend_cooldown, 0.001) if mob is ArmoredSnail else 0
 	row[8] = snappedf(mob._provoked, 0.001) if mob is WildBee else 0
 	var d := mob._destination
@@ -35,4 +36,5 @@ static func restore(mob: TrainingMob, row: Array) -> void:
 	if mob is WildBee:
 		mob.sting.clear()
 		mob._provoked = float(row[8])
+	if mob is HonioMeniono: mob.melee.interrupt_rest = float(row[6])
 	capture(mob, row)

@@ -81,15 +81,15 @@ func _rotation() -> Dictionary:
 func _recap() -> void:
 	var state := game.match_state
 	var summary := BattleRoundStats.summary(state, game.local_slot)
-	results.heading.text = tr("TOFUFU ROYALE! Victory") if summary.won else tr("Your round · Placed #%d") % summary.rank
-	results.details.text = tr("KOs: %d · Damage: %d · Chests: %d\nSurvived: %ds · Goals completed: %d/3") % [summary.kills, summary.damage, summary.chests, summary.seconds, summary.goals]
-	if not state.mobs.is_empty(): results.details.text += "\n" + tr("Hunts completed: %d") % state.mobs[1][game.local_slot]
-	results.progress.text = tr("Match XP +%d · Cosmetic career progress only") % summary.xp
-	if career != null: results.progress.text += "\n" + tr("After this round: %s") % career.caption(summary.xp)
+	var before := career.xp if career != null else 0
+	if career != null and career.claimed.has(game.room.epoch): before = maxi(0, before - int(summary.xp))
+	var hunts := int(state.mobs[1][game.local_slot]) if not state.mobs.is_empty() else 0
+	results.display(summary, before, hunts)
 	results.replay.disabled = game.room.phase != "playing" or (not game.room.offline and state.winner == -2)
 	results.replay.text = tr("Play again") if game.room.offline else (tr("Cancel ready") if ready else tr("Ready for rematch"))
 	results.status.text = rematch_status
 	if state.winner == -2 and not game.room.offline: results.status.text = tr("The round is still running. Spectate, or leave with your earned progress.")
+	results.status.visible = not results.status.text.is_empty()
 
 func _base_hud() -> void:
 	var row: Array = game.match_state.rows[game.local_slot]

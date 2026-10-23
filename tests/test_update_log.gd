@@ -19,22 +19,31 @@ func _run() -> void:
 	await process_frame
 	check(is_instance_valid(app.updates.panel), "first launch presents unread updates")
 	check(app.updates.seen == 0, "displaying updates alone does not acknowledge them")
-	check(UpdateLog.since(0).size() == UpdateLog.ENTRIES.size(), "skipped releases are accumulated")
-	check(UpdateLog.since(1).size() == UpdateLog.ENTRIES.size() - 1, "previous release only sees newer batches")
+	check(UpdateLog.since(0).size() == UpdateLog.entries().size(), "skipped releases are accumulated")
+	check(UpdateLog.since(1).size() == UpdateLog.entries().size() - 1, "previous release only sees newer batches")
 	var previous := 0
 	var polish := preload("res://game/settings/localization/pl.po")
-	for entry in UpdateLog.ENTRIES:
+	for entry in UpdateLog.entries():
 		check(entry.id > previous, "release IDs are unique and increasing")
 		previous = entry.id
 		for source: String in entry.bullets:
 			check(not polish.get_message(source).is_empty(), "each summary has Polish copy")
+		check(not polish.get_message(entry.title).is_empty(), "each compact headline has Polish copy")
 	for locale in ["en", "pl"]:
 		TranslationServer.set_locale(locale)
 		app.updates.show_history()
 		await process_frame
 		var text := _bilingual_text(app.updates.panel)
-		check(text.contains(UpdateLog.ENTRIES[0].bullets[0]), "English stays English in either locale")
-		check(text.contains(String(polish.get_message(UpdateLog.ENTRIES[0].bullets[0]))), "Polish is present in either locale")
+		check(text.contains(UpdateLog.entries()[0].bullets[0]), "English stays English in either locale")
+		check(text.contains(String(polish.get_message(UpdateLog.entries()[0].bullets[0]))), "Polish is present in either locale")
+		var cards: Array[UpdateLogCard] = app.updates.panel.cards
+		check(not cards[0].details.visible and not cards[1].details.visible, "release headlines start compact")
+		cards[0].toggle.pressed.emit()
+		check(cards[0].details.visible, "latest headline reveals its details")
+		cards[1].toggle.pressed.emit()
+		check(cards[1].details.visible and not cards[0].details.visible, "expanding one card collapses the previous details")
+		cards[1].toggle.pressed.emit()
+		check(not cards[1].details.visible, "headline can collapse its own details")
 	for dimensions in [Vector2i(1280, 720), Vector2i(640, 360)]:
 		root.content_scale_size = dimensions
 		root.size = dimensions
@@ -42,6 +51,18 @@ func _run() -> void:
 		for frame in 4: await process_frame
 		check(app.menu.heading.get_global_rect().position.y >= 0, "long journal starts within the viewport")
 		check(app.updates.panel.close_button.get_global_rect().end.y <= dimensions.y, "journal back action is accessible at both sizes")
+		var scroll: ScrollContainer = app.updates.panel._scroll
+		check(scroll.get_global_rect().end.x <= dimensions.x and scroll.get_global_rect().position.x >= 0, "journal has no horizontal overflow")
+		check(scroll.get_global_rect().end.y <= dimensions.y, "release list scrolls inside the available height")
+		if dimensions.y < 460:
+			app.updates.panel.cards[0].toggle.pressed.emit()
+			for frame in 5: await process_frame
+			var first_bullet: Control = app.updates.panel.cards[0].details.get_child(0).get_child(1)
+			check(first_bullet.get_global_rect().end.y <= scroll.get_global_rect().end.y + 1, "expanding compact details reveals the first bullet without another scroll")
+			check(first_bullet.get_global_rect().position.y >= scroll.get_global_rect().position.y - 1, "compact auto-scroll does not skip above the first detail")
+	# Closing immediately after expanding must retire deferred compact scrolling safely.
+	app.updates.panel.cards[0].toggle.pressed.emit()
+	app.updates.panel.cards[0].toggle.pressed.emit()
 	app.updates.panel.closed.emit()
 	check(app.updates.seen == UpdateLog.latest_id(), "closing acknowledges the displayed releases")
 	var restored := UpdateLogFlow.new()

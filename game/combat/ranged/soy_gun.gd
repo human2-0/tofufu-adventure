@@ -8,6 +8,7 @@ const MAGAZINE_SIZE: int = 9
 const RELOAD_SECONDS: float = 2.0
 const RICOCHET_CHARGE_SECONDS: float = 2.0
 var projectile_speed_multiplier: float = 1.0
+var projectile_lifetime: float = 1.5
 var damage_multiplier: float = 1.0
 var attack_speed_multiplier: float = 1.0
 var spread_multiplier: float = 1.0
@@ -120,6 +121,7 @@ func _spawn(authority: bool, ricochet: bool = false) -> void:
 	bean.shooter = actor
 	bean.owner_health = owner_health
 	bean.velocity = shot_velocity
+	bean.remaining = projectile_lifetime
 	bean.authoritative = authority
 	bean.ricochet = ricochet
 	bean.ignored_bodies.assign(ignored_bodies)

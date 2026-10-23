@@ -19,11 +19,16 @@ func show_unseen() -> void:
 	if not UpdateLog.since(seen).is_empty(): _show(UpdateLog.since(seen))
 
 func show_history() -> void:
-	_show(UpdateLog.ENTRIES)
+	_show(UpdateLog.entries())
 
 func _show(entries: Array[Dictionary]) -> void:
-	var content := menu.clear_page("What's new?", "A little catch-up before your next adventure. English + Polski.", true)
-	menu.set_page_width(820)
+	var content := menu.clear_page("What's new?", "Open a headline for details. English + Polski.", true)
+	menu.set_page_width(760)
+	menu.heading.add_theme_font_size_override("font_size", 24)
+	menu.subtitle.add_theme_font_size_override("font_size", 13)
+	var style := MenuStyle.panel(MenuStyle.INK, 12)
+	style.set_content_margin_all(12)
+	menu._page.add_theme_stylebox_override("panel", style)
 	menu.note.text = ""
 	panel = UpdateLogPanel.new()
 	content.add_child(panel)

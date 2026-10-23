@@ -1,8 +1,8 @@
 class_name BattleChestField
 extends RefCounted
-## Reuses the existing textured treasure model and pooled, distance-culled drop icons.
+## Tier-specific textured treasure models and pooled, distance-culled drop icons.
 var game: BattleRoyaleGame
-var chests: Array[CastleTreasureChest] = []
+var chests: Array[BattleChestModel] = []
 var blockers: Array = []
 var drops: Array[Sprite3D] = []
 var icons: Array[Texture2D] = []
@@ -16,7 +16,8 @@ func update(animate: bool = true) -> void:
 		for i in game.match_state.chests.size():
 			var row: Array = game.match_state.chests[i]
 			if i >= chests.size():
-				var model := CastleTreasureChest.new()
+				var model := BattleChestModel.new()
+				model.tier = int(row[5])
 				game.add_child(model)
 				chests.append(model)
 				var bodies: Array[RID] = []

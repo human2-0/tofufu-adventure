@@ -60,11 +60,14 @@ def test_stages():
     yield "battle_combat", ["--script", "res://tests/test_battle_combat.gd"], 60
     yield "battle_survival", ["--script", "res://tests/test_battle_survival.gd"], 180
     yield "battle_hud", ["--script", "res://tests/test_battle_hud.gd"], 90
+    yield "battle_graphics", ["--script", "res://tests/test_battle_graphics.gd"], 120
     yield "battle_radar", ["--script", "res://tests/test_battle_radar.gd"], 60
     yield "battle_mobs", ["--script", "res://tests/test_battle_mobs.gd"], 180
+    yield "battle_honio", ["--script", "res://tests/test_battle_honio.gd"], 180
     yield "battle_loop", ["--script", "res://tests/test_battle_loop.gd"], 90
     yield "battle_squad", ["--script", "res://tests/test_battle_squad.gd"], 90
     yield "battle_rematch", ["--script", "res://tests/test_battle_rematch.gd"], 300
+    yield "battle_upgrades", ["--script", "res://tests/test_battle_upgrades.gd"], 180
     yield "battle_inventory", ["--script", "res://tests/test_battle_inventory.gd"], 180
     yield "battle_deployment", ["--script", "res://tests/test_battle_deployment.gd"], 180
     yield "battle_cpu", ["--script", "res://tests/test_battle_cpu.gd"], 180

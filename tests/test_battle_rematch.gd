@@ -2,6 +2,7 @@ extends SceneTree
 ## Real independent match worlds: recap, agreed replay, fresh state and replay after migration.
 class FixtureApp extends Node:
 	var menu := Control.new()
+	var preferences := GamePreferences.new()
 	var _menu_layer := CanvasLayer.new()
 	func _ready() -> void:
 		add_child(menu)
@@ -36,6 +37,7 @@ func _run() -> void:
 	var host := flows[0].game
 	var guest := flows[1].game
 	check(host != null and guest != null and host.composed and guest.composed, "both match compositions load")
+	check(host.preferences == flows[0].app.preferences and guest.preferences == flows[1].app.preferences and host.preferences != guest.preferences, "each real friend match uses its own device graphics preferences")
 	for game in [host, guest]: BattleTestDeployment.finish(game)
 	host.replication._publish()
 	guest.local_input.focus_point = guest.bodies[1].position + Vector3(1, 0, 0)
@@ -94,7 +96,9 @@ func _run() -> void:
 	check(rooms[1].phase == "playing" and rooms[1].members.size() == 1 and flows[1].game.bodies.size() == 4, "replacement host can replay with connected humans and configured CPU fill")
 	check(flows[1].rounds.career.totals.peers[0] == 2, "second round awards once despite a host migration")
 	var paths: Array[String] = []
-	for flow in flows: paths.append(flow.rounds.career.path)
+	for flow in flows:
+		paths.append(flow.rounds.career.path)
+		paths.append(flow.app.preferences.path)
 	for viewport in viewports: viewport.queue_free()
 	await process_frame
 	await process_frame
@@ -111,6 +115,7 @@ func _fixture(index: int) -> void:
 	root.add_child(viewport)
 	viewports.append(viewport)
 	var app := FixtureApp.new()
+	app.preferences.path = "user://battle-replay-graphics-%d-%d.cfg" % [Time.get_ticks_usec(), index]
 	viewport.add_child(app)
 	var fake: SessionTransport = load("res://tests/lobby_test_transport.gd").new()
 	app.add_child(fake)

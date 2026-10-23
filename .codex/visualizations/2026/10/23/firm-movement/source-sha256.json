@@ -1,0 +1,12 @@
+{
+  "game/player/planar_movement.gd": "c36e39042174e1f2e7e4f16dd3bf729bb2c3d54c8101b9a9fa364de2389822e2",
+  "game/player/player_tuning.gd": "9f5b64510cf84970e708ad91722aab1c9a922f4113dbdbb6bc9449ead1e6827c",
+  "game/session/playtest_room.gd": "35d3f414479ddde38384f260ca0c10fcd4a3153a4779981ccdb9d6be9a9e8cc9",
+  "game/ui/menu/update_log.gd": "0c00eb52b6b1282820dcfbabc80c1b2a625ec36ad46b10c681582c737f1a335b",
+  "game/settings/localization/pl.po": "9fd7a9d131f2b7f49439f70ecfe77d7fd8d25d9a6404add5b731d1e9723f8d5e",
+  "tests/test_player_motor.gd": "2c13ee1c4f35258ad2f77e0447e619b65f66602b3c818b9f88e91f839a54deb6",
+  "tests/test_heavy_movement.gd": "4ae47f863d275484fa487f9802b9cf1e0bf951884d8ca099f41705c8d0ea2c05",
+  "tests/preview_firm_movement.gd": "4759f4826c268c1f2f1937941724b18e99cb47a729056024afd95ae661ae0369",
+  "docs/AGENT_MAP.md": "a924566922322f2db93a7ed3d88dc4975f648532d1cad5d43e3e55ea0389467a",
+  "docs/architecture/COOP.md": "b347bba166c7b6827982cd4dea0771ae60d47b8635c8bb22b221ba3aa70a4116"
+}

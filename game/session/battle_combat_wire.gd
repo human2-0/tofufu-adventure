@@ -37,7 +37,7 @@ static func valid(value: Variant) -> bool:
 	if not BattleProtocol.number(state.recoil_quiet, 0, 0.12): return false
 	if not BattleProtocol.integer(state.cloud_sequence, 0, 100000): return false
 	if not ExplorationProtocol.vector(state.cloud_at, 3, 1000): return false
-	return ExplorationProtocol.combat(state) and state.vitals.stamina <= 100
+	return ExplorationProtocol.combat(state, 210.0, true) and state.vitals.stamina <= 100
 
 static func roster(value: Variant) -> bool:
 	if not value is Array or (value.size() < 2 or value.size() > BattleProtocol.CAPACITY): return false

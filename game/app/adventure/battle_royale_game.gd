@@ -30,6 +30,8 @@ var visibility: BattleVisibility
 var match_view := BattleMatchView.new()
 var squad: BattleSquadPings
 var mobs := BattleMobs.new()
+var preferences := GamePreferences.new()
+var settings: BattleSettingsFlow
 
 func _ready() -> void:
 	set_physics_process(false)
@@ -90,6 +92,9 @@ func _ready() -> void:
 	presentation.build()
 	match_view.game = self
 	match_view.build()
+	settings = BattleSettingsFlow.new()
+	settings.game = self
+	add_child(settings)
 	await get_tree().physics_frame
 	if not is_inside_tree(): return
 	await get_tree().physics_frame
@@ -173,6 +178,7 @@ func _update_hud() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not composed or event.is_echo(): return
+	if settings.panel.visible: return
 	if event is InputEventKey and event.pressed:
 		match event.physical_keycode:
 			KEY_ESCAPE: hud.exit_panel.visible = not hud.exit_panel.visible

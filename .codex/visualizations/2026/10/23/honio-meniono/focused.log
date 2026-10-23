@@ -1,0 +1,54 @@
+Quick verification: architecture, import, 13 Godot tests
+Architecture check: PASS (763 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.027s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.012s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-k2ngu565
+import: PASS (9.0s)
+battle_migration: PASS (0.8s)
+battle_combat: PASS (4.0s)
+battle_survival: PASS (26.4s)
+battle_radar: PASS (3.7s)
+battle_mobs: PASS (37.9s)
+battle_honio: PASS (26.9s)
+battle_rematch: PASS (101.3s)
+battle_inventory: PASS (28.1s)
+battle_cpu: PASS (50.0s)
+battle_game: PASS (47.3s)
+localization: PASS (0.9s)
+update_log failed (exit 0); inspect /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-k2ngu565
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Update journal tests: PASS
+SCRIPT ERROR: Invalid type in function '_show' in base 'RefCounted (UpdateLogFlow)'. The array of argument 1 (Array) does not have the same element type as the expected typed array argument.
+          at: UpdateLogFlow.show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+          GDScript backtrace (most recent call first):
+              [0] show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+              [1] _run (res://tests/test_update_log.gd:34)
+SCRIPT ERROR: Invalid type in function '_show' in base 'RefCounted (UpdateLogFlow)'. The array of argument 1 (Array) does not have the same element type as the expected typed array argument.
+          at: UpdateLogFlow.show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+          GDScript backtrace (most recent call first):
+              [0] show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+              [1] _run (res://tests/test_update_log.gd:34)
+SCRIPT ERROR: Invalid type in function '_show' in base 'RefCounted (UpdateLogFlow)'. The array of argument 1 (Array) does not have the same element type as the expected typed array argument.
+          at: UpdateLogFlow.show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+          GDScript backtrace (most recent call first):
+              [0] show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+              [1] _run (res://tests/test_update_log.gd:50)
+SCRIPT ERROR: Invalid type in function '_show' in base 'RefCounted (UpdateLogFlow)'. The array of argument 1 (Array) does not have the same element type as the expected typed array argument.
+          at: UpdateLogFlow.show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+          GDScript backtrace (most recent call first):
+              [0] show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+              [1] _run (res://tests/test_update_log.gd:50)
+SCRIPT ERROR: Invalid type in function '_show' in base 'RefCounted (UpdateLogFlow)'. The array of argument 1 (Array) does not have the same element type as the expected typed array argument.
+          at: UpdateLogFlow.show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+          GDScript backtrace (most recent call first):
+              [0] show_history (res://game/app/bootstrap/update_log_flow.gd:22)
+              [1] _run (res://tests/test_update_log.gd:75)

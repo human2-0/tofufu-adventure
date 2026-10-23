@@ -143,6 +143,25 @@ func _run() -> void:
 	check(bow.reload_remaining == 2.0, "enhancement retains a single arrow and the full reload")
 	bow.clear_flights()
 	check(enhanced.is_queued_for_deletion() and not enhanced.is_physics_processing(), "arena cleanup immediately disarms in-flight arrows")
+	await _world_flame()
 	stage.free()
 	print("Angel bow: ", "PASS" if failures == 0 else "FAIL")
 	quit(1 if failures else 0)
+
+func _world_flame() -> void:
+	var front := dummy(Vector3(-7.5, 0, -9))
+	var behind := dummy(Vector3(-10, 0, -11.5))
+	var barrier := wall(Vector3(-10, 1, -10), Vector3(8, 4, 0.1))
+	combat.targets = [front.target, behind.target]
+	bow.reload_remaining = 0
+	bow.cooldown = 0
+	combat.vitals.current = 100
+	bow.step(false, false, Vector2.UP, Vector3.ZERO, 0.016)
+	await ticks(2)
+	var before := bow.burst_sequence
+	bow.step(false, true, Vector2(-1, -1).normalized(), Vector3(-10, 0.65, -10), 1.25)
+	await ticks(12)
+	check(bow.burst_sequence == before + 1, "a charged arrow hitting world cover still produces one visible flame burst")
+	check(is_equal_approx(front.target.current, 1940), "surface flame impact can damage an exposed nearby enemy once: hp=%s at=%s" % [front.target.current, bow.burst_at])
+	check(behind.target.current == 2000, "surface flame cannot damage an enemy behind the struck wall")
+	barrier.free()

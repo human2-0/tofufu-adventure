@@ -73,6 +73,7 @@ func _ready() -> void:
 
 func clear_page(title: String, description: String, top_aligned: bool = false) -> VBoxContainer:
 	set_page_width(0)
+	_page.remove_theme_stylebox_override("panel")
 	_page.size_flags_vertical = Control.SIZE_SHRINK_BEGIN if top_aligned else Control.SIZE_SHRINK_CENTER
 	_home_frame.hide()
 	_page.show()

@@ -18,6 +18,8 @@ static func make(kind: int) -> InventoryItem:
 	item.name = "%s · %s" % [BattleRarity.NAMES[BattleRarity.grade(kind)], item.name]
 	var base: String = {"celestial_sword": "knife", "celestial_staff": "sproutwood_staff", "soy_raygun": "soy_gun"}.get(item.id, item.id)
 	if DESCRIPTIONS.has(base): item.description = DESCRIPTIONS[base]
+	if item.id == MagicalTofufu.ID:
+		item.description = "Match upgrade material. Basic / rare / legendary chests: 10% / 35% / 70% chance. Apply to a weapon in your bag and confirm. Once per weapon; expires with this match."
 	if item.category in CharacterEquipment.APPAREL_SLOTS:
 		item.damage_reduction = float(BattleWearStats.BONUSES[BattleWearStats.family(item)][0]) / 4.0
 		item.description = "Temporary match armour. Each piece grants one quarter of its set modifiers and has 50 durability. A complete matching set cannot break; protection is capped at 25%."
@@ -25,8 +27,8 @@ static func make(kind: int) -> InventoryItem:
 
 static func details(item: InventoryItem) -> String:
 	if item.category not in CharacterEquipment.APPAREL_SLOTS:
-		var role: String = BattleWeaponRoles.TEXT.get(item.id, "")
-		return TranslationServer.translate(role) + "\n\n" + TranslationServer.translate(ItemTooltipContent.details(item)) if not role.is_empty() else ItemTooltipContent.details(item)
+		var role := BattleWeaponRoles.text(item.id)
+		return role + "\n\n" + TranslationServer.translate(ItemTooltipContent.details(item)) if not role.is_empty() else ItemTooltipContent.details(item)
 	var per_piece := TranslationServer.translate("Per piece: %.2f%% protection and one quarter of its set modifiers.") % (item.damage_reduction * 100)
 	var set_id := item.id.trim_suffix("_" + item.category)
 	var bonus := "Full set: 25% protection, damage +20%, attack speed +12%, movement +10%. Divine aura."
@@ -34,14 +36,20 @@ static func details(item: InventoryItem) -> String:
 	if set_id == "dark_leaf": bonus = "Full set: 20% protection, movement and fire rate +10%, melee damage -10%."
 	return per_piece + "\n" + TranslationServer.translate(bonus)
 
+static func label(item: InventoryItem) -> String:
+	var kind := BattlePackWire.ITEMS.find(item.id) + 1
+	var prefix := BattleRarity.NAMES[BattleRarity.grade(kind)] + " · "
+	return BattleRarity.title(kind, item.name.trim_prefix(prefix))
+
 static func encode(stack: ItemStack) -> Array:
 	if stack == null or stack.item == null or stack.count <= 0: return []
-	return [BattlePackWire.ITEMS.find(stack.item.id) + 1, stack.count, BattleCombatWire.precision(stack.reserve)]
+	return [BattlePackWire.ITEMS.find(stack.item.id) + 1, stack.count, BattleCombatWire.precision(stack.reserve)] + ([true] if stack.enhanced else [])
 
 static func decode(value: Array) -> ItemStack:
 	if value.is_empty(): return null
 	var result := ItemStack.new(make(int(value[0])), int(value[1]))
 	result.reserve = float(value[2])
+	result.enhanced = value.size() == 4 and value[3] == true
 	return result
 
 static func weapon_kind(stack: ItemStack) -> int:

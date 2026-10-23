@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+Metal 4.0 - Forward Mobile - Using Device #0: Apple - Apple M1 (Apple7)
+
+{"draw_calls":1375.0,"frame_p50_ms":13.121,"frame_p95_ms":31.355,"performance":false,"region":"meadow","triangles":1869115.0}
+{"draw_calls":529.0,"frame_p50_ms":6.847,"frame_p95_ms":21.407,"performance":true,"region":"meadow","triangles":1003365.0}
+{"draw_calls":529.0,"frame_p50_ms":6.842,"frame_p95_ms":22.141,"performance":true,"region":"meadow","triangles":1003365.0}
+{"draw_calls":1375.0,"frame_p50_ms":6.876,"frame_p95_ms":23.187,"performance":false,"region":"meadow","triangles":1869115.0}
+{"draw_calls":424.0,"frame_p50_ms":6.854,"frame_p95_ms":21.23,"performance":false,"region":"city","triangles":54473.0}
+{"draw_calls":260.0,"frame_p50_ms":6.851,"frame_p95_ms":21.014,"performance":true,"region":"city","triangles":32182.0}
+{"draw_calls":259.0,"frame_p50_ms":6.863,"frame_p95_ms":20.969,"performance":true,"region":"city","triangles":32102.0}
+{"draw_calls":424.0,"frame_p50_ms":6.827,"frame_p95_ms":20.763,"performance":false,"region":"city","triangles":54473.0}
+Royale graphics ABBA: PASS

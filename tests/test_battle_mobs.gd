@@ -68,6 +68,11 @@ func _layout() -> void:
 			check(Vector2(at.x - rows[j][1], at.z - rows[j][3]).length() >= 59.99, "hunt sites are evenly separated")
 		for site: Array in game.match_state.deployment.sites:
 			check(Vector2(at.x - site[0], at.z - site[2]).length() >= 11.99, "plants have a fair emergence buffer")
+	print("Hunt quarters: ", quadrants, " kinds: ", kinds)
+	var chest_quarters := [0, 0, 0, 0]
+	for chest: Array in game.match_state.chests:
+		chest_quarters[int(chest[1] >= -22) + 2 * int(chest[3] >= -22)] += 1
+	print("Chest quarters: ", chest_quarters)
 	check(kinds.size() == 3 and quadrants.size() == 4, "snails, armored snails and bees populate the map")
 	for fighter in game.combat.fighters:
 		check(fighter.combat.targets.has(game.mobs.actors[0].target), "all survivors can use adventure weapons against mobs")
@@ -225,7 +230,7 @@ func _wire() -> void:
 	var invalid := {"mob_delta": [[[0, []], [0, []]], []]}
 	check(not BattleMobDelta.expand(invalid, baseline), "duplicate or truncated enemy delta rejected")
 	var data := game.match_state.mobs.duplicate(true)
-	data[0][0][0] = 3
+	data[0][0][0] = 4
 	check(not BattleMobWire.valid(data, 4), "unknown enemy kind rejected")
 	data = game.match_state.mobs.duplicate(true)
 	data[0][0][4][0] = INF

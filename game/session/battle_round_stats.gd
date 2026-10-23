@@ -20,7 +20,7 @@ static func valid(value: Variant, count: int) -> bool:
 		if not row is Array or row.size() != 6: return false
 		for index in [DAMAGE, TAKEN]:
 			if not BattleProtocol.number(row[index], 0, 100000): return false
-		if not BattleProtocol.integer(row[CHESTS], 0, 80) or not BattleProtocol.integer(row[FOOD], 0, 1999): return false
+		if not BattleProtocol.integer(row[CHESTS], 0, BattlePackWire.CHESTS) or not BattleProtocol.integer(row[FOOD], 0, 1999): return false
 		if not BattleProtocol.number(row[SECONDS], 0, 900): return false
 		if not BattleProtocol.number(row[QUIET], 0, 8): return false
 	return true
@@ -36,7 +36,8 @@ static func summary(state: BattleMatch, slot: int) -> Dictionary:
 	var done := int(progress[0] >= 3) + int(progress[1] >= 100) + int(progress[2] >= 90)
 	var rank := int(actor[13])
 	var won := state.winner >= 0 and BattleTeams.allies(state.options, slot, state.winner)
-	var xp := mini(60, floori(row[SECONDS] / 5)) + int(actor[12]) * 25 + done * 20
-	if rank > 0: xp += 15 + (100 if won else (40 if rank <= 3 else 0))
+	var rewards := [mini(60, floori(row[SECONDS] / 5)), int(actor[12]) * 25, done * 20, 0]
+	if rank > 0: rewards[3] = 15 + (100 if won else (40 if rank <= 3 else 0))
+	var xp := int(rewards[0] + rewards[1] + rewards[2] + rewards[3])
 	return {"rank": rank, "kills": int(actor[12]), "damage": floori(row[DAMAGE]), "chests": int(row[CHESTS]),
-		"seconds": floori(row[SECONDS]), "goals": done, "xp": xp, "won": won}
+		"seconds": floori(row[SECONDS]), "goals": done, "xp": xp, "won": won, "rewards": rewards}

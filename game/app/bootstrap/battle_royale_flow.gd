@@ -143,6 +143,7 @@ func _start() -> void:
 	app.menu.hide()
 	game = BattleRoyaleGame.new()
 	game.room = room
+	game.preferences = app.preferences
 	game.replay_requested.connect(rounds.request)
 	game.leave_requested.connect(leave)
 	game.prepared.connect(func() -> void:

@@ -136,6 +136,14 @@ Solo saves and host checkpoints retain both claims and remaining drops. Room
 cutaways are local presentation; floors, walls and roofs retain collision on every
 peer. Adventure save version, transport bounds and authority policy are unchanged.
 
+Live version 66 requires the shared firm-ground movement rules in Adventure and Royale.
+Ground acceleration/turn response is multiplied by 3.5; released movement uses a
+finite squared ease-out (0.16 seconds from walking speed on normal ground).
+Surface grip scales the response and stop curve; airborne control retains its
+previous rates. The stop curve is derived only from current velocity and tuning,
+so prediction and host recovery need no additional timer or packet/save fields.
+Host simulation, guest prediction and Royale actors use the same motor.
+
 Live version 43 adds the reverse melee move (style 6), a bounded chain cursor (0–3), weapon contact pause (0–0.075 seconds), and player impact motion (`remaining` 0–0.24 seconds, planar `push` length at most 9). All live peers require version 43. The host owns buffered attack selection, resource payment, swept contact, interruption, immunity and launch velocity. Guests display the host move/elapsed clock and pause; local movement prediction adopts host recoil/vertical velocity so input cannot immediately overwrite a received hit. Encounter positions and velocities already carry enemy launches, so world encounter row shapes are unchanged. Replica flashes and weapon paths do not resolve damage. Legacy checkpoints default missing impact fields to zero; transient recoil and pending attacks clear on checkpoint placement.
 
 Live version 38 requires the refined meadow collision geometry, depot side entrance and relocated farm buildings. Version 37 required the expanded volcanic world and castle collision geometry; actor and world snapshot fields are unchanged. Version 32 added held `run_held` intent and bounded actor `endurance` records (0–100 current, 0–1.2 rest delay, boolean exhaustion). The authority spends and recovers running reserve through the same motor as offline play; the owner predicts movement and accepts host reserve corrections. Guests never decide charged melee damage or SP payment. Old actor/solo records without endurance still load with a full reserve; older peers require an updated build for the new controls and movement balance. Duel rounds reset endurance and cleanup restores the pre-duel reserve. Winter precipitation is a local 3D view of the synchronized weather clock and biome, with no new weather packets.
@@ -635,7 +643,7 @@ the normal adventure save flow retains ownership. Death destination selection
 and checkpoint respawning remain planned.
 
 
-## N9 — Separate Tofufu Battle Royale (implemented; battle protocol 11)
+## N9 — Separate Tofufu Battle Royale (implemented; battle protocol 14)
 
 The title menu opens an independent mode for up to twenty humans and fifty CPUs on the existing seeded
 Meadow scene, including its connected biomes and obstacle collisions. Adventure
@@ -713,7 +721,7 @@ acceptance remain distinct from local automated evidence.
 initial checkpoint. It includes all participating actor outcomes, loot, storm time,
 reload/attack timers, running reserve, dash/jump/impact state and rotating turn
 order. `BattleCheckpoint` validates the complete value-only record before any
-restore; expanded JSON is capped at 196,608 bytes; compressed, checksummed text is capped at 58,000 bytes, including temporary RPG loot. Checkpoints stay in memory,
+restore; expanded JSON is capped at 262,144 bytes; compressed, checksummed text is capped at 58,000 bytes, including temporary RPG loot. Checkpoints stay in memory,
 never in adventure saves. The loaded world and capsules are reused. Choosing an
 older shared checkpoint can roll back recent actions; this is checkpoint recovery,
 not deterministic physics replay or preservation of every in-flight action.
@@ -788,12 +796,29 @@ AngelBow, melee/guard/combo and movement ability components used in adventure.
 Each survivor gets a temporary knife and nine-round soybean gun, 100 HP, 50
 armour and 100 SP. Match pickups enter a temporary backpack; explicit equipment
 transfers choose the worn melee/ranged slots without deleting the previous item. The catalog includes Nori, Edamame, staff, Bengal Paws,
-Sotjet, bow and celestial weapon variants. All loans are usable at level one with no saved training or enhancements; match-only
+Sotjet, bow and celestial weapon variants. All loans are usable at level one with no saved training or imported enhancements; match-only
 rarity profiles supply the weapon and outfit bonuses. Adventure characters, progression and saves never
 enter this composition. BattleBalance owns separate damage/recoil cadence tuning;
 reloads use the adventure renewable magazine, while SP and milk keep their normal
 costs and recovery. Existing 1/2, attack, aim/secondary, punch, walk/run, charged
 jump/dash, reload and healing commands cross the equal-delay input buffer.
+
+Royale melee profiles distinguish raw power and committed attack rate: the knife
+uses the common baseline; Edamame trades speed for power, Nori favors cadence,
+and staff sweeps trade cadence for heavier hits and control. Legendary sword/staff
+improve their families. Match staff light damage uses the common ten-damage
+baseline; Adventure retains its five-damage staff baseline. Tooltips derive base
+hit damage and swing time from these profiles. A chunk applies the shared Paws
+damage enhancement once.
+
+Bow flights use a separately interpolated textured streak and a small camera-facing
+glint, with unchanged collision rays and 96 m/s speed. Holding RMB for 1.25 seconds
+fires once per hold for 25 SP, with two-second reload and six-second special
+cooldown; reticles show charge, cooldown and affordability. Charged impacts on
+actors, terrain or cover emit the existing sequenced burst. Authority resolves
+one 3.5 m pulse, excluding the directly struck target and preserving world-cover
+occlusion. Guests only display flights and accepted burst events; packet shapes
+remain unchanged.
 
 Damageable.receive_attack adds an optional attributed attack receiver. Adventure
 continues through Damageable.damage; BattleCombat queues attributed confirmed
@@ -818,14 +843,19 @@ after the countdown; the checkpoint rollback can still discard recent outcomes.
 
 ### Temporary RPG loot in Battle Royale (implemented; battle protocol 4)
 
-BattleChestLayout seeds at most 80 chests, one per 64-by-80-metre map cell, with
+BattleChestLayout seeds at most 192 chests, one per shuffled 56-metre map cell, with
 28-metre minimum spacing, four-metre clearance from starting survivors, dry
 shared-terrain placement and collision clearance.
 Water or fully obstructed cells are skipped. The match seed changes positions;
-chests do not respawn. Each chest rolls four distinct items from the
-same rarity-weighted 32-item pool, independent of region or opening order. The pool contains all
+chests do not respawn. Each chest rolls four distinct choices (weapon, protection/storage, food and flexible)
+from the 32 ordinary items, independent of region or opening order. A seeded
+65/27/8-percent basic/rare/legendary mix has no regional bias. Basic and rare
+quality weights are 72/25/3 and 20/65/15. Legendary chests guarantee a legendary
+weapon and armour piece; their flexible choice uses 0/25/75 weights. Food is
+guaranteed at every tier. An independent fifth Magical Tofufu Chunk roll has
+10/35/70-percent odds. Chest opening reserves space for the entire spill atomically. The pool contains all
 11 match weapons, the twelve Soypod/Nori/Celestial armour pieces, three backpack
-sizes and apples, Soy Milk, potatoes, cucumbers, red berries and beetroot. Four
+sizes and apples, Soy Milk, potatoes, cucumbers, red berries and beetroot. Four or five
 physical choice markers spill beside the opened chest. CPUs loot through the
 same inventory transactions and finite food as humans.
 
@@ -848,13 +878,14 @@ mutations, range and line of sight. A full bag leaves the item on the ground.
 Host UI requests use the same 100-ms minimum delay and rotating commit priority
 as guest requests. The explicit active slot distinguishes identical weapons and their individual
 Sotjet reservoirs. World IDs are monotonic even when inactive drop slots are
-reused. A finite 768-slot ledger bounds the original chest and starter item supply.
+reused. A finite 1536-slot ledger bounds 960 potential chest items, 350 starter stacks
+and 96 hunt stacks at the maximum roster. Inactive entries are reused.
 Elimination drops the entire backpack and worn gear once and cancels healing.
 The normal gradual apple HP/SP effect and Soy Milk healing retain shared cooldowns.
 Equipment changes preserve live ammunition, recoil, reload and special timers.
 
 BattlePackWire validates compact item enums, stack limits, up to 70 bags, ongoing
-healing, at most 80 chests and 768 drops. Indexed pack/chest/drop deltas bind to
+healing, at most 192 chests and 1536 drops. Indexed pack/chest/drop deltas bind to
 the accepted snapshot sequence, so a healing tick only sends its changed timers without bag contents;
 complete keyframes repair baselines every second. Checkpoint serialization is
 offset from complete keyframes and reuses the current combat capture to spread
@@ -904,12 +935,12 @@ The seven-CPU default and all three difficulty profiles remain available. Deploy
 uses up to 96 collision-cleared soybean sites, preserving separation from enemy
 reservations and the authored terrain/collision placement. HUD totals, placements, kills,
 combat/pack deltas, input ownership and recovery use the selected population.
-The 768-drop ledger covers the original 320 chest items plus every starter item
+The 1536-drop ledger covers up to 960 chest items plus every starter item
 and individually separated starter apple stack for seventy survivors.
 
 BattleWire uses DEFLATE and Base64 over value-only JSON for large-roster snapshots
 and all recovery checkpoints. Checksummed encoded text is at most 58,000 bytes;
-expanded data is at most 196,608 bytes and all existing nested validators still
+expanded data is at most 262,144 bytes and all existing nested validators still
 apply. Snapshot envelope identity, term and sequence must match the decoded
 payload. This preserves the sidecar's existing 64-KiB frame and twenty-human
 fanout limits. Compression does not authenticate a modified trusted participant.
@@ -999,7 +1030,7 @@ clears them. All marker values/labels remain outside simulation and saves.
 ### Finite adventure hunts (implemented; updated in battle protocol 10)
 
 BattleMobLayout distributes at most 24 hunt sites, at least 60 metres apart, on dry,
-collision-cleared ground near chest routes and at least 12 metres from every deployment
+collision-cleared ground near chest routes or deployment-clearing fallbacks, at least 12 metres from every deployment
 plant. TrainingMob, ArmoredSnail and WildBee retain their adventure movement, attack
 warnings, shell weak points; a match-only BattleMobRanged supplies swept, reflectable shots
 for all three kinds while disabling the bee's legacy sting in this mode. They do not compose adventure respawn,
@@ -1016,7 +1047,7 @@ fights, storm escape and inventory capacity. Ordinary chest rarity weights remai
 Each snail guarantees two apples and an armour piece; armored snails guarantee milk,
 an armour piece and a weapon; bees guarantee milk plus a weapon or upgraded backpack. Epoch/site
 seeds prevent rerolls. Rewards are public, contestable temporary drops. At most 72 hunt
-stacks join the existing 320 chest and 350 starter stacks, fitting the 768-slot ledger.
+stacks join up to 960 chest and 350 starter stacks, fitting the 1536-slot ledger.
 Reward claims are atomic: a full ledger retains a pending claim until slots become free.
 Storm/fall deaths grant neither rewards nor hunt credit. No enemy respawns during a round.
 
@@ -1043,7 +1074,7 @@ remain match-only and do not change adventure item definitions or save schemas.
 See the match-loop design for exact weights, weapon roles and outfit caps.
 
 
-### Whole-kit elimination, armour integrity and wider circles (implemented; battle protocol 11)
+### Whole-kit elimination, armour integrity and wider circles (implemented; battle protocol 12)
 
 Every eliminated survivor releases every carried stack and worn slot, including the
 backpack. The authority reserves enough free drop entries before clearing any slots.
@@ -1053,7 +1084,7 @@ capacity marks a completed release, so recovery neither repeats it nor grants a
 replacement backpack. Live survivors cannot submit/receive this empty record.
 Airborne/void eliminations project the kit onto the collision surface below, then
 scatter within unobstructed reach of that landing point.
-Existing drop IDs, resources, atomic takes and bounded 768-entry storage are unchanged.
+Existing drop IDs, resources, atomic takes and bounded drop storage are retained (expanded to 1536 entries in protocol 13).
 
 For Royale apparel, the existing per-stack 0..100 reserve encodes 0..50 durability.
 No Adventure item/save fields are added. Combat damage actually removed from HP and
@@ -1077,3 +1108,82 @@ Adventure's protocol and saves are unchanged.
 Confirmed-damage feedback uses a mouse-transparent layer above inventory/loot UI,
 so an open bag does not hide the brief red edge pulses. Paused recovery cancels
 transient flashes; accepted damage counters still drive subsequent feedback.
+
+Royale revision 12 increases Soygun/Raygun projectile travel speed by 2.5 while
+shortening projectile lifetime to retain 90/103.5-metre range. Cadence, damage,
+magazine and reload rules retain their values. The shared combat validator keeps
+its Adventure 120 m/s component bound; only Royale explicitly accepts components
+up to 180 m/s. Authority and replicas use the same flight lifetime and swept
+collision path. Older Royale peers cannot join revision 12 matches.
+
+In-match graphics remain device-local. Opening settings blocks local combat input
+and releases the cursor while the shared match continues. Scenery visibility
+ranges run in the rendering server, preserve existing shorter detail ranges and
+include each geometry bounding radius. Even the shortest setting retains cover
+beyond all current player weapon ranges. Combatants share a 140-metre visual cap
+at every quality, inside the shortest scenery range, preventing reduced detail
+from exposing enemies through distant culled cover. Physical terrain, actors, AI, shots,
+loot, storm presentation and network state stay active. Settings close on host
+recovery. Shadows, scenery range and low rendering scales persist in local
+preferences, outside Adventure save data and recovery snapshots.
+
+
+### Royale chest tiers and temporary enhancement (implemented; battle protocol 13)
+
+Chest rows append a bounded tier enum (0–2). Item stacks may append a true-only
+enhancement flag to combat items; loose drops carry the same optional flag after
+reserve. Materials have a 50-stack limit. Normal bags/drops keep their original
+compact fields. Malformed tiers, non-boolean flags and enhanced non-weapons fail
+validation. Complete keyframes/checkpoints and indexed deltas preserve these
+values. Expanded battle JSON is bounded at 256 KiB; the authenticated 58 KB wire
+and 64 KiB transport frame ceilings remain unchanged.
+
+Applying a chunk uses the existing revision-checked transfer transaction and the
+same delayed host/guest intent queue. Authority revalidates the actual chunk and
+weapon, consumes one, and rejects repeated enhancement. Humans confirm temporary
+bonuses; CPUs spend the same finite material through the same transfer rule.
+Per-weapon enhancement survives swaps, pickup, complete elimination drops and
+paused host recovery. Stowed enhanced magazines retain all fourteen rounds and
+recover their capacity from equipped gear; the Adventure validator keeps its
+original active-weapon bounds. Every new match discards these upgrades.
+
+Shared enhancement gives 20% damage, five extra magazine rounds or 25% longer
+Soyjet duration. Royale adds 10% attack/fire rate, 20% faster gun bullets with
+25% tighter spread and preserved gun reach; Soyjet gets a faster stream and bow
+reload rate increases 10%. Reflecting with an enhanced guarding melee weapon
+costs 35% less SP. Enhanced raygun maximum speed is 207 m/s, inside the battle-only
+210 m/s validation bound; Adventure retains its own bounds and tuning.
+
+The graphical recap receives authoritative summary values from BattleMatchView.
+Six icon tiles, goal medallions and XP-source rewards accompany an animated
+cosmetic career bar, including level crossings. Displaying/reopening results
+never banks XP; existing leave/rematch award and duplicate-epoch rules apply.
+
+
+### Honio Meniono Easter egg (implemented; battle protocol 14)
+
+A separately seeded 25% of rounds replace one uniformly selected existing hunt
+with Honio Meniono. Population remains capped at 24 and deployment/dry-ground
+clearance remains unchanged. Only BattleHuntActor constructs this new TrainingMob
+substitution; Adventure spawn tables, progression and saves do not register it.
+Honio has no ranged adapter/projectile. Fast physical movement, warned committed
+rushes, cone jabs and a three-metre slam enter the existing authoritative melee
+receiver, including cover, guard/SP, dash immunity and armour. The slam checks all
+living survivors once on impact. Ground probes and world collision bound the rush.
+
+Kind 3 retains the nine-value common mob record and uses the existing skill slot
+for thirteen bounded melee values: phase/time, special cooldown, committed aim,
+facing, sequence, skill, impact time, speech ID, return-home flag and speech time.
+The existing recovery-only cooldown slot also retains interrupt resistance. All
+values pass BattleHonioWire before presentation/checkpoint restoration; at most
+one Honio is accepted. Ordered deltas and complete checkpoints reuse the existing
+hunt path and byte ceilings. Battle protocol 14 excludes incompatible old peers;
+Adventure's schema/version remains unchanged by this encounter.
+
+Replicas present only accepted poses, speech and four fixed textured VFX nodes.
+Recovery preserves HP, cooldowns, returning intent and finite bounty status, then
+cancels unfinished contact attacks with at least 1.25 seconds of vulnerable rest.
+No in-flight attack, old taunt or impact is replayed. The four-stack guaranteed
+bounty uses the existing atomic pending/paid claim. Storm/fall deaths grant no
+loot. At most 73 hunt stacks plus 960 chest and 350 starter stacks fit the existing
+1536-slot ledger. No new transport, service or Adventure persistence is introduced.

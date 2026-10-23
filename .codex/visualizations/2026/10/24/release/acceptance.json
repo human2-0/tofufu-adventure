@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "timestamp_utc": "2026-10-23T23:47:06.112848+00:00",
+  "godot_scenarios": 163,
+  "python_tests": 15,
+  "holepunch_sidecar_tests": 19,
+  "full_suite": "All registered tools/verify.py --full stages, four workers with timing-sensitive scenarios isolated; exact verify.run_stage error checks preserved.",
+  "source_inputs_unchanged": 3102,
+  "release_batches": [
+    22,
+    23,
+    24,
+    25,
+    26
+  ],
+  "shipped_journal_ids_unchanged": true,
+  "preferences_sha256": "22613d22c80d75b3091849340dc7d5f6c15a5c422d8ceee1f1cc7c087b86ba19",
+  "native_evidence": [
+    ".codex/visualizations/2026/10/23/bow-melee/native-verified.log",
+    ".codex/visualizations/2026/10/23/honio-meniono/acceptance.json"
+  ],
+  "limits": "Native visual evidence is separate from headless checks. No new WAN, NAT or paired FPS acceptance is claimed.",
+  "artifact_log_formatting": "Only trailing whitespace and extra blank lines at EOF were normalized in diagnostic logs for Git whitespace checks."
+}

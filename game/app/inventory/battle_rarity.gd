@@ -5,7 +5,7 @@ const NAMES: Array[String] = ["Common", "Rare", "Legendary"]
 const COLORS: Array[Color] = [Color("e7eddf"), Color("79bfff"), Color("ffcf62")]
 
 static func grade(kind: int) -> int:
-	if kind in [9, 10, 11] or (kind >= 20 and kind <= 23): return 2
+	if kind in [9, 10, 11, 33] or (kind >= 20 and kind <= 23): return 2
 	if (kind >= 3 and kind <= 8) or (kind >= 16 and kind <= 19) or kind in [25, 26]: return 1
 	return 0
 

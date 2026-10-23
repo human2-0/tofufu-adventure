@@ -6,8 +6,13 @@ extends Resource
 @export_range(0.0, 50.0) var walk_speed: float = 4.8
 @export_range(0.0, 50.0) var run_speed: float = 7.2
 @export_range(0.0, 200.0) var acceleration: float = 14.0
+## Airborne braking. Grounded release uses ground_stop_seconds.
 @export_range(0.0, 200.0) var friction: float = 18.0
 @export_range(0.0, 200.0) var turn_braking: float = 24.0
+## Planted acceleration/turn response; does not change air steering.
+@export_range(1.0, 6.0) var ground_response: float = 3.5
+## Stop time from walking speed on normal ground. Low grip extends the curve.
+@export_range(0.05, 1.0) var ground_stop_seconds: float = 0.16
 @export_range(0.0, 1.0) var air_control: float = 0.3
 @export_group("Jump")
 @export_range(0.0, 50.0) var jump_velocity: float = 12.0

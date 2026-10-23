@@ -71,6 +71,7 @@ func spawn(stack: ItemStack, at: Vector3) -> bool:
 	if stack == null: return false
 	var drops := game.match_state.drops
 	var entry := [next_drop, snappedf(at.x, 0.001), snappedf(at.y, 0.001), snappedf(at.z, 0.001), BattlePackWire.ITEMS.find(stack.item.id) + 1, stack.count, snappedf(stack.reserve, 0.001)]
+	if stack.enhanced: entry.append(true)
 	for i in drops.size():
 		if drops[i][5] == 0:
 			drops[i] = entry
@@ -114,7 +115,7 @@ func interact_bot(slot: int) -> void:
 			return
 	for drop: Array in game.match_state.drops:
 		if drop[5] > 0 and reachable(slot, Vector3(drop[1], drop[2], drop[3])):
-			if not BattlePackBots.wants(game.match_state.pack[slot], int(drop[4]), -1, float(drop[6])): continue
+			if not BattlePackBots.wants(game.match_state.pack[slot], int(drop[4]), -1, float(drop[6]), drop.size() == 8): continue
 			if transactions.take(slot, int(drop[0])):
 				BattlePackBots.equip(self, slot)
 				return

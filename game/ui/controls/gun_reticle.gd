@@ -8,6 +8,10 @@ var centered: bool = false
 var aim_offset := Vector2.ZERO
 var reload_remaining: float = 0.0
 var reload_progress: float = 0.0
+var bow_skill: bool = false
+var skill_charge: float = 0.0
+var skill_cooldown: float = 0.0
+var skill_affordable: bool = true
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -16,6 +20,7 @@ func _ready() -> void:
 func _draw() -> void:
 	var center := get_viewport_rect().size * 0.5 if centered else get_viewport().get_mouse_position()
 	if centered: center += aim_offset * get_viewport_rect().size
+	if bow_skill: _draw_bow_skill(center)
 	if reload_remaining > 0.0:
 		_draw_reload(center)
 		return
@@ -26,6 +31,18 @@ func _draw() -> void:
 	draw_circle(center, 1.5, color)
 	for direction in [Vector2.UP, Vector2.DOWN, Vector2.LEFT, Vector2.RIGHT]:
 		draw_line(center + direction * (radius + 3), center + direction * (radius + 8), color, 2, true)
+
+func _draw_bow_skill(center: Vector2) -> void:
+	var ready := skill_affordable and skill_cooldown <= 0.0 and reload_remaining <= 0.0
+	var color := Color("ffc65a") if ready else Color("889398")
+	var start := -PI * 0.5
+	var progress := skill_charge if skill_charge > 0.0 else clampf(1 - skill_cooldown, 0, 1)
+	draw_arc(center, 31, 0, TAU, 48, Color(0.06, 0.09, 0.07, 0.8), 5, true)
+	if progress > 0.001: draw_arc(center, 31, start, start + TAU * progress, 48, color, 2.5, true)
+	var mouse := Rect2(center + Vector2(38, -8), Vector2(12, 18))
+	draw_rect(mouse, Color(0.06, 0.09, 0.07, 0.85))
+	draw_rect(mouse, color, false, 1)
+	draw_rect(Rect2(mouse.position + Vector2(6, 2), Vector2(4, 6)), color)
 
 func _draw_reload(center: Vector2) -> void:
 	var color := Color("f4c75d")

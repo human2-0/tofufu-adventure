@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "timestamp_utc": "2026-10-23T19:56:47.585777+00:00",
+  "feature": "Honio Meniono, finite Battle Royale-only melee Easter egg",
+  "battle_protocol": 14,
+  "release_batch": 25,
+  "source_files": 54,
+  "art": {
+    "tool": "built-in image_gen",
+    "character_poses": 40,
+    "directions": 8,
+    "vfx_atlas_cells": 4,
+    "prompts": "assets/characters/honio_meniono/source/prompts.json",
+    "lazy_loaded": true
+  },
+  "verification": {
+    "full_scenarios": 163,
+    "full_report": "verification/full/report.json",
+    "final_focused_scenarios": 11,
+    "final_focused_log": "final-focused.log",
+    "late_asset_ui_recheck": [
+      "battle_honio",
+      "update_log"
+    ],
+    "late_recheck_log": "asset-ui-recheck.log",
+    "architecture": "PASS, 763 runtime scripts",
+    "diff_check": "PASS",
+    "native": [
+      "40-pose directional gallery",
+      "four generated effects applied in native studio",
+      "actual Royale warnings, rush, impacts and finite bounty",
+      "English/Polish at 1280x720 and 640x360",
+      "new release headline and complete journal archive"
+    ],
+    "migration": "Independent real host/guest worlds over JSON fixture; accepted active rush, HP and cooldowns survive promotion; unfinished contact cancelled with vulnerable grace."
+  },
+  "performance": {
+    "report": "performance/benchmark-50.json",
+    "cpus": 50,
+    "survivors_minimum": 51,
+    "hunt_slots": 24,
+    "honio_awake_ticks": 467,
+    "mean_fps": 50.9209088096678,
+    "simulation_p50_ms": 7.357,
+    "simulation_p95_ms": 21.842,
+    "viewport": [
+      2560,
+      1440
+    ],
+    "preset": "Performance, 65 percent 3D, 160m scenery, shadows off",
+    "scope": "Native M1, fixed invulnerable survivor population and staged invulnerable Honio. Other verification workers stopped. One map/seed; no paired baseline or locked-FPS guarantee."
+  },
+  "limits": [
+    "WAN/NAT, separate devices and adversarial authority were not validated in this change.",
+    "Measured 50-CPU run remains below locked 60/120 FPS; no performance-regression percentage is claimed."
+  ],
+  "preferences_sha256_unchanged": "22613d22c80d75b3091849340dc7d5f6c15a5c422d8ceee1f1cc7c087b86ba19",
+  "delivery": "Working tree changes; no commit or push requested for this feature."
+}

@@ -1,0 +1,13 @@
+{
+  "scope": "Native M1 fixed 2560x1440 target, uncapped, 51 fixed-pose survivors. Same loaded world/camera, ABBA at meadow and city. Full scenery/shadows at fixed 90% versus near scenery/no shadows at 65%. Bot simulation and network frozen; this isolates graphics and does not promise active 50-CPU FPS.",
+  "draw_call_reduction_percent": {
+    "meadow": 61.5,
+    "city": 38.8
+  },
+  "interpretation": "Reduced renderer submissions and triangles are confirmed. The fixed-pose comparison does not establish a stable active 50-CPU FPS gain. Early and late full-quality meadow frame medians differed; do not turn draw-call reduction into an FPS promise.",
+  "active_runs": "The separate active 50-CPU runs retain 51 survivors and 24 hunts. Their last FPS readings are single monitor samples, not a controlled same-world FPS distribution. CPU simulation remains material (roughly 9-10 ms median, 22-25 ms p95).",
+  "gameplay": "Only scenery draw ranges, shadows, selected cosmetic effects and 3D pixel count change. Shared physics and CPU counts retain their cadence.",
+  "active_runs_note": "Early active runs predate the final uniform combatant visibility cap; they are diagnostics, not a final same-world FPS comparison.",
+  "final_active_profile": "final/benchmark-50.json",
+  "final_active_profile_note": "Final isolated native run after distance haze and temporary preference-path isolation: 50 CPUs plus local survivor, 24 hunts, 2560x1440 output at 65% 3D. Mean 48.31 FPS, frame median 18.68 ms, frame p95 30.93 ms across 289 samples. Not stable 60/120 FPS or WAN acceptance."
+}

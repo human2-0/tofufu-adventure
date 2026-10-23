@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL: timed push splits pod
+FAIL: completion restores player movement
+FAIL: completion restores sandbox
+FAIL: camera restores exploration framing
+FAIL: opened pod remains in world
+FAIL: Fufu can leave the pod and explore
+Pod escape: FAIL

@@ -14,6 +14,7 @@ func _run() -> void:
 	var room := BattleRoom.new()
 	root.add_child(room)
 	room.practice()
+	room.epoch = "0".repeat(24)
 	var game := BattleRoyaleGame.new()
 	game.room = room
 	root.add_child(game)
@@ -173,6 +174,19 @@ func _peer_match(host: BattleRoyaleGame, room: BattleRoom) -> void:
 	var first := guest.replication.snapshot_sequence
 	host.replication._publish()
 	check(guest.replication.snapshot_sequence > first, "actor-only update preserves guest loot baseline")
+	var honio_id := BattleHonioSpawn.site(room.epoch, host.mobs.actors.size())
+	var honio := host.mobs.actors[honio_id] as HonioMeniono
+	honio.target.current = 123
+	honio.melee.interrupt_rest = 1.75
+	honio.melee.begin(HonioMelee.Skill.PROTEIN_EXPRESS, Vector3.BACK)
+	honio.melee.phase = HonioMelee.Phase.RUSH
+	honio.melee.remaining = 0.4
+	honio._windup = 0
+	host.replication._publish()
+	var replica_honio := guest.mobs.actors[honio_id] as HonioMeniono
+	check(replica_honio != null and guest.mobs.ranged[honio_id] == null, "independent guest composes melee-only Honio from the accepted hunt catalog")
+	check(replica_honio.target.current == 123 and replica_honio.melee.phase == HonioMelee.Phase.RUSH and replica_honio.melee.aim == Vector3.BACK, "Honio health and committed rush cross real compressed replication")
+	check(not replica_honio.is_physics_processing(), "guest Honio remains cosmetic during an active attack")
 	var hunt_shot := host.mobs.ranged[1]
 	hunt_shot.aim = Vector3.BACK
 	hunt_shot._fire()
@@ -202,6 +216,8 @@ func _peer_match(host: BattleRoyaleGame, room: BattleRoom) -> void:
 	for i in 100: guest_room._process(0.05)
 	check(guest_room.phase == "playing" and guest_room.authority() and guest.playing, "loaded guest world promotes and resumes without rebuilding")
 	check(is_equal_approx(guest.match_state.time, float(saved.time)), "promotion restores exact checkpoint storm time")
+	check(replica_honio.target.current == 123 and replica_honio.melee.interrupt_rest == 1.75, "real promotion retains Honio health and interrupt cooldown")
+	check(replica_honio.melee.phase == HonioMelee.Phase.RECOVERY and replica_honio.melee.remaining >= 1.25 and replica_honio.melee.special_rest == 4.5, "real host migration cancels Honio's rush with vulnerable grace and retained cooldown")
 	check(not guest.mobs.ranged[1]._flying() and guest.mobs.ranged[1].rest >= 0.75, "real guest promotion cancels NPC flights and gives attack recovery grace")
 	check(guest.mobs.actors[0].target.current == 0 and guest.match_state.mobs[0][0][9] == saved.mobs[0][0][9] and guest.match_state.mobs[1] == saved.mobs[1], "promotion preserves hunt deaths and credits without respawning or rerolling")
 	check(is_equal_approx(guest.match_state.reloads[1], float(saved.reloads[1])), "promotion preserves reload progress")

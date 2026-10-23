@@ -24,7 +24,7 @@ static func loadout(game: BattleRoyaleGame) -> Dictionary:
 		armour_icons.append(stack.item.icon if stack != null else null)
 		integrity.append(stack.reserve / 100.0 if stack != null else -1)
 	var reload := combat.bow.reload_remaining if combat.bow.selected else combat.gun.reload_remaining
-	var reload_duration := AngelBow.RELOAD if combat.bow.selected else SoyGun.RELOAD_SECONDS
+	var reload_duration := AngelBow.RELOAD / combat.bow.attack_speed_multiplier if combat.bow.selected else SoyGun.RELOAD_SECONDS
 	var cooldown := 0.0
 	if combat.claws.selected: cooldown = combat.claws.cooldown
 	elif combat.bow.selected: cooldown = combat.bow.cooldown

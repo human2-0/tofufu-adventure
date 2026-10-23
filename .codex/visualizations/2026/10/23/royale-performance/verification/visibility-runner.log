@@ -1,0 +1,21 @@
+Focused verification: architecture, import, 4 Godot tests
+Architecture check: PASS (748 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.034s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.015s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-tm1lhy9m
+import: PASS (9.4s)
+battle_hud: PASS (36.1s)
+battle_graphics: PASS (38.8s)
+battle_mobs: PASS (51.2s)
+battle_cpu: PASS (72.6s)
+Focused checks passed in 234.7s (4 Godot tests). Visual/NAT checks remain separate.
+Slowest stages: battle_cpu 72.6s, battle_mobs 51.2s, battle_graphics 38.8s
+Full suite was not run.

@@ -9172,3 +9172,234 @@ msgstr "Sojowe rośliny, skrzynie i finały burzy docierają teraz do odległych
 
 msgid "HP %.0f / 100 · Armour %.0f / 50 · SP %.0f / 100"
 msgstr "PŻ %.0f / 100 · Osłona %.0f / 50 · PW %.0f / 100"
+
+msgid "Graphics"
+msgstr "Grafika"
+
+msgid "Match continues while settings are open."
+msgstr "Mecz trwa również przy otwartych ustawieniach."
+
+msgid "Performance preset"
+msgstr "Tryb wydajności"
+
+msgid "Lower 3D resolution keeps the HUD sharp. Shorter scenery range reduces distant detail; nearby cover and combat stay active."
+msgstr "Niższa rozdzielczość 3D zachowuje ostry interfejs. Krótszy zasięg scenerii ogranicza odległe detale; pobliskie osłony i walka pozostają aktywne."
+
+msgid "Frame limit"
+msgstr "Limit klatek"
+
+msgid "3D resolution"
+msgstr "Rozdzielczość 3D"
+
+msgid "Apply rendering"
+msgstr "Zastosuj renderowanie"
+
+msgid "Scenery range"
+msgstr "Zasięg scenerii"
+
+msgid "Near · 160 m"
+msgstr "Blisko · 160 m"
+
+msgid "Balanced · 240 m"
+msgstr "Średnio · 240 m"
+
+msgid "Far · 360 m"
+msgstr "Daleko · 360 m"
+
+msgid "Full map"
+msgstr "Cała mapa"
+
+msgid "Dynamic shadows"
+msgstr "Dynamiczne cienie"
+
+msgid "Graphics saved."
+msgstr "Ustawienia grafiki zapisane."
+
+msgid "Open a headline for details. English + Polski."
+msgstr "Rozwiń nagłówek, aby poznać szczegóły. English + Polski."
+
+msgid "%d updates"
+msgstr "Aktualizacje: %d"
+
+msgid "Show or hide update details"
+msgstr "Pokaż lub ukryj szczegóły aktualizacji"
+
+msgid "Faster shots, a lighter Royale"
+msgstr "Szybsze strzały, lżejszy Royale"
+
+msgid "Royale gun bullets fly 2.5 times faster, keeping their existing range, damage and reload balance."
+msgstr "Pociski broni palnej w Royale lecą 2,5 raza szybciej, zachowując dotychczasowy zasięg, obrażenia i balans przeładowania."
+
+msgid "Open Graphics from the match menu to adjust resolution, scenery distance and shadows, or choose the Performance preset. Nearby combat and cover stay active."
+msgstr "Otwórz Grafikę w menu meczu, aby zmienić rozdzielczość, zasięg scenerii i cienie lub wybrać tryb wydajności. Pobliska walka i osłony pozostają aktywne."
+
+msgid "The update journal now has compact bilingual headlines and expandable details, with the newest release first."
+msgstr "Dziennik nowości ma teraz zwięzłe dwujęzyczne nagłówki i rozwijane szczegóły, z najnowszym wydaniem na początku."
+
+msgid "Lower 3D resolution and scenery range for smoother play. Combat and cover stay active."
+msgstr "Obniż rozdzielczość 3D i zasięg scenerii, by grać płynniej. Walka i osłony pozostają aktywne."
+
+msgid "Basic chest"
+msgstr "Podstawowa skrzynia"
+
+msgid "Rare chest"
+msgstr "Rzadka skrzynia"
+
+msgid "Legendary chest"
+msgstr "Legendarna skrzynia"
+
+msgid "Match upgrade material. Basic / rare / legendary chests: 10% / 35% / 70% chance. Apply to a weapon in your bag and confirm. Once per weapon; expires with this match."
+msgstr "Materiał ulepszający na ten mecz. Szansa w podstawowej / rzadkiej / legendarnej skrzyni: 10% / 35% / 70%. Nałóż na broń w plecaku i potwierdź. Raz na broń; znika po meczu."
+
+msgid "+20% damage · +5 magazine · +10% fire rate\n+20% bullet speed · 25% tighter spread"
+msgstr "+20% obrażeń · +5 nabojów · +10% szybkostrzelności\n+20% prędkości pocisków · o 25% mniejszy rozrzut"
+
+msgid "+20% damage · +25% firing duration\n+10% fire rate · +20% stream speed"
+msgstr "+20% obrażeń · +25% czasu ostrzału\n+10% szybkostrzelności · +20% prędkości strumienia"
+
+msgid "+20% damage · +10% reload rate"
+msgstr "+20% obrażeń · +10% tempa przeładowania"
+
+msgid "+20% damage · +10% attack rate\n35% less SP for bullet reflection when guarding"
+msgstr "+20% obrażeń · +10% tempa ataków\nOdbijanie pocisków podczas gardy zużywa o 35% mniej SP"
+
+msgid "Enhance match weapon?"
+msgstr "Ulepszyć broń na ten mecz?"
+
+msgid "Spend 1 chunk"
+msgstr "Zużyj 1 kawałek"
+
+msgid "Enhance %s for this match?\n\n%s\n\nConsumes 1 Magical Tofufu Chunk. Once per weapon. Dropping it keeps the upgrade; the next match starts fresh."
+msgstr "Ulepszyć %s na ten mecz?\n\n%s\n\nZużywa 1 Magiczny Kąsek Tofufu. Raz na broń. Upuszczona broń zachowuje ulepszenie; kolejny mecz zaczynasz od nowa."
+
+msgid "Shift-click to equip. Right-click food to use it.\nApply a Magical Tofufu Chunk onto a weapon to upgrade.\nB / Esc closes the bag. The match keeps running."
+msgstr "Shift + klik, aby założyć. PPM na jedzeniu, aby je zjeść.\nNałóż Magiczny Kąsek Tofufu na broń, aby ją ulepszyć.\nB / Esc zamyka plecak. Mecz trwa dalej."
+
+msgid "Match upgrade · Lost when this round ends"
+msgstr "Ulepszenie meczowe · Znika po tej rundzie"
+
+msgid "Enhanced"
+msgstr "Ulepszona"
+
+msgid "Chunk chance: basic 10% · rare 35% · legendary 70%"
+msgstr "Szansa na kawałek: podstawowa 10% · rzadka 35% · legendarna 70%"
+
+msgid "ROYALE LEVEL %d"
+msgstr "POZIOM ROYALE %d"
+
+msgid "%d / %d XP to level %d"
+msgstr "%d / %d XP do poziomu %d"
+
+msgid "LEVEL UP! %d → %d"
+msgstr "NOWY POZIOM! %d → %d"
+
+msgid "Cosmetic career · Match equipment resets"
+msgstr "Kariera kosmetyczna · Ekwipunek meczowy się resetuje"
+
+msgid "ROUND COMPLETE"
+msgstr "RUNDA ZAKOŃCZONA"
+
+msgid "Eliminations"
+msgstr "Eliminacje"
+
+msgid "Damage dealt"
+msgstr "Zadane obrażenia"
+
+msgid "Chests opened"
+msgstr "Otwarte skrzynie"
+
+msgid "Survival"
+msgstr "Przetrwanie"
+
+msgid "Hunts"
+msgstr "Polowania"
+
+msgid "Goals completed"
+msgstr "Ukończone cele"
+
+msgid "Goals"
+msgstr "Cele"
+
+msgid "Placement"
+msgstr "Miejsce"
+
+msgid "Scavenge, enhance, celebrate"
+msgstr "Zbieraj, ulepszaj, świętuj"
+
+msgid "More Royale chests fill the map: basic, rare and crowned legendary designs, each with weapons, protection and food. Better tiers improve gear chances."
+msgstr "Więcej skrzyń Royale na mapie: podstawowe, rzadkie i legendarne z koroną. Każda oferuje broń, ochronę i jedzenie. Wyższy poziom zwiększa szansę na lepszy sprzęt."
+
+msgid "Find Magical Tofufu Chunks with 10% / 35% / 70% chances by chest tier. Enhance each weapon once for this round: stronger, faster attacks, better guns or cheaper guard reflections."
+msgstr "Znajdź Magiczne Kąski Tofufu z szansą 10% / 35% / 70% zależnie od skrzyni. Ulepsz każdą broń raz na rundę: mocniejsze i szybsze ataki, lepsze strzelanie lub tańsze odbijanie pocisków gardą."
+
+msgid "Round results now celebrate placement, achievements and cosmetic Royale levels with stat icons, reward tiles and an animated XP bar."
+msgstr "Wyniki rundy pokazują miejsce, osiągnięcia i kosmetyczne poziomy Royale za pomocą ikon statystyk, nagród i animowanego paska XP."
+
+msgid "Firmer footing"
+msgstr "Pewniejszy krok"
+
+msgid "Characters now start and turn more firmly, then ease smoothly to a stop. Ice keeps its slippery feel and airborne movement is unchanged."
+msgstr "Postacie ruszają i skręcają pewniej, a po puszczeniu kierunku płynnie wyhamowują. Lód nadal jest śliski, a sterowanie w powietrzu pozostaje bez zmian."
+
+msgid "JAB!"
+msgstr "PROSTY!"
+
+msgid "PROTEIN EXPRESS!"
+msgstr "BIAŁKOWY EKSPRES!"
+
+msgid "TOFU TENDERIZER!"
+msgstr "TOFUTŁUCZEK!"
+
+msgid "These fists are locally sourced!"
+msgstr "Te pięści pochodzą z lokalnej uprawy!"
+
+msgid "Express delivery! No refunds!"
+msgstr "Dostawa ekspresowa! Bez zwrotów!"
+
+msgid "Time to press some tofu!"
+msgstr "Czas wycisnąć trochę tofu!"
+
+msgid "Tiny break. Huge biceps."
+msgstr "Mała przerwa. Wielkie bicepsy."
+
+msgid "I skipped leg day. Not bean day!"
+msgstr "Dzień nóg odpuściłem. Dnia soi nigdy!"
+
+msgid "A very firm surprise"
+msgstr "Wyjątkowo twarda niespodzianka"
+
+msgid "Meet Honio Meniono, a rare Royale-only musclebound Tofufu. Dodge his warned melee rush and slam, punish his recovery and claim temporary gear, healing and a Magical Tofufu Chunk."
+msgstr "Poznaj Honio Meniono, rzadkiego mięśniaka Tofufu spotykanego tylko w Royale. Unikaj zapowiedzianej szarży i uderzenia, atakuj w czasie jego odpoczynku i zdobądź tymczasowy ekwipunek, leczenie oraz Magiczny Kawałek Tofufu."
+
+msgid "Rare · Heavy hits, slower swings. Podburst pushes nearby enemies away."
+msgstr "Rzadki · Mocne trafienia, wolniejsze zamachy. Podburst odpycha pobliskich wrogów."
+
+msgid "Rare · Fast, long-reaching combos and a powerful aerial plunge."
+msgstr "Rzadki · Szybkie kombinacje o dużym zasięgu i potężny atak pikujący."
+
+msgid "Rare · Strong, deliberate sweeps. Tornado controls nearby enemies."
+msgstr "Rzadki · Mocne, powolne zamachy. Tornado pozwala kontrolować pobliskich wrogów."
+
+msgid "Rare · Quick, stronger fists. Mobility, cheaper dashes and Super Claw close the distance."
+msgstr "Rzadkie · Szybkie, mocniejsze pięści. Mobilność, tańsze doskoki i Super Claw skracają dystans."
+
+msgid "Legendary · Powerful, quick sword combos. Guard reflects incoming shots."
+msgstr "Legendarny · Mocne, szybkie kombinacje mieczem. Garda odbija nadlatujące pociski."
+
+msgid "Legendary · Heavy hits and faster sweeps than the rare staff, with tornado control."
+msgstr "Legendarny · Mocne trafienia i szybsze zamachy niż rzadkim kosturem, a do tego kontrola tornadem."
+
+msgid "Base hit %.1f · Attack %.2fs"
+msgstr "Bazowe trafienie %.1f · Atak %.2fs"
+
+msgid "Arrows that make an impression"
+msgstr "Strzały, które robią wrażenie"
+
+msgid "Bow arrows now leave visible trails. Hold RMB for 1.25 seconds to launch a flame arrow, with charge feedback at the reticle and bursts on enemies, terrain and cover."
+msgstr "Strzały z łuku zostawiają teraz widoczne smugi. Przytrzymaj PPM przez 1,25 sekundy, aby wystrzelić płonącą strzałę. Celownik pokazuje ładowanie, a trafienia we wrogów, teren i osłony wywołują wybuch płomieni."
+
+msgid "Royale melee weapons have clearer power and speed differences: heavy Pod Sword hits, quick Katana combos and deliberate staff sweeps. Legendary weapons improve their families; item details show base damage and attack time."
+msgstr "Broń do walki wręcz w Royale wyraźniej różni się siłą i szybkością: Pod Sword uderza mocno, Katana pozwala na szybkie kombinacje, a kostur wykonuje powolne zamachy. Legendarne odmiany ulepszają swoje rodziny broni; opisy przedmiotów pokazują bazowe obrażenia i czas ataku."
+
+msgid "Chests leave more room beside deployment plants, keeping soybean emergence clear."
+msgstr "Skrzynie zostawiają więcej miejsca przy roślinach startowych, dzięki czemu wyjście z soi pozostaje wolne."

@@ -1,0 +1,171 @@
+{
+  "status": "PASS",
+  "architecture_scripts": 764,
+  "python_tests": 15,
+  "godot_tests": [
+    {
+      "name": "battle_migration",
+      "seconds": 0.7,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_combat",
+      "seconds": 3.8,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_hud",
+      "seconds": 26.4,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_radar",
+      "seconds": 3.6,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_mobs",
+      "seconds": 37.8,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_honio",
+      "seconds": 27.0,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_upgrades",
+      "seconds": 29.8,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_inventory",
+      "seconds": 27.0,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_deployment",
+      "seconds": 48.0,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_cpu",
+      "seconds": 47.6,
+      "status": "PASS"
+    },
+    {
+      "name": "battle_game",
+      "seconds": 49.8,
+      "status": "PASS"
+    },
+    {
+      "name": "angel_bow",
+      "seconds": 1.8,
+      "status": "PASS"
+    },
+    {
+      "name": "coop_angel_bow",
+      "seconds": 60.6,
+      "status": "PASS"
+    },
+    {
+      "name": "localization",
+      "seconds": 0.9,
+      "status": "PASS"
+    },
+    {
+      "name": "weapon_enhancement",
+      "seconds": 76.4,
+      "status": "PASS"
+    },
+    {
+      "name": "celestial",
+      "seconds": 38.2,
+      "status": "PASS"
+    },
+    {
+      "name": "combat",
+      "seconds": 0.6,
+      "status": "PASS"
+    },
+    {
+      "name": "knife_combo",
+      "seconds": 0.3,
+      "status": "PASS"
+    },
+    {
+      "name": "melee_flow",
+      "seconds": 3.5,
+      "status": "PASS"
+    },
+    {
+      "name": "loadout_shop",
+      "seconds": 38.1,
+      "status": "PASS"
+    },
+    {
+      "name": "staff_combat",
+      "seconds": 2.8,
+      "status": "PASS"
+    },
+    {
+      "name": "first_person",
+      "seconds": 36.8,
+      "status": "PASS"
+    },
+    {
+      "name": "right_hand",
+      "seconds": 1.7,
+      "status": "PASS"
+    },
+    {
+      "name": "update_log",
+      "seconds": 5.3,
+      "status": "PASS"
+    },
+    {
+      "name": "scene",
+      "seconds": 39.2,
+      "status": "PASS"
+    }
+  ],
+  "full_suite_run": false,
+  "native": {
+    "status": "PASS",
+    "log": "native-verified.log",
+    "views": [
+      "behind",
+      "overhead"
+    ],
+    "locales": [
+      "en",
+      "pl"
+    ],
+    "viewport_sizes": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "checks": [
+      "local LMB arrow flight",
+      "held RMB charge and single launch",
+      "terrain flame burst",
+      "base-stat role cards"
+    ]
+  },
+  "contracts": [
+    "25 SP, 1.25 s charge, 2 s reload and 6 s skill cooldown retained",
+    "surface splash respects thin cover; direct victim excluded from splash",
+    "melee tier damage and committed cadence tested",
+    "Bengal Paws enhancement applies once",
+    "all deployment plants preserve chest emergence clearance"
+  ],
+  "preferences_sha256": "22613d22c80d75b3091849340dc7d5f6c15a5c422d8ceee1f1cc7c087b86ba19",
+  "source_manifest": "source-sha256.json",
+  "iteration_logs": "Earlier failed logs retain fixture diagnostics and the resolved thin-wall/plant-clearance regressions; verified-focused.log and native-verified.log are the final acceptance runs."
+}

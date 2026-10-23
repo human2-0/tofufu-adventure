@@ -1,8 +1,8 @@
 class_name BattlePackWire
 extends RefCounted
 ## Match-only catalog and bounded inventory/world loot values. IDs are one-based.
-const CHESTS: int = 80
-const DROPS: int = 768
+const CHESTS: int = 192
+const DROPS: int = 1536
 const ITEMS: Array[String] = [
 	"knife", "soy_gun", "edamame_sword", "nori_katana", "sproutwood_staff",
 	"bengal_paws", "sotjet", "angel_bow", "celestial_sword", "celestial_staff",
@@ -10,7 +10,7 @@ const ITEMS: Array[String] = [
 	"dark_leaf_helmet", "dark_leaf_armor", "dark_leaf_legs", "dark_leaf_boots", "celestial_helmet",
 	"celestial_armor", "celestial_legs", "celestial_boots", "factory_backpack", "seed_satchel",
 	"traveler_backpack", "apple", "soy_milk", "potato", "cucumber",
-	"red_berries", "beetroot"
+	"red_berries", "beetroot", "magical_tofufu_chunk"
 ]
 const CATEGORIES: Array[String] = [
 	"combat", "combat", "combat", "combat", "combat",
@@ -19,7 +19,7 @@ const CATEGORIES: Array[String] = [
 	"helmet", "armor", "legs", "boots", "helmet",
 	"armor", "legs", "boots", "backpack", "backpack",
 	"backpack", "support", "support", "support", "support",
-	"support", "support"
+	"support", "support", "material"
 ]
 const SLOTS: Array[String] = [
 	"helmet", "armor", "legs", "boots", "backpack",
@@ -29,11 +29,12 @@ const SLOTS: Array[String] = [
 
 static func stack(value: Variant, category: String = "") -> bool:
 	if value is Array and value.is_empty(): return true
-	if not value is Array or value.size() != 3: return false
+	if not value is Array or value.size() not in [3, 4]: return false
 	if not BattleProtocol.integer(value[0], 1, ITEMS.size()): return false
 	var kind := CATEGORIES[int(value[0]) - 1]
 	if not category.is_empty() and kind != category: return false
-	var maximum := (10 if int(value[0]) == 28 else 50) if kind == "support" else 1
+	if value.size() == 4 and (not value[3] is bool or value[3] != true or kind != "combat"): return false
+	var maximum := (10 if int(value[0]) == 28 else 50) if kind in ["support", "material"] else 1
 	if not BattleProtocol.integer(value[1], 1, maximum): return false
 	return BattleProtocol.number(value[2], 0, 100)
 
@@ -63,14 +64,15 @@ static func world(chests: Variant, drops: Variant) -> bool:
 	if not chests is Array or chests.size() > CHESTS or not drops is Array or drops.size() > DROPS: return false
 	for i in chests.size():
 		var row: Variant = chests[i]
-		if not row is Array or row.size() != 5 or not BattleProtocol.integer(row[0], i, i): return false
+		if not row is Array or row.size() != 6 or not BattleProtocol.integer(row[0], i, i): return false
+		if not BattleProtocol.integer(row[5], 0, 2): return false
 		if not BattleProtocol.integer(row[4], 0, 1) or not point(row): return false
 	var seen: Dictionary = {}
 	for row: Variant in drops:
-		if not row is Array or row.size() != 7 or not BattleProtocol.integer(row[0], 0, 1000000): return false
+		if not row is Array or row.size() not in [7, 8] or not BattleProtocol.integer(row[0], 0, 1000000): return false
 		if seen.has(row[0]) or not point(row) or not BattleProtocol.integer(row[5], 0, 50): return false
 		seen[row[0]] = true
-		if not stack([row[4], maxi(1, int(row[5])), row[6]]): return false
+		if not stack([row[4], maxi(1, int(row[5])), row[6]] + row.slice(7)): return false
 	return true
 
 static func point(row: Array) -> bool:

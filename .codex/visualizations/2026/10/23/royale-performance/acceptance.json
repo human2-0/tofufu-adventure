@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "date": "2026-10-23",
+  "battle_protocol": 12,
+  "automated": {
+    "registered_scenarios": 161,
+    "effective_passed": 161,
+    "runtime_scripts": 748,
+    "report": "verification/effective-report.json",
+    "note": "Initial full run passed 158. Three initial failures are retained; corrected journal/fixture cases and the isolated opening timing recheck passed. Final visibility, haze and rapid-close checks passed separately."
+  },
+  "native": {
+    "engine": "Godot 4.7.2 / Metal / Apple M1",
+    "languages": [
+      "en",
+      "pl"
+    ],
+    "ui_resolutions": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "ui_screenshots": 22,
+    "note": "Graphics previews freeze two actors to inspect layout; the 50-CPU profile below is a separate active native run."
+  },
+  "performance": {
+    "profile": "final/benchmark-50.json",
+    "mean_fps": 48.3081289710034,
+    "frame_p50_ms": 18.679,
+    "frame_p95_ms": 30.933,
+    "frame_samples": 289,
+    "cpus": 50,
+    "hunts": 24,
+    "output": [
+      2560,
+      1440
+    ],
+    "render_scale": 0.65,
+    "shadows": false,
+    "scenery_distance": 160,
+    "scope": "One isolated native offline map with a bounded invulnerable population. Not a 60/120 FPS or WAN guarantee.",
+    "renderer_comparison": "graphics-abba.json"
+  },
+  "changes": {
+    "bullets": "Soygun/Raygun 2.5 times faster with existing nominal ranges, damage and reloads; swept collision and bounded replica velocities.",
+    "graphics": "Saved live local settings, 50/65% scales, range and shadows. Performance preset, FPS readout and distance haze. Existing collisions/simulation stay active. Uniform 140m combatant visibility avoids showing enemies through far culled cover.",
+    "journal": "Compact newest-first bilingual cards; one expandable detail view, compact auto-scroll and safe rapid close; unread acknowledgement retained."
+  },
+  "preferences_qa": {
+    "early_benchmark_reset_device_preferences": true,
+    "subsequent_runs_isolated": true,
+    "normal_preferences_unchanged_after_isolation": true,
+    "earlier_copy_found": false,
+    "custom_restoration": "Awaiting user-supplied values; no values were guessed."
+  },
+  "source_hashes": "source-sha256.json"
+}

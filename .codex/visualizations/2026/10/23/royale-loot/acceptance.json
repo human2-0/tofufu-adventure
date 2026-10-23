@@ -1,0 +1,170 @@
+{
+  "status": "PASS",
+  "feature": "Royale chest tiers, match-only weapon enhancements and graphical results",
+  "branch": "main",
+  "committed": false,
+  "pushed": false,
+  "release_batch": 23,
+  "battle_protocol": 13,
+  "chests": {
+    "maximum": 192,
+    "previous_maximum": 80,
+    "tiers": [
+      "basic",
+      "rare",
+      "legendary"
+    ],
+    "quotas": [
+      125,
+      52,
+      15
+    ],
+    "minimum_gap_m": 28,
+    "cell_size_m": 56,
+    "four_choices": [
+      "weapon",
+      "armour/backpack",
+      "food",
+      "flexible"
+    ],
+    "chunk_chances": [
+      0.1,
+      0.35,
+      0.7
+    ],
+    "sample_size_per_tier": 6000,
+    "observed_chunk_counts": [
+      584,
+      2071,
+      4187
+    ],
+    "legendary_guarantees": [
+      "legendary weapon",
+      "legendary armour"
+    ],
+    "region_independent": true
+  },
+  "upgrades": {
+    "uses_per_weapon": 1,
+    "chunk_cost": 1,
+    "match_only": true,
+    "damage_multiplier": 1.2,
+    "attack_rate_multiplier": 1.1,
+    "gun_magazine_bonus": 5,
+    "gun_projectile_speed_multiplier": 1.2,
+    "gun_spread_multiplier": 0.75,
+    "gun_reach_preserved": true,
+    "guard_reflection_cost_multiplier": 0.65,
+    "soyjet_duration_multiplier": 1.25,
+    "bow_reload_rate_multiplier": 1.1,
+    "cpu_same_finite_transaction": true,
+    "survives": [
+      "switches",
+      "pickup",
+      "complete death loot",
+      "host recovery"
+    ],
+    "resets_on_rematch": true
+  },
+  "verification": {
+    "full_registered_scenarios": 162,
+    "passed_after_recheck": 162,
+    "report": "verification/effective-report.json",
+    "original_report": "verification/full/report.json",
+    "initial_failure": "Hunt sampling omitted the northwest quarter; fixed using quarter quotas and dry deployment-clearing fallback routes.",
+    "focused_final_scenarios": 11,
+    "focused_log": "verification/recheck/runner.log",
+    "architecture": "verification/final-architecture.log",
+    "runtime_scripts": 753,
+    "godot_import": "verification/final-import.log",
+    "diff_check": "PASS",
+    "maximum_checkpoint_raw_bytes": 154269,
+    "maximum_checkpoint_encoded_bytes": 37271,
+    "encoded_ceiling_bytes": 58000
+  },
+  "visuals": {
+    "renderer": "Metal / Apple M1",
+    "languages": [
+      "en",
+      "pl"
+    ],
+    "window_sizes": [
+      [
+        1280,
+        720
+      ],
+      [
+        640,
+        360
+      ]
+    ],
+    "images": [
+      "chests-1280-en.png",
+      "chests-1280-pl.png",
+      "chests-640-en.png",
+      "chests-640-pl.png",
+      "results-1280-en.png",
+      "results-1280-pl.png",
+      "results-640-en.png",
+      "results-640-pl.png",
+      "results-details-640-en.png",
+      "results-details-640-pl.png",
+      "upgrade-1280-en.png",
+      "upgrade-1280-pl.png",
+      "upgrade-640-en.png",
+      "upgrade-640-pl.png"
+    ],
+    "texture_source": "assets/environment/royale_chests/SOURCE.md",
+    "texture_tool": "built-in imagegen",
+    "checked": [
+      "applied wood texture and seams",
+      "tier silhouettes and scale",
+      "temporary upgrade confirmation",
+      "XP bar and level crossing",
+      "six stat tiles and goal medals",
+      "compact scrolling and reachable actions"
+    ]
+  },
+  "performance": {
+    "report": "performance/benchmark-50.json",
+    "mean_fps": 56.1436528932027,
+    "frame_p50_ms": 16.223,
+    "frame_p95_ms": 29.053,
+    "draw_calls": 440.0,
+    "cpus": 50,
+    "survivors": 51,
+    "hunts": 24,
+    "output": [
+      2560,
+      1440
+    ],
+    "render_scale": 0.65,
+    "scenery_m": 160,
+    "shadows": false,
+    "measured_ticks": 360,
+    "frame_samples": 336,
+    "fixture_void_resets": [
+      [
+        12,
+        285,
+        710.151916503906,
+        -30.8316402435303,
+        456.490844726562
+      ]
+    ],
+    "scope": "Short isolated offline M1 sample, not a locked FPS target or WAN proof. Initial failed constant-population sample retained under performance-initial/.",
+    "plant_to_chest_p50_m": 42.2766723632812,
+    "plant_to_chest_p95_m": 81.7136535644531,
+    "plant_to_chest_max_m": 99.7777481079102
+  },
+  "device_preferences": {
+    "native_tools_use_isolated_paths": true,
+    "production_preferences_unchanged_during_final_native_runs": true,
+    "sha256": "22613d22c80d75b3091849340dc7d5f6c15a5c422d8ceee1f1cc7c087b86ba19"
+  },
+  "limitations": [
+    "CPU navigation is local sensing, and a CPU can still fall into authored pits. The final performance fixture used one void reset to maintain a constant population.",
+    "Separate-device/WAN performance and human balance playtests remain outside this automated and native-preview coverage."
+  ],
+  "source_hashes": "source-sha256.json"
+}

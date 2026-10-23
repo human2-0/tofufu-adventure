@@ -60,6 +60,10 @@ func _process(delta: float) -> void:
 	reticle.reload_remaining = game.combat.gun.reload_remaining if game.combat.gun.selected else 0.0
 	if game.combat.bow.selected: reticle.reload_remaining = game.combat.bow.reload_remaining
 	reticle.reload_progress = SoyGunReloadPose.progress(reticle.reload_remaining)
+	reticle.bow_skill = game.combat.bow.selected
+	reticle.skill_charge = game.combat.bow.charge / AngelBow.CHARGE
+	reticle.skill_cooldown = game.combat.bow.cooldown / AngelBow.COOLDOWN
+	reticle.skill_affordable = game.combat.vitals.current >= AngelBow.COST
 	reticle.queue_redraw()
 	game.hud.show_gun(game.combat.gun.selected, game.combat.gun.aiming)
 	game.hud.show_gun_status(game.combat.gun.magazine, game.combat.gun.reload_remaining, game.combat.gun.charge_elapsed, game.combat.gun.selected, game.combat.gun.magazine_capacity)

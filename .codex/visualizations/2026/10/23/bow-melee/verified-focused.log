@@ -1,0 +1,42 @@
+Quick verification: architecture, import, 25 Godot tests
+Architecture check: PASS (764 scripts)
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.024s
+
+OK
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.010s
+
+OK
+Logs: /var/folders/71/kmnr_kfj4ps8cx0mp93dnmr40000gn/T/tofufu-verify-wp2sp8of
+import: PASS (6.8s)
+battle_migration: PASS (0.7s)
+battle_combat: PASS (3.8s)
+battle_hud: PASS (26.4s)
+battle_radar: PASS (3.6s)
+battle_mobs: PASS (37.8s)
+battle_honio: PASS (27.0s)
+battle_upgrades: PASS (29.8s)
+battle_inventory: PASS (27.0s)
+battle_deployment: PASS (48.0s)
+battle_cpu: PASS (47.6s)
+battle_game: PASS (49.8s)
+angel_bow: PASS (1.8s)
+coop_angel_bow: PASS (60.6s)
+localization: PASS (0.9s)
+weapon_enhancement: PASS (76.4s)
+celestial: PASS (38.2s)
+combat: PASS (0.6s)
+knife_combo: PASS (0.3s)
+melee_flow: PASS (3.5s)
+loadout_shop: PASS (38.1s)
+staff_combat: PASS (2.8s)
+first_person: PASS (36.8s)
+right_hand: PASS (1.7s)
+update_log: PASS (5.3s)
+scene: PASS (39.2s)
+Quick checks passed in 635.0s (25 Godot tests). Visual/NAT checks remain separate.
+Slowest stages: weapon_enhancement 76.4s, coop_angel_bow 60.6s, battle_game 49.8s
+Full suite was not run.

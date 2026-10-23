@@ -10,6 +10,7 @@ const SPEED: float = 96.0
 const DAMAGE_SCALE: float = 2.5
 var combat: PlayerCombat
 var selected: bool = false
+var attack_speed_multiplier: float = 1.0
 var reload_remaining: float = 0.0
 var charge: float = 0.0
 var cooldown: float = 0.0
@@ -61,7 +62,7 @@ func fire(aim: Vector2, point: Vector3, special: bool) -> void:
 	velocity = direction * SPEED
 	empowered = special
 	sequence += 1
-	reload_remaining = RELOAD
+	reload_remaining = RELOAD / attack_speed_multiplier
 	combat.vitals.engage()
 	_spawn(true)
 
@@ -77,7 +78,7 @@ func _spawn(authority: bool) -> void:
 	arrow.targets.append_array(combat.gun.friends)
 	arrow.ignored.assign(combat.gun.ignored_bodies)
 	add_child(arrow)
-	arrow.global_position = origin
+	arrow.place(origin)
 	arrow.initial_start = combat.actor.global_position + Vector3.UP * combat.tuning.muzzle_height
 	visual.kick = 1.0
 

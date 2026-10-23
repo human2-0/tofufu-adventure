@@ -60,7 +60,7 @@ static func actor(state: Dictionary) -> bool:
 	if state.has("progression") and not progression(state.progression): return false
 	return state.get("combat") is Dictionary and combat(state.combat)
 
-static func combat(data: Dictionary) -> bool:
+static func combat(data: Dictionary, shot_speed: float = 120.0, stowed_magazine: bool = false) -> bool:
 	if not AngelBowProtocol.valid(data): return false
 	if not BengalCombatProtocol.valid(data): return false
 	if not sequence(data.get("punch_sequence", 0)): return false
@@ -102,14 +102,15 @@ static func combat(data: Dictionary) -> bool:
 	if data.has("shot") and not sequence(data.shot): return false
 	if data.has("clash") and not sequence(data.clash): return false
 	if data.has("shot_origin") and not vector(data.shot_origin, 3, 1000): return false
-	if data.has("shot_velocity") and not vector(data.shot_velocity, 3, 120): return false
+	if data.has("shot_velocity") and not vector(data.shot_velocity, 3, shot_speed): return false
 	if data.has("enhanced") and not data.enhanced is bool: return false
-	if data.has("gun_magazine") and (not sequence(data.gun_magazine) or data.gun_magazine > (14 if data.get("enhanced", false) and data.get("gun", false) else 9)): return false
+	var large_magazine: bool = (data.get("enhanced", false) and data.get("gun", false)) or (stowed_magazine and not data.get("gun", false))
+	if data.has("gun_magazine") and (not sequence(data.gun_magazine) or data.gun_magazine > (14 if large_magazine else 9)): return false
 	if data.has("gun_reload") and (not number(data.gun_reload, 2.0) or data.gun_reload < 0): return false
 	if data.has("gun_charge") and (not number(data.gun_charge, 2.0) or data.gun_charge < 0): return false
 	if data.has("ricochet") and not sequence(data.ricochet): return false
 	if data.has("ricochet_origin") and not vector(data.ricochet_origin, 3, 1000): return false
-	if data.has("ricochet_velocity") and not vector(data.ricochet_velocity, 3, 120): return false
+	if data.has("ricochet_velocity") and not vector(data.ricochet_velocity, 3, shot_speed): return false
 	for field in ["owned", "selected", "guard", "active"]:
 		if not data.get(field) is bool: return false
 	for field in ["aim", "facing"]:
