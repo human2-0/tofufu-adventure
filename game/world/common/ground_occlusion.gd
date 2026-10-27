@@ -6,6 +6,8 @@ const TILE_SIZE: float = 24.0
 const INSET: float = 0.04
 var _tiles: Array[OccluderInstance3D] = []
 var _tops: Array[float] = []
+var _lower_height: float = INF
+var _upper_height: float = -INF
 
 static func build(ground: MeshInstance3D) -> GroundOcclusion:
 	var result := GroundOcclusion.new()
@@ -47,6 +49,8 @@ func _tile(points: PackedVector3Array) -> void:
 	add_child(tile)
 	_tiles.append(tile)
 	_tops.append(top)
+	_lower_height = INF
+	_upper_height = -INF
 
 func _process(_delta: float) -> void:
 	var camera := get_viewport().get_camera_3d()
@@ -54,6 +58,14 @@ func _process(_delta: float) -> void:
 
 func present(camera_position: Vector3) -> void:
 	var height := to_local(camera_position).y
+	# Tile states change only when crossing a top, including the exact one-sided edge.
+	if height > _lower_height and height <= _upper_height: return
+	_lower_height = -INF
+	_upper_height = INF
 	for i in _tiles.size():
 		# A one-sided floor is invisible from below; it must never hide the sky there.
-		_tiles[i].visible = height > _tops[i] + INSET
+		var edge := _tops[i] + INSET
+		var above := height > edge
+		_tiles[i].visible = above
+		if above: _lower_height = maxf(_lower_height, edge)
+		else: _upper_height = minf(_upper_height, edge)

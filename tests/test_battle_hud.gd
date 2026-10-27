@@ -11,6 +11,7 @@ func check(value: bool, label: String) -> void:
 		printerr("FAIL: ", label)
 
 func _run() -> void:
+	_rim_budget()
 	GamePreferences.install_translations(self)
 	var room := BattleRoom.new()
 	root.add_child(room)
@@ -108,9 +109,11 @@ func _storm() -> void:
 	storm.present(0)
 	check(storm.edge.visible, "outside storm adds local danger mist")
 	var phase: float = storm.wall_material.get_shader_parameter("phase")
+	var pending := storm._terrain_rim._next
 	game.room.phase = "recovering"
 	storm.present(0)
 	check(is_equal_approx(phase, storm.edge_material.get_shader_parameter("phase")), "recovery freezes every storm effect on the same clock")
+	check(storm._terrain_rim._next == pending, "recovery also freezes pending terrain outline work")
 	game.room.phase = "playing"
 	game.match_state.time = BattleRing.total_time() + 8
 	storm.present(0.3)
@@ -118,6 +121,31 @@ func _storm() -> void:
 	game.match_state.time = BattleRing.start_of(5) + BattleRing.HOLD + 1
 	game._update_hud()
 	check(game.hud.zone.values.unsafe and game.hud.zone.values.zone_distance > 0, "unsafe HUD supplies an escape direction and distance")
+
+func _rim_budget() -> void:
+	var outline := BattleStormRim.new()
+	var queries: Array[int] = [0]
+	outline.material = StandardMaterial3D.new()
+	outline.ground_point = func(x: float, z: float, lift: float) -> Vector3:
+		queries[0] += 1
+		return Vector3(x, x * 0.1 + z * 0.2 + lift, z)
+	check(outline.request(Vector2(20, -30), 100), "first terrain rim requests a build")
+	for tick in 13:
+		var before := queries[0]
+		outline.step()
+		check(queries[0] - before <= 48, "each outline tick performs at most 48 terrain queries")
+		if tick < 12: check(outline.mesh.get_surface_count() == 0, "incomplete terrain profiles never become a torn visible ring")
+	check(queries[0] == 579 and outline.mesh.get_surface_count() == 1, "full rim retains all 192 segments and three terrain bands")
+	var vertices: PackedVector3Array = outline.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]
+	check(vertices.size() == 2304, "rim preserves every original triangle")
+	for at in vertices:
+		check(is_equal_approx(at.y, (at.x + 20) * 0.1 + (at.z - 30) * 0.2 + 0.14), "completed rim follows the authored terrain query at every vertex")
+	check(not outline.request(Vector2(20, -30), 100), "stationary circles reuse their completed outline")
+	outline.step()
+	check(queries[0] == 579, "stationary circles perform no repeated terrain sampling")
+	outline.request(Vector2(25, -30), 99)
+	outline.step()
+	check(outline.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX] == vertices, "moving circles retain their old complete rim while new samples accumulate")
 
 func _layout() -> void:
 	for dimensions in [Vector2i(1280, 720), Vector2i(640, 360)]:

@@ -3,6 +3,7 @@ extends CanvasLayer
 ## Compact local settings; emits intent without pausing the shared match.
 
 signal rendering_requested(limit: int, scale: float, sync: bool, adaptive: bool)
+signal display_requested(index: int, fullscreen: bool)
 signal scenery_requested(distance: int, shadows: bool)
 signal effect_requested(key: String, enabled: bool)
 signal performance_requested
@@ -10,6 +11,8 @@ signal closed
 var frame: PanelContainer
 var fps: OptionButton
 var resolution: OptionButton
+var window_size: OptionButton
+var fullscreen: CheckButton
 var distance: OptionButton
 var shadows: CheckButton
 var adaptive: CheckButton
@@ -20,6 +23,7 @@ var _root: Control
 var _fps_readout: Label
 var _clock: float = 0.0
 var effects: Dictionary[String, CheckButton] = {}
+var resolutions: Array[Vector2i] = []
 const LIMITS: Array[int] = [60, 120, 144, 0]
 const SCALES: Array[float] = [0.5, 0.65, 0.75, 0.85, 1.0]
 const DISTANCES: Array[int] = [160, 240, 360, 0]
@@ -59,6 +63,16 @@ func _ready() -> void:
 	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	body.add_theme_constant_override("separation", 8)
 	scroll.add_child(body)
+	var sizes: Array[String] = []
+	for dimensions in resolutions:
+		sizes.append("%d × %d" % [dimensions.x, dimensions.y])
+	window_size = _picker(body, "Window resolution", sizes)
+	fullscreen = _toggle(body, "Fullscreen")
+	var display_button := MenuStyle.button(body, "Apply display", func() -> void:
+		display_requested.emit(window_size.selected, fullscreen.button_pressed))
+	MenuStyle.fit_button(display_button, true)
+	var display_hint := MenuStyle.paragraph(body, "Window size applies in windowed mode. Fullscreen uses your display’s native resolution.")
+	display_hint.add_theme_font_size_override("font_size", 13)
 	var preset := MenuStyle.button(body, "Performance preset", performance_requested.emit)
 	MenuStyle.fit_button(preset, true)
 	var hint := MenuStyle.paragraph(body, "Lower 3D resolution and scenery range for smoother play. Combat and cover stay active.")
@@ -87,6 +101,8 @@ func _ready() -> void:
 	hide()
 
 func display(data: Dictionary) -> void:
+	window_size.select(int(data.resolution))
+	fullscreen.set_pressed_no_signal(data.fullscreen)
 	fps.select(maxi(0, LIMITS.find(int(data.limit))))
 	resolution.select(maxi(0, SCALES.find(float(data.scale))))
 	sync.set_pressed_no_signal(data.sync)

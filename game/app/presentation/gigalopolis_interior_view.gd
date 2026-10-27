@@ -5,6 +5,7 @@ extends Node
 var actor: Player
 var camera: Camera3D
 var rooms: Array[Node3D] = []
+var _cutaway: bool = true
 
 func _process(_delta: float) -> void:
 	var focus: Node3D = camera.target if camera is CameraFollow and camera.target != null else actor
@@ -15,6 +16,9 @@ func _process(_delta: float) -> void:
 		indoor_camera = indoor_camera or _inside(room, camera.global_position)
 	# A camera already inside the room sees its intact ceiling and walls.
 	indoors = indoors and not indoor_camera
+	# Outdoor views already show every wall/roof; avoid resubmitting unchanged geometry.
+	if not indoors and not _cutaway: return
+	_cutaway = indoors
 	for room in rooms:
 		var at := room.to_local(focus.global_position)
 		var size: Vector3 = room.get_meta("city_size")

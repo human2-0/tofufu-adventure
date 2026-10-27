@@ -106,6 +106,19 @@ const RECENT: Array[Dictionary] = [
 			"Royale melee weapons have clearer power and speed differences: heavy Pod Sword hits, quick Katana combos and deliberate staff sweeps. Legendary weapons improve their families; item details show base damage and attack time.",
 			"Chests leave more room beside deployment plants, keeping soybean emergence clear."
 		]
+	},
+	{
+		"id": 27, "date": "2026-10-27", "title": "Your Royale view",
+		"bullets": [
+			"Change window resolution and fullscreen from the Royale Graphics menu. Keep your display choice or let it revert automatically after 15 seconds."
+		]
+	},
+	{
+		"id": 28, "date": "2026-10-27", "title": "Smoother journeys and Royale",
+		"bullets": [
+			"Royale storms and CPU matches do less work each frame, reducing hitches while keeping the same combat and storm timing.",
+			"Smaller matches now save work on offscreen survivors and landing shadows too. Terrain and city cutaways avoid repeated updates while preserving the scenery."
+		]
 	}
 
 ]

@@ -222,12 +222,14 @@ func _codec() -> void:
 func _visibility(game: BattleRoyaleGame) -> void:
 	var actor := game.bodies[-1]
 	var fighter := game.combat.fighters[-1]
+	var shadow := actor.get_node("GroundShadow") as GroundShadow
 	var at := actor.position
 	var hp: float = game.match_state.rows[-1][8]
 	var ammo := fighter.combat.gun.magazine
 	actor.position = game.camera.global_position + game.camera.global_basis.x * 200 - game.camera.global_basis.z * 10
 	game.visibility._process(0)
 	check(not actor.visuals.presentation_enabled and not fighter.combat.gun.visual.is_processing(), "offscreen sprite and held-model work sleeps")
+	check(not shadow.is_physics_processing() and not shadow._disc.visible, "offscreen landing shadows stop querying terrain and drawing stale discs")
 	check(fighter.combat.gun.visual_muzzle.call().distance_to(fighter.combat.gun.muzzle_position(fighter.combat.gun.visual.facing)) < 0.001, "offscreen projectile visual starts at its current physical muzzle")
 	check(game.match_state.rows[-1][8] == hp and fighter.combat.gun.magazine == ammo and actor.collision_mask != 0, "cosmetic culling preserves health, ammunition and collision")
 	actor.position = game.camera.global_position - game.camera.global_basis.z * (BattleVisibility.COMBATANT_RANGE + 20)
@@ -236,6 +238,7 @@ func _visibility(game: BattleRoyaleGame) -> void:
 	actor.position = game.bodies[game.local_slot].position
 	game.visibility._process(0)
 	check(actor.visuals.presentation_enabled and fighter.combat.gun.visual.is_processing(), "visible actors immediately resume animated poses and weapons")
+	check(shadow.is_physics_processing(), "visible landing shadows immediately resume ground projection")
 	actor.position = at
 	game.visibility._process(0)
 

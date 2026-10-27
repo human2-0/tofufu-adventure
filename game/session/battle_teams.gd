@@ -6,7 +6,9 @@ static func team(options: Array, slot: int) -> int:
 	return floori(slot / 2.0) if BattleOptions.duos(options) else slot
 
 static func allies(options: Array, first: int, second: int) -> bool:
-	return first >= 0 and second >= 0 and team(options, first) == team(options, second)
+	if first < 0 or second < 0: return false
+	if first == second: return true
+	return BattleOptions.duos(options) and (first >> 1) == (second >> 1)
 
 static func survivors(state: BattleMatch) -> Array[int]:
 	var result: Array[int] = []

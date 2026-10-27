@@ -26,6 +26,20 @@ func _state() -> BattleMatch:
 	return state
 
 func _rings() -> void:
+	for duos: bool in [false, true]:
+		var options := [50, 1, 1] if duos else [50, 1]
+		for first in 70:
+			for second in 70:
+				var expected := first == second or (duos and absi(first - second) == 1 and mini(first, second) % 2 == 0)
+				check(BattleTeams.allies(options, first, second) == expected, "fast team checks preserve every self, partner and enemy pair")
+		check(not BattleTeams.allies(options, -1, 0) and not BattleTeams.allies(options, 0, -1), "unattributed storm and mob damage never become allied hits")
+	var boundary := BattleRing.GRACE
+	for i in BattleRing.CLOSES.size():
+		check(BattleRing.stage(boundary) == i, "each authored storm phase starts at its exact boundary")
+		check(is_equal_approx(BattleRing.radius(boundary), BattleRing.RADII[i]), "storm phases retain authored opening radii")
+		boundary += BattleRing.HOLD + BattleRing.CLOSES[i]
+		if i < BattleRing.CLOSES.size() - 1:
+			check(BattleRing.stage(boundary - 0.001) == i and BattleRing.stage(boundary) == i + 1, "storm stage advances once at each boundary")
 	for anchor: Vector2 in [Vector2(-180, -100), Vector2(170, 75), Vector2(650, 450), Vector2(-300, -300), Vector2.ZERO, BattleRing.CENTER]:
 		var previous := BattleRing.CENTER
 		for tick in int((BattleRing.total_time() + 20) * 10):

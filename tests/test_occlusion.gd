@@ -50,6 +50,15 @@ func run() -> void:
 	check(cover._tiles.all(func(tile: OccluderInstance3D) -> bool: return tile.visible), "camera above the entire tile enables its opaque surface")
 	cover.present(Vector3(0, 1, 0))
 	check(cover._tiles[0].visible and not cover._tiles[1].visible, "only ground entirely below the camera can occlude")
+	for height: float in [1.9, 1.1, 0.8, 0.8, 2.04, 2.0401, 3.0, 2.04, 0.04, -0.1]:
+		var point := Vector3(0, height, 0)
+		cover.present(point)
+		for i in cover._tiles.size():
+			check(cover._tiles[i].visible == (point.y > cover._tops[i] + GroundOcclusion.INSET), "height caching preserves exact one-sided thresholds in both travel directions")
+	ground.position.y = 10
+	cover.present(Vector3(0, 11, 0))
+	check(cover._tiles[0].visible and not cover._tiles[1].visible, "cached visibility still follows translated terrain")
+	ground.position.y = 0
 	cover.present(Vector3(0, -1, 0))
 	check(not cover._tiles.any(func(tile: OccluderInstance3D) -> bool: return tile.visible), "one-sided ground cannot hide the sky when viewed from below")
 	var vertices := PackedVector3Array()

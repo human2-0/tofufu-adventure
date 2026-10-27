@@ -9403,3 +9403,24 @@ msgstr "Broń do walki wręcz w Royale wyraźniej różni się siłą i szybkoś
 
 msgid "Chests leave more room beside deployment plants, keeping soybean emergence clear."
 msgstr "Skrzynie zostawiają więcej miejsca przy roślinach startowych, dzięki czemu wyjście z soi pozostaje wolne."
+
+msgid "Window resolution"
+msgstr "Rozdzielczość okna"
+
+msgid "Apply display"
+msgstr "Zastosuj ustawienia ekranu"
+
+msgid "Your Royale view"
+msgstr "Twój widok w Royale"
+
+msgid "Change window resolution and fullscreen from the Royale Graphics menu. Keep your display choice or let it revert automatically after 15 seconds."
+msgstr "Zmieniaj rozdzielczość okna i tryb pełnoekranowy w menu Grafika w Royale. Zachowaj wybrane ustawienia ekranu lub poczekaj 15 sekund na automatyczny powrót do poprzednich."
+
+msgid "Smoother journeys and Royale"
+msgstr "Płynniejsze podróże i Royale"
+
+msgid "Royale storms and CPU matches do less work each frame, reducing hitches while keeping the same combat and storm timing."
+msgstr "Burza i mecze z CPU w Royale wymagają teraz mniej pracy w każdej klatce, co ogranicza przycięcia bez zmiany walki i czasu działania burzy."
+
+msgid "Smaller matches now save work on offscreen survivors and landing shadows too. Terrain and city cutaways avoid repeated updates while preserving the scenery."
+msgstr "Mniejsze mecze również oszczędzają teraz pracę nad postaciami poza ekranem i cieniami lądowania. Teren i przekroje miejskich budynków pomijają zbędne aktualizacje, zachowując tę samą scenerię."

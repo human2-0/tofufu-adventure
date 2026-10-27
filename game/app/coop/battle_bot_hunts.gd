@@ -11,8 +11,10 @@ static func command(slot: int, state: BattleMatch, original: Array, player_dista
 	for row: Array in state.mobs[0]:
 		if row[9] != 0: continue
 		var mob := Vector3(row[4][0], row[4][1], row[4][2])
-		if absf(mob.y - at.y) > 8 or BattleRing.outside(mob, state.time + 12, state.circle): continue
 		var d := at.distance_squared_to(mob)
+		# Most hunts are far away. Reject them before recalculating their storm circle.
+		if d >= distance or absf(mob.y - at.y) > 8: continue
+		if BattleRing.outside(mob, state.time + 12, state.circle): continue
 		if d < distance:
 			distance = d
 			target = mob

@@ -88,6 +88,59 @@ resolution scaling cannot remove CPU bottlenecks.
   rendering are respected. A single loading stall does not lower quality. The
   temporary scale is local and is not saved as the user's new preference.
 
+## Second performance pass (2026-10-27)
+
+The local script profiler identified a repeated storm-rim rebuild taking about
+15 ms in a single tick. It queried 579 terrain points every quarter-second even
+while the circle was holding. `BattleStormRim` now reuses stationary outlines and
+samples at most 16 profiles / 48 terrain points per active tick. A complete old
+mesh remains visible until the replacement is ready; all 192 segments, triangle
+colours and the original terrain-height query remain. The first outline takes
+13 ticks to prepare. Moving outlines retain the existing quarter-second refresh
+cadence, with preparation spread across those ticks. Wall position, radius,
+danger mist, damage and safe-zone timing still follow the accepted match state;
+recovery freezes pending sampling too.
+
+Storm rules avoid repeated stage/radius calculations. CPU hunts reject distant
+targets before storm checks, and allied-pair checks avoid repeatedly deriving
+both teams. A fixed 5,100-command / 51,000-storm-check workload produces identical
+before/after hashes. Command preparation fell from 432 to 210 ms and storm
+checks from 203 to 54 ms in that headless workload; those are rule costs, not FPS.
+
+Local presentation culling now covers smaller Royale rosters and stops hidden
+landing-shadow raycasts. Returning to view refreshes the ground projection
+immediately. Shared Adventure/Royale terrain occluders update only when camera
+height crosses a tile's existing threshold; city cutaways skip repeated outdoor
+wall/roof updates and still restore them immediately on exit. These caches do
+not alter collision, artwork, survivor simulation, attack cadence or network data.
+
+Two sequential before and two final runs of `tests/benchmark_battle_cpu.gd` on
+the M1 used the same epoch and 51 invulnerable survivors, with all 24 hunts and
+192 chests. Output was fixed at 2560 × 1440; adaptive 3D scale settled at 90% in
+every run, scenery stayed at 240 m and shadows stayed enabled.
+
+| Metric | Before range | Final range |
+| --- | ---: | ---: |
+| Median frame interval | 15.9–16.4 ms | 13.3–13.6 ms |
+| p95 frame interval | 28.2–28.5 ms | 18.5–18.7 ms |
+| p95 simulation tick | 20.1–20.4 ms | 11.2 ms |
+| Maximum simulation tick | 26.2–26.7 ms | 12.1–12.6 ms |
+
+Average p95 frame time fell about 34%, and p95 simulation time about 45%. Raw
+results and rule hashes are retained in
+`tests/performance/m1_phase2_battle.json`. This fixture samples an early holding
+circle with moving CPUs; it does not establish locked 120 FPS, other-region
+performance, sustained late-circle performance or separate-device/WAN behavior.
+Use `tests/benchmark_battle_rules.gd` for repeatable rule-cost comparisons, and
+the existing storm/HUD preview for closing, outside-danger and recovery views.
+
+Validation passed the full verifier: 765 runtime scripts, the Python tooling
+checks and all 163 Godot scenarios. The run used the supported three-times timeout
+allowance. Native English/Polish HUD and storm captures covered desktop/compact,
+behind/overhead, outside danger and recovery views. City home, warehouse and
+clock-lobby cutaways were also rendered and inspected. Live separate-device,
+WAN and long-session acceptance remain separate.
+
 ## Verified 1440p perspective measurements
 
 Rendered local measurements use Godot 4.7.2, Metal / Forward Mobile, VSync off,

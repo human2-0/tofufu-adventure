@@ -20,6 +20,12 @@ func _ready() -> void:
 	add_child(_disc)
 	_disc.top_level = true
 
+func set_active(enabled: bool) -> void:
+	if is_physics_processing() == enabled: return
+	set_physics_process(enabled)
+	if enabled: _physics_process(0)
+	else: _disc.hide()
+
 func _physics_process(_delta: float) -> void:
 	var query := PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 0.15, global_position + Vector3.DOWN * 30, 1)
 	var hit := get_world_3d().direct_space_state.intersect_ray(query)

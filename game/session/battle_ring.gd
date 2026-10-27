@@ -17,8 +17,10 @@ static func total_time() -> float:
 	return start_of(CLOSES.size())
 
 static func stage(time: float) -> int:
+	var boundary := GRACE
 	for i in CLOSES.size() - 1:
-		if time < start_of(i + 1): return i
+		boundary += HOLD + CLOSES[i]
+		if time < boundary: return i
 	return CLOSES.size() - 1
 
 static func radius(time: float) -> float:
@@ -32,18 +34,23 @@ static func remaining(time: float) -> float:
 	return maxf(0, start_of(stage(time) + 1) - time)
 
 static func center(time: float, anchor: Vector2 = CENTER) -> Vector2:
-	return CENTER.lerp(anchor, clampf((RADII[0] - radius(time)) / (RADII[0] - RADII[4]), 0, 1))
+	return _center(radius(time), anchor)
+
+static func _center(current_radius: float, anchor: Vector2) -> Vector2:
+	return CENTER.lerp(anchor, clampf((RADII[0] - current_radius) / (RADII[0] - RADII[4]), 0, 1))
 
 static func next_center(time: float, anchor: Vector2 = CENTER) -> Vector2:
 	var next_radius: float = RADII[stage(time) + 1]
 	return CENTER.lerp(anchor, clampf((RADII[0] - next_radius) / (RADII[0] - RADII[4]), 0, 1))
 
 static func phase_remaining(time: float) -> float:
-	var elapsed := maxf(0, time - start_of(stage(time)))
-	return maxf(0, (HOLD if elapsed < HOLD else HOLD + CLOSES[stage(time)]) - elapsed)
+	var index := stage(time)
+	var elapsed := maxf(0, time - start_of(index))
+	return maxf(0, (HOLD if elapsed < HOLD else HOLD + CLOSES[index]) - elapsed)
 
 static func closing(time: float) -> bool:
 	return time >= start_of(stage(time)) + HOLD
 
 static func outside(at: Vector3, time: float, anchor: Vector2 = CENTER) -> bool:
-	return radius(time) <= 0 or Vector2(at.x, at.z).distance_to(center(time, anchor)) > radius(time)
+	var current_radius := radius(time)
+	return current_radius <= 0 or Vector2(at.x, at.z).distance_to(_center(current_radius, anchor)) > current_radius

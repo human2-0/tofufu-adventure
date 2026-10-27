@@ -1,0 +1,203 @@
+{
+  "date": "2026-10-27",
+  "device": "Apple M1; Godot 4.7.2 Forward Mobile / Metal",
+  "scope": "Isolated sequential native 50-CPU benchmark, same epoch, 51 invulnerable survivors, 24 hunts, 192 chests. Fixed 2560x1440 output, adaptive scale settled at 90%, 240m scenery, shadows enabled. Two before and two final runs. Initial diagnostic second control used --profiling without the local debugger; it did not enable script instrumentation. Not a locked FPS, other-scene, WAN or separate-device guarantee.",
+  "native_before": [
+    {
+      "chests": 192,
+      "cpus": 50,
+      "difficulty": "normal",
+      "draw_calls": 1166.0,
+      "engine_fps": 53.0,
+      "fixture_void_resets": [
+        [
+          12,
+          308,
+          708.560241699219,
+          -30.468225479126,
+          456.938598632812
+        ]
+      ],
+      "frame_p50_ms": 16.436,
+      "frame_p95_ms": 28.464,
+      "frame_samples": 335,
+      "honio_awake_ticks": 0,
+      "honio_site": -1,
+      "hunts": 24,
+      "hunts_enabled": true,
+      "maximum_awake_hunts": 18,
+      "mean_fps": 55.8365532412369,
+      "measured_ticks": 360,
+      "minimum_alive": 51,
+      "plant_to_chest_max_m": 99.7777481079102,
+      "plant_to_chest_p50_m": 42.2766723632812,
+      "plant_to_chest_p95_m": 81.7136535644531,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scenery_distance": 240,
+      "scope": "One native offline map, constant invulnerable population, fixed 1440p viewport and production graphics settings. Test-only void resets keep all actors active. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "shadows": true,
+      "simulation_max_ms": 26.738,
+      "simulation_p50_ms": 7.197,
+      "simulation_p95_ms": 20.435,
+      "survivors": 51,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    },
+    {
+      "chests": 192,
+      "cpus": 50,
+      "difficulty": "normal",
+      "draw_calls": 1167.0,
+      "engine_fps": 55.0,
+      "fixture_void_resets": [
+        [
+          12,
+          308,
+          708.560241699219,
+          -30.468225479126,
+          456.938598632812
+        ]
+      ],
+      "frame_p50_ms": 15.914,
+      "frame_p95_ms": 28.157,
+      "frame_samples": 344,
+      "honio_awake_ticks": 0,
+      "honio_site": -1,
+      "hunts": 24,
+      "hunts_enabled": true,
+      "maximum_awake_hunts": 18,
+      "mean_fps": 57.4301989355379,
+      "measured_ticks": 360,
+      "minimum_alive": 51,
+      "plant_to_chest_max_m": 99.7777481079102,
+      "plant_to_chest_p50_m": 42.2766723632812,
+      "plant_to_chest_p95_m": 81.7136535644531,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scenery_distance": 240,
+      "scope": "One native offline map, constant invulnerable population, fixed 1440p viewport and production graphics settings. Test-only void resets keep all actors active. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "shadows": true,
+      "simulation_max_ms": 26.16,
+      "simulation_p50_ms": 7.139,
+      "simulation_p95_ms": 20.108,
+      "survivors": 51,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    }
+  ],
+  "native_after": [
+    {
+      "chests": 192,
+      "cpus": 50,
+      "difficulty": "normal",
+      "draw_calls": 1167.0,
+      "engine_fps": 77.0,
+      "fixture_void_resets": [
+        [
+          12,
+          308,
+          708.560241699219,
+          -30.468225479126,
+          456.938598632812
+        ]
+      ],
+      "frame_p50_ms": 13.612,
+      "frame_p95_ms": 18.517,
+      "frame_samples": 496,
+      "honio_awake_ticks": 0,
+      "honio_site": -1,
+      "hunts": 24,
+      "hunts_enabled": true,
+      "maximum_awake_hunts": 18,
+      "mean_fps": 82.4703048707694,
+      "measured_ticks": 360,
+      "minimum_alive": 51,
+      "plant_to_chest_max_m": 99.7777481079102,
+      "plant_to_chest_p50_m": 42.2766723632812,
+      "plant_to_chest_p95_m": 81.7136535644531,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scenery_distance": 240,
+      "scope": "One native offline map, constant invulnerable population, fixed 1440p viewport and production graphics settings. Test-only void resets keep all actors active. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "shadows": true,
+      "simulation_max_ms": 12.074,
+      "simulation_p50_ms": 7.379,
+      "simulation_p95_ms": 11.213,
+      "survivors": 51,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    },
+    {
+      "chests": 192,
+      "cpus": 50,
+      "difficulty": "normal",
+      "draw_calls": 1166.0,
+      "engine_fps": 77.0,
+      "fixture_void_resets": [
+        [
+          12,
+          308,
+          708.560241699219,
+          -30.468225479126,
+          456.938598632812
+        ]
+      ],
+      "frame_p50_ms": 13.295,
+      "frame_p95_ms": 18.681,
+      "frame_samples": 495,
+      "honio_awake_ticks": 0,
+      "honio_site": -1,
+      "hunts": 24,
+      "hunts_enabled": true,
+      "maximum_awake_hunts": 18,
+      "mean_fps": 82.5799649327099,
+      "measured_ticks": 360,
+      "minimum_alive": 51,
+      "plant_to_chest_max_m": 99.7777481079102,
+      "plant_to_chest_p50_m": 42.2766723632812,
+      "plant_to_chest_p95_m": 81.7136535644531,
+      "render_scale": 0.899999976158142,
+      "renderer": "macOS",
+      "scenery_distance": 240,
+      "scope": "One native offline map, constant invulnerable population, fixed 1440p viewport and production graphics settings. Test-only void resets keep all actors active. Includes movement, bot decisions, combat and pack capture. Run without other test workers. Not WAN/device acceptance or a locked FPS guarantee.",
+      "shadows": true,
+      "simulation_max_ms": 12.582,
+      "simulation_p50_ms": 7.157,
+      "simulation_p95_ms": 11.199,
+      "survivors": 51,
+      "viewport": [
+        2560,
+        1440
+      ],
+      "warmup_ticks": 120
+    }
+  ],
+  "headless_rules_before": {
+    "command_hash": "fd71210e7e218a7a684758d934cf335aee1f47d29beffb00a4b26322f51de2e5",
+    "commands": 5100,
+    "commands_ms": 432.243,
+    "scope": "Fixed headless rules only; no rendering, collisions or FPS claim.",
+    "storm_checks": 51000,
+    "storm_hash": "0938d82954e7cc71068f187c55d9e4afc8eb1c7b74a55e80e03db2638e830cb6",
+    "storm_ms": 203.395
+  },
+  "headless_rules_after": {
+    "command_hash": "fd71210e7e218a7a684758d934cf335aee1f47d29beffb00a4b26322f51de2e5",
+    "commands": 5100,
+    "commands_ms": 210.496,
+    "scope": "Fixed headless rules only; no rendering, collisions or FPS claim.",
+    "storm_checks": 51000,
+    "storm_hash": "0938d82954e7cc71068f187c55d9e4afc8eb1c7b74a55e80e03db2638e830cb6",
+    "storm_ms": 53.627
+  }
+}

@@ -3,6 +3,7 @@ extends Node
 ## Skip offscreen sprite/held-model work; every capsule, weapon and projectile simulates.
 
 var game: BattleRoyaleGame
+var _shadows: Array[GroundShadow] = []
 const COMBATANT_RANGE: float = 140.0 # Beyond every weapon's reach, inside near cover's hysteresis.
 
 func _ready() -> void:
@@ -10,9 +11,7 @@ func _ready() -> void:
 	for slot in game.bodies.size():
 		limit(game.bodies[slot])
 		limit(game.combat.fighters[slot])
-	if game.bodies.size() <= 20:
-		set_process(false)
-		return
+		_shadows.append(game.bodies[slot].get_node("GroundShadow") as GroundShadow)
 	for fighter in game.combat.fighters:
 		fighter.combat.gun.visual_muzzle = _gun_muzzle.bind(fighter)
 		fighter.combat.sotjet.flow.visual.nozzle_provider = _jet_muzzle.bind(fighter)
@@ -33,6 +32,7 @@ func _apply(slot: int, enabled: bool) -> void:
 	var combat := game.combat.fighters[slot].combat
 	if enabled and not actor.visuals.presentation_enabled: actor.visuals.jump_animation.reset()
 	actor.visuals.presentation_enabled = enabled
+	_shadows[slot].set_active(enabled)
 	var rendering := enabled and DisplayServer.get_name() != "headless"
 	actor.presentation.set_process(rendering)
 	combat.set_process(rendering)

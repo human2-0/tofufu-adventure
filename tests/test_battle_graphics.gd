@@ -25,12 +25,37 @@ func _run() -> void:
 	game.set_physics_process(false)
 	var settings := game.settings
 	var sprite := game.bodies[1].visuals
+	var other := game.bodies[1]
+	var original_position := other.position
+	other.position = game.camera.global_position + game.camera.global_basis.x * 200
+	game.visibility._process(0)
+	check(not sprite.presentation_enabled and not other.get_node("GroundShadow").is_physics_processing(), "small Royale rosters also skip offscreen pose and shadow work")
+	other.position = game.bodies[0].position
+	game.visibility._process(0)
+	check(sprite.presentation_enabled and other.get_node("GroundShadow").is_physics_processing(), "small roster presentation wakes on return to view")
+	other.position = original_position
 	check(sprite.visibility_range_end == BattleVisibility.COMBATANT_RANGE, "combatants have the same safe viewing range at every quality")
 	var before := game.match_state.time
 	game.hud.graphics_requested.emit()
 	check(settings.panel.visible and game.hud.exit_panel.visible, "match menu opens local graphics with controls blocked")
 	game._physics_process(1.0 / 60)
 	check(game.match_state.time > before and not paused and not game.local_input.enabled, "settings do not pause match or leave movement enabled")
+	check(settings.panel.window_size.item_count == GamePreferences.RESOLUTIONS.size(), "Royale offers every launcher window resolution")
+	settings.panel.display_requested.emit(1, false)
+	check(game.preferences.resolution == 1 and not game.preferences.fullscreen and settings._confirm.visible, "display previews a 720p window with confirmation")
+	settings._confirm.confirmed.emit()
+	await process_frame
+	var display_saved := ConfigFile.new()
+	display_saved.load(game.preferences.path)
+	check(display_saved.get_value("display", "resolution") == 1 and not display_saved.get_value("display", "fullscreen"), "Keep saves the display choice on this device")
+	settings.panel.display_requested.emit(3, true)
+	settings._confirm.canceled.emit()
+	await process_frame
+	check(game.preferences.resolution == 1 and not game.preferences.fullscreen and settings.panel.window_size.selected == 1 and not settings.panel.fullscreen.button_pressed, "Revert restores both display and controls")
+	settings.panel.display_requested.emit(2, true)
+	settings._process(16)
+	await process_frame
+	check(game.preferences.resolution == 1 and not game.preferences.fullscreen, "unconfirmed display changes revert after 15 seconds")
 	var scenery := settings.scenery
 	check(scenery.geometry.size() > 100, "all authored scenery receives native distance culling")
 	var ground := game.world.get_node("RollingGround") as MeshInstance3D
@@ -75,8 +100,10 @@ func _run() -> void:
 	settings.panel.closed.emit()
 	check(not settings.panel.visible and game.hud.exit_panel.visible, "back returns to the match menu")
 	settings.open()
+	settings.panel.display_requested.emit(3, true)
 	room.migration.paused.emit()
 	check(not settings.panel.visible, "recovery closes local settings")
+	check(game.preferences.resolution == 1 and not game.preferences.fullscreen, "recovery cancels an unconfirmed display change")
 	DirAccess.remove_absolute(saved.path)
 	game.queue_free()
 	room.queue_free()

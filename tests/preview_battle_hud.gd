@@ -4,21 +4,26 @@ const OUTPUT := "res://.codex/visualizations/2026/10/22/battle-hud/"
 var game: BattleRoyaleGame
 var room: BattleRoom
 var view: BattleAimView
+var output: String = OUTPUT
 
-func _initialize() -> void: _run.call_deferred()
+func _initialize() -> void:
+	for argument: String in OS.get_cmdline_user_args():
+		if argument.begins_with("--output="): output = argument.trim_prefix("--output=").trim_suffix("/") + "/"
+	_run.call_deferred()
 
 func _shot(name: String) -> void:
 	game.deployment.update()
 	game._update_hud()
 	game.presentation.update(0.3)
 	for frame in 12:
+		game.presentation.update(1.0 / 60)
 		for body in game.bodies:
 			var command := PlayerCommand.new()
 			command.aim = Vector2.UP
 			body.visuals.present(command, Vector3.ZERO, true, false, 1.0 / 60)
 		await process_frame
 	await RenderingServer.frame_post_draw
-	root.get_texture().get_image().save_png(OUTPUT + name + ".png")
+	root.get_texture().get_image().save_png(output + name + ".png")
 
 func _sizes(name: String) -> void:
 	if OS.get_cmdline_user_args().has("help-only") and name != "help": return
@@ -30,7 +35,7 @@ func _sizes(name: String) -> void:
 			await _shot("%s-%d-%s" % [name, dimensions.x, locale])
 
 func _run() -> void:
-	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(OUTPUT))
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(output))
 	GamePreferences.install_translations(self)
 	root.size = Vector2i(1280, 720)
 	root.content_scale_size = root.size
@@ -48,7 +53,7 @@ func _run() -> void:
 	game.combat.process_mode = Node.PROCESS_MODE_DISABLED
 	for child in game.get_children():
 		if child is BattleAimView: view = child
-	game.hud.radar.terrain_map.get_image().save_png(OUTPUT + "terrain-source.png")
+	game.hud.radar.terrain_map.get_image().save_png(output + "terrain-source.png")
 	game.match_state.circle = BattleRing.CENTER
 	game.match_state.time = BattleRing.start_of(5) + BattleRing.HOLD + 1
 	var at := game.world.ground_point(-22, -14, 0.08)
